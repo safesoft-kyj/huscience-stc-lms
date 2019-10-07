@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css"></th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title">수정</h3>
+                </div>
+                <div class="panel-body">
+                    <!--===================================================-->
+                    <!--End Horizontal Form-->
+                    <form class="form-horizontal" action="#" th:action="@{/admin/code/major-update-post/{id}(id=${elMajor.majorCd})}" th:object="${elMajor}" method="post">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="majorCd">Major Code</label>
+                            <div class="col-sm-9">
+                                <input type="text" th:field="*{majorCd}" id="majorCd" placeholder="Major Code" class="form-control" readonly>
+                            </div>
+                            <span th:if="${#fields.hasErrors('majorCd')}" th:errors="*{majorCd}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="majorNm">Major 명</label>
+                            <div class="col-sm-9">
+                                <input type="text" th:field="*{majorNm}" id="majorNm" placeholder="Major Code 명" class="form-control" required>
+                            </div>
+                            <span th:if="${#fields.hasErrors('majorNm')}" th:errors="*{majorNm}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" >코드구분</label>
+                            <div class="radio" >
+                                <span th:each="code, index : ${codeType}">
+                                    <input type="radio" class="magic-radio" name="inline-form-radio" th:field="*{type}" th:value="${code.getKey()}"
+                                           th:checked="${index.index} == 0 ? 'checked': ''"  required/>
+                                    <label th:for="${#ids.prev('type')}" th:text="${code.getValue()}"></label>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="panel-footer text-right">
+                            <button class="btn btn-success" type="submit">Submit</button>
+                        </div>
+                    </form>
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js"></th:block>
+
+</html>

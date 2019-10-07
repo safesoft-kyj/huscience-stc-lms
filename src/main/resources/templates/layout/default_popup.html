@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <!--Meta Data-->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Igorski.co</title>
+
+        <!--기본적인 html head 추가부-->
+        <th:block layout:fragment="html_head"></th:block>
+
+        <!--Css lib-->
+        <!--Open Sans Font [ OPTIONAL ]-->
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+
+        <!--Bootstrap Stylesheet [ REQUIRED ]-->
+        <link rel="stylesheet" th:href="@{/default/css/bootstrap.min.css}" />
+
+        <!--Nifty Stylesheet [ REQUIRED ]-->
+        <link rel="stylesheet" th:href="@{/default/css/nifty.min.css}" />
+
+        <!--Nifty Premium Icon [ DEMONSTRATION ]-->
+        <link rel="stylesheet" th:href="@{/default/css/demo/nifty-demo-icons.min.css}" />
+
+        <!--Pace - Page Load Progress Par [OPTIONAL]-->
+        <link rel="stylesheet" th:href="@{/default/plugins/pace/pace.css}" />
+        <script th:src="@{/default/plugins/pace/pace.min.js}"></script>
+
+        <!--Demo [ DEMONSTRATION ]-->
+        <!--    <link rel="stylesheet" th:href="@{/default/css/demo/nifty-demo.css}" />-->
+
+        <!--DataTables [ OPTIONAL ]-->
+        <link rel="stylesheet" th:href="@{/default/plugins/datatables/media/css/dataTables.bootstrap.css}" />
+        <link rel="stylesheet" th:href="@{/default/plugins/datatables/extensions/Responsive/css/responsive.dataTables.min.css}" />
+
+        <!--Bootstrap Timepicker [ OPTIONAL ]-->
+        <link th:href="@{/default/plugins/bootstrap-timepicker/bootstrap-timepicker.min.css}" rel="stylesheet">
+
+        <!--Bootstrap Datepicker [ OPTIONAL ]-->
+        <link th:href="@{/default/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css}" rel="stylesheet">
+
+        <!-- 트리 스타일 시트 -->
+        <link th:href="@{/default/plugins/zTree/css/zTreeStyle/zTreeStyle.css}" rel="stylesheet">
+
+        <!--Custom or page css-->
+        <th:block layout:fragment="custom_css"></th:block>
+    </head>
+
+    <body th:fragment="mainBody">
+        <div id="container" class="effect aside-float aside-bright mainnav-lg">
+
+            <!--NAVBAR-->
+            <!--===================================================-->
+            <div th:replace="fragments/default/header :: hearder"> </div>
+
+            <div class="boxed">
+
+                <!--CONTENT CONTAINER-->
+                <!--===================================================-->
+                <th:block layout:fragment="content_body"></th:block>
+
+                <!--ASIDE-->
+                <!--===================================================-->
+                <aside th:replace="fragments/default/aside :: aside"> </aside>
+
+                <!--MAIN NAVIGATION-->
+                <!--===================================================-->
+                <nav th:replace="fragments/default/mainnav :: mainnav"> </nav>
+            </div>
+
+            <!-- FOOTER -->
+            <!--===================================================-->
+            <footer th:replace="fragments/default/footer :: footer"> </footer>
+
+            <!-- SCROLL PAGE BUTTON -->
+            <!--===================================================-->
+            <button class="scroll-top btn">
+                <i class="pci-chevron chevron-up"></i>
+            </button>
+            <!--===================================================-->
+
+        </div>
+
+        <!--jQuery [ REQUIRED ]-->
+        <script th:src="@{/default/js/jquery.min.js}"></script>
+
+        <!--BootstrapJS [ RECOMMENDED ]-->
+        <script th:src="@{/default/js/bootstrap.min.js}"></script>
+
+        <!--Demo script [ DEMONSTRATION ]-->
+        <script th:src="@{/default/js/nifty.js}"></script>
+
+
+        <!--Demo script [ DEMONSTRATION ]-->
+        <!--    <script th:src="@{/default/js/demo/nifty-demo.min.js}"></script>-->
+
+        <!--DataTables [ OPTIONAL ]-->
+        <script th:src="@{/default/plugins/datatables/media/js/jquery.dataTables.js}"></script>
+        <script th:src="@{/default/plugins/datatables/media/js/dataTables.bootstrap.js}"></script>
+        <script th:src="@{/default/plugins/datatables/extensions/Responsive/js/dataTables.responsive.min.js}"></script>
+
+        <!--DataTables Sample [ SAMPLE ]-->
+        <script th:src="@{/default/js/demo/tables-datatables.js}"></script>
+
+        <!--Bootstrap Timepicker [ OPTIONAL ]-->
+        <script th:src="@{/default/plugins/bootstrap-timepicker/bootstrap-timepicker.min.js}"></script>
+
+
+        <!--Bootstrap Datepicker [ OPTIONAL ]-->
+        <script th:src="@{/default/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js}"></script>
+
+        // 트리 기본 라이브러리
+        <script th:src="@{/default/plugins/zTree/js/jquery.ztree.core.js}"></script>
+        // 트리 체크박스 라이브러리
+        <script th:src="@{/default/plugins/zTree/js/jquery.ztree.excheck.js}"></script>
+
+        <SCRIPT type="text/javascript">
+            <!--
+            var zNodes;
+
+            var setting = {
+                check: {
+                    enable: true
+                },
+                data: {
+                    key: {
+                        title: "title"
+                    },
+                    simpleData: {
+                        enable: true
+                    }
+                },
+                callback: {
+                    onCheck: onCheck
+                }
+            };
+
+            $(document).ready(function() {
+                // 조직도 정보 restApi
+                var url="/admin/depart/departViewTree";
+
+                // 조직도 정보 가져오기
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    dataType: 'JSON',
+                    async: false,
+                    success: function (data) {
+                        zNodes = data;
+                    },
+                    error: function (e) {
+                        console.log(e.responseText);
+                    }
+                });
+
+                // 트리 초기화
+                $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+            });
+
+            // 트리 선택시 리스트 박스및 라벨에 데이터 추가
+            function onCheck(e, treeId, treeNode) {
+                function isForceHidden(node) {
+                    if (!node.parentTId) return false;
+                    var p = node.getParentNode();
+                    return !!p.isHidden ? true : isForceHidden(p);
+                }
+
+                var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                var checkNodes = zTree.getCheckedNodes(true);
+
+                $('#demo1-cs-multiselect').empty();
+                $('#selectList').empty();
+                for (var i = 0, j = checkNodes.length; i < j; i++) {
+                    var n = checkNodes[i];
+
+                    if (n.isEmp) {
+                        // $('#selectList').append(n.name + "&lt;" + n.email + "&gt;;\r\n");
+
+                        var option = "<option value='" + n.id + "'>" + n.name + "&lt;" + n.email + "&gt;</option>";
+
+                        $('#demo1-cs-multiselect').append(option);
+                    }
+                }
+            }
+
+            // 트리 전체 선택
+            function zTreeSelectAll() {
+                var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                zTree.setting.edit.editNameSelectAll =  $("#selectAll").attr("checked");
+            }
+
+            // 트리 펼치기
+            function zTreeExpandAll() {
+                var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+                treeObj.expandAll(true);
+            }
+
+            // 트리 접기
+            function zTreeCollapseAll() {
+                var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+                treeObj.expandAll(false);
+            }
+
+            // select box 전체 항목 선택
+            function allSelect() {
+                $('#demo1-cs-multiselect option').each(function() {
+                    $(this).prop("selected", "selected");
+                });
+
+            }
+
+            // select box 전체 삭제
+            function allDelete() {
+                $('#demo1-cs-multiselect option').each(function() {
+                    $(this).remove();
+                });
+            }
+
+            // select box 선택 삭제
+            function selectDelete() {
+                $("#demo1-cs-multiselect option:selected").remove();
+            }
+
+            //-->
+        </SCRIPT>
+
+
+            <th:block layout:fragment="custom_js"></th:block>
+
+        <!-- menu select -->
+        <script th:src="@{/default/js/custom/menu-select.js}"></script>
+
+    </body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <!--Meta Data-->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Igorski.co</title>
+
+        <!--기본적인 html head 추가부-->
+        <th:block layout:fragment="html_head"></th:block>
+
+        <!--Css lib-->
+        <!--Open Sans Font [ OPTIONAL ]-->
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+
+        <!--Bootstrap Stylesheet [ REQUIRED ]-->
+        <link rel="stylesheet" th:href="@{/default/css/bootstrap.min.css}" />
+
+        <!--Nifty Stylesheet [ REQUIRED ]-->
+        <link rel="stylesheet" th:href="@{/default/css/nifty.min.css}" />
+
+        <!--Nifty Premium Icon [ DEMONSTRATION ]-->
+        <link rel="stylesheet" th:href="@{/default/css/demo/nifty-demo-icons.min.css}" />
+
+        <!--Pace - Page Load Progress Par [OPTIONAL]-->
+        <link rel="stylesheet" th:href="@{/default/plugins/pace/pace.css}" />
+        <script th:src="@{/default/plugins/pace/pace.min.js}"></script>
+
+        <!--Demo [ DEMONSTRATION ]-->
+        <!--    <link rel="stylesheet" th:href="@{/default/css/demo/nifty-demo.css}" />-->
+
+        <!--DataTables [ OPTIONAL ]-->
+        <link rel="stylesheet" th:href="@{/default/plugins/datatables/media/css/dataTables.bootstrap.css}" />
+        <link rel="stylesheet" th:href="@{/default/plugins/datatables/extensions/Responsive/css/responsive.dataTables.min.css}" />
+
+        <!--Bootstrap Timepicker [ OPTIONAL ]-->
+        <link th:href="@{/default/plugins/bootstrap-timepicker/bootstrap-timepicker.min.css}" rel="stylesheet">
+
+        <!--Bootstrap Datepicker [ OPTIONAL ]-->
+        <link th:href="@{/default/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css}" rel="stylesheet">
+
+        <!--Chosen [ OPTIONAL ]-->
+        <link th:href="@{/default/plugins/chosen/chosen.min.css}" rel="stylesheet">
+
+        <!--Custom or page css-->
+        <th:block layout:fragment="custom_css"></th:block>
+    </head>
+
+    <body th:fragment="mainBody">
+        <div id="container" class="effect aside-float aside-bright mainnav-lg">
+
+            <!--NAVBAR-->
+            <!--===================================================-->
+            <div th:replace="fragments/default/header :: hearder"> </div>
+
+            <div class="boxed">
+
+                <!--CONTENT CONTAINER-->
+                <!--===================================================-->
+                <th:block layout:fragment="content_body"></th:block>
+
+                <!--ASIDE-->
+                <!--===================================================-->
+                <aside th:replace="fragments/default/aside :: aside"> </aside>
+
+                <!--MAIN NAVIGATION-->
+                <!--===================================================-->
+                <nav th:replace="fragments/default/mainnav :: mainnav"> </nav>
+            </div>
+
+            <!-- FOOTER -->
+            <!--===================================================-->
+            <footer th:replace="fragments/default/footer :: footer"> </footer>
+
+            <!-- SCROLL PAGE BUTTON -->
+            <!--===================================================-->
+            <button class="scroll-top btn">
+                <i class="pci-chevron chevron-up"></i>
+            </button>
+            <!--===================================================-->
+
+        </div>
+
+        <!--jQuery [ REQUIRED ]-->
+        <script th:src="@{/default/js/jquery.min.js}"></script>
+
+        <!--BootstrapJS [ RECOMMENDED ]-->
+        <script th:src="@{/default/js/bootstrap.min.js}"></script>
+
+        <!--Demo script [ DEMONSTRATION ]-->
+        <script th:src="@{/default/js/nifty.js}"></script>
+
+
+        <!--Demo script [ DEMONSTRATION ]-->
+        <!--    <script th:src="@{/default/js/demo/nifty-demo.min.js}"></script>-->
+
+        <!--DataTables [ OPTIONAL ]-->
+        <script th:src="@{/default/plugins/datatables/media/js/jquery.dataTables.js}"></script>
+        <script th:src="@{/default/plugins/datatables/media/js/dataTables.bootstrap.js}"></script>
+        <script th:src="@{/default/plugins/datatables/extensions/Responsive/js/dataTables.responsive.min.js}"></script>
+
+        <!--DataTables Sample [ SAMPLE ]-->
+        <script th:src="@{/default/js/demo/tables-datatables.js}"></script>
+
+        <!--Bootstrap Timepicker [ OPTIONAL ]-->
+        <script th:src="@{/default/plugins/bootstrap-timepicker/bootstrap-timepicker.min.js}"></script>
+
+
+        <!--Bootstrap Datepicker [ OPTIONAL ]-->
+        <script th:src="@{/default/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js}"></script>
+
+        <!--Chosen [ OPTIONAL ]-->
+        <script th:src="@{/default/plugins/chosen/chosen.jquery.min.js}"></script>
+
+
+        <th:block layout:fragment="custom_js"></th:block>
+
+        <!-- menu select -->
+        <script th:src="@{/default/js/custom/menu-select.js}"></script>
+
+
+
+    </body>
+</html>

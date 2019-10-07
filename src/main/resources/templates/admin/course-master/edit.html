@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default_layout">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css"></th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title">교육유형 수정</h3>
+                </div>
+                <div class="panel-body">
+                    <!--===================================================-->
+                    <!--End Horizontal Form-->
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course-master/edit-post/{id}(id=${course.id})}" th:object="${course}" method="post">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="id">교육ID</label>
+                            <div class="col-sm-10">
+                                <input type="text" th:field="*{id}" id="id" placeholder="교육명" class="form-control" required="required" readonly>
+                            </div>
+                            <span th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">교육 유형</label>
+                            <div class="col-sm-10">
+                                <select th:field="*{minorCd}" class="form-control">
+                                    <option th:each="minor : ${minorList}" th:value="${minor.getMinorCd()}" th:text="${minor.getMinorNm()}"></option>
+                                </select>
+                            </div>
+                            <span th:if="${#fields.hasErrors('minorCd')}" th:errors="*{minorCd}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="courseName">교육명</label>
+                            <div class="col-sm-10">
+                                <input type="text" th:field="*{courseName}" id="courseName" placeholder="교육명" class="form-control" required="required">
+                            </div>
+                            <span th:if="${#fields.hasErrors('courseName')}" th:errors="*{courseName}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">메일발송</label>
+                            <div class="col-sm-10">
+                                <select th:field="*{isMail}" class="form-control">
+                                    <option value="Y" >Yes</option>
+                                    <option value="N" >No</option>
+                                </select>
+                            </div>
+                            <span th:if="${#fields.hasErrors('isMail')}" th:errors="*{isMail}"></span>
+                        </div>
+                        <div class="panel-footer text-right">
+                            <button class="btn btn-success" type="submit">Submit</button>
+                        </div>
+                    </form>
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+    <script type="text/javascript" th:inline="javascript">
+
+
+
+</script>
+
+</th:block>
+
+</html>

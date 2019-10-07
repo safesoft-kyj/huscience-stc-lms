@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<th:block th:fragment="profile">
+
+    <div id="mainnav-profile" class="mainnav-profile">
+        <div class="profile-wrap text-center"  sec:authorize="isAuthenticated()">
+            <div class="pad-btm">
+                <img class="img-circle img-md" src="img/new-images/profile-photos.png" alt="Profile Picture">
+            </div>
+            <p class="mnp-name">
+                <span sec:authentication="principal.username"></span>
+            </p>
+            <span class="mnp-desc" sec:authentication="principal.email"></span>
+        </div>
+    </div>
+
+
+</th:block>
+
+</html>

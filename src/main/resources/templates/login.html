@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Dt&amp;SanoMedics</title>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+    <link th:href="@{/sano/css/bootstrap.min.css}" rel="stylesheet">
+    <!--Nifty Stylesheet [ REQUIRED ]-->
+    <link th:href="@{/sano/css/nifty.css}" rel="stylesheet">
+    <!--Demo [ DEMONSTRATION ]-->
+    <link th:href="@{/sano/css/demo/nifty-demo.min.css}" rel="stylesheet">
+    <!--new-style-->
+    <link th:href="@{/sano/css/new-style.css}" rel="stylesheet">
+
+</head>
+
+<body>
+<div id="container" class="cls-container">
+
+    <!-- BACKGROUND IMAGE -->
+    <!--===================================================-->
+    <div id="bg-overlay"></div>
+    <!-- LOGIN FORM -->
+    <!--===================================================-->
+    <div class="cls-content login">
+        <div class="cls-content-sm panel">
+            <div class="panel-body">
+                <div class="login-form">
+                    <div class="mar-ver pad-btm">
+                        <h1>Dt&SanoMedic LMS</h1>
+                    </div>
+
+                    <form th:action="@{/login}" method="post" id="demo-bvd-notempty">
+                        <div th:if="${param.error}">
+                            <div class="alert alert-danger">Invalid username or
+                                password.</div>
+                        </div>
+                        <div th:if="${param.logout}">
+                            <div class="alert alert-info">You have been logged out.</div>
+                        </div>
+                        <!-- js/demo/form-validation.js 에 작업되어 있음 -->
+                        <div class="form-group">
+                            <div class="form-group has-feedback">
+                                <label class="control-label">User Email </label>
+                                <input type="text" class="form-control"  name="username"  placeholder="User Email">
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Password </label>
+                                <input type="password" class="form-control"  name="password" placeholder="Password">
+                            </div>
+                            <div class="checkbox pad-btm text-left">
+                                <div class="col-md-6 pad-no">
+                                    <input id="form-checkbox" class="magic-checkbox" type="checkbox">
+                                    <label for="form-checkbox">Saved ID</label>
+                                </div>
+
+                                <div class="col-md-6 pad-no text-right">
+                                    <a href="/sano/#" class="btn-link mar-rgt">Forgot password ?</a>
+                                </div>
+                            </div>
+                            <button class="btn btn-login" type="submit">
+                                Login
+                            </button>
+                    </form>
+
+                    <div class="welcom-box clearfix">
+                        <div class="logo">
+                            <img src="/sano/img/new-images/logo03.png" alt="logo">
+                        </div>
+                        <div class="text-box">
+                            <p>
+                                <em>Welcome</em>
+                            </p>
+                            <p>
+                                “Sano” in Spanish means “healty” and “safe”.
+                            </p>
+                            <p>
+                                Wouldn’t Sano be the hope of all mankind, not just Dt&SanoMedics?
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="login-copyright">
+            Copyright © 2019 Dt&SanoMedics. All rights reserved.
+        </div>
+    </div>
+</div>
+<!-- END OF CONTAINER -->
+
+<!--JAVASCRIPT-->
+<!--=================================================-->
+
+<!--jQuery [ REQUIRED ]-->
+<script src="/sano/js/jquery.min.js"></script>
+
+<!--BootstrapJS [ RECOMMENDED ]-->
+<script src="/sano/js/bootstrap.min.js"></script>
+
+<!--NiftyJS [ RECOMMENDED ]-->
+<script src="/sano/js/nifty.min.js"></script>
+
+<!--=================================================-->
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+
+    <!--JSTree [ OPTIONAL ]-->
+    <!--            <link th:href="@{/default/plugins/jstree/themes/default/style.min.css}" rel="stylesheet">-->
+    <link th:href="@{/default/plugins/zTree/css/zTreeStyle/zTreeStyle.css}" rel="stylesheet">
+
+    <!--Chosen [ OPTIONAL ]-->
+    <link th:href="@{/default/plugins/chosen/chosen.min.css}" rel="stylesheet">
+
+
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title">
+
+        </div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <div class="panel">
+                <div class="panel-body">
+
+
+                    <div class="zTreeDemoBackground left">
+                        <ul id="treeDemo" class="ztree"></ul>
+                    </div>
+                    <div>
+                        <button onclick="allSelect();">전체선택</button>
+                    </div>
+                    <div>
+                        <select id="demo1-cs-multiselect" data-placeholder="Choose a Country..." multiple tabindex="4" style="width:500px;">
+                        </select>
+                    </div>
+                    <div id="selectList"></div>
+                </div>
+            </div>
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+
+    <!--DataTables Sample [ SAMPLE ]-->
+
+    <!--    <script th:src="@{/js/custom/major-list.js}"></script>-->
+
+    <!--JSTree [ OPTIONAL ]-->
+    <!--    <script th:src="@{/default/plugins/jstree/jstree.min.js}"></script>-->
+
+    <script th:src="@{/default/plugins/zTree/js/jquery.ztree.core.js}"></script>
+    <script th:src="@{/default/plugins/zTree/js/jquery.ztree.excheck.js}"></script>
+
+    <!--Chosen [ OPTIONAL ]-->
+    <script th:src="@{/default/plugins/chosen/chosen.jquery.min.js}"></script>
+
+    <SCRIPT type="text/javascript">
+        <!--
+
+
+        function allSelect() {
+
+            var sel_box = $('#demo1-cs-multiselect');
+            var num = $('#demo1-cs-multiselect option').length;
+
+            alert(num);
+
+            $('#demo1-cs-multiselect option').each(function() {
+
+                $(this).prop("selected", "selected");
+                //alert(this.value);
+            });
+
+        }
+
+
+        var zNodes;
+
+        $(document).ready(function() {
+            var url="/admin/depart/departViewTree";
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                dataType: 'JSON',
+                async: false,
+                success: function (data) {
+                    zNodes = data;
+                },
+                error: function (e) {
+                    console.log(e.responseText);
+                }
+            });
+        });
+
+
+        var setting = {
+            check: {
+                enable: true
+            },
+            data: {
+                key: {
+                    title: "title"
+                },
+                simpleData: {
+                    enable: true
+                }
+            },
+            callback: {
+                onCheck: onCheck
+            }
+        };
+
+        function onCheck(e, treeId, treeNode) {
+            count();
+        }
+        function setTitle(node) {
+            var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+            var nodes = node ? [node]:zTree.transformToArray(zTree.getNodes());
+            for (var i=0, l=nodes.length; i<l; i++) {
+                var n = nodes[i];
+                n.title = "[" + n.id + "] isFirstNode = " + n.isFirstNode + ", isLastNode = " + n.isLastNode;
+                zTree.updateNode(n);
+            }
+        }
+        function count() {
+            function isForceHidden(node) {
+                if (!node.parentTId) return false;
+                var p = node.getParentNode();
+                return !!p.isHidden ? true : isForceHidden(p);
+            }
+            var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+                checkCount = zTree.getCheckedNodes(true).length,
+                nocheckCount = zTree.getCheckedNodes(false).length,
+                hiddenNodes = zTree.getNodesByParam("isHidden", true),
+                hiddenCount = hiddenNodes.length;
+
+
+            var checkNodes = zTree.getCheckedNodes(true);
+
+
+            $('#demo-cs-multiselect').empty();
+            for (var i=0, j=checkNodes.length; i<j; i++) {
+                var n = checkNodes[i];
+
+                if(n.isEmp) {
+                    $('#selectList').append("\t" + n.id + "\t" + n.email+ "\r\n");
+
+                    var option = "<option value='" + n.id + "'>"+  n.name + "[" + n.email +"]</option>";
+
+                    $('#demo1-cs-multiselect').append(option);
+
+                    $('#cs-multiselect').append(option);
+                }
+
+                if (isForceHidden(n)) {
+                    hiddenCount -= 1;
+                } else if (n.isParent) {
+                    hiddenCount += zTree.transformToArray(n.children).length;
+                }
+            }
+
+
+            for (var i=0, j=hiddenNodes.length; i<j; i++) {
+                var n = hiddenNodes[i];
+                if (isForceHidden(n)) {
+                    hiddenCount -= 1;
+                } else if (n.isParent) {
+                    hiddenCount += zTree.transformToArray(n.children).length;
+                }
+            }
+
+            $("#isHiddenCount").text(hiddenNodes.length);
+            $("#hiddenCount").text(hiddenCount);
+            $("#checkCount").text(checkCount);
+            $("#nocheckCount").text(nocheckCount);
+        }
+        function showNodes() {
+
+            var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+                nodes = zTree.getNodesByParam("isHidden", true);
+            zTree.showNodes(nodes);
+            setTitle();
+            count();
+        }
+        function hideNodes() {
+            var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+                nodes = zTree.getSelectedNodes();
+            if (nodes.length == 0) {
+                alert("Please select one node at least.");
+                return;
+            }
+            zTree.hideNodes(nodes);
+            setTitle();
+            count();
+        }
+        $(document).ready(function(){
+            $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+            $("#hideNodesBtn").bind("click", {type:"rename"}, hideNodes);
+            $("#showNodesBtn").bind("click", {type:"icon"}, showNodes);
+            setTitle();
+            count();
+
+
+
+            $('#demo-cs-multiselect').chosen({width:'100%'});
+        });
+        //-->
+
+
+
+
+
+
+    </SCRIPT>
+
+
+
+</th:block>
+
+</html>
+
+

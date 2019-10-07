@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<form action="#" th:action="@{/authenticate}" method="post" th:object="${loginForm}">
+    <div>
+        Email: <input type="email" th:field="*{email}" autofocus />
+    </div>
+    <div>
+        Password: <input type="password" th:field="*{password}" />
+    </div>
+    <div>
+        <input type="submit" value="Log in" />
+    </div>
+    <!--<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+</form>
+
+</html>

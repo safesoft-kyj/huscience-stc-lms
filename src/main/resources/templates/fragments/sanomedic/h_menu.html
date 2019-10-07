@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<th:block th:fragment="menu">
+
+    <ul id="mainnav-menu" class="list-group">
+
+        <!--Category name-->
+        <li class="list-header">User Menu</li>
+
+        <!--Menu list item-->
+        <li>
+            <a href="#"> <div th:replace="fragments/sanomedic/h_menu_icon :: menu_icon"></div>
+                <div class="menu-title">
+                    <span>교육안내</span>
+                </div> <i class="arrow"></i> </a>
+            <!--Submenu-->
+            <ul class="collapse">
+                <li>
+                    <a href="new-index.html"> <div th:replace="fragments/sanomedic/h_menu_icon :: menu_icon"></div>
+                        <div class="menu-title">
+                            <span>Dashboard 1</span>
+                        </div> <i class="arrow"></i> </a>
+                    <!--dep3th Submenu -->
+                    <ul class="collapse in dep3th">
+                        <li class="active">
+                            <a href="new-index.html">
+                                <div class="menu-title">
+                                    <span>dep3menu 1</span>
+                                </div></a>
+                        </li>
+                        <li>
+                            <a href="new-index.html">
+                                <div class="menu-title">
+                                    <span>dep3menu 2</span>
+                                </div></a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="new-index.html"> <div th:replace="fragments/sanomedic/h_menu_icon :: menu_icon"></div>
+                        <div class="menu-title">
+                            <span>Dashboard 2</span>
+                        </div></a>
+                </li>
+            </ul>
+        </li>
+        <!--Menu list item-->
+        <li>
+            <a href="#"> <div th:replace="fragments/sanomedic/h_menu_icon :: menu_icon"></div>
+                <div class="menu-title">
+                    <span>Training Log</span>
+                </div> <i class="arrow"></i> </a>
+        </li>
+        <!--Menu list item-->
+        <li>
+            <a href="#"> <div th:replace="fragments/sanomedic/h_menu_icon :: menu_icon"></div>
+                <div class="menu-title">
+                    <span>Exam Log</span>
+                </div> <i class="arrow"></i> </a>
+        </li>
+    </ul>
+
+</th:block>
+
+</html>

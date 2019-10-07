@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<div sec:authorize="isAuthenticated()">
+    Name: <span sec:authentication="name">SomeName</span><br />
+    Principal: <span sec:authentication="principal">PrincipalString</span><br />
+    Principal.email: <span sec:authentication="principal.email">Email</span><br />
+    HasRole(USER): <span sec:authorize="hasRole('ROLE_USER')">YES</span><br />
+    HasRole(ADMIN): <span sec:authorize="hasRole('ROLE_ADMIN')">YES</span>
+</div>
+<form action="#" th:action="@{/logout}" method="post">
+    <input type="submit" value="Logout" />
+    <!--<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+</form>
+</html>

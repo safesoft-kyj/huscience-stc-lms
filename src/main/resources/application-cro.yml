@@ -1,0 +1,65 @@
+spring:
+  devtools:
+    livereload:
+      enabled: true
+  thymeleaf:
+    cache: false
+    check-template: true
+    check-template-location: true
+    enabled: true
+    encoding: UTF-8
+    mode: HTML
+    prefix: classpath:/templates/
+    suffix: .html
+    servlet:
+      content-type: text/html
+  datasource:
+    url: jdbc:sqlserver://192.168.11.100:1433;DatabaseName=elearning
+    username: sa
+    password: Dtncro@123##
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  flyway:
+    url: jdbc:sqlserver://192.168.11.100:1433;DatabaseName=elearning
+    user: sa
+    password: Dtncro@123##
+    locations: classpath:/db/migration/cro
+    baseline-on-migrate: true
+    encoding: UTF-8
+  jpa:
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
+    show-sql: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 200MB
+      max-request-size: 215MB
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    protocol: smtp
+    username: pub147@gmail.com
+    password: hllzmxukahrxghrm
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+
+mybatis:
+  type-aliases-package: com.dtnsm.elearning.mybatis.model
+
+  # mapper 이하를 로깅 위치로 설정.
+logging:
+  level: com.dtnsm.elearning.mybatis.mapper=TRACE
+
+
+file:
+  upload-dir: D://elearning//upload//border//
+  photo-upload-dir: D://elearning//upload//border//PhotoUpload//
+  course-upload-dir: D://elearning//upload//course//
+  course-photo-upload-dir: D://elearning//upload//course//PhotoUpload//
+

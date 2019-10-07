@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+
+<!--MAIN NAVIGATION-->
+<!--===================================================-->
+<nav id="mainnav-container" th:fragment="mainnav">
+    <div id="mainnav">
+
+        <!--OPTIONAL : ADD YOUR LOGO TO THE NAVIGATION-->
+        <!--It will only appear on small screen devices.-->
+        <!--================================
+        <div class="mainnav-brand">
+            <a href="index.html" class="brand">
+                <img src="img/logo.png" alt="Nifty Logo" class="brand-icon">
+                <span class="brand-text">Nifty</span>
+            </a>
+            <a href="#" class="mainnav-toggle"><i class="pci-cross pci-circle icon-lg"></i></a>
+        </div>
+        -->
+
+        <!--Menu-->
+        <!--================================-->
+        <div id="mainnav-menu-wrap">
+            <div class="nano">
+                <div class="nano-content">
+
+                    <!--Profile Widget-->
+                    <!--================================-->
+                    <div th:replace="fragments/common/mainnav_profile :: profile"> </div>
+                    <!--================================-->
+                    <!--End Profile Widget-->
+
+                    <!--Shortcut buttons-->
+                    <!--================================-->
+<!--                    <div th:replace="fragments/common/mainnav_shortcut :: shortcut"> </div>-->
+                    <!--================================-->
+                    <!--End shortcut buttons-->
+
+                    <!--Shortcut buttons-->
+                    <!--================================-->
+                    <div th:replace="fragments/common/mainnav_menu :: menu"> </div>
+                    <!--================================-->
+
+                    <!--Widget-->
+                    <!--================================-->
+<!--                    <div th:replace="fragments/common/mainnav_widget :: widget"> </div>-->
+                    <!--================================-->
+                    <!--End widget-->
+
+                </div>
+            </div>
+        </div>
+        <!--================================-->
+        <!--End menu-->
+
+    </div>
+</nav>
+<!--===================================================-->
+<!--END MAIN NAVIGATION-->
+
+</html>

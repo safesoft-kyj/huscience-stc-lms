@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<th:block th:fragment="content">
+
+<!--===================================================-->
+<!--Page content-->
+<!--===================================================-->
+<div id="page-content">
+
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <th:block layout:fragment="content_body"></th:block>
+
+    <div class="row">
+        <div class="col-md-12"></div>
+    </div>
+    <!-- copyright -->
+    <div class="copyright">
+        Copyright © 2018 Dt&SanoMedics. All rights reserved.
+        <div class="version">system v1.0</div>
+    </div>
+    <!-- END copyright -->
+</div>
+<!--END Page content -->
+
+</th:block>
+
+</html>

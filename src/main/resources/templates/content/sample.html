@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="add_lib_css">
+    <link rel="stylesheet" th:href="@{/lib/fullcalendar-3.6.2/fullcalendar.min.css}" />
+    <link rel="stylesheet" th:href="@{/lib/fullcalendar-3.6.2/fullcalendar.print.min.css}" media="print" />
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <link rel="stylesheet" th:href="@{/css/dashboard/main.css}" />
+</th:block>
+
+
+<th:block layout:fragment="content_body">
+    <div th:replace="fragments/common/loading"></div>
+    <header th:include="fragments/main/main_sidemenu"></header>
+
+    <div class="content-wrapper">
+        //..... 실제 컨텐츠 내용 작성
+    </div>
+</th:block>
+
+
+<th:block layout:fragment="custom_js">
+    <script th:src="@{/lib/fullcalendar-3.6.2/fullcalendar.min.js}"></script>
+
+    <script th:src="@{/js/dashboard/main.js}"></script>
+</th:block>
+
+</html>

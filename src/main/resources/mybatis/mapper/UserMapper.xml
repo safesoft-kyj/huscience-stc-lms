@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dtnsm.lms.mybatis.mapper.UserMapper">
+
+    <select id="selectUserById" parameterType="String" resultType="com.dtnsm.lms.mybatis.dto.UserVO">
+        SELECT *
+          FROM vw_user
+         WHERE user_id = #{userId}
+    </select>
+
+    <select id="selectAll" resultType="com.dtnsm.lms.mybatis.dto.UserVO">
+        select *
+        from vw_user
+    </select>
+
+    <select id="selectAllByOrgCode2" parameterType="String" resultType="com.dtnsm.lms.mybatis.dto.UserVO">
+        SELECT *
+          FROM vw_user
+          WHERE org_code = #{orgCode}
+    </select>
+
+<!--    <insert id="insertCity">-->
+<!--      INSERT INTO CITY (NAME, COUNTRY, POPULATION)-->
+<!--      VALUES (#{name}, #{country}, #{population})-->
+<!--    </insert>-->
+
+</mapper>

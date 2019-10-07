@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <!--Dropzone [ OPTIONAL ]-->
+    <link th:href="@{/default/plugins/dropzone/dropzone.min.css}" rel="stylesheet">
+
+    <link th:href="@{/default/plugins/bootstrap-timepicker/bootstrap-timepicker.min.css}" rel="stylesheet">
+
+
+    <!--Bootstrap Datepicker [ OPTIONAL ]-->
+    <link th:href="@{/default/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css}" rel="stylesheet">
+
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-heading">
+<!--                    <h3 class="panel-title">교육 등록</h3>-->
+                </div>
+                <div class="panel-body">
+                    <!--===================================================-->
+                    <!--End Horizontal Form-->
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/section/edit-post/{id}(id=${courseSection.getId()})}" th:object="${courseSection}" method="post" enctype="multipart/form-data" >
+                        <input type="hidden" th:value="${id}" id="id" name="id">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">구분</label>
+                            <div class="col-sm-10">
+                                <select th:field="*{type}" class="form-control" readonly="readonly">
+                                    <option th:each="code : ${codeList}" th:value="${code.getMinorCd()}" th:text="${code.getMinorNm()}"></option>
+                                </select>
+                            </div>
+                            <span th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="name">강의명</label>
+                            <div class="col-sm-10">
+                                <input type="text" th:field="*{name}" id="name" placeholder="강의명" class="form-control" required="required">
+                            </div>
+                            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="fromDate">학습기간</label>
+                            <div class="col-sm-4">
+                                <div id="demo-dp-range">
+                                    <div id="demo-dp-component">
+                                        <div class="input-group date">
+                                            <input type="text" th:field="*{fromDate}" id="fromDate" class="form-control">
+                                            <span class="input-group-addon"><i class="demo-pli-calendar-4"></i></span>
+                                        </div>
+                                        <span th:if="${#fields.hasErrors('fromDate')}" th:errors="*{fromDate}"></span>
+                                    </div>
+                                    <div class="input-group date">
+                                        <input id="demo-tp-com" type="text" th:field="*{fromTime}" class="form-control">
+                                        <span class="input-group-addon"><i class="demo-pli-clock"></i></span>
+                                        <span th:if="${#fields.hasErrors('fromTime')}" th:errors="*{fromTime}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div id="demo-dp-range2">
+                                    <div id="demo-dp-component2">
+                                        <div class="input-group date">
+                                            <input type="text" th:field="*{toDate}" class="form-control">
+                                            <span class="input-group-addon"><i class="demo-pli-calendar-4"></i></span>
+                                        </div>
+                                        <span th:if="${#fields.hasErrors('toDate')}" th:errors="*{toDate}"></span>
+                                    </div>
+                                    <div class="input-group date">
+                                        <input id="demo-tp-com2" type="text" th:field="*{toTime}" class="form-control">
+                                        <span class="input-group-addon"><i class="demo-pli-clock"></i></span>
+                                        <span th:if="${#fields.hasErrors('toTime')}" th:errors="*{toTime}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="sectionMinute">학습시간</label>
+                            <div class="col-sm-2">
+                                <input type="number" th:field="*{minute}" id="sectionMinute" placeholder="시간" class="form-control" required="required">
+                            </div>
+                            <span th:if="${#fields.hasErrors('minute')}" th:errors="*{minute}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">첨부파일</label>
+                            <div class="col-sm-10">
+                                <div th:switch="${courseSection.getSectionFiles().isEmpty()}">
+                                    <div th:case="true"></div>
+                                    <div th:case="*">
+                                        <table id="customer-list-page" class="table table-striped table-courseed" cellspacing="0" width="100%">
+                                            <thead>
+                                            <tr>
+                                                <th class="text-center col-sm-8">파일명</th>
+                                                <th class="text-center col-sm-2">사이즈</th>
+                                                <th class="text-center col-sm-2">삭제</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="uploadFile : ${courseSection.getSectionFiles()}">
+                                                <td>
+                                                    <a th:href="@{/admin/course/section/download-file/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>
+                                                </td>
+                                                <td th:text="${uploadFile.getSize()}" class="text-center"></td>
+                                                <td class="text-center col-sm-2">
+                                                    <a class="btn btn-xs btn-danger" th:href="@{/admin/course/section/delete-file/{section_id}/{file_id}(section_id=${courseSection.getId()}, file_id=${uploadFile.getId()})}"><i class="demo-psi-trash"></i></a>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">강의파일</label>
+                            <div class="col-sm-10">
+                                <input type="file" name="files">
+                            </div>
+                        </div>
+                        <div class="panel-footer text-right">
+                            <button class="btn btn-primary" type="submit" id="submit-all">
+                                <i class="fa fa-upload-cloud"></i> 저장
+                            </button>
+                            <a th:href="@{/admin/course/list/{typeId}(typeId=${courseSection.getCourse().getCourseMaster().getId()})}" class="btn btn-success">
+                                <i class="fa fa-upload-cloud"></i> 목록
+                            </a>
+                        </div>
+                    </form>
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+
+</th:block>
+
+<th:block layout:fragment="custom_js">
+    <!--Dropzone [ OPTIONAL ]-->
+<!--    <script th:src="@{/default/plugins/dropzone/dropzone.js}"></script>-->
+
+
+<!--    <script type="text/javascript" th:src="@{/editor/js/HuskyEZCreator.js}" charset="utf-8"></script>-->
+<!--    <script type="text/javascript" th:src="@{/default/js/custom/course-editor.js}" charset="utf-8"></script>-->
+
+    <!--Bootstrap Timepicker [ OPTIONAL ]-->
+    <script th:src="@{/default/plugins/bootstrap-timepicker/bootstrap-timepicker.min.js}"></script>
+
+
+    <!--Bootstrap Datepicker [ OPTIONAL ]-->
+    <script th:src="@{/default/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js}"></script>
+
+<!--    <script type="text/javascript" th:src="@{/default/js/custom/course-file.js}" charset="utf-8"></script>-->
+
+<!--    <script type="text/javascript" th:src="@{/default/js/custom/course-add.js}" charset="utf-8"></script>-->
+
+<!--    <script th:src="@{/default/js/demo/form-component.js}"></script>-->
+
+    <script>
+
+        $('#demo-tp-com').timepicker();
+        $('#demo-tp-com2').timepicker();
+
+        $('#demo-dp-component .input-group.date, #demo-dp-component2 .input-group.date').datepicker({
+            // format: "MM dd, yyyy",
+            format: "yyyy-mm-dd",
+            todayBtn: "linked",
+            autoclose: true,
+            todayHighlight: true
+        });
+
+    </script>
+
+
+</th:block>
+
+</html>
+

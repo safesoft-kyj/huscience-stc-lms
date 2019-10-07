@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dtnsm.lms.mybatis.mapper.DepartMapper">
+
+    <select id="selectDepartByOrgCode" parameterType="String" resultType="com.dtnsm.lms.mybatis.dto.DepartVO">
+        SELECT *
+          FROM vw_depart
+         WHERE org_code = #{orgCode}
+    </select>
+
+    <select id="selectAll" resultType="com.dtnsm.lms.mybatis.dto.DepartVO">
+        SELECT *
+          FROM vw_depart
+    </select>
+
+    <select id="selectTree" resultType="com.dtnsm.lms.mybatis.dto.DepartTreeVO">
+        select * from vw_depart_tree
+    </select>
+
+<!--    <insert id="insertCity">-->
+<!--      INSERT INTO CITY (NAME, COUNTRY, POPULATION)-->
+<!--      VALUES (#{name}, #{country}, #{population})-->
+<!--    </insert>-->
+
+</mapper>
