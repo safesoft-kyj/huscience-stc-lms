@@ -39,38 +39,91 @@
                         <input type="hidden" th:field="*{id}" id="id" name="id">
                         <input type="hidden" th:field="*{courseMaster.id}" id="type-id" name="type-id">
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" for="title">제목</label>
+                            <label class="col-sm-2 control-label" for="title">교육유형</label>
                             <div class="col-sm-10">
-                                <input type="text" th:field="*{title}" id="title" placeholder="제목" class="form-control" required>
+                                <input type="text" th:value="${course.courseMaster.getCourseName()}"  placeholder="제목" class="form-control" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="title">과정명</label>
+                            <div class="col-sm-10">
+                                <input type="text" th:field="*{title}" id="title" placeholder="과정명" class="form-control" required>
                             </div>
                             <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" for="title">신청기간</label>
-                            <div class="col-sm-4">
-                                <div id="demo-dp-range">
-                                    <div class="input-daterange input-group" id="datepicker2">
-                                        <input type="text" th:field="*{fromDate}" id="fromDate" placeholder="교육시작일" class="form-control" required="required">
-                                        <span th:if="${#fields.hasErrors('fromDate')}" th:errors="*{fromDate}"></span>
-                                        <span class="input-group-addon">to</span>
-                                        <input type="text" th:field="*{toDate}" id="toDate" placeholder="교육종료일" class="form-control" required="required">
-                                        <span th:if="${#fields.hasErrors('toDate')}" th:errors="*{toDate}"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <label class="col-sm-2 control-label" for="title">교육기간</label>
-                            <div class="col-sm-4">
-                                <div id="demo-dp-range">
-                                    <div class="input-daterange input-group" id="datepicker">
-                                        <input type="text" th:field="*{requestFromDate}" id="requestFromDate" placeholder="교육시작일" class="form-control" required="required">
-                                        <span th:if="${#fields.hasErrors('requestFromDate')}" th:errors="*{requestFromDate}"></span>
-                                        <span class="input-group-addon">to</span>
-                                        <input type="text" th:field="*{requestToDate}" id="requestToDate" placeholder="교육종료일" class="form-control" required="required">
-                                        <span th:if="${#fields.hasErrors('requestToDate')}" th:errors="*{requestToDate}"></span>
-                                    </div>
-                                </div>
+                            <label class="col-sm-2 control-label" for="mailList2">교육대상자</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" name="mailList2" id="mailList2" multiple="multiple">
+                                    <option th:each="courseAccount : ${course.getCourseAccountList()}" th:value="${courseAccount.getAccount().getUserId()}"  th:text="${courseAccount.getAccount().getName()}" selected="selected"></option>
+                                </select>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="mailList">교육대상자추가</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" name="mailList" id="mailList" multiple="multiple">
+                                    <option th:each="user : ${mailList}" th:value="${user.getUserId()}" th:text="${user.getName()}"></option>
+                                </select>
+                            </div>
+                            <div class="col-sm-1 pull-right">
+                                <a href="#" class="btn btn-primary" id="btnOrg">조직도</a>
+                            </div>
+                        </div>
+<!--                        <th:block th:unless="${course.getCourseMaster().getRequestType().equals('1')}">-->
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="title">신청기간</label>
+                                <div class="col-sm-4">
+                                    <div id="demo-dp-range">
+                                        <div class="input-daterange input-group" id="datepicker">
+                                            <input type="text" th:field="*{requestFromDate}" id="requestFromDate" placeholder="신청시작일" class="form-control" required="required">
+                                            <span th:if="${#fields.hasErrors('requestFromDate')}" th:errors="*{requestFromDate}"></span>
+                                            <span class="input-group-addon">to</span>
+                                            <input type="text" th:field="*{requestToDate}" id="requestToDate" placeholder="신청종료일" class="form-control" required="required">
+                                            <span th:if="${#fields.hasErrors('requestToDate')}" th:errors="*{requestToDate}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <label class="col-sm-2 control-label" for="title">교육기간</label>
+                                <div class="col-sm-4">
+                                    <div id="demo-dp-range2">
+                                        <div class="input-daterange input-group" id="datepicker2">
+                                            <input type="text" th:field="*{fromDate}" id="fromDate" placeholder="교육시작일" class="form-control" required="required">
+                                            <span th:if="${#fields.hasErrors('fromDate')}" th:errors="*{fromDate}"></span>
+                                            <span class="input-group-addon">to</span>
+                                            <input type="text" th:field="*{toDate}" id="toDate" placeholder="교육종료일" class="form-control" required="required">
+                                            <span th:if="${#fields.hasErrors('toDate')}" th:errors="*{toDate}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="amount">수강료</label>
+                                <div class="col-sm-4">
+                                    <input type="number" th:field="*{amount}" id="amount" placeholder="교육시간" class="form-control" required="required">
+                                </div>
+                                <span th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></span>
+                                <label class="col-sm-2 control-label" for="cnt">교육정원</label>
+                                <div class="col-sm-4">
+                                    <input type="text" th:field="*{cnt}" id="cnt" placeholder="교육정원" class="form-control" required="required">
+                                </div>
+                                <span th:if="${#fields.hasErrors('cnt')}" th:errors="*{cnt}"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="team">참석대상 부서/팀</label>
+                                <div class="col-sm-4">
+                                    <input type="text" th:field="*{team}" id="team" placeholder="부서/팀" class="form-control" required="required">
+                                </div>
+                                <span th:if="${#fields.hasErrors('team')}" th:errors="*{team}"></span>
+                                <label class="col-sm-2 control-label">교제제공여부</label>
+                                <div class="col-sm-4">
+                                    <select th:field="*{isBook}" class="form-control">
+                                        <option value="Y" >Y</option>
+                                        <option value="N" >N</option>
+                                    </select>
+                                </div>
+                            </div>
+<!--                        </th:block>-->
 
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="day">학습일수/시간</label>
@@ -83,48 +136,17 @@
                             </div>
                             <span th:if="${#fields.hasErrors('hour')}" th:errors="*{hour}"></span>
                             <label class="col-sm-2 control-label" for="day">교육장소</label>
-                            <div class="col-sm-2">
+                            <div class="col-sm-4">
                                 <input type="text" th:field="*{place}" id="place" placeholder="교육장소" class="form-control" required="required">
                             </div>
                             <span th:if="${#fields.hasErrors('place')}" th:errors="*{place}"></span>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="amount">수강료</label>
-                            <div class="col-sm-4">
-                                <input type="number" th:field="*{amount}" id="amount" placeholder="교육시간" class="form-control" required="required">
-                            </div>
-                            <span th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></span>
-                            <label class="col-sm-2 control-label" for="cnt">교육정원</label>
-                            <div class="col-sm-4">
-                                <input type="number" th:field="*{cnt}" id="cnt" placeholder="교육정원" class="form-control" required="required">
-                            </div>
-                            <span th:if="${#fields.hasErrors('cnt')}" th:errors="*{cnt}"></span>
-                        </div>
+
 
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" for="teacher">강사명</label>
-                            <div class="col-sm-4">
-                                <input type="text" th:field="*{teacher}" id="teacher" placeholder="강사명" class="form-control" required="required">
-                            </div>
-                            <span th:if="${#fields.hasErrors('teacher')}" th:errors="*{teacher}"></span>
-                            <label class="col-sm-2 control-label" for="team">참석대상 부서/팀</label>
-                            <div class="col-sm-4">
-                                <input type="text" th:field="*{team}" id="team" placeholder="부서/팀" class="form-control" required="required">
-                            </div>
-                            <span th:if="${#fields.hasErrors('team')}" th:errors="*{team}"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">교제제공여부</label>
-                            <div class="col-sm-4">
-                                <select th:field="*{isBook}" class="form-control">
-                                    <option value="Y" >Y</option>
-                                    <option value="N" >N</option>
-                                </select>
-                            </div>
                             <span th:if="${#fields.hasErrors('isQuiz')}" th:errors="*{isQuiz}"></span>
                             <label class="col-sm-2 control-label">시험진행여부</label>
-                            <div class="col-sm-4">
+                            <div class="col-sm-10">
                                 <select th:field="*{isQuiz}" class="form-control">
                                     <option value="Y" >Y</option>
                                     <option value="N" >N</option>
@@ -154,7 +176,7 @@
 
                         <div id="editSection"></div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" for="editor">내용</label>
+                            <label class="col-sm-2 control-label" for="editor">소개</label>
                             <div class="col-sm-10">
                                 <textarea class="form-control" th:field="*{content}" name="content" id="editor" style="width: 100%; height: 300px;" required></textarea>
                             </div>
@@ -320,6 +342,38 @@
             autoclose: true,
             todayHighlight: true
         });
+
+        $('#demo-dp-range2 .input-daterange').datepicker({
+            // format: "MM dd, yyyy",
+            format: "yyyy-mm-dd",
+            todayBtn: "linked",
+            autoclose: true,
+            todayHighlight: true
+        });
+
+        $('#mailList, #mailList2').chosen({width:'100%'});
+
+        $("#btnOrg").on("click", function() {
+            var url = "/admin/depart/treeView";
+            // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+            var popupX = (window.screen.width / 2) - (800 / 2);
+            // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
+            var popupY= (window.screen.height / 2) - (550 / 2);
+
+            var name = "조직도";
+            var option = "width = 800, height = 550, top = 100, left = 200, menubar=no,directories=no, location = no, scrollbars=no, resizable=no"
+            option += ", left=" + popupX + ", top=" + popupY;
+            window.open(url, name, option);
+        });
+
+        // 조직도에서 사용자 ID를 받아 온다(배열로 받아옴)
+        function selectMailList(selectOptionArray) {
+
+            // 싱글값 변경
+            // $('#select-id').val("22").trigger('chosen:updated');
+            // 여러값 변경시는 배열로 전달
+            $('#mailList').val(selectOptionArray).trigger('chosen:updated');
+        }
 
     </script>
 

@@ -1,5 +1,6 @@
 package com.dtnsm.lms.auth;
 
+import com.dtnsm.lms.auth.UserAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/plugins/**",
                         "/premium/**",
                         "/admin/**",
+                        "/mypage/**",
                         "/base/**",
                         "/photoFile/**",
                         "/file_uploader/**",
@@ -63,10 +65,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
     }
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+//    @Bean
+//    public BCryptPasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 
 //    @Bean
 //    public DaoAuthenticationProvider authenticationProvider() {

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <!--Dropzone [ OPTIONAL ]-->
+    <link th:href="@{/default/plugins/dropzone/dropzone.min.css}" rel="stylesheet">
+
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title"> <span th:text="${yearString}"></span></h3>
+                </div>
+                <div class="panel-body">
+                    <!--===================================================-->
+                    <!--End Horizontal Form-->
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/info/year/add-post}" th:object="${schedule}" method="post">
+                        <input type="hidden" th:field="*{id}" id="id" name="id">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="mailList">년도</label>
+                            <div class="col-sm-10">
+                                <select th:field="*{year}" class="form-control" name="mailList" id="mailList">
+                                    <option th:each="yy : ${yearList}" th:value="${yy}" th:text="${yy}"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="title">제목</label>
+                            <div class="col-sm-10">
+                                <input type="text" th:field="*{title}" id="title" placeholder="제목" class="form-control" required="required">
+                            </div>
+                            <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+                        </div>
+
+                        <div id="editSection"></div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="editor">내용</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" th:field="*{content}" name="content" id="editor" style="width: 100%; height: 300px;" required></textarea>
+                            </div>
+                            <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
+                        </div>
+
+
+                        <div class="panel-footer text-right">
+                            <button class="btn btn-primary" type="submit" id="submit-all">
+                                <i class="fa fa-upload-cloud"></i> 저장
+                            </button>
+                            <a th:href="@{/admin/info/year/list}" class="btn btn-success">
+                                <i class="fa fa-upload-cloud"></i> 목록
+                            </a>
+                        </div>
+                    </form>
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+
+</th:block>
+
+<th:block layout:fragment="custom_js">
+    <!--Dropzone [ OPTIONAL ]-->
+<!--    <script th:src="@{/default/plugins/dropzone/dropzone.js}"></script>-->
+
+
+    <script type="text/javascript" th:src="@{/editor/js/HuskyEZCreator.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/default/js/custom/border-editor.js}" charset="utf-8"></script>
+
+<!--    <script type="text/javascript" th:src="@{/default/js/custom/border-file.js}" charset="utf-8"></script>-->
+
+<!--    <script type="text/javascript" th:src="@{/default/js/custom/border-add.js}" charset="utf-8"></script>-->
+
+    <script>
+
+    </script>
+
+
+</th:block>
+
+</html>

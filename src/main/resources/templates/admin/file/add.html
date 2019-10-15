@@ -42,7 +42,7 @@
 
                     <!--Dropzonejs-->
                     <!--===================================================-->
-                    <form id="demo-dropzone" action="/base/file/add-post" class="dropzone">
+                    <form id="demo-dropzone" action="/admin/file/add-post" class="dropzone">
                         <div class="dz-default dz-message">
                             <div class="dz-icon">
                                 <i class="demo-pli-upload-to-cloud icon-5x"></i>
@@ -53,7 +53,7 @@
                             </div>
                         </div>
                         <div class="fallback">
-                            <input name="file" type="file" multiple>
+                            <input name="file" type="file"  accept="image/*">
                         </div>
                     </form>
                     <!--===================================================-->
@@ -119,13 +119,8 @@
                     </div>
                     <!--===================================================-->
                     <!--End Dropzonejs using Bootstrap theme-->
-
-
                 </div>
             </div>
-
-
-
         </div><!-- Page content End -->
     </div><!-- Content container End -->
 </th:block>
@@ -157,15 +152,10 @@
                     //  e.preventDefault();
                     //  e.stopPropagation();
                     //  myDropzone.processQueue();
-                    //
                     //}
                     //    );
-
                 }
-
             }
-
-
 
             // DROPZONE.JS WITH BOOTSTRAP'S THEME
             // =================================================================
@@ -181,7 +171,7 @@
             var uplodaBtn = $('#dz-upload-btn');
             var removeBtn = $('#dz-remove-btn');
             var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
-                url: "/base/file/multi-add-post", // Set the url
+                url: "/admin/file/multi-add-post", // Set the url
                 thumbnailWidth: 50,
                 thumbnailHeight: 50,
                 parallelUploads: 20,
@@ -211,7 +201,7 @@
             // Hide the total progress bar when nothing's uploading anymore
             myDropzone.on("queuecomplete", function(progress) {
                 document.querySelector("#dz-total-progress").style.opacity = "0";
-                location.href = "/base/file/list";
+                location.href = "/admin/file/list";
             });
 
             // Setup the buttons for all transfers

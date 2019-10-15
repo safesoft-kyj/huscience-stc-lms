@@ -1,7 +1,7 @@
 package com.dtnsm.lms.util;
 
-import com.dtnsm.lms.file.FileDownloadException;
-import com.dtnsm.lms.file.FileUploadProperties;
+import com.dtnsm.lms.exception.FileDownloadException;
+import com.dtnsm.lms.properties.FileUploadProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;

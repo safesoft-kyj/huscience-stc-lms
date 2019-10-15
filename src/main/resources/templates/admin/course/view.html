@@ -40,14 +40,12 @@
                         <tbody>
                         <colgroup><col width="15%" /><col width="35%" /><col width="15%" /><col width="35%" /></colgroup>
                         <tr>
-                            <th><span>*</span> 제목</th>
-                            <td th:text="${course.getTitle()}" colspan="3"></td>
+                            <th><span>*</span> 구분</th>
+                            <td th:text="${course.courseMaster.getCourseName()}" colspan="3"></td>
                         </tr>
                         <tr>
-                            <th><span>*</span> 등록일</th>
-                            <td th:text="${course.getCreatedDate()}"></td>
-                            <th><span>*</span> 조회수</th>
-                            <td th:text="${course.getViewCnt()}"></td>
+                            <th><span>*</span> 과정명</th>
+                            <td th:text="${course.getTitle()}" colspan="3"></td>
                         </tr>
                         <tr>
                             <th><span>*</span> 신청기간</th>
@@ -63,14 +61,14 @@
                         </tr>
                         <tr>
                             <th><span>*</span> 수강료</th>
-                            <td th:text="${course.getAmount()}"></td>
+                            <td th:text="${course.getAmount()}+'원'"></td>
                             <th><span>*</span> 교육정원</th>
-                            <td th:text="${course.getCnt()}"></td>
+                            <td th:text="${course.getCnt()}+'명'"></td>
                         </tr>
                         <tr>
-                            <th><span>*</span> 강사명</th>
-                            <td th:text="${course.getTeacher()}"></td>
-                            <th><span>*</span> 참석대상</th>
+                            <th><span>*</span> 교육필수대상자</th>
+                            <td ><span th:each="account : ${course.getCourseAccountList()}" th:text="${account.getAccount().getName() + ' '}"></span></td>
+                            <th><span>*</span> 참석대상부서</th>
                             <td th:text="${course.getTeam()}"></td>
                         </tr>
                         <tr>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+
+<nav style="text-align: center;" th:fragment="pagenation">
+    <ul class="pagination"
+        th:with="start=${T(Math).floor(borders.number/10)*10 + 1},
+                last=(${start + 9 < borders.totalPages ? start + 9 : borders.totalPages})">
+        <li>
+            <a th:href="@{/info/request(page=1)}" aria-label="First">
+                <span aria-hidden="true">First</span>
+            </a>
+        </li>
+
+        <li th:class="${borders.first} ? 'disabled'">
+            <a th:href="${borders.first} ? '#' :@{/info/request(page=${borders.number})}" aria-label="Previous">
+                <span aria-hidden="true">&lt;</span>
+            </a>
+        </li>
+
+        <li th:each="page: ${#numbers.sequence(start, last)}" th:class="${page == borders.number + 1} ? 'active'">
+            <a th:text="${page}" th:href="@{/info/request(page=${page})}"></a>
+        </li>
+
+        <li th:class="${borders.last} ? 'disabled'">
+            <a th:href="${borders.last} ? '#' : @{/info/request(page=${borders.number + 2})}" aria-label="Next">
+                <span aria-hidden="true">&gt;</span>
+            </a>
+        </li>
+
+        <li>
+            <a th:href="@{/info/request(page=${borders.totalPages})}" aria-label="Last">
+                <span aria-hidden="true">Last</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+</html>

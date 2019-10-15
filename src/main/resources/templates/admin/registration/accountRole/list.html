@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title">
+
+            <!--JSTree [ OPTIONAL ]-->
+<!--            <link th:href="@{/default/plugins/jstree/themes/default/style.min.css}" rel="stylesheet">-->
+
+
+
+        </div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title"></h3>
+                </div>
+                <div class="panel-body">
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div th:switch="${accounts}">
+                                <h2 th:case="null">No customer yet!</h2>
+                                <div th:case="*">
+                                    <h2></h2>
+                                    <table class="table table-striped table-bordered" cellspacing="0" width="100%">
+                                        <thead>
+                                        <tr>
+                                            <th>사원ID</th>
+                                            <th>사원명</th>
+                                            <th>메일</th>
+                                            <th>사용유무</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="account : ${accounts}">
+                                            <td th:text="${account.getUserId()}"></td>
+                                            <td th:text="${account.getName()}"></td>
+                                            <td th:text="${account.getEmail()}"></td>
+                                            <td th:text="${account.getEnabled() ? 'Yes' : 'No'}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <p><a href="/admin/code/major-add">Add a new Major Code</a></p>
+
+                            </div><!--switch End -->
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div th:switch="${accounts}">
+                                <h2 th:case="null">No customer yet!</h2>
+                                <div th:case="*">
+                                    <h2></h2>
+                                    <table class="table table-striped table-bordered" cellspacing="0" width="100%">
+                                        <thead>
+                                        <tr>
+                                            <th>사원ID</th>
+                                            <th>사원명</th>
+                                            <th>메일</th>
+                                            <th>사용유무</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="account : ${accounts}">
+                                            <td th:text="${account.getUserId()}"></td>
+                                            <td th:text="${account.getName()}"></td>
+                                            <td th:text="${account.getEmail()}"></td>
+                                            <td th:text="${account.getEnabled() ? 'Yes' : 'No'}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <p><a href="/admin/code/major-add">Add a new Major Code</a></p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+
+    <!--DataTables Sample [ SAMPLE ]-->
+    <script th:src="@{/default/js/demo/tables-datatables.js}"></script>
+
+    <!--DataTables Sample [ SAMPLE ]-->
+
+    <!--    <script th:src="@{/js/custom/major-list.js}"></script>-->
+
+    <!--JSTree [ OPTIONAL ]-->
+<!--    <script th:src="@{/default/plugins/jstree/jstree.min.js}"></script>-->
+
+
+
+
+    <script>
+
+
+        // $('#data').jstree({
+        //     "plugins": ["themes","checkbox","ui"]
+        //     "core":{
+        //         "themes": {
+        //             "name":"default",
+        //             "variant":"medium",
+        //             "responsive":false
+        //         }
+        //     }
+        // });
+
+    </script>
+</th:block>
+
+</html>
+
+
+

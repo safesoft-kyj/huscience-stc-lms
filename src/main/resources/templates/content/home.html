@@ -10,6 +10,24 @@
 </th:block>
 
 <th:block layout:fragment="custom_css">
+
+    <!--Bootstrap Stylesheet [ REQUIRED ]-->
+    <link rel="stylesheet" th:href="@{/default/plugins/jquery-ui/jquery-ui.min.css}" />
+
+    <!--Themify Icons [ OPTIONAL ]-->
+<!--    <link th:href="@{/default/plugins/multiple-picker/jquery-ui.multidatespicker.css}" rel="stylesheet">-->
+
+    <link rel="stylesheet" type="text/css" th:href="@{/default/plugins/multiple-picker/mdp.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/default/plugins/multiple-picker/prettify.css}">
+
+        <style type="text/css">
+            body {
+                /*font-size: x-small !important;*/
+                /*height: 600px;                /*font-size: x-small !important;*/
+                /*height: 600px;                /*font-size: x-small !important;*/
+                /*height: 600px;*/
+            }
+        </style>
 </th:block>
 
 <th:block layout:fragment="content_body">
@@ -20,47 +38,250 @@
     <!--===================================================-->
     <div id="content-container">
 
-        <div id="page-head">
-
-            <!--Page Title-->
-            <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-            <div id="page-title">
-                <h1 class="page-header text-overflow">Data Tables</h1>
-            </div>
-            <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-            <!--End page title-->
-
-            <!--Breadcrumb-->
-            <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-            <ol class="breadcrumb">
-                <li><a href="#"><i class="demo-pli-home"></i></a></li>
-                <li><a href="#">Tables</a></li>
-                <li class="active">Data Tables</li>
-            </ol>
-            <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-            <!--End breadcrumb-->
-
-        </div>
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
 
         <!--Page content-->
+
         <!--===================================================-->
         <div id="page-content">
 
-            <!-- Basic Data Tables -->
-            <!--===================================================-->
-            <div class="panel">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Basic Data Tables with responsive plugin</h3>
-                </div>
-                <div class="panel-body">
+            <div class="row">
+                <div class="eq-height">
+                    <div class="col-sm-6 col-lg-3 eq-box-lg">
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">공지사항</h3>
+                            </div>
+                            <hr>
+                            <div class="panel-body">
+                                <div class="pad-rgt">
+                                    <p class="text-semibold text-uppercase text-main text-right"><a href="/border/list/BA0101">공지사항 보러가기></a></p>
+                                </div>
+                                <div th:switch="${borders}">
+                                    <h2 th:case="null">No customer yet!</h2>
+                                    <div th:case="*">
+                                        <table id="customer-list-page" class="table table-striped" cellspacing="0" width="100%">
+                                            <thead>
+                                            <tr>
+                                                <th class="text-center col-sm-1">번호</th>
+                                                <th class="text-center">제목</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="border, index : ${borders}">
+                                                <td th:text="${index.count}" class="text-center"></td>
+                                                <td><a th:href="@{/border/view/{id}(id=${border.getId()})}" th:text="${border.getTitle()}">Edit</a></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div><!--switch End -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3 eq-box-lg">
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">일정</h3>
+                            </div>
+                            <hr>
+                            <div class="panel-body">
+                                <div class="pad-rgt">
+                                    <p class="text-semibold text-uppercase text-main text-right"><a href="/info/month">월간일정 보러가기></a></p>
+                                </div>
 
-                </div><!--panel-body End -->
-            </div><!-- panel End -->
+                                <div class="row">
+                                    <div class="col-sm-5 text-center">
+                                        <div id="custom-date-format"></div>
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <div id="dayList" class="text-left"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="eq-height">
+                    <div class="col-sm-6 col-lg-3 eq-box-lg">
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">알림사항</h3>
+                            </div>
+                            <hr>
+
+
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3 eq-box-lg">
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">교육결재조회</h3>
+                            </div>
+                            <hr>
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="eq-height">
+                    <div class="col-sm-6 col-lg-3 eq-box-lg">
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">협약기관</h3>
+                            </div>
+                            <hr>
+                            <div class="panel-body">
+                                <div th:switch="${customers}">
+                                    <h2 th:case="null">No customer yet!</h2>
+                                    <div th:case="*">
+                                        <table id="customer-list-page1" class="table table-striped" cellspacing="0" width="100%">
+                                            <thead>
+                                            <tr>
+                                                <th class="text-center col-sm-8">협약기관명</th>
+                                                <th class="text-center col-sm-4">홈페이지</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="customer, index : ${customers}">
+                                                <td><a th:href="@{/customer/view/{id}(id=${customer.getId()})}" th:text="${customer.getName()}">Edit</a></td>
+                                                <td class="text-center"><a th:href="${customer.homepage}" target="_blank"><span th:text="${'바로가기'}"></span></a></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div><!--switch End -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3 eq-box-lg">
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Employee training Matrix</h3>
+                            </div>
+                            <hr>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
         </div><!-- Page content End -->
     </div><!-- Content container End -->
 </th:block>
 
 <th:block layout:fragment="custom_js">
+
+    <!--jQuery [ REQUIRED ]-->
+<!--    <script th:src="@{/default/plugins/jquery-ui/jquery-ui.min.js}"></script>-->
+
+    <script th:src="@{/default/plugins/multiple-picker/jquery-1.7.2.js}"></script>
+    <script th:src="@{/default/plugins/jquery-ui/jquery.ui.core.js}"></script>
+    <script th:src="@{/default/plugins/jquery-ui/jquery.ui.datepicker.js}"></script>
+
+    <!--        &lt;!&ndash;Bootstrap Timepicker [ OPTIONAL ]&ndash;&gt;-->
+    <script th:src="@{/default/plugins/multiple-picker/jquery-ui.multidatespicker.js}"></script>
+    <script type="text/javascript" th:src="@{/default/plugins/multiple-picker/prettify.js}"></script>
+    <script type="text/javascript" th:src="@{/default/plugins/multiple-picker/lang-css.js}"></script>
+
+    <script>
+
+        $(document).ready(function() {
+
+            var nowDate = new Date();
+
+            var startDateTime = new Date(nowDate.getFullYear(), nowDate.getMonth(), 1);
+            var endDateTime = new Date(nowDate.getFullYear(), nowDate.getMonth()+1, 0);
+
+            setData(startDateTime, endDateTime);
+
+            $('#custom-date-format').multiDatesPicker({
+                // dateFormat: "yyyy-mm-dd",
+                defaultDate: new Date(),
+                //addDates: data,
+                // numberOfMonths: [2,2],
+                onChangeMonthYear: function (year, month, inst) {
+                    startDateTime = new Date(year, month-1, 1);
+                    endDateTime = new Date(startDateTime.getFullYear(), startDateTime.getMonth()+1, 0);
+
+                    setData(startDateTime, endDateTime);
+                },
+                beforeShow: function (input, inst) {
+                    alert("before");
+                },
+                onSelect: function (dateText, inst) {
+                    $('#custom-date-format').multiDatesPicker('removeDates',  $('#custom-date-format').multiDatesPicker('getDates'));
+                    setData(startDateTime, endDateTime);
+
+                    $.ajax({
+                        url: "/info/api/home/calendarData", // 클라이언트가 요청을 보낼 서버의 URL 주소
+                        data: {start: dateText},                // HTTP 요청과 함께 서버로 보낼 데이터
+                        type: "GET",                             // HTTP 요청 방식(GET, POST)
+                        dataType: "json",                         // 서버에서 보내줄 데이터의 타입
+                        success: function (data) {
+
+                            var html="";
+                            for(var i=0; i<data.length; i++) {
+                                html += data[i];
+                            }
+
+                            $('#dayList').val("");
+                            $('#dayList').html(html);
+                        },
+                        error: function (request, status, error) {
+                            alert('error');
+                        }
+                    });
+                }
+            });
+
+            function setData(startDatetime, endDateTime) {
+                var startDate = getFormatDate(startDatetime);
+                var endDate = getFormatDate(endDateTime);
+
+                $.ajax({
+                    url: "/info/api/home/calendar", // 클라이언트가 요청을 보낼 서버의 URL 주소
+                    data: {start: startDate, end: endDate},                // HTTP 요청과 함께 서버로 보낼 데이터
+                    type: "GET",                             // HTTP 요청 방식(GET, POST)
+                    dataType: "json",                         // 서버에서 보내줄 데이터의 타입
+                    success: function (data) {
+
+                        if(data.length != 0) {
+                            $('#custom-date-format').multiDatesPicker('addDates', data);
+                        }
+                    },
+                    error: function (request, status, error) {
+                        alert('error');
+                    }
+                });
+            }
+
+            /** * yyyyMMdd 포맷으로 반환 */
+            function getFormatDate(date){
+
+                //alert("포맷:" + date);
+                var year = date.getFullYear(); //yyyy
+                var month = (date.getMonth()+1); //M
+                month = month >= 10 ? month : '0' + month; //month 두자리로 저장
+                var day = date.getDate(); //d
+                day = day >= 10 ? day : '0' + day; //day 두자리로 저장
+                return year + '-' + month + '-' + day;
+            }
+        });
+
+    </script>
+
 </th:block>
 
 </html>
+
+

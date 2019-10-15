@@ -1,6 +1,7 @@
 package com.dtnsm.lms;
 
-import com.dtnsm.lms.file.FileUploadProperties;
+import com.dtnsm.lms.properties.FileUploadProperties;
+import com.dtnsm.lms.properties.ImageUploadProperties;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -15,7 +16,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import javax.sql.DataSource;
 
 @SpringBootApplication
-@EnableConfigurationProperties(FileUploadProperties.class)
+@EnableConfigurationProperties({FileUploadProperties.class, ImageUploadProperties.class})
 @MapperScan(value={"com.dtnsm.lms.mybatis.mapper"})
 public class LmsApplication {
 

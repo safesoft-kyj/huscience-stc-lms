@@ -10,6 +10,8 @@
 </th:block>
 
 <th:block layout:fragment="custom_css">
+    <link th:href="@{/default/plugins/fullcalendar/fullcalendar.min.css}" rel="stylesheet">
+    <link th:href="@{/default/plugins/fullcalendar/nifty-skin/fullcalendar-nifty.min.css}" rel="stylesheet">
 </th:block>
 
 <th:block layout:fragment="content_body">
@@ -27,22 +29,110 @@
         <!--Page content-->
         <!--===================================================-->
         <div id="page-content">
-
-            <!-- Basic Data Tables -->
+            <!-- Basic Data -->
             <!--===================================================-->
             <div class="panel">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Basic Data Tables with responsive plugin</h3>
+                    <h3></h3>
                 </div>
                 <div class="panel-body">
-                    <p th:text="${pageInfo.getPageTitle()}"></p>
-                </div><!--panel-body End -->
-            </div><!-- panel End -->
+                    <div class="fixed-fluid">
+<!--                        <div class="fixed-sm-150 pull-sm-left fixed-right-border">-->
+
+                        <div class="fixed-sm-150 pull-sm-left">
+                            <!-- Draggable Events -->
+                            <!-- ============================================ -->
+                            <p class="text-muted text-sm text-uppercase"></p>
+
+                            <div id="demo-external-events">
+                                <p class="text-muted text-sm text-uppercase">일자선택</p>
+                                <a href="#" th:href="@{/info/requestMonth}" class="fc-event fc-list" data-class="success">신청일 보기</a>
+                                <a href="#" th:href="@{/info/month}"  class="fc-event fc-list" data-class="success">교육일 보기</a>
+                                <hr>
+                                <p class="text-muted text-sm text-uppercase">Training</p>
+                                <hr>
+                                <div class="fc-event" data-class="warning">Self-training</div>
+                                <div class="fc-event" data-class="success">Class training</div>
+                                <div class="fc-event" data-class="mint">부서별교육</div>
+                                <div class="fc-event" data-class="purple">외부교육</div>
+                            </div>
+<!--                            <hr>-->
+                            <!-- ============================================ -->
+                        </div>
+                        <div class="fluid">
+                            <!-- Calendar placeholder-->
+                            <!-- ============================================ -->
+                            <div id='calendar'></div>
+                            <!-- ============================================ -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div><!-- Page content End -->
     </div><!-- Content container End -->
 </th:block>
 
 <th:block layout:fragment="custom_js">
+    <!--Full Calendar [ OPTIONAL ]-->
+    <script th:src="@{/default/plugins/fullcalendar/lib/moment.min.js}"></script>
+    <script th:src="@{/default/plugins/fullcalendar/lib/jquery-ui.custom.min.js}"></script>
+    <script th:src="@{/default/plugins/fullcalendar/fullcalendar.min.js}"></script>
+
+    <!--Full Calendar [ SAMPLE ]-->
+    <script>
+
+        $(document).on('nifty.ready', function() {
+
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'today, prevYear, nextYear, viewWeekends',
+                    center: 'prev, title, next',
+                    right: 'month,agendaWeek,agendaDay,listWeek'
+                },
+                views: {
+                    month: {
+                        columnFormat: 'dddd'
+                    },
+                    agendaWeek: {
+                        columnFormat: 'M/D ddd',
+                        titleFormat: 'YYYY년 M월 D일',
+                        eventLimit: false
+                    },
+                    agendaDay: {
+                        columnFormat: 'dddd',
+                        eventLimit: false
+                    },
+                    listWeek: {
+                        columnFormat: ''
+                    }
+                },
+                // monthNames: ["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"],
+                // monthNamesShort: ["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"],
+                editable: true,
+                //locale: 'ko',
+                droppable: true, // this allows things to be dropped onto the calendar
+                 // eventLimit: true,
+                 // minTime: '10:00:00',
+                 // maxTime: '24:00:00',
+                // timeFormat: 'H(:mm)',
+                allDayDefault: true,
+                drop: function() {
+                    // is the "remove after drop" checkbox checked?
+                    if ($('#drop-remove').is(':checked')) {
+                        // if so, remove the element from the "Draggable Events" list
+                        $(this).remove();
+                    }
+                },
+               // defaultDate: '2019-10-08',
+                //eventLimit: true, // allow "more" link when too many events
+                events: {
+                    url : "/info/api/month/calendar"
+                }
+            });
+        });
+
+    </script>
 </th:block>
 
 </html>

@@ -51,8 +51,9 @@
                                 <thead>
                                 <tr>
                                     <th class="text-center col-sm-1">번호</th>
-                                    <th class="text-center">유형ID</th>
-                                    <th class="text-center">유형명</th>
+                                    <th class="text-center">ID</th>
+                                    <th class="text-center">교육유형명</th>
+                                    <th class="text-center">신청일자유형</th>
                                     <th class="text-center col-sm-1">Edit</th>
                                     <th class="text-center col-sm-1">Delete</th>
                                 </tr>
@@ -62,6 +63,17 @@
                                     <td th:text="${index.count}" class="text-center"></td>
                                     <td th:text="${border.getId()}"></td>
                                     <td th:text="${border.getCourseName()}"></td>
+                                    <td>
+                                        <select class="form-control" id="course-type" disabled>
+                                            <option th:each="minor, index : ${codeList}" th:value="${minor.getMinorCd()}"
+                                                    th:text="${minor.getMinorNm()}" th:selected="${ minor.getMinorCd().equals(border.getRequestType()) }"></option>
+                                        </select>
+                                    </td>
+
+<!--                                    <td th:switch="${border.getRequestType()}" class="text-center">-->
+<!--                                        <span th:case="1">상시</span>-->
+<!--                                        <span th:case="2">기간</span>-->
+<!--                                    </td>-->
                                     <td class="text-center"><a th:href="@{/admin/course-master/edit/{id}(id=${border.getId()})}">Edit</a></td>
                                     <td class="text-center"><a th:href="@{/admin/course-master/delete/{id}(id=${border.getId()})}">Delete</a></td>
                                 </tr>
@@ -78,6 +90,8 @@
 </th:block>
 
 <th:block layout:fragment="custom_js">
+    <!--DataTables Sample [ SAMPLE ]-->
+    <script th:src="@{/default/js/demo/tables-datatables.js}"></script>
 </th:block>
 
 </html>

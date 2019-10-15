@@ -33,19 +33,27 @@
             <!--===================================================-->
             <div class="panel">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Basic Data Tables with responsive plugin</h3>
+                    <h3 class="panel-title"></h3>
                 </div>
                 <div class="panel-body">
+                    <div>
+                        <div class="col-sm-6">
+                            총 <span th:text="${fileList.size() + '건'}" class="text-danger"></span>의 게시물이 등록되어 있습니다.
+                        </div>
+                        <div class="col-sm-6 text-right">
+                            <p><a th:href="@{/admin/file/add}" class="btn btn-success">Add new</a></p>
+                        </div>
+                    </div>
                     <div th:switch="${fileList}">
                         <h2 th:case="null">No customer yet!</h2>
                         <div th:case="*">
-                            <h2>Users</h2>
                             <table id="demo-dt-basic" class="table table-striped table-bordered" cellspacing="0" width="100%">
                                 <thead>
                                 <tr>
                                     <th>파일명</th>
                                     <th class="min-tablet">파일형식</th>
                                     <th class="min-desktop">사이즈</th>
+                                    <th class="text-center col-sm-1">Delete</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -53,11 +61,11 @@
                                     <td th:text="${uploadFile.getFileName()}"></td>
                                     <td th:text="${uploadFile.getMimeType()}"></td>
                                     <td th:text="${uploadFile.getSize()}"></td>
+                                    <td class="text-center"><a th:href="@{/admin/file/delete/{id}(id=${uploadFile.getId()})}">Delete</a></td>
                                 </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <p><a th:href="@{/base/file/add}">Add a new customer</a></p>
                     </div><!--switch End -->
                 </div><!--panel-body End -->
             </div><!-- panel End -->
@@ -66,7 +74,8 @@
 </th:block>
 
 <th:block layout:fragment="custom_js">
-
+    <!--DataTables Sample [ SAMPLE ]-->
+    <script th:src="@{/default/js/demo/tables-datatables.js}"></script>
 </th:block>
 
 </html>

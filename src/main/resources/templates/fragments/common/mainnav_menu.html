@@ -5,6 +5,86 @@
 
 <ul id="mainnav-menu" class="list-group" th:fragment="menu">
 
+    <div sec:authorize="hasRole('ROLE_OTHER')">
+
+        <!--Category name-->
+        <li class="list-header">Other Menu</li>
+
+        <!--Menu list item-->
+        <li>
+            <a href="#">
+                <i class="demo-pli-split-vertical-2"></i>
+                <span class="menu-title">교육안내</span>
+                <i class="arrow"></i>
+            </a>
+
+            <!--Submenu-->
+            <ul class="collapse">
+                <li><a data-th-href="@{/info/month}">교육월간일정</a></li>
+                <li><a data-th-href="@{/info/year}">교육연간일정</a></li>
+                <li class="list-divider"></li>
+                <li><a data-th-href="@{/info/request}">교육신청</a></li>
+
+            </ul>
+        </li>
+
+        <!--Menu list item-->
+        <li>
+            <a href="#">
+                <i class="demo-pli-split-vertical-2"></i>
+                <span class="menu-title">학습지원</span>
+                <i class="arrow"></i>
+            </a>
+
+            <!--Submenu-->
+            <ul class="collapse">
+                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0101')}">공지사항</a></li>
+                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0102')}">법규/가이드라인</a></li>
+                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0103')}">자료실</a></li>
+            </ul>
+        </li>
+
+        <!--Menu list item-->
+        <li>
+            <a href="#">
+                <i class="demo-pli-split-vertical-2"></i>
+                <span class="menu-title">Digital Binder</span>
+                <i class="arrow"></i>
+            </a>
+
+            <!--Submenu-->
+            <ul class="collapse">
+                <li><a data-th-href="@{/binder/cv}">CV</a></li>
+                <li><a data-th-href="@{/binder/jd}">JD</a></li>
+                <li><a data-th-href="@{/binder/tmlog}">Employee Training Log(TM)</a></li>
+                <li><a data-th-href="@{/binder/soplog}">Employee Training Log(eSOP)</a></li>
+                <li><a data-th-href="@{/binder/certi}">Certificates</a></li>
+
+            </ul>
+        </li>
+
+        <!--Menu list item-->
+        <li>
+            <a href="#">
+                <i class="demo-pli-split-vertical-2"></i>
+                <span class="menu-title">마이페이지</span>
+                <i class="arrow"></i>
+            </a>
+
+            <!--Submenu-->
+            <ul class="collapse">
+                <li><a data-th-href="@{/mypage/main}">메인</a></li>
+                <li><a data-th-href="@{/mypage/quiz}">시험/시험결과/수료증발급</a></li>
+                <li><a data-th-href="@{/mypage/approval}">교육결재조회</a></li>
+                <li><a data-th-href="@{/mypage/myinfo}">사용자정보</a></li>
+
+            </ul>
+        </li>
+
+        <li class="list-divider"></li>
+
+    </div>
+
     <div sec:authorize="hasRole('ROLE_USER')">
 
         <!--Category name-->
@@ -81,28 +161,104 @@
             </ul>
         </li>
 
+        <li class="list-divider"></li>
+
     </div>
 
     <!--  ROLE_ADMIN  관리자만 보이게 -->
-    <div sec:authorize="hasRole('ROLE_ADMIN')">
-
-        <li class="list-divider"></li>
+    <div sec:authorize="hasRole('ROLE_MANAGER')">
 
         <!--Category name-->
         <li class="list-header">Manager Menu</li>
 
-        <!--Menu list item-->
         <li>
             <a href="#">
                 <i class="demo-pli-boot-2"></i>
-                <span class="menu-title">코드관리</span>
+                <span class="menu-title">교육과정</span>
                 <i class="arrow"></i>
             </a>
 
             <!--Submenu-->
             <ul class="collapse">
-                <li><a data-th-href="@{/admin/code/major-list}">Major Code 조회</a></li>
-                <li><a data-th-href="@{/admin/code/minor-list}">Minor Code 조회</a></li>
+
+                <li><a href="#" data-th-href="@{/admin/course/list/{typeId}(typeId='BC0101')}">Self교육</a></li>
+                <li><a href="#" data-th-href="@{/admin/course/list/{typeId}(typeId='BC0102')}">Class교육</a></li>
+                <li><a href="#" data-th-href="@{/admin/course/list/{typeId}(typeId='BC0103')}">부서교육</a></li>
+                <li><a href="#" data-th-href="@{/admin/course/list/{typeId}(typeId='BC0104')}">외부교육</a></li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="#">
+                <i class="demo-pli-boot-2"></i>
+                <span class="menu-title">자료등록</span>
+                <i class="arrow"></i>
+            </a>
+
+            <!--Submenu-->
+            <ul class="collapse">
+
+                <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0101')}">공지사항</a></li>
+                <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0102')}">법규/가이드라인</a></li>
+                <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0103')}">자료실</a></li>
+                <li><a href="#" data-th-href="@{/admin/customer/list}">협약기관관리</a></li>
+                <li><a href="#" data-th-href="@{/admin/info/year/list}">연간일정등록</a></li>
+            </ul>
+        </li>
+
+        <li class="list-divider"></li>
+
+    </div>
+    <!--  ROLE_ADMIN  관리자만 보이게 -->
+    <div sec:authorize="hasRole('ROLE_ADMIN')">
+        <!--Category name-->
+        <li class="list-header">Admin Menu</li>
+
+        <li>
+            <a href="#">
+                <i class="demo-pli-boot-2"></i>
+                <span class="menu-title">파일관리</span>
+                <i class="arrow"></i>
+            </a>
+
+            <!--Submenu-->
+            <ul class="collapse">
+                <li><a data-th-href="@{/admin/file/list}">파일등록</a></li>
+            </ul>
+        </li>
+
+        <!--Menu list item-->
+        <li>
+            <a href="#">
+                <i class="demo-pli-boot-2"></i>
+                <span class="menu-title">기준정보등록</span>
+                <i class="arrow"></i>
+            </a>
+
+            <!--Submenu-->
+            <ul class="collapse">
+                <li><a data-th-href="@{/admin/code/major-list}">Major Code</a></li>
+                <li><a data-th-href="@{/admin/code/minor-list}">Minor Code</a></li>
+                <li><a href="#" data-th-href="@{/admin/course-master/list}">교육유형등록</a></li>
+                <li><a href="#" data-th-href="@{/admin/border-master/list}">게시판등록</a></li>
+
+
+            </ul>
+        </li>
+
+        <li>
+            <a href="#">
+                <i class="demo-pli-boot-2"></i>
+                <span class="menu-title">사용자관리</span>
+                <i class="arrow"></i>
+            </a>
+
+            <!--Submenu-->
+            <ul class="collapse">
+                <li><a href="#" data-th-href="@{/admin/registration/account/list}">사용자관리</a></li>
+                <li><a href="#" data-th-href="@{/admin/registration/role/list}">Role관리</a></li>
+<!--                <li><a href="#" data-th-href="@{/admin/registration/accountRole/list}">사용자별Role관리</a></li>-->
+
             </ul>
         </li>
 
@@ -115,52 +271,11 @@
 
             <!--Submenu-->
             <ul class="collapse">
-                <li><a href="#" data-th-href="@{/admin/depart/treeView}">조직도</a></li>
+<!--                <li><a href="#" data-th-href="@{/admin/depart/treeView}">조직도</a></li>-->
                 <li><a href="#" data-th-href="@{/admin/depart/list}">부서조회</a></li>
                 <li><a href="#" data-th-href="@{/admin/user/list}">사원조회</a></li>
-                <li><a href="#" data-th-href="@{/admin/customer/list}">협약기관관리</a></li>
             </ul>
         </li>
-
-        <li>
-            <a href="#">
-                <i class="demo-pli-boot-2"></i>
-                <span class="menu-title">교육과정</span>
-                <i class="arrow"></i>
-            </a>
-
-            <!--Submenu-->
-            <ul class="collapse">
-                <li><a href="#" data-th-href="@{/admin/course-master/list}">교육과정유형</a></li>
-                <li><a href="#" data-th-href="@{/admin/course/list/{typeId}(typeId='BC0101')}">Self교육</a></li>
-                <li><a href="#" data-th-href="@{/admin/course/list/{typeId}(typeId='BC0102')}">Class교육</a></li>
-                <li><a href="#" data-th-href="@{/admin/course/list/{typeId}(typeId='BC0103')}">부서교육</a></li>
-                <li><a href="#" data-th-href="@{/admin/course/list/{typeId}(typeId='BC0104')}">외부교육</a></li>
-            </ul>
-        </li>
-
-        <li class="list-divider"></li>
-
-        <li>
-            <a href="#">
-                <i class="demo-pli-boot-2"></i>
-                <span class="menu-title">게시판관리</span>
-                <i class="arrow"></i>
-            </a>
-
-            <!--Submenu-->
-            <ul class="collapse">
-                <li><a href="#" data-th-href="@{/admin/border-master/list}">게시판등록</a></li>
-                <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0101')}">공지사항</a></li>
-                <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0102')}">법규/가이드라인</a></li>
-                <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0103')}">자료실</a></li>
-            </ul>
-        </li>
-
-        <!--Category name-->
-        <li class="list-header">Admin Menu</li>
-
-
 
         <li class="list-divider"></li>
 

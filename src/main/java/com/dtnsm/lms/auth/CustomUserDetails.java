@@ -1,6 +1,7 @@
 package com.dtnsm.lms.auth;
 
 
+import com.dtnsm.lms.domain.Account;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;

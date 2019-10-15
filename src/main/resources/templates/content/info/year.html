@@ -3,13 +3,14 @@
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      v
+      layout:decorate="~{layout/default_layout}">
 
 <th:block layout:fragment="html_head">
     <title>TachyonTech Info</title>
 </th:block>
 
 <th:block layout:fragment="custom_css">
+
 </th:block>
 
 <th:block layout:fragment="content_body">
@@ -26,16 +27,33 @@
 
         <!--Page content-->
         <!--===================================================-->
-        <div id="page-content">
+        <div id="page-content" style="margin-bottom:0">
 
             <!-- Basic Data Tables -->
             <!--===================================================-->
             <div class="panel">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Basic Data Tables with responsive plugin</h3>
+                    <h3 class="panel-title" th:text="${border.getYear()+'년'}"></h3>
                 </div>
                 <div class="panel-body">
-                    <p th:text="${pageInfo.getPageTitle()}"></p>
+                    <form class="form-horizontal" id="boardFrm"  name="boardFrm" th:action="@{/info/year}"  method="get">
+                        <input type="hidden" value=""/>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="year">년도</label>
+                            <div class="col-sm-10">
+                                <select name="year" class="form-control"  id="year" onchange="form_submit();">
+                                    <option th:each="yy : ${yearList}" th:value="${yy}" th:text="${yy}"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                    <table class="table table-striped table-bordered" cellspacing="0" width="100%">
+                        <tr style="height:400px;">
+                            <td th:utext="${border.getContent()}" style="height:400px; vertical-align:top;">
+                                <div th:utext="${border.getContent()}" style="overflow: hidden;"></div>
+                            </td>
+                        </tr>
+                    </table>
                 </div><!--panel-body End -->
             </div><!-- panel End -->
         </div><!-- Page content End -->
@@ -43,6 +61,15 @@
 </th:block>
 
 <th:block layout:fragment="custom_js">
+
+    <script>
+        function form_submit() {
+
+            $('#boardFrm').submit();
+        }
+    </script>
 </th:block>
 
 </html>
+
+

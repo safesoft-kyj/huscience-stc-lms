@@ -36,7 +36,7 @@
                     <h3 class="panel-title">Basic Data Tables with responsive plugin</h3>
                 </div>
                 <div class="panel-body">
-                    <div th:switch="${elCustomers}">
+                    <div th:switch="${customers}">
                         <h2 th:case="null">No customer yet!</h2>
                         <div th:case="*">
                             <h2>Users</h2>
@@ -45,7 +45,7 @@
                                 <tr>
                                     <th>협약기관명</th>
                                     <th>협약체결일자</th>
-                                    <th>협약조건</th>
+                                    <th>협약 특혜</th>
                                     <th>홈페이지</th>
                                     <th>등록자</th>
                                     <th>등록일</th>
@@ -54,13 +54,13 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="elCustomer : ${elCustomers}">
-                                    <td th:text="${elCustomer.getName()}"></td>
-                                    <td th:text="${elCustomer.getCondate()}"></td>
-                                    <td th:text="${elCustomer.getCondate()}"></td>
-                                    <td th:text="${elCustomer.getCreatedBy()}"></td>
-                                    <td th:text="${elCustomer.getCreatedDate()} ? ${#dates.format(elCustomer.getCreatedDate(), 'yyyy/MM/dd HH:mm')} : ${elCustomer.getCreatedDate()}"></td>
-                                    <td><a th:href="${elCustomer.homepage}" target="_blank"><span th:text="${elCustomer.homepage}"></span></a></td>
+                                <tr th:each="customer : ${customers}">
+                                    <td th:text="${customer.getName()}"></td>
+                                    <td th:text="${customer.getCondate()}"></td>
+                                    <td th:text="${customer.getCondate()}"></td>
+                                    <td th:text="${customer.getCreatedBy()}"></td>
+                                    <td th:text="${customer.getCreatedDate()} ? ${#dates.format(customer.getCreatedDate(), 'yyyy/MM/dd HH:mm')} : ${customer.getCreatedDate()}"></td>
+                                    <td><a th:href="${customer.homepage}" target="_blank"><span th:text="${customer.homepage}"></span></a></td>
                                     <td><a th:href="@{/customer/edit/{id}(id=${elCustomer.getId()})}">Edit</a></td>
                                     <td><a th:href="@{/customer/delete/{id}(id=${elCustomer.getId()})}">Delete</a></td>
                                 </tr>
@@ -68,31 +68,31 @@
                             </table>
                             <nav style="text-align: center;">
                                 <ul class="pagination"
-                                    th:with="start=${T(Math).floor(elCustomers.number/10)*10 + 1}, last=(${start + 9 < elCustomers.totalPages ? start + 9 : elCustomers.totalPages})">
+                                    th:with="start=${T(Math).floor(customers.number/10)*10 + 1}, last=(${start + 9 < customers.totalPages ? start + 9 : customers.totalPages})">
                                     <li>
                                         <a th:href="@{/customer/list-page(page=1)}" aria-label="First">
                                             <span aria-hidden="true">First</span>
                                         </a>
                                     </li>
 
-                                    <li th:class="${elCustomers.first} ? 'disabled'">
-                                        <a th:href="${elCustomers.first} ? '#' :@{/customer/list-page(page=${elCustomers.number})}" aria-label="Previous">
+                                    <li th:class="${customers.first} ? 'disabled'">
+                                        <a th:href="${customers.first} ? '#' :@{/customer/list-page(page=${elCustomers.number})}" aria-label="Previous">
                                             <span aria-hidden="true">&lt;</span>
                                         </a>
                                     </li>
 
-                                    <li th:each="page: ${#numbers.sequence(start, last)}" th:class="${page == elCustomers.number + 1} ? 'active'">
+                                    <li th:each="page: ${#numbers.sequence(start, last)}" th:class="${page == customers.number + 1} ? 'active'">
                                         <a th:text="${page}" th:href="@{/customer/list-page(page=${page})}"></a>
                                     </li>
 
-                                    <li th:class="${elCustomers.last} ? 'disabled'">
-                                        <a th:href="${elCustomers.last} ? '#' : @{/customer/list-page(page=${elCustomers.number + 2})}" aria-label="Next">
+                                    <li th:class="${customers.last} ? 'disabled'">
+                                        <a th:href="${customers.last} ? '#' : @{/customer/list-page(page=${elCustomers.number + 2})}" aria-label="Next">
                                             <span aria-hidden="true">&gt;</span>
                                         </a>
                                     </li>
 
                                     <li>
-                                        <a th:href="@{/customer/list-page(page=${elCustomers.totalPages})}" aria-label="Last">
+                                        <a th:href="@{/customer/list-page(page=${customers.totalPages})}" aria-label="Last">
                                             <span aria-hidden="true">Last</span>
                                         </a>
                                     </li>

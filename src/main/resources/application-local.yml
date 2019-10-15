@@ -40,6 +40,7 @@ spring:
     port: 587
     protocol: smtp
     username: pub147@gmail.com
+#    password: cksdb0826
     password: hllzmxukahrxghrm
     default-encoding: UTF-8
     properties:
@@ -67,5 +68,10 @@ file:
   course-upload-dir: D://elearning//upload//course//
   course-section-upload-dir: D://elearning//upload//course//section//
   course-photo-upload-dir: D://elearning//upload//course//PhotoUpload//
+
+image-file:
+  matric: D://elearning//images//matrix//
+  course: D://elearning//images//course//
+  pdf: D://elearning//images//pdf//
 
 

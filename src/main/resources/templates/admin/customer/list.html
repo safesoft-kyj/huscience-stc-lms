@@ -42,7 +42,7 @@
                 </div>
                 <div class="panel-body">
 
-                    <div th:switch="${elCustomers}">
+                    <div th:switch="${customers}">
                         <h2 th:case="null">No customer yet!</h2>
                         <div th:case="*">
                             <table id="demo-dt-basic" class="table table-striped table-bordered" cellspacing="0" width="100%">
@@ -50,7 +50,7 @@
                                 <tr>
                                     <th>협약기관명</th>
                                     <th class="min-tablet">협약체결일자</th>
-                                    <th class="min-desktop">협약조건</th>
+                                    <th class="min-desktop">협약 특혜</th>
                                     <th>홈페이지</th>
                                     <th>등록자</th>
                                     <th>등록일</th>
@@ -59,15 +59,15 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="elCustomer : ${elCustomers}">
-                                    <td th:text="${elCustomer.getName()}"></td>
-                                    <td th:text="${elCustomer.getCondate()}"></td>
-                                    <td th:text="${elCustomer.getCondate()}"></td>
-                                    <td th:text="${elCustomer.getCreatedBy()}"></td>
-                                    <td th:text="${elCustomer.getCreatedDate()} ? ${#dates.format(elCustomer.getCreatedDate(), 'yyyy/MM/dd HH:mm')} : ${elCustomer.getCreatedDate()}"></td>
-                                    <td><a th:href="${elCustomer.homepage}" target="_blank"><span th:text="${elCustomer.homepage}"></span></a></td>
-                                    <td><a th:href="@{/admin/customer/edit/{id}(id=${elCustomer.getId()})}">Edit</a></td>
-                                    <td><a th:href="@{/admin/customer/delete/{id}(id=${elCustomer.getId()})}">Delete</a></td>
+                                <tr th:each="customer : ${customers}">
+                                    <td th:text="${customer.getName()}"></td>
+                                    <td th:text="${customer.getCondate()}"></td>
+                                    <td th:text="${customer.getCondition()}"></td>
+                                    <td th:text="${customer.getCreatedBy()}"></td>
+                                    <td th:text="${customer.getCreatedDate()} ? ${#dates.format(customer.getCreatedDate(), 'yyyy/MM/dd HH:mm')} : ${customer.getCreatedDate()}"></td>
+                                    <td><a th:href="${customer.homepage}" target="_blank"><span th:text="${customer.homepage}"></span></a></td>
+                                    <td><a th:href="@{/admin/customer/edit/{id}(id=${customer.getId()})}">Edit</a></td>
+                                    <td><a th:href="@{/admin/customer/delete/{id}(id=${customer.getId()})}">Delete</a></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -81,7 +81,8 @@
 </th:block>
 
 <th:block layout:fragment="custom_js">
-
+    <!--DataTables Sample [ SAMPLE ]-->
+    <script th:src="@{/default/js/demo/tables-datatables.js}"></script>
 </th:block>
 
 </html>

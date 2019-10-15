@@ -21,6 +21,7 @@ public class MailService {
     @Autowired
     private TemplateEngine templateEngine;
 
+    @Autowired
     private JavaMailSender javaMailSender;
 
     public ResponseEntity<?> sendMail(Mail mail){
@@ -51,5 +52,20 @@ public class MailService {
             }
         }).start();
     }
+
+//    private void sendPreparedMail(String to, String subject, String text, Boolean isHtml) {
+//        try {
+//            MimeMessage mail = javaMailSender.createMimeMessage();
+//            MimeMessageHelper helper = new MimeMessageHelper(mail, false);
+//            helper.setTo(to);
+//            helper.setSubject(subject);
+//            helper.setText(text, isHtml);
+//            javaMailSender.send(mail);
+//        } catch (Exception e) {
+//
+//            e.printStackTrace();
+//            LOGGER.error("Problem with sending email to: {}, error message: {}", to, e.getMessage());
+//        }
+//    }
 
 }

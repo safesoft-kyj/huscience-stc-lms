@@ -1,7 +1,9 @@
 package com.dtnsm.lms.auth;
 
-import com.dtnsm.lms.mybatis.dto.UserVO;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
+import com.dtnsm.lms.repository.RoleRepository;
+import com.dtnsm.lms.repository.UserRepository;
+import com.dtnsm.lms.util.UserLogin;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
+import java.net.MalformedURLException;
 
 @Slf4j
 @Component
@@ -21,8 +23,11 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
     Logger logger = LoggerFactory.getLogger(UserAuthenticationProvider.class);
 
 
+//    @Autowired
+//    UserService userService;
+
     @Autowired
-    UserService userService;
+    UserServiceImpl userService;
 
     @Autowired
     RoleRepository roleRepository;
@@ -40,18 +45,27 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         String password = (String) authentication.getCredentials();
 
         //그룹웨어 로그인 체크
-//        boolean isLogin = false;
-//        try {
-//            isLogin = UserLogin.isLogin(userId, password);
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        if (!isLogin)
-//            throw new BadCredentialsException("Login Error !!");
+        boolean isLogin = false;
+        try {
+            isLogin = UserLogin.isLogin(userId, password);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        CustomUserDetails account;
+
+        // 외부사용자 로그인 체크
+        if (isLogin) {
+            account = (CustomUserDetails) userService.loadUserByUsername(userId);
+        } else {
+            account = (CustomUserDetails) userService.loadUserByUsername(userId, password);
+        }
+
+        if (account == null) {
+            return null;
+        }
 
 
-        CustomUserDetails account = (CustomUserDetails) userService.loadUserByUsername(userId);
 
 
 

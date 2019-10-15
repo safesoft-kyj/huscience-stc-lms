@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <!--Dropzone [ OPTIONAL ]-->
+    <link th:href="@{/default/plugins/dropzone/dropzone.min.css}" rel="stylesheet">
+
+
+
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-heading">
+<!--                    <h3 class="panel-title">교육 등록</h3>-->
+                </div>
+                <div class="panel-body">
+                    <!--===================================================-->
+                    <!--End Horizontal Form-->
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/account/add-post}" th:object="${course}" method="post" enctype="multipart/form-data" >
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="mailList">교육대상자</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" name="mailList" id="mailList" multiple="multiple">
+                                    <option th:each="user : ${mailList}" th:value="${user.getUserId()}" th:text="${user.getName()}"></option>
+                                </select>
+                            </div>
+                            <div class="col-sm-1 pull-right">
+                                <a class="btn btn-primary" id="btnOrg">조직도</a>
+                            </div>
+                        </div>
+
+                        <div class="panel-footer text-right">
+                            <button class="btn btn-primary" type="submit" id="submit-all">
+                                <i class="fa fa-upload-cloud"></i> 저장
+                            </button>
+                            <a th:href="@{/admin/course/list/{typeId}(typeId=${course.getCourseMaster().getId()})}" class="btn btn-success">
+                                <i class="fa fa-upload-cloud"></i> 목록
+                            </a>
+                        </div>
+                    </form>
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+
+</th:block>
+
+<th:block layout:fragment="custom_js">
+    <!--Dropzone [ OPTIONAL ]-->
+<!--    <script th:src="@{/default/plugins/dropzone/dropzone.js}"></script>-->
+
+
+    <script type="text/javascript" th:src="@{/editor/js/HuskyEZCreator.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/default/js/custom/course-editor.js}" charset="utf-8"></script>
+
+<!--    <script type="text/javascript" th:src="@{/default/js/custom/course-file.js}" charset="utf-8"></script>-->
+
+<!--    <script type="text/javascript" th:src="@{/default/js/custom/course-add.js}" charset="utf-8"></script>-->
+
+
+
+<!--    <script th:src="@{/default/js/demo/form-component.js}"></script>-->
+
+    <script>
+        $('#demo-dp-range .input-daterange').datepicker({
+            // format: "MM dd, yyyy",
+            format: "yyyy-mm-dd",
+            todayBtn: "linked",
+            autoclose: true,
+            todayHighlight: true
+        });
+
+        $('#demo-dp-range2 .input-daterange').datepicker({
+            // format: "MM dd, yyyy",
+            format: "yyyy-mm-dd",
+            todayBtn: "linked",
+            autoclose: true,
+            todayHighlight: true
+        });
+
+        $('#mailList').chosen({width:'100%'});
+
+        $("#btnOrg").on("click", function() {
+            var url = "/admin/depart/treeView";
+            // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+            var popupX = (window.screen.width / 2) - (800 / 2);
+            // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
+            var popupY= (window.screen.height / 2) - (550 / 2);
+
+            var name = "조직도";
+            var option = "width = 800, height = 550, top = 100, left = 200, menubar=no,directories=no, location = no, scrollbars=no, resizable=no"
+            option += ", left=" + popupX + ", top=" + popupY;
+            window.open(url, name, option);
+        });
+
+
+        // 조직도에서 사용자 ID를 받아 온다(배열로 받아옴)
+        function selectMailList(selectOptionArray) {
+
+            // 싱글값 변경
+            // $('#select-id').val("22").trigger('chosen:updated');
+            // 여러값 변경시는 배열로 전달
+            $('#mailList').val(selectOptionArray).trigger('chosen:updated');
+        }
+
+    </script>
+
+
+</th:block>
+
+</html>

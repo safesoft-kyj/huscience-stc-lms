@@ -34,7 +34,7 @@
                 <div class="panel-body">
                     <!--===================================================-->
                     <!--End Horizontal Form-->
-                    <form class="form-horizontal" action="#" th:action="@{/admin/customer/add-post}" th:object="${elCustomer}" method="post">
+                    <form class="form-horizontal" action="#" th:action="@{/admin/customer/add-post}" th:object="${customer}" method="post">
                         <div class="form-group">
                             <label class="col-sm-3 control-label" for="name">협약기관명</label>
                             <div class="col-sm-9">
@@ -45,14 +45,21 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label" for="condate">협약체결일</label>
                             <div class="col-sm-9">
-                                <input type="text" th:field="*{condate}" id="condate" placeholder="협약체결일" class="form-control" required>
+                                <!--Bootstrap Datepicker : Text Input-->
+                                <!--===================================================-->
+                                <div id="demo-dp-txtinput">
+                                    <input type="text" th:field="*{condate}" id="condate" placeholder="협약체결일" class="form-control" required>
+                                </div>
+                                <!--===================================================-->
                             </div>
+
+
                             <span th:if="${#fields.hasErrors('condate')}" th:errors="*{condate}"></span>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-3 control-label" for="condition">협약조건</label>
+                            <label class="col-sm-3 control-label" for="condition">협약 특혜</label>
                             <div class="col-sm-9">
-                                <input type="text" th:field="*{condition}" id="condition" placeholder="협약조건" class="form-control" required>
+                                <input type="text" th:field="*{condition}" id="condition" placeholder="협약 특혜" class="form-control" required>
                             </div>
                             <span th:if="${#fields.hasErrors('condition')}" th:errors="*{condition}"></span>
                         </div>
@@ -74,6 +81,15 @@
     </div><!-- Content container End -->
 </th:block>
 
-<th:block layout:fragment="custom_js"></th:block>
+<th:block layout:fragment="custom_js">
+    <script>
+        $('#demo-dp-txtinput input').datepicker({
+        format: "yyyy-mm-dd",
+        todayBtn: "linked",
+        autoclose: true,
+        todayHighlight: true
+        });
+    </script>
+</th:block>
 
 </html>

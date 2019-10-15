@@ -1,6 +1,6 @@
 package com.dtnsm.lms.mybatis.controller;
 
-import com.dtnsm.lms.border.controller.BorderAdminController;
+import com.dtnsm.lms.controller.BorderAdminController;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.util.PageInfo;
 import org.slf4j.LoggerFactory;

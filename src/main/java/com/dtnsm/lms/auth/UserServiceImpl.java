@@ -1,12 +1,18 @@
 package com.dtnsm.lms.auth;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
+import com.dtnsm.lms.repository.RoleRepository;
+import com.dtnsm.lms.repository.UserRepository;
+import com.dtnsm.lms.domain.ElMinor;
+import com.dtnsm.lms.domain.Account;
+import com.dtnsm.lms.domain.Role;
 import com.dtnsm.lms.mybatis.dto.UserVO;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
+import com.dtnsm.lms.service.CodeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +20,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -29,46 +34,81 @@ public class UserServiceImpl implements UserService{
     RoleRepository roleRepository;
 
     @Autowired
+    CodeService codeService;
+
+    @Autowired
     UserMapperService userMapperService;
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordEncoding passwordEncoder;
+
+    private static String TypeMajorCd = "BA02";
 
     public Account findByUserId(String userId) {
         return userRepository.findByUserId(userId);
     }
 
-    public Account save(UserRegistrationDto registration) {
-        Account user = new Account();
-        user.setUserId(registration.getUserId());
-        user.setName(registration.getName());
-        user.setEmail(registration.getEmail());
-        user.setPassword(passwordEncoder.encode(registration.getPassword()));
-        user.setRoles(Arrays.asList(new Role("ROLE_USER")));
-        return userRepository.save(user);
+    public Account save(Account account) {
+        account.setPassword(passwordEncoder.encode(account.getPassword()));
+
+        if(account.getRoles().size() == 0) {
+            Role role;
+
+            if (account.getUserType().equals("A")) {
+                role = roleRepository.findByName("ROLE_ADMIN");
+            } else if (account.getUserType().equals("U")) {
+                role = roleRepository.findByName("ROLE_USER");
+            } else {
+                role = roleRepository.findByName("ROLE_OTHER");
+            }
+            account.setRoles(Arrays.asList(role));
+        }
+
+        // 사용자 구분 (A:admin, U:일반유저, O:외부유저)
+        //account.setUserType("O");
+        return userRepository.save(account);
     }
+
+//    public Account save(UserRegistrationDto registration) {
+//        Account user = new Account();
+//        user.setUserId(registration.getUserId());
+//        user.setName(registration.getName());
+//        user.setEmail(registration.getEmail());
+//        user.setPassword(passwordEncoder.encode(registration.getPassword()));
+//
+//        Role role = roleRepository.findByName("ROLE_OTHER");
+//        user.setRoles(Arrays.asList(role));
+//        // 사용자 구분 (A:admin, U:일반유저, O:외부유저)
+//        user.setUserType("O");
+//        return userRepository.save(user);
+//    }
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
 
+        // LMS 사용자 정보를 가지고 온다.
         Account user = userRepository.findByUserId(userId);
 
         if (user == null) {
+            // 그룹웨어 사용자 정보를 가지고 온다.
             UserVO userVO = userMapperService.getUserById(userId);
-            Role role = roleRepository.findByName("ROLE_USER");
 
-            Account newUser = new Account();
-            newUser.setUserId(userId);
-            newUser.setName(userVO.getKorName());
-            newUser.setPassword(userVO.getPassword());
-            newUser.setEmail(userVO.getEmail());
-            newUser.setRoles(Arrays.asList(role));
-            newUser.setEnabled(true);
-            user = userRepository.save(newUser);
+            if(userVO != null) {
+
+                Role role = roleRepository.findByName("ROLE_USER");
+
+                Account newUser = new Account();
+                newUser.setUserId(userId);
+                newUser.setName(userVO.getKorName());
+                newUser.setPassword(userVO.getPassword());
+                newUser.setEmail(userVO.getEmail());
+                newUser.setRoles(Arrays.asList(role));
+                // 사용자 구분 (A:admin, U:일반유저, O:외부유저)
+                newUser.setUserType("U");
+                newUser.setEnabled(true);
+                user = userRepository.save(newUser);
+            }
         }
-
-        logger.info("로그시작");
-        logger.info(user.getUserId());
 
         CustomUserDetails userDetails = null;
 
@@ -89,12 +129,22 @@ public class UserServiceImpl implements UserService{
 
     public UserDetails loadUserByUsername(String userId, String password) throws UsernameNotFoundException {
 
+        String password1 = passwordEncoder.encode(password);
+
         Account user = userRepository.findByUserId(userId);
+
         CustomUserDetails userDetails = null;
 
+
         if(user != null) {
-            userDetails = new CustomUserDetails();
-            userDetails.setUser(user);
+            boolean isMatch = passwordEncoder.matches(password, user.getPassword());
+
+            if(isMatch) {
+                userDetails = new CustomUserDetails();
+                userDetails.setUser(user);
+            } else {
+                throw new UsernameNotFoundException("User not exist with name : " + userId);
+            }
         } else {
             throw new UsernameNotFoundException("User not exist with name : " + userId);
         }
@@ -110,5 +160,92 @@ public class UserServiceImpl implements UserService{
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
+    }
+
+
+
+    /*
+        Account
+     */
+
+    public List<Account> getAccountList() {
+        return userRepository.findAll();
+    }
+
+    public Account getAccountByUserId(String userId) {
+
+        return userRepository.findByUserId(userId);
+    }
+
+    public Account getAccountByName(String name) {
+
+        return userRepository.findByName(name);
+    }
+
+    public Account saveAccount(Account account){
+
+        return userRepository.save(account);
+    }
+
+    public void deleteAccount(Account account) {
+        userRepository.delete(account);
+
+    }
+
+
+
+
+    /*
+        Role
+     */
+
+    public List<Role> getRoleList() {
+
+        return roleRepository.findAll();
+    }
+
+    public Role getRoleById(Long id) {
+
+        return roleRepository.findById(id).get();
+    }
+
+    public Role saveAccount(Role role){
+
+        return roleRepository.save(role);
+    }
+
+    public void deleteRole(Role role) {
+        roleRepository.delete(role);
+
+    }
+
+    /*
+        Account Role
+
+     */
+    public Account accountRoleAdd(Account account, Role role) {
+
+        Collection<Role> roles =  account.getRoles();
+        roles.add(role);
+        account.setRoles(roles);
+
+        return userRepository.save(account);
+    }
+
+    public Account accountRoleDelete(Account account, Role role) {
+
+        Collection<Role> roles =  account.getRoles();
+        roles.remove(role);
+        account.setRoles(roles);
+        return userRepository.save(account);
+    }
+
+    /*
+
+        코드
+     */
+
+    public List<ElMinor> getTypeList() {
+        return codeService.getMinorList(TypeMajorCd);
     }
 }
