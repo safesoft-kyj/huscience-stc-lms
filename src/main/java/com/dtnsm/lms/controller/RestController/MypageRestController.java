@@ -32,8 +32,10 @@ public class MypageRestController {
 
         int totalSecond = courseSection.getTotalUseSecond() + useSecond;
 
-        if (totalSecond > (courseSection.getMinute() * 60)) {
-            totalSecond = courseSection.getMinute() * 60;
+        if (totalSecond > (courseSection.getSecond())) {
+            totalSecond = courseSection.getSecond();
+
+            courseSectionHistory.setUseSecond(courseSection.getSecond() - courseSection.getTotalUseSecond());
         }
 
         courseSection.setTotalUseSecond(totalSecond);

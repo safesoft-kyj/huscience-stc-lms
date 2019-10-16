@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head><meta http-equiv=Content-Type content="text/html; charset=UTF-8">
+    <style type="text/css">
+        <!--
+        span.cls_002{font-family:"Calibri Bold",serif;font-size:15.1px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
+        div.cls_002{font-family:"Calibri Bold",serif;font-size:12.1px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
+        span.cls_016{font-family:"Georgia",serif;font-size:34.0px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
+        div.cls_016{font-family:"Georgia",serif;font-size:34.0px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
+        span.cls_017{font-family:"Georgia Italic",serif;font-size:34.0px;color:rgb(0,0,0);font-weight:normal;font-style:italic;text-decoration: none}
+        div.cls_017{font-family:"Georgia Italic",serif;font-size:34.0px;color:rgb(0,0,0);font-weight:normal;font-style:italic;text-decoration: none}
+        span.cls_004{font-family:"Calibri",serif;font-size:14.1px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
+        div.cls_004{font-family:"Calibri",serif;font-size:14.1px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
+        span.cls_005{font-family:"Georgia",serif;font-size:28.0px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
+        div.cls_005{font-family:"Georgia",serif;font-size:28.0px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
+        span.cls_008{font-family:"Calibri Bold",serif;font-size:14.1px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
+        div.cls_008{font-family:"Calibri Bold",serif;font-size:14.1px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
+        span.cls_009{font-family:"Calibri",serif;font-size:14.1px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
+        div.cls_009{font-family:"Calibri",serif;font-size:14.1px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
+        span.cls_010{font-family:"Georgia Italic",serif;font-size:12.1px;color:rgb(0,0,0);font-weight:normal;font-style:italic;text-decoration: none}
+        div.cls_010{font-family:"Georgia Italic",serif;font-size:12.1px;color:rgb(0,0,0);font-weight:normal;font-style:italic;text-decoration: none}
+        span.cls_011{font-family:"Georgia Italic",serif;font-size:12.1px;color:rgb(0,0,0);font-weight:normal;font-style:italic;text-decoration: none}
+        div.cls_011{font-family:"Georgia Italic",serif;font-size:12.1px;color:rgb(0,0,0);font-weight:normal;font-style:italic;text-decoration: none}
+        span.cls_012{font-family:"Georgia",serif;font-size:12.1px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
+        div.cls_012{font-family:"Georgia",serif;font-size:12.1px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
+        span.cls_013{font-family:"Calibri Bold",serif;font-size:9.1px;color:rgb(51,35,17);font-weight:bold;font-style:normal;text-decoration: none}
+        div.cls_013{font-family:"Calibri Bold",serif;font-size:9.1px;color:rgb(51,35,17);font-weight:bold;font-style:normal;text-decoration: none}
+        span.cls_014{font-family:"Calibri Bold Italic",serif;font-size:9.1px;color:rgb(51,35,17);font-weight:bold;font-style:italic;text-decoration: none}
+        div.cls_014{font-family:"Calibri Bold Italic",serif;font-size:9.1px;color:rgb(51,35,17);font-weight:bold;font-style:italic;text-decoration: none}
+        span.cls_015{font-family:"Calibri Bold",serif;font-size:9.1px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
+        div.cls_015{font-family:"Calibri Bold",serif;font-size:9.1px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
+        -->
+    </style>
+<!--    <script type="text/javascript" src="24499f06-efb7-11e9-9d71-0cc47a792c0a_id_24499f06-efb7-11e9-9d71-0cc47a792c0a_files/wz_jsgraphics.js"></script>-->
+</head>
+<!--<body oncontextmenu="return false">-->
+<body>
+<div style="position:absolute;left:50%;margin-left:-396px;top:0px;width:792px;height:612px;overflow:hidden">
+    <div style="position:absolute;left:0px;top:0px">
+        <img src="/default/img/custom/certi_background.jpg" width=792 height=612></div>
+    <div style="position:absolute;left:72.00px;top:61.82px" class="cls_002"><span class="cls_002" th:utext="${'Certificate No.:'}">Certificate No.:</span></div>
+    <div style="position:absolute;left:124.58px;top:156.86px" class="cls_016"><span class="cls_016">CERTIFICATE </span><span class="cls_017">of</span><span class="cls_016"> ACHIEVEMENT</span></div>
+    <div style="position:absolute;left:312.17px;top:209.69px" class="cls_004"><span class="cls_004">THIS IS TO CERTIFY THAT</span></div>
+    <div style="position:absolute;left:0px;top:254.89px; width:100%; text-align: center;" class="cls_005"><span class="cls_005" th:text="${courseAccount.getAccount().getName()}">First Name  Last Name</span></div>
+    <div style="position:absolute;left:138.98px;top:314.11px" class="cls_004"><span class="cls_004">HAS SUCCESSFULLY COMPLETED THE BELOW TRAINING OF DT&SANOMEDICS</span></div>
+    <div style="position:absolute;left:0px;top:343.15px; width:100%; text-align: center;" class="cls_008"><span class="cls_008" th:text="${courseAccount.getCourse().getTitle()}"></span></div>
+    <div style="position:absolute;left:0px;top:377.35px; width:100%; text-align: center;" class="cls_009"><span class="cls_009">On </span><span class="cls_008">DD MMM YYYY</span><span class="cls_009"> / From </span><span class="cls_008" th:text="${courseAccount.getCourse().getFromDate()}">DD MMM YYYY</span><span class="cls_009"> to </span><span class="cls_008" th:text="${courseAccount.getCourse().getToDate()}">DD MMM YYYY</span></div>
+    <div style="position:absolute;left:132.02px;top:470.86px" class="cls_010"><span class="cls_010">Sign1</span></div>
+    <div style="position:absolute;left:401.33px;top:470.86px" class="cls_010"><span class="cls_010">Sign2</span></div>
+    <div style="position:absolute;left:401.33px;top:498.10px" class="cls_011"><span class="cls_011">Kim, Kwangho</span><span class="cls_012"> / Registered Director of</span></div>
+    <div style="position:absolute;left:132.02px;top:504.82px" class="cls_011"><span class="cls_011">Lim, Hyunjin</span><span class="cls_012"> / QMO of Dt&SanoMedics</span></div>
+    <div style="position:absolute;left:401.33px;top:511.66px" class="cls_012"><span class="cls_012">Dt&SanoMedics</span></div>
+    <div style="position:absolute;left:72.00px;top:545.26px" class="cls_013"><span class="cls_013">SOP-TM0002_RD08 v1.1</span></div>
+    <div style="position:absolute;left:357.41px;top:545.26px" class="cls_013"><span class="cls_013">Page 1 / 1</span></div>
+    <div style="position:absolute;left:653.74px;top:545.26px" class="cls_014"><span class="cls_014">CONFIDENTIAL</span></div>
+    <div style="position:absolute;left:72.00px;top:556.18px" class="cls_013"><span class="cls_013">Certificate</span></div>
+    <div style="position:absolute;left:72.00px;top:567.22px" class="cls_013"><span class="cls_013">Effective Date: </span><span class="cls_015">04-MAR</span><span class="cls_013">-2019</span></div>
+</div>
+
+<!--jQuery [ REQUIRED ]-->
+<script th:src="@{/default/js/jquery.min.js}"></script>
+<script th:src="@{/default/plugins/html2canvas/bluebird.min.js}"></script>
+
+<script type = "text/javascript" src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+<script type = "text/javascript" src = "https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<script th:inline="javascript">
+    // 새로고침 방지
+    function doNotReload(){
+        //ctrl+N , ctrl+R, function F5
+        if( (event.ctrlKey == true && (event.keyCode == 78 || event.keyCode == 82)) || (event.keyCode == 116))
+        {
+            event.keyCode = 0;
+            event.cancelBubble = true;
+            event.returnValue = false;
+        }
+    }
+    document.onkeydown = doNotReload;
+
+    $(document).ready(function() {
+        fnSaveAsPdf();
+    });
+
+    function fnSaveAsPdf() {
+        html2canvas(document.body).then(function(canvas) {
+
+            var name = '[[${courseAccount.getCourse().getTitle()}]]' + '수료증';
+            // alert('test');
+            // var imgData = canvas.toDataURL('image/png');
+            // var imgWidth = 293; //210
+            // var pageHeight = imgWidth / 1.414;
+            // var imgHeight = canvas.height * imgWidth / canvas.width;
+            //
+            // var doc = new jsPDF({
+            //     'orientation': 'l',
+            //     'unit': 'mm',
+            //     'format': 'a4'
+            // });
+            //
+            // doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+            // doc.save('sample_A4.pdf');
+            // console.log('Reached here?');
+
+
+             // 캔버스를 이미지로 변환
+            var imgData = canvas.toDataURL('image/png');
+
+            var imgWidth = 260; // 이미지 가로 길이(mm) A4 기준
+            // var pageHeight = imgWidth * 1.414;  // 출력 페이지 세로 길이 계산 A4 기준
+            var pageHeight = imgWidth / 1.294117647;
+            //var imgHeight = canvas.height * imgWidth / canvas.width;
+            var imgHeight = 190;
+
+            alert(imgHeight);
+            var heightLeft = imgHeight;
+
+            var doc = new jsPDF({
+                'orientation': 'l',
+                'unit': 'mm',
+                'format': 'a4'
+            });
+            var top = 10;
+            var left = 15;
+
+            // 첫 페이지 출력
+            doc.addImage(imgData, 'PNG', left, top, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            // 한 페이지 이상일 경우 루프 돌면서 출력
+            while (heightLeft >= 20) {
+                position = heightLeft - imgHeight;
+                doc.addPage();
+                doc.addImage(imgData, 'PNG', left, top, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+
+            // 파일 저장
+            doc.save(name);
+
+        });
+    }
+</script>
+
+</body>
+</html>

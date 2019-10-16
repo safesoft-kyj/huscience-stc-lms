@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -90,14 +91,41 @@ public class MyPageController {
         return "content/mypage/approval";
     }
 
-    @GetMapping("/myinfo")
-    public String myInfo(Model model) {
+    @GetMapping("/certificate/view")
+    public String certificateView(Model model) {
 
         pageInfo.setPageId("m-mypage-myinfo");
-        pageInfo.setPageTitle("사용자정보");
-        model.addAttribute(pageInfo);
+        pageInfo.setPageTitle("수료증발급");
 
-        return "content/mypage/myinfo";
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<CourseAccount> courseAccountList = courseAccountService.getCourseAccountByUserId(userDetails.getUserId());
+
+        List<Course> courseList = new ArrayList<>();
+        for(CourseAccount courseAccount : courseAccountList) {
+            courseList.add(courseAccount.getCourse());
+        }
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("courseList", courseList);
+
+        return "content/mypage/certificate/view";
+    }
+
+    @GetMapping("/certificate/print/{id}")
+    public String certificatePrint(@PathVariable("id") Long courseId, Model model) {
+
+        pageInfo.setPageId("m-mypage-myinfo");
+        pageInfo.setPageTitle("수료증발급");
+
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CourseAccount courseAccount = courseAccountService.getCourseAccountByCourseIdAndUserId(courseId, userDetails.getUserId());
+
+        Course course = courseService.getCourseById(courseId);
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("courseAccount", courseAccount);
+
+        return "content/mypage/certificate/print";
     }
 
     @GetMapping("/classroom/view/{id}")

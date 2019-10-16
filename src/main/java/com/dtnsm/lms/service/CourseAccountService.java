@@ -30,11 +30,15 @@ public class CourseAccountService {
         courseAccountRepository.deleteCourseAccountByCourse_Id(courseId);
     }
 
-    public List<CourseAccount> getCourseAccountByUserId(String userId) {
-        return courseAccountRepository.findByAccount_UserId(userId);
+    public CourseAccount getCourseAccountByCourseIdAndUserId(long courseId, String userId) {
+        return courseAccountRepository.findByCourse_IdAndAccount_UserId(courseId, userId);
     }
 
     public List<CourseAccount> getCourseAccountByCourseId(long courseId) {
         return courseAccountRepository.findByCourse_Id(courseId);
+    }
+
+    public List<CourseAccount> getCourseAccountByUserId(String userId) {
+        return courseAccountRepository.findByAccount_UserId(userId);
     }
 }
