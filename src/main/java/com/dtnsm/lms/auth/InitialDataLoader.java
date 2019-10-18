@@ -75,14 +75,20 @@ public class InitialDataLoader implements
 
             Account account = userRepository.findByUserId(userVO.getUserId());
 
+            // 새로운 그룹웨어 유저가 추가되었을때 Account 계정을 추가한다.(적용전에는 전체 업데이트)
             if (account == null) {
                 account = new Account();
                 account.setUserId(userVO.getUserId());
                 account.setName(userVO.getKorName());
+                account.setEngName(userVO.getEngName());
                 account.setPassword(userVO.getPassword());
                 account.setEmail(userVO.getEmail());
+                account.setComJob(userVO.getComJob());
+                account.setComPosition(userVO.getComPosition());
+                account.setOrgDepart(userVO.getOrgDepart());
+                account.setIndate(userVO.getIndate());
                 account.setRoles(Arrays.asList(userRole));
-                // 사용자 구분 (A:시스템사용자, U:내부직원, O:외부유저)
+                // 사용자 구분 (U:내부직원, O:외부유저)
                 account.setUserType("U");
                 account.setEnabled(true);
                 userRepository.save(account);

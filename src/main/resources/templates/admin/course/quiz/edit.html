@@ -38,7 +38,7 @@
                     <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/quiz/edit-post/{id}(id=${courseQuiz.getId()})}" th:object="${courseQuiz}" method="post" enctype="multipart/form-data">
                         <input type="hidden" th:value="${id}" id="id" name="id">
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">구분</label>
+                            <label class="col-sm-2 control-label" th:text="#{label.gubun}">구분</label>
                             <div class="col-sm-10">
                                 <select th:field="*{type}" class="form-control" readonly="readonly">
                                     <option th:each="code : ${codeList}" th:value="${code.getMinorCd()}" th:text="${code.getMinorNm()}"></option>
@@ -47,45 +47,45 @@
                             <span th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></span>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" for="name">시험명</label>
+                            <label class="col-sm-2 control-label" for="name" th:text="#{label.course.quiz.name}">시험명</label>
                             <div class="col-sm-10">
-                                <input type="text" th:field="*{name}" id="name" placeholder="시험명" class="form-control" required="required">
+                                <input type="text" th:field="*{name}" id="name" placeholder="quiz name" class="form-control" required="required">
                             </div>
                             <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" for="fromDate">시험기간</label>
+                            <label class="col-sm-2 control-label" for="fromDate" th:text="#{label.course.quiz.period}">시험기간</label>
                             <div class="col-sm-10">
                                 <div id="demo-dp-range">
                                     <div class="input-daterange input-group" id="datepicker2">
-                                        <input type="text" th:field="*{fromDate}" id="fromDate" placeholder="시험시작일" class="form-control" required="required">
+                                        <input type="text" th:field="*{fromDate}" id="fromDate" placeholder="from" class="form-control" required="required">
                                         <span th:if="${#fields.hasErrors('fromDate')}" th:errors="*{fromDate}"></span>
                                         <span class="input-group-addon">to</span>
-                                        <input type="text" th:field="*{toDate}" id="toDate" placeholder="시험종료일" class="form-control" required="required">
+                                        <input type="text" th:field="*{toDate}" id="toDate" placeholder="to" class="form-control" required="required">
                                         <span th:if="${#fields.hasErrors('toDate')}" th:errors="*{toDate}"></span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" for="questionCount">문제수</label>
+                            <label class="col-sm-2 control-label" for="questionCount" th:text="#{label.questioncount}">문제수</label>
                             <div class="col-sm-2">
-                                <input type="number" th:field="*{questionCount}" id="questionCount" placeholder="문제수" class="form-control" required="required">
+                                <input type="number" th:field="*{questionCount}" id="questionCount" placeholder="" class="form-control" required="required">
                             </div>
                             <span th:if="${#fields.hasErrors('questionCount')}" th:errors="*{questionCount}"></span>
-                            <label class="col-sm-2 control-label" for="itemCount">항목수</label>
+                            <label class="col-sm-2 control-label" for="itemCount" th:text="#{label.itemcount}">항목수</label>
                             <div class="col-sm-2">
-                                <input type="number" th:field="*{itemCount}" id="itemCount" placeholder="항목수" class="form-control" required="required">
+                                <input type="number" th:field="*{itemCount}" id="itemCount" placeholder="" class="form-control" required="required">
                             </div>
                             <span th:if="${#fields.hasErrors('itemCount')}" th:errors="*{itemCount}"></span>
-                            <label class="col-sm-2 control-label" for="examMinute">시험시간(분)</label>
+                            <label class="col-sm-2 control-label" for="examMinute" th:text="#{label.course.quiz.minute}">시험시간(분)</label>
                             <div class="col-sm-2">
-                                <input type="number" th:field="*{examMinute}" id="examMinute" placeholder="시험시간(분)" class="form-control" required="required">
+                                <input type="number" th:field="*{examMinute}" id="examMinute" placeholder="" class="form-control" required="required">
                             </div>
                             <span th:if="${#fields.hasErrors('examMinute')}" th:errors="*{examMinute}"></span>
                         </div>
                         <div class="panel-footer text-right">
-                            <button class="btn btn-primary" type="submit" id="submit-all">
+                            <button class="btn btn-primary" type="submit" id="submit-all" th:text="#{label.save}">
                                 <i class="fa fa-upload-cloud"></i> 저장
                             </button>
                         </div>

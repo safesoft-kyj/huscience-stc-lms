@@ -39,6 +39,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/file_uploader_html5/**",
                         "/content/**",
                         "/fragments/**",
+                         "/login",
                          "/webjars/**")
                         .permitAll()
                 .anyRequest().authenticated();
@@ -48,6 +49,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //.loginProcessingUrl("/authenticate")
                 .defaultSuccessUrl("/")
                 .permitAll();
+
+        http.sessionManagement()
+                .invalidSessionUrl("/login?invalid");
 
          http.logout()
                  .logoutUrl("/logout")

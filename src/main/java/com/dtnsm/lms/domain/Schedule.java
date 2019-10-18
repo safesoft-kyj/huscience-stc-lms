@@ -1,10 +1,13 @@
 package com.dtnsm.lms.domain;
 
 import com.dtnsm.lms.auth.AuditorCreateEntity;
+import com.dtnsm.lms.domain.constant.ScheduleType;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -14,7 +17,12 @@ public class Schedule extends AuditorCreateEntity<String> {
     @GeneratedValue
     private long id;
 
-    // 1:Year, 2:month
+    // C: 교육연간일정, M:Employee training metrix
+    @Column(length = 10)
+    @Enumerated(EnumType.STRING)
+    private ScheduleType sctype;
+
+    // 등록년도
     @Column(length = 4)
     private String year;
 
@@ -28,6 +36,9 @@ public class Schedule extends AuditorCreateEntity<String> {
 
     @ColumnDefault("0")
     private int viewCnt;
+
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ScheduleFile> scheduleFiles = new ArrayList<>();
 
     public Schedule(){}
 

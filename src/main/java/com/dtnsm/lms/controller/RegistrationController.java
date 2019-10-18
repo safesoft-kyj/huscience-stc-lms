@@ -1,13 +1,13 @@
 package com.dtnsm.lms.controller;
 
-import javax.validation.Valid;
-
+import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.Account;
+import com.dtnsm.lms.domain.CourseManager;
 import com.dtnsm.lms.domain.Role;
+import com.dtnsm.lms.service.CourseManagerService;
 import com.dtnsm.lms.service.Mail;
 import com.dtnsm.lms.service.MailService;
 import com.dtnsm.lms.service.RoleService;
-import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.util.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -29,6 +30,9 @@ public class RegistrationController {
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private CourseManagerService courseManagerService;
 
     private PageInfo pageInfo = new PageInfo();
 
@@ -237,5 +241,89 @@ public class RegistrationController {
         model.addAttribute("accounts", accounts);
 
         return "admin/registration/accountRole/list";
+    }
+
+
+     /*
+        과정 관리자 등록
+     */
+
+
+    @GetMapping("/courseManager/add")
+    public String courseManagerAdd(CourseManager courseManager, Model model) {
+
+
+        pageInfo.setPageId("m-info-month");
+        pageInfo.setPageTitle("교육과정 관리자 등록");
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("accountList", userService.getAccountList());
+        model.addAttribute("courseManager", courseManager);
+
+        return "admin/registration/courseManager/add";
+    }
+
+    @PostMapping("/courseManager/add-post")
+    public String courseManagerAddPost(@Valid CourseManager courseManager, BindingResult result) {
+
+        if(result.hasErrors()) {
+            return "admin/registration/courseManager/add";
+        }
+
+        courseManagerService.save(courseManager);
+
+        return "redirect:/admin/registration/courseManager/list/";
+    }
+
+
+    @GetMapping("/courseManager/edit/{userId}")
+    public String courseManagerUpdate(@PathVariable("userId") String userId, Model model) {
+        CourseManager courseManager = courseManagerService.getByUserId(userId);
+
+        pageInfo.setPageId("m-customer-edit");
+        pageInfo.setPageTitle("과정 관리자 수정");
+        model.addAttribute(pageInfo);
+        model.addAttribute("accountList", userService.getAccountList());
+        model.addAttribute("courseManager", courseManager);
+
+
+        return "admin/registration/courseManager/edit";
+    }
+
+    @PostMapping("/courseManager/edit-post/{userId}")
+    public String courseManagerUpdatePost(@PathVariable("userId") String userId, @Valid CourseManager courseManager, BindingResult result) {
+        if(result.hasErrors()) {
+            courseManager.setAccount(courseManager.getAccount());
+            return "content/registration/courseManager/edit" + userId;
+        }
+
+        courseManagerService.save(courseManager);
+
+        return "redirect:/admin/registration/courseManager/list";
+    }
+
+    @GetMapping("/courseManager/list")
+    public String courseManagerList(Model model) {
+
+        pageInfo.setPageId("m-info-month");
+        pageInfo.setPageTitle("과정관리자 조회");
+
+        List<CourseManager> managers = courseManagerService.getList();
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("managers", managers);
+
+        return "admin/registration/courseManager/list";
+    }
+
+
+    @GetMapping("/courseManager/delete/{userId}")
+    public String deleteRole(@PathVariable("userId") String userId) {
+
+        CourseManager courseManager = courseManagerService.getByUserId(userId);
+
+        courseManagerService.delete(courseManager);
+
+        return "redirect:/admin/registration/courseManager/list";
     }
 }

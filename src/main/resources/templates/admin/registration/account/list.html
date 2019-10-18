@@ -50,15 +50,24 @@
                         <div th:case="*">
                             <h2></h2>
                             <table id="demo-dt-basic" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                                <colgroup>
+                                    <col width="10%">
+                                    <col width="10%">
+                                    <col width="20%">
+                                    <col width="10%">
+                                    <col width="20%">
+                                    <col width="10%">
+                                    <col width="10%">
+                                </colgroup>
                                 <thead>
                                 <tr>
                                     <th>사원ID</th>
                                     <th>사원명</th>
                                     <th>메일주소</th>
                                     <th>사용유무</th>
-                                    <th>사원유형</th>
-                                    <th class="text-center col-sm-1">Edit</th>
-                                    <th class="text-center col-sm-1">Delete</th>
+                                    <th>사용자유형</th>
+                                    <th>Role</th>
+                                    <th class="text-center col-sm-2">Edit</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -66,10 +75,19 @@
                                     <td th:text="${account.getUserId()}"></td>
                                     <td th:text="${account.getName()}"></td>
                                     <td th:text="${account.getEmail()}"></td>
-                                    <td th:text="${account.getEnabled() ? 'Yes' : 'No'}"></td>
-                                    <td th:text="${account.getUserType().equals('A') ? 'Manager' : (account.getUserType().equals('U') ? 'User' : 'Others')  }"></td>
-                                    <td class="text-center"><a th:href="@{/admin/registration/account/edit/{id}(id=${account.getUserId()})}">Edit</a></td>
-                                    <td class="text-center"><a th:href="@{/admin/registration/account/delete/{id}(id=${account.getUserId()})}">Delete</a></td>
+                                    <td th:text="${account.getEnabled() ? 'Yes' : 'No'}" class="text-center"></td>
+                                    <td th:text="${account.getUserType().equals('S') ? '시스템관리자' : (account.getUserType().equals('U') ? '내부직원' : '외부사용자')  }"></td>
+                                    <td>
+                                        <th:block th:each="role : ${account.getRoles()}">
+                                            <span th:text="${role.getName()}"></span><br>
+                                        </th:block>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="form-inline">
+                                            <a class="btn btn-warning" th:href="@{/admin/registration/account/edit/{id}(id=${account.getUserId()})}" th:text="#{label.edit}">Edit</a>
+                                            <a class="btn btn-danger" th:href="@{/admin/registration/account/delete/{id}(id=${account.getUserId()})}" th:text="#{label.delete}">Delete</a>
+                                        </div>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>

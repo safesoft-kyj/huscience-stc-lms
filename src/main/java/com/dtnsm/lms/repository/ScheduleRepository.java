@@ -2,6 +2,8 @@ package com.dtnsm.lms.repository;
 
 import com.dtnsm.lms.domain.Border;
 import com.dtnsm.lms.domain.Schedule;
+import com.dtnsm.lms.domain.constant.ScheduleType;
+import com.dtnsm.lms.service.ScheduleService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,8 +14,11 @@ import java.util.List;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
-    Schedule findTop1ByYear(String year);
+    Schedule findTop1BySctypeOrderByCreatedDateDesc(ScheduleType sctype);
+    Schedule findTop1BySctypeAndTitleLikeOrderByCreatedDateDesc(ScheduleType sctype, String title);
 
-    List<Schedule> findAllByYear(String year);
+    Schedule findTop1BySctypeAndTitleLike(ScheduleType sctype, String Title);
+
+    List<Schedule> findAllBySctypeOrderByCreatedDateDesc(ScheduleType sctype);
 
 }

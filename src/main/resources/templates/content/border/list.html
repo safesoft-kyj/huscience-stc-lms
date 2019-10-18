@@ -38,7 +38,7 @@
                 <div class="panel-body">
                     <div>
                         <div class="col-sm-12">
-                            <p>총 <span th:text="${borders.getTotalElements() + '건'}" class="text-danger"></span>의 게시물이 등록되어 있습니다.</p>
+                            <span th:text="#{label.list.title(${borders.getTotalElements()})}"></span>
                         </div>
                     </div>
                     <div th:switch="${borders}">
@@ -47,18 +47,18 @@
                             <table id="customer-list-page" class="table table-striped table-bordered" cellspacing="0" width="100%">
                                 <thead>
                                 <tr>
-                                    <th class="text-center col-sm-1">번호</th>
-                                    <th class="text-center">제목</th>
-                                    <th class="text-center col-sm-2">등록일</th>
-                                    <th class="text-center col-sm-2">이름</th>
-                                    <th class="text-center col-sm-1">조회수</th>
-                                    <th class="text-center col-sm-1">첨부파일수</th>
+                                    <th class="text-center col-sm-1" th:text="#{label.no}">번호</th>
+                                    <th class="text-center" th:text="#{label.subject}">제목</th>
+                                    <th class="text-center col-sm-2" th:text="#{label.createdate}">등록일</th>
+                                    <th class="text-center col-sm-2" th:text="#{label.createby}">이름</th>
+                                    <th class="text-center col-sm-1" th:text="#{label.readcount}">조회수</th>
+                                    <th class="text-center col-sm-1" th:text="#{label.filecount}">첨부파일수</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="border, index : ${borders}">
                                     <td th:text="${index.count}" class="text-center"></td>
-                                    <td><a th:href="@{/border/view/{id}(id=${border.getId()})}" th:text="${border.getTitle()}">Edit</a></td>
+                                    <td><a th:href="@{/border/view/{id}(id=${border.getId()})}" th:text="${border.getTitle()}"></a></td>
                                     <td th:text="${border.getCreatedBy()}" class="text-center"></td>
                                     <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy/MM/dd')} : ${border.getCreatedDate()}" class="text-center"></td>
                                     <td th:text="${border.getViewCnt()}" class="text-center"></td>

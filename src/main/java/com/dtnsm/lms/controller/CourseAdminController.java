@@ -2,7 +2,8 @@ package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.*;
-import com.dtnsm.lms.repository.CourseAccountRepository;
+import com.dtnsm.lms.domain.constant.ApprovalStatusType;
+import com.dtnsm.lms.domain.constant.CourseRequestType;
 import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.util.DateUtil;
@@ -65,6 +66,9 @@ public class CourseAdminController {
     @Autowired
     private CourseFileService fileService;
 
+
+    @Autowired
+    private CourseManagerService courseManagerService;
 
     @Autowired
     private CodeService codeService;
@@ -187,7 +191,11 @@ public class CourseAdminController {
                 courseAccount.setCourse(course1);
                 courseAccount.setAccount(account);
                 courseAccount.setRequestDate(DateUtil.getTodayString());
-                courseAccount.setRequestType("1");
+                courseAccount.setRequestType(CourseRequestType.SPECIFY);
+                courseAccount.setApprUserId1(courseManagerService.getCourseManager().getUserId());
+                courseAccount.setApprUserId2(account.getParentUserId());
+                courseAccount.setIsTeamMangerApproval(course1.getCourseMaster().getIsTeamMangerApproval());
+                courseAccount.setIsCourseMangerApproval(course1.getCourseMaster().getIsCourseMangerApproval());
 
                 courseAccountService.save(courseAccount);
 
@@ -273,6 +281,8 @@ public class CourseAdminController {
         courseAccountList.clear();
 
 
+
+
         //  교육 필수대상자 수정 처리
 
         if(!mails[0].equals("0")) {
@@ -287,8 +297,12 @@ public class CourseAdminController {
                     courseAccount.setCourse(course);
                     courseAccount.setAccount(account);
                     courseAccount.setRequestDate(DateUtil.getTodayString());
-                    courseAccount.setRequestType("1");
-                    courseAccount.setStatus("1");
+                    courseAccount.setRequestType(CourseRequestType.SPECIFY);        // 교육신청유형(관리자지정, 사용자 신청)
+                    courseAccount.setStatus(ApprovalStatusType.REQUEST_DONE);    // 신청완료(팀장승인진행중)
+                    courseAccount.setApprUserId1(courseManagerService.getCourseManager().getUserId());
+                    courseAccount.setApprUserId2(account.getParentUserId());
+                    courseAccount.setIsTeamMangerApproval(course.getCourseMaster().getIsTeamMangerApproval());
+                    courseAccount.setIsCourseMangerApproval(course.getCourseMaster().getIsCourseMangerApproval());
                     courseAccountList.add(courseAccount);
                 }
             }
@@ -305,8 +319,12 @@ public class CourseAdminController {
                     courseAccount.setCourse(course);
                     courseAccount.setAccount(account);
                     courseAccount.setRequestDate(DateUtil.getTodayString());
-                    courseAccount.setRequestType("1");
-                    courseAccount.setStatus("1");
+                    courseAccount.setRequestType(CourseRequestType.SPECIFY);        // 교육신청유형(관리자지정, 사용자 신청)
+                    courseAccount.setStatus(ApprovalStatusType.REQUEST_DONE);    // 신청완료(팀장승인진행중)
+                    courseAccount.setApprUserId1(courseManagerService.getCourseManager().getUserId());
+                    courseAccount.setApprUserId2(account.getParentUserId());
+                    courseAccount.setIsTeamMangerApproval(course.getCourseMaster().getIsTeamMangerApproval());
+                    courseAccount.setIsCourseMangerApproval(course.getCourseMaster().getIsCourseMangerApproval());
                     courseAccountList.add(courseAccount);
                 }
             }

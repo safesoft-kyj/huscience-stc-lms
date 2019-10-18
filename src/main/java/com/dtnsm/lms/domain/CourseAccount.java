@@ -1,12 +1,13 @@
 package com.dtnsm.lms.domain;
 
 import com.dtnsm.lms.auth.AuditorCreateEntity;
+import com.dtnsm.lms.domain.constant.ApprovalStatusType;
+import com.dtnsm.lms.domain.constant.CourseRequestType;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.net.Authenticator;
 
 @Entity
 @Data
@@ -28,20 +29,29 @@ public class CourseAccount extends AuditorCreateEntity<String> {
     @Column(length = 10)
     private String requestDate;
 
-    // 1:관리자 지정 필수대상자, 2:신청자
-    @Column(length = 1)
-    @ColumnDefault(value = "1")
-    private String requestType;
+    // 교육신청유형 : 1:관리자 지정, 2:팀장승인완료(관리자확인중), 3:승인완료
+    @Column(length = 10)
+    @ColumnDefault(value = "0")
+    @Enumerated(EnumType.STRING)
+    private CourseRequestType requestType;
 
     // 팀장승인여부 : Y, N
     @Column(length = 1)
-    private String isAppr1;
+    private String isAppr1="N";
 
     // 관리자승인여부 : Y, N
     @Column(length = 1)
-    private String isAppr2;
+    private String isAppr2="N";
 
-    // 팀장승인 : 0:초기, 1:미승인, 2:팀장승인, 3: 팀장확인
+    // 팀장/부서장 승인 여부
+    @Column(length = 1)
+    private String isTeamMangerApproval = "N" ;
+
+    // 과정 관리자 승인 여부
+    @Column(length = 1)
+    private String isCourseMangerApproval = "N" ;
+
+    // 팀장승인 : 0:초기, 1:미승인, 2:팀장승인, 3: 관리자확인, 4:
     @Column(length = 10)
     private String apprDate1;
 
@@ -55,9 +65,11 @@ public class CourseAccount extends AuditorCreateEntity<String> {
     @Column(length = 30)
     private String apprUserId2;
 
-    // 최종상태 : 0:초기, 1:신청, 2:교육
-    @Column(length = 1)
+    // 최종상태 : 1:신청완료(팀장승인진행중), 2:팀장승인완료(관리자확인중), 3:승인완료
+    @Column(length = 20)
     @ColumnDefault(value = "0")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ApprovalStatusType status;
+
 
 }

@@ -30,14 +30,14 @@
             <!--===================================================-->
             <div class="panel">
                 <div class="panel-heading">
-                    <h3 class="panel-title">공지사항 수정</h3>
+                    <h3 class="panel-title"></h3>
                 </div>
                 <div class="panel-body">
                     <!--===================================================-->
                     <!--End Horizontal Form-->
                     <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/account/edit-post/{id}(id=${course.getId()})}" th:object="${course}" method="post" enctype="multipart/form-data">
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" for="mailList">교육대상자</label>
+                            <label class="col-sm-2 control-label" for="mailList" th:text="#{label.course.accountlist}">교육대상자</label>
                             <div class="col-sm-9">
                                 <th:block th:each="courseAccount : ${course.getCourseAccountList()}" >
                                     <span th:text="${courseAccount.getAccount().getName()}"></span>
@@ -48,7 +48,7 @@
                             </div>
                             <div class="col-sm-1 pull-right">
 
-                                <a href="#" class="btn btn-primary" id="btnOrg">조직도</a>
+                                <a href="#" class="btn btn-primary" id="btnOrg" th:text="#{label.organization}">조직도</a>
                             </div>
                         </div>
 
@@ -56,10 +56,10 @@
 <!--                            <button id="dz-upload-btn" class="btn btn-primary" type="submit">-->
 <!--                                <i class="fa fa-upload-cloud"></i> 저장-->
 <!--                            </button>-->
-                            <button class="btn btn-primary" type="submit" id="submit-all">
+                            <button class="btn btn-primary" type="submit" id="submit-all" th:text="#{label.save}">
                                 <i class="fa fa-upload-cloud"></i> 저장
                             </button>
-                            <a th:href="@{/admin/course/list/{typeId}(typeId=${course.getCourseMaster().getId()})}" class="btn btn-success">
+                            <a th:href="@{/admin/course/list/{typeId}(typeId=${course.getCourseMaster().getId()})}" class="btn btn-success" th:text="#{label.list}">
                                 <i class="fa fa-upload-cloud"></i> 목록
                             </a>
                         </div>

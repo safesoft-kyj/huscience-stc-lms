@@ -11,7 +11,7 @@
 
 <th:block layout:fragment="custom_css">
     <!--Dropzone [ OPTIONAL ]-->
-    <link th:href="@{/default/plugins/dropzone/dropzone.min.css}" rel="stylesheet">
+    <link th:href="@{/static/default/plugins/dropzone/dropzone.min.css}" rel="stylesheet">
 
 </th:block>
 
@@ -34,13 +34,13 @@
             <!--===================================================-->
             <div class="panel">
                 <div class="panel-heading">
-                    <h3 class="panel-title"> <span th:text="${yearString}"></span></h3>
+                    <h3 class="panel-title"> <span th:text="${yearString}"></span> <span th:text="${schedule.getSctype()}"></span></h3>
                 </div>
                 <div class="panel-body">
                     <!--===================================================-->
                     <!--End Horizontal Form-->
-                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/info/year/add-post}" th:object="${schedule}" method="post">
-                        <input type="hidden" th:field="*{id}" id="id" name="id">
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/schedule/add-post}" th:object="${schedule}" method="post" enctype="multipart/form-data" >
+                        <input type="hidden" th:field="*{sctype}">
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="mailList">년도</label>
                             <div class="col-sm-10">
@@ -67,12 +67,18 @@
                             <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
                         </div>
 
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">첨부파일</label>
+                            <div class="col-sm-10">
+                                <input type="file" name="files">
+                            </div>
+                        </div>
 
                         <div class="panel-footer text-right">
                             <button class="btn btn-primary" type="submit" id="submit-all">
                                 <i class="fa fa-upload-cloud"></i> 저장
                             </button>
-                            <a th:href="@{/admin/info/year/list}" class="btn btn-success">
+                            <a th:href="@{/admin/schedule/year/list}" class="btn btn-success">
                                 <i class="fa fa-upload-cloud"></i> 목록
                             </a>
                         </div>

@@ -35,7 +35,105 @@
                     <h3 class="panel-title"></h3>
                 </div>
                 <div class="panel-body">
-                    <p th:text="${pageInfo.getPageTitle()}"></p>
+
+                    <!-- 사용자 정보 -->
+                    <div class="row">
+                        <div class="panel">
+                            <div class="panel-body">
+                                <!--
+                                private String userId;
+                                private String korName;
+                                private String engName;
+                                private String password;
+                                private String orgCode;
+                                private String orgDepart;
+                                private String comPosition;
+                                private String duty;
+                                private String comJob;
+                                private String email;
+                                private String indate;
+                                private String outdate;
+                                private String approSign;
+                                private boolean isuse;
+                                -->
+
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <h4 class="text-success">나의 정보</h4>
+                                        <div th:switch="${account}">
+                                            <h2 th:case="null">내부직원이 아닙니다.</h2>
+                                            <div th:case="*">
+                                                <table class="table table-striped">
+                                                    <tr>
+                                                        <td th:text="#{label.id}" class="col-sm-2 text-right">아이디</td>
+                                                        <td th:text="${account.getUserId()}"></td>
+                                                        <td th:text="#{label.name}" class="text-right">이름</td>
+                                                        <td th:text="${account.getName() + ' ' + account.engName}"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td th:text="#{label.indate}" class="text-right">입사일</td>
+                                                        <td th:text="${account.getIndate()}"></td>
+                                                        <td th:text="#{label.email}" class="text-right">이메일</td>
+                                                        <td th:text="${account.getEmail()}"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td th:text="#{label.depart}" class="text-right">부서</td>
+                                                        <td th:text="${account.getOrgDepart()}"></td>
+                                                        <td th:text="#{label.job}" class="text-right">업무</td>
+                                                        <td th:text="${account.getComJob()}"></td>
+                                                    </tr>
+                                                </table>
+                                                <div class="panel">
+                                                    <div class="panel-body">
+                                                        <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/mypage/teamManager/add-post}" method="post" th:object="${account}" >
+                                                            <div class="form-group">
+                                                                <label class="col-sm-2 control-label" for="parentUserId" th:text="#{label.teamManager}">팀장/부서장</label>
+                                                                <div class="col-sm-9">
+                                                                    <select class="form-control" th:field="*{parentUserId}" name="parentUserId" id="parentUserId">
+                                                                        <option value="">팀장/부서장을 지정하세요</option>
+                                                                        <option th:each="optAccount : ${accountList}"
+                                                                                th:value="${optAccount.getUserId()}"
+                                                                                th:text="${optAccount.getName()}">
+                                                                        </option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-sm-1">
+                                                                    <button class="btn btn-success" type="submit" th:text="#{label.save}">Submit</button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6">
+
+                                        <div th:switch="${account}">
+                                            <div th:case="null">내부직원이 아닙니다.
+
+
+                                            </div>
+                                            <div th:case="*">
+                                                <div th:switch="${account.getParentUserId()}">
+                                                    <div th:case="null">상위결재권자 지정이 안되었습니다.
+
+                                                    </div>
+<!--                                                    <div th:case="*">-->
+<!--                                                        <p th:text="${parentAccount.getName()}"></p>-->
+<!--                                                    </div>-->
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="row">
                         <h4 class="text-success">신청중인 과정</h4>
@@ -48,10 +146,20 @@
                             </thead>
                             <tbody>
                             <th:block th:each="courseAccount, index : ${courseAccountList}">
-                            <tr th:if="${courseAccount.getStatus().equals('1')}">
+                            <tr th:if="${courseAccount.getStatus() == T(com.dtnsm.lms.domain.constant.ApprovalStatusType).REQUEST_DONE }">
                                 <td class="text-left" th:text="${courseAccount.getCourse().getTitle()}"}></td>
                                 <td class="text-center" th:text="${courseAccount.getCourse().getFromDate() + '~' + courseAccount.getCourse().getToDate()}"></td>
-                                <td class="text-center"></td>
+                                <td class="text-center">
+                                    <div th:switch="${courseAccount.getStatus()}">
+                                        <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).REQUEST_DONE}"
+                                              style="color: red;">팀장 결재 진행중</span>
+                                        <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_TEAM_DONE}"
+                                              style="color: orange;">관리자 결재 진행중</span>
+                                        <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_MANAGER_DONE}"
+                                              style="color: yellow;">교육 진행중</span>
+                                    </div>
+
+                                </td>
                             </tr>
                             </th:block>
                             </tbody>
@@ -70,7 +178,7 @@
                             </thead>
                             <tbody>
                             <th:block th:each="courseAccount, index : ${courseAccountList}">
-                                <tr th:if="${courseAccount.getStatus().equals('2')}">
+                                <tr th:if="${courseAccount.getStatus() == T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_MANAGER_DONE }">
                                     <td class="text-left" th:text="${courseAccount.getCourse().getTitle()}"}></td>
                                     <td class="text-center" th:text="${courseAccount.getCourse().getFromDate() + '~' + courseAccount.getCourse().getToDate()}"></td>
                                     <td class="text-center"></td>
@@ -88,6 +196,14 @@
 </th:block>
 
 <th:block layout:fragment="custom_js">
+
+    <script>
+
+        $('#parentUserId').chosen({width:'100%'});
+
+
+    </script>
+
 </th:block>
 
 </html>

@@ -1,4 +1,6 @@
 spring:
+  messages:
+    basename: messages
   devtools:
     livereload:
       enabled: true
@@ -68,6 +70,7 @@ file:
   course-upload-dir: D://elearning//upload//course//
   course-section-upload-dir: D://elearning//upload//course//section//
   course-photo-upload-dir: D://elearning//upload//course//PhotoUpload//
+  schedule-upload-dir: D://elearning//upload//schedule//
 
 image-file:
   matric: D://elearning//images//matrix//

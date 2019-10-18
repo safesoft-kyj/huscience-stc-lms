@@ -3,6 +3,9 @@ package com.dtnsm.lms.controller;
 import com.dtnsm.lms.auth.CustomUserDetails;
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.*;
+import com.dtnsm.lms.mybatis.dto.UserVO;
+import com.dtnsm.lms.mybatis.service.UserMapperService;
+import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.CourseAccountService;
 import com.dtnsm.lms.service.CourseSectionFileService;
 import com.dtnsm.lms.service.CourseSectionService;
@@ -17,13 +20,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +44,12 @@ public class MyPageController {
 
     @Autowired
     UserServiceImpl userService;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    UserMapperService userMapperService;
 
     @Autowired
     private CourseSectionFileService courseSectionFileService;
@@ -65,10 +73,31 @@ public class MyPageController {
         Account account = userService.getAccountByUserId(userDetails.getUserId());
         List<CourseAccount> courseAccountList = courseAccountService.getCourseAccountByUserId(userDetails.getUserId());
 
+        Account parentAccount = userService.getAccountByUserId(account.getParentUserId());
+
+//        UserVO userVO = userMapperService.getUserById(account.getUserId());
+
         model.addAttribute(pageInfo);
         model.addAttribute("courseAccountList", courseAccountList);
+        model.addAttribute("account", account);
+        model.addAttribute("parentAccount", parentAccount);
+        model.addAttribute("accountList", userService.getAccountList());
 
         return "content/mypage/main";
+    }
+
+    // 상위결재자 설정
+    @PostMapping("/teamManager/add-post")
+    public String courseManagerAddPost(@RequestParam("parentUserId") String parentUserId) {
+
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Account account = userService.getAccountByUserId(userDetails.getUserId());
+        account.setParentUserId(parentUserId);
+
+        userRepository.save(account);
+
+        return "redirect:/mypage/main";
     }
 
     @GetMapping("/quiz")
@@ -188,3 +217,4 @@ public class MyPageController {
                 .body(resource);
     }
 }
+

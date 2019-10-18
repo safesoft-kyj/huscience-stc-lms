@@ -36,6 +36,12 @@ public class CourseMaster extends AuditorCreateEntity<String> {
     @ColumnDefault("1")
     private String requestType = "1";
 
+    // 팀장/부서장 승인 여부
+    private String isTeamMangerApproval = "N" ;
+
+    // 과정 관리자 승인 여부
+    private String isCourseMangerApproval = "N" ;
+
 //
 //    @Transient
 //    private String minorName;

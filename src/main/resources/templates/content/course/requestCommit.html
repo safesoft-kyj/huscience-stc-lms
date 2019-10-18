@@ -42,14 +42,14 @@
 
                     <div class="row">
                         <div class="col-sm-12 input-group pull-right">
-                            <span class="text-2x text-success" sec:authentication="principal.username" ></span><span> 님의</span>
-                            <h5 th:text="${course.getTitle() + '신청이 완료 되었습니다.'}"></h5>
+                            <span class="text-2x text-success" sec:authentication="principal.username" ></span>
+                            <h5 th:text="#{label.course.requestdone(${course.getTitle()})}"></h5>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-12 input-group pull-right">
                             <p class="text-center">
-                                <a th:href="@{/mypage/main}" class="btn btn-lg btn-warning">마이홈으로 가기</a>
+                                <a th:href="@{/mypage/main}" class="btn btn-lg btn-warning" th:text="#{label.myhome}">My Home</a>
                             </p>
                         </div>
                     </div>

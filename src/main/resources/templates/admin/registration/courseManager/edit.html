@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default_layout">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css"></th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title">교육유형 수정</h3>
+                </div>
+                <div class="panel-body">
+                    <!--===================================================-->
+                    <!--End Horizontal Form-->
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/registration/courseManager/edit-post/{userId}(userId=${courseManager.userId})}" th:object="${courseManager}" method="post">
+<!--                        <input type="hidden" th:field="*{userId}">-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="userId">교육과정 관리자</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" th:field="*{userId}" id="userId">
+                                    <option th:each="account : ${accountList}" th:value="${account.getUserId()}" th:text="${account.getName()}"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="registerDate" th:text="#{label.createdate}">등록일</label>
+                            <div class="col-sm-10">
+                                <div id="demo-dp-range">
+                                    <div id="demo-dp-component">
+                                        <div class="input-group date">
+                                            <input type="text" th:field="*{registerDate}" id="registerDate" class="form-control">
+                                            <span class="input-group-addon"><i class="demo-pli-calendar-4"></i></span>
+                                        </div>
+                                        <span th:if="${#fields.hasErrors('registerDate')}" th:errors="*{registerDate}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-footer text-right">
+                            <button class="btn btn-success" type="submit" th:text="#{label.save}">Submit</button>
+                        </div>
+                    </form>
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+
+<script th:src="@{/default/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js}"></script>
+
+<script>
+
+    $('#userId').chosen({width:'100%'});
+
+
+    $('#demo-dp-component .input-group.date').datepicker({
+        // format: "MM dd, yyyy",
+        format: "yyyy-mm-dd",
+        todayBtn: "linked",
+        autoclose: true,
+        todayHighlight: true
+    });
+
+</script>
+
+</th:block>
+
+</html>

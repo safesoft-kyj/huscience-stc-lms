@@ -38,9 +38,10 @@
 
             <!--Submenu-->
             <ul class="collapse">
-                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0101')}">공지사항</a></li>
-                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0102')}">법규/가이드라인</a></li>
-                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0103')}">자료실</a></li>
+                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0101')}" th:text="#{label.title.notice}">공지사항</a></li>
+                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0104')}" th:text="#{label.title.news}">What's New</a></li>
+                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0102')}" th:text="#{label.title.guide}">법규/가이드라인</a></li>
+                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0103')}" th:text="#{label.title.pds}">자료실</a></li>
             </ul>
         </li>
 
@@ -101,7 +102,7 @@
             <!--Submenu-->
             <ul class="collapse">
                 <li><a data-th-href="@{/info/month}">교육월간일정</a></li>
-                <li><a data-th-href="@{/info/year}">교육연간일정</a></li>
+                <li><a data-th-href="@{/info/year/{sctype}(sctype=${T(com.dtnsm.lms.domain.constant.ScheduleType).CALENDAR})}">교육연간일정</a></li>
                 <li class="list-divider"></li>
                 <li><a data-th-href="@{/info/request}">교육신청</a></li>
 
@@ -118,9 +119,10 @@
 
             <!--Submenu-->
             <ul class="collapse">
-                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0101')}">공지사항</a></li>
-                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0102')}">법규/가이드라인</a></li>
-                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0103')}">자료실</a></li>
+                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0101')}" th:text="#{label.title.notice}">공지사항</a></li>
+                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0104')}" th:text="#{label.title.news}">What's New</a></li>
+                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0102')}" th:text="#{label.title.guide}">법규/가이드라인</a></li>
+                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0103')}" th:text="#{label.title.pds}">자료실</a></li>
             </ul>
         </li>
 
@@ -200,10 +202,12 @@
             <ul class="collapse">
 
                 <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0101')}">공지사항</a></li>
+                <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0104')}">What's New</a></li>
                 <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0102')}">법규/가이드라인</a></li>
                 <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0103')}">자료실</a></li>
                 <li><a href="#" data-th-href="@{/admin/customer/list}">협약기관관리</a></li>
-                <li><a href="#" data-th-href="@{/admin/info/year/list}">연간일정등록</a></li>
+                <li><a href="#" data-th-href="@{/admin/schedule/list/{sctype}(sctype=${T(com.dtnsm.lms.domain.constant.ScheduleType).CALENDAR})}">연간일정등록</a></li>
+                <li><a href="#" data-th-href="@{/admin/schedule/list/{sctype}(sctype=${T(com.dtnsm.lms.domain.constant.ScheduleType).MATRIX})}">Employee Matrix</a></li>
             </ul>
         </li>
 
@@ -258,6 +262,7 @@
             <ul class="collapse">
                 <li><a href="#" data-th-href="@{/admin/registration/account/list}">사용자관리</a></li>
                 <li><a href="#" data-th-href="@{/admin/registration/role/list}">Role관리</a></li>
+                <li><a href="#" data-th-href="@{/admin/registration/courseManager/list}">교육과정 관리자관리</a></li>
 <!--                <li><a href="#" data-th-href="@{/admin/registration/accountRole/list}">사용자별Role관리</a></li>-->
 
             </ul>

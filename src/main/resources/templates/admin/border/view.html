@@ -39,20 +39,20 @@
                     <table class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <colgroup><col width="15%" /><col width="35%" /><col width="15%" /><col width="35%" /></colgroup>
                         <tr>
-                            <th><span>*</span> 제목</th>
+                            <th><span th:text="#{label.subject}"></span> </th>
                             <td th:text="${border.getTitle()}" colspan="3"></td>
                         </tr>
                         <tr>
-                            <th><span>*</span> 등록일</th>
+                            <th><span>*</span> <span th:text="#{label.createdate}"></span></th>
                             <td th:text="${border.getCreatedDate()}"></td>
-                            <th><span>*</span> 조회수</th>
+                            <th><span>*</span> <span th:text="#{label.readcount}"></span></th>
                             <td th:text="${border.getViewCnt()}"></td>
                         </tr>
                         <tr>
-                            <th><span>*</span> 첨부파일</th>
+                            <th><span>*</span> <span th:text="#{label.file}"></span></th>
                             <td colspan="3">
                                 <div th:each="uploadFile : ${border.getBorderFiles()}">
-                                    <a th:href="@{/admin/border/download-file/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>
+                                    <a th:href="@{/border/download-file/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>
                                 </div>
                             </td>
                         </tr>
@@ -65,8 +65,10 @@
                     <hr class="bg-gray"/>
                     <div class="input-group pull-right">
                         <p>
-                            <a th:href="@{/admin/border/edit/{id}(id=${border.getId()})}" class="btn btn-warning">수정</a>
-                            <a th:href="@{/admin/border/list/{typeId}(typeId=${border.getBorderMaster().getId()})}" class="btn btn-success">목록</a>
+                            <a th:href="@{/admin/border/edit/{id}(id=${border.getId()})}"
+                               class="btn btn-warning" th:text="#{label.edit}">수정</a>
+                            <a th:href="@{/admin/border/list/{typeId}(typeId=${border.getBorderMaster().getId()})}"
+                               class="btn btn-success" th:text="#{label.list}">목록</a>
                         </p>
                     </div>
                 </div><!--panel-body End -->

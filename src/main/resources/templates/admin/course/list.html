@@ -38,7 +38,7 @@
                 <div class="panel-body">
                     <div>
                         <div class="col-sm-6">
-                            총 <span th:text="${borders.getTotalElements() + '건'}" class="text-danger"></span>의 게시물이 등록되어 있습니다.
+                            <span th:text="#{label.list.title(${borders.getTotalElements()})}"></span>
                         </div>
                         <div class="col-sm-6 text-right">
                             <p>

@@ -16,6 +16,17 @@ public class FileUploadProperties {
     // 교육과정 에디터 이미지 업로드 경로
     private String coursePhotoUploadDir;
 
+    // 연간일정 파일 업로드 경로
+    private String scheduleUploadDir;
+
+    public String getScheduleUploadDir() {
+        return scheduleUploadDir;
+    }
+
+    public void setScheduleUploadDir(String scheduleUploadDir) {
+        this.scheduleUploadDir = scheduleUploadDir;
+    }
+
     public String getCourseSectionUploadDir() {
         return courseSectionUploadDir;
     }

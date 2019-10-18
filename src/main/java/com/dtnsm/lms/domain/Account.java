@@ -1,5 +1,7 @@
 package com.dtnsm.lms.domain;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,8 +19,25 @@ public class Account {
     private String userId;
 
     private String name;
+
+
+    private String engName;
     private String email;
     private String password;
+
+    // 부서
+    private String orgDepart;
+    // 업무
+    private String comJob;
+    // 직위
+    private String comPosition;
+    // 입사일
+    private String indate;
+
+    // 상위 결재권자
+    @Column(length = 30)
+    @ColumnDefault(value=" ")
+    private String parentUserId=" ";
 
     // 사용자 구분 (A:admin, U:일반유저, O:외부유저)
     private String userType;
@@ -26,6 +45,10 @@ public class Account {
     // 사용 유무
     private boolean enabled;
     private boolean tokenExpired;
+
+    @OneToOne(mappedBy="account")
+    @PrimaryKeyJoinColumn
+    private CourseManager courseManager;
 
 //    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<CourseAccount> courseAccounts = new ArrayList<>();
@@ -89,6 +112,53 @@ public class Account {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getParentUserId() {
+        return parentUserId;
+    }
+
+    public void setParentUserId(String parentUserId) {
+        this.parentUserId = parentUserId;
+    }
+
+    public void setEngName(String engName) {
+        this.engName = engName;
+    }
+
+    public String getEngName() {
+        return engName;
+    }
+    public String getOrgDepart() {
+        return orgDepart;
+    }
+
+    public String getComJob() {
+        return comJob;
+    }
+
+    public String getComPosition() {
+        return comPosition;
+    }
+
+    public String getIndate() {
+        return indate;
+    }
+
+    public void setOrgDepart(String orgDepart) {
+        this.orgDepart = orgDepart;
+    }
+
+    public void setComJob(String comJob) {
+        this.comJob = comJob;
+    }
+
+    public void setComPosition(String comPosition) {
+        this.comPosition = comPosition;
+    }
+
+    public void setIndate(String indate) {
+        this.indate = indate;
     }
 
     public String getEmail() {

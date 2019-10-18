@@ -6,6 +6,8 @@ import com.dtnsm.lms.domain.Account;
 import com.dtnsm.lms.domain.Course;
 import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.domain.CourseFile;
+import com.dtnsm.lms.domain.constant.ApprovalStatusType;
+import com.dtnsm.lms.domain.constant.CourseRequestType;
 import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.PageInfo;
@@ -18,9 +20,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,6 +59,9 @@ public class CourseController {
 
     @Autowired
     private CourseFileService fileService;
+
+    @Autowired
+    private CourseManagerService courseManagerService;
 
     private PageInfo pageInfo = new PageInfo();
 
@@ -115,12 +118,19 @@ public class CourseController {
 
         List<CourseAccount> courseAccountList = courseService.getCourseById(id).getCourseAccountList();
 
+
+        // 교육신청
         CourseAccount courseAccount = new CourseAccount();
         courseAccount.setCourse(course);
         courseAccount.setAccount(account);
         courseAccount.setRequestDate(DateUtil.getTodayString());
-        courseAccount.setRequestType("0");
-        courseAccount.setStatus("1");
+        courseAccount.setRequestType(CourseRequestType.SPECIFY);        // 교육신청유형(관리자지정, 사용자 신청)
+        courseAccount.setStatus(ApprovalStatusType.REQUEST_DONE);    // 신청완료(팀장승인진행중)
+        courseAccount.setApprUserId1(courseManagerService.getCourseManager().getUserId());
+        courseAccount.setIsTeamMangerApproval(course.getCourseMaster().getIsTeamMangerApproval());
+        courseAccount.setIsCourseMangerApproval(course.getCourseMaster().getIsCourseMangerApproval());
+        courseAccount.setApprUserId2(account.getParentUserId());
+
         courseAccountList.add(courseAccount);
         course.setCourseAccountList(courseAccountList);
 

@@ -30,46 +30,70 @@
             <!--===================================================-->
             <div class="panel">
                 <div class="panel-heading">
-                    <h3 class="panel-title">교육유형 수정</h3>
+                    <h3 class="panel-title"></h3>
                 </div>
                 <div class="panel-body">
                     <!--===================================================-->
                     <!--End Horizontal Form-->
                     <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course-master/edit-post/{id}(id=${course.id})}" th:object="${course}" method="post">
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" for="id">교육ID</label>
+                            <label class="col-sm-2 control-label" for="id" th:text="#{label.id}">교육ID</label>
                             <div class="col-sm-10">
-                                <input type="text" th:field="*{id}" id="id" placeholder="교육명" class="form-control" required="required" readonly>
+                                <input type="text" th:field="*{id}" id="id" placeholder="" class="form-control" readonly>
                             </div>
                             <span th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></span>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">교육 유형</label>
+                            <label class="col-sm-2 control-label" th:text="#{label.course.type}">교육 유형</label>
                             <div class="col-sm-10">
-                                <select th:field="*{minorCd}" class="form-control">
-                                    <option th:each="minor : ${minorList}" th:value="${minor.getMinorCd()}" th:text="${minor.getMinorNm()}"></option>
+                                <select th:field="*{minorCd}" class="form-control" id="course-type" required>
+                                    <option th:each="minor, index : ${minorList}" th:value="${minor.getMinorCd()}" th:text="${minor.getMinorNm()}"></option>
                                 </select>
                             </div>
                             <span th:if="${#fields.hasErrors('minorCd')}" th:errors="*{minorCd}"></span>
                         </div>
+
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" for="courseName">교육명</label>
+                            <label class="col-sm-2 control-label" for="courseName" th:text="#{label.name}">교육명</label>
                             <div class="col-sm-10">
-                                <input type="text" th:field="*{courseName}" id="courseName" placeholder="교육명" class="form-control" required="required">
+                                <input type="text" th:field="*{courseName}" id="courseName" placeholder="" class="form-control" required="required">
                             </div>
                             <span th:if="${#fields.hasErrors('courseName')}" th:errors="*{courseName}"></span>
                         </div>
+
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">신청일자 유형</label>
+                            <label class="col-sm-2 control-label" th:text="#{label.type}">신청일자 유형</label>
                             <div class="col-sm-10">
-                                <select th:field="*{requestType}" class="form-control" id="border-type">
+                                <select th:field="*{requestType}" class="form-control" id="requestType">
                                     <option th:each="minor : ${codeList}" th:value="${minor.getMinorCd()}" th:text="${minor.getMinorNm()}"></option>
                                 </select>
                             </div>
                             <span th:if="${#fields.hasErrors('requestType')}" th:errors="*{requestType}"></span>
                         </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" th:text="#{label.course.isCourseTeamApproval}">팀장/부서장 승인 여부</label>
+                            <div class="col-sm-10">
+                                <select th:field="*{isTeamMangerApproval}" class="form-control">
+                                    <option value="" >Select Option</option>
+                                    <option value="Y" >Y</option>
+                                    <option value="N" >N</option>
+                                </select>
+                            </div>
+                            <span th:if="${#fields.hasErrors('isTeamMangerApproval')}" th:errors="*{isTeamMangerApproval}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" th:text="#{label.course.isCourseManagerApproval}">교육과정 관리자 승인여부</label>
+                            <div class="col-sm-10">
+                                <select th:field="*{isCourseMangerApproval}" class="form-control">
+                                    <option value="" >Select Option</option>
+                                    <option value="Y" >Y</option>
+                                    <option value="N" >N</option>
+                                </select>
+                            </div>
+                            <span th:if="${#fields.hasErrors('isCourseMangerApproval')}" th:errors="*{isCourseMangerApproval}"></span>
+                        </div>
                         <div class="panel-footer text-right">
-                            <button class="btn btn-success" type="submit">Submit</button>
+                            <button class="btn btn-success" type="submit" th:text="#{label.save}">저장</button>
                         </div>
                     </form>
                 </div><!--panel-body End -->

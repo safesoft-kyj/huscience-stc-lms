@@ -71,9 +71,9 @@
 <!--                                    <a href="#" class="btn btn-success" id="popupBtn" onclick="popupPdfView('11', '디티앤사노메딕스')" target="_blank">학습하기</a>-->
 <!--                                    <span th:id="${'id' + index.count}" th:text="${section.getId()}"></span>-->
 
-                                    <th:block th:inline="text">
+                                    <th:block th:inline="text" th:each="sectionFile : ${section.getSectionFiles()}">
                                         <a href="#" class="btn btn-success" id="popupBtn"
-                                           th:onclick="|javascript:popupPdfView('${section.getSectionFiles().get(0).getId()}');return false;|" target="_blank">학습하기</a>
+                                           th:onclick="|javascript:popupPdfView('${sectionFile.getId()}');return false;|" target="_blank">학습하기</a>
                                     </th:block>
                                 </td>
                             </tr>

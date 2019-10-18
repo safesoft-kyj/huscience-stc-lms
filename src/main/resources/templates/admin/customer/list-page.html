@@ -43,14 +43,13 @@
                             <table id="customer-list-page" class="table table-striped table-bordered" cellspacing="0" width="100%">
                                 <thead>
                                 <tr>
-                                    <th>협약기관명</th>
-                                    <th>협약체결일자</th>
-                                    <th>협약 특혜</th>
-                                    <th>홈페이지</th>
-                                    <th>등록자</th>
-                                    <th>등록일</th>
-                                    <th>Edit</th>
-                                    <th>Delete</th>
+                                    <th th:text="#{label.customer.name}">협약기관명</th>
+                                    <th th:text="#{label.customer.date}" class="min-tablet">협약체결일자</th>
+                                    <th th:text="#{label.customer.condition}" class="min-desktop">협약 특혜</th>
+                                    <th th:text="#{label.homepage}">홈페이지</th>
+                                    <th th:text="#{label.createby}">등록자</th>
+                                    <th th:text="#{label.createdate}">등록일</th>
+                                    <th th:text="#{label.edit}">Edit</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -61,8 +60,12 @@
                                     <td th:text="${customer.getCreatedBy()}"></td>
                                     <td th:text="${customer.getCreatedDate()} ? ${#dates.format(customer.getCreatedDate(), 'yyyy/MM/dd HH:mm')} : ${customer.getCreatedDate()}"></td>
                                     <td><a th:href="${customer.homepage}" target="_blank"><span th:text="${customer.homepage}"></span></a></td>
-                                    <td><a th:href="@{/customer/edit/{id}(id=${elCustomer.getId()})}">Edit</a></td>
-                                    <td><a th:href="@{/customer/delete/{id}(id=${elCustomer.getId()})}">Delete</a></td>
+                                    <td>
+                                        <div class="form-inline">
+                                            <a class="btn btn-warning" th:href="@{/admin/customer/edit/{id}(id=${customer.getId()})}">Edit</a>
+                                            <a class="btn btn-danger" th:href="@{/admin/customer/delete/{id}(id=${customer.getId()})}">Delete</a>
+                                        </div>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>

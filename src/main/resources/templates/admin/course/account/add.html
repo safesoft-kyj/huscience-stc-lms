@@ -50,15 +50,15 @@
                                 </select>
                             </div>
                             <div class="col-sm-1 pull-right">
-                                <a class="btn btn-primary" id="btnOrg">조직도</a>
+                                <a class="btn btn-primary" id="btnOrg" th:text="#{label.organization}">조직도</a>
                             </div>
                         </div>
 
                         <div class="panel-footer text-right">
-                            <button class="btn btn-primary" type="submit" id="submit-all">
+                            <button class="btn btn-primary" type="submit" id="submit-all" th:text="#{label.save}">
                                 <i class="fa fa-upload-cloud"></i> 저장
                             </button>
-                            <a th:href="@{/admin/course/list/{typeId}(typeId=${course.getCourseMaster().getId()})}" class="btn btn-success">
+                            <a th:href="@{/admin/course/list/{typeId}(typeId=${course.getCourseMaster().getId()})}" class="btn btn-success" th:text="#{label.list}">
                                 <i class="fa fa-upload-cloud"></i> 목록
                             </a>
                         </div>

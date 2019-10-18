@@ -33,23 +33,23 @@
             <!--===================================================-->
             <div class="panel">
                 <div class="panel-heading">
-                    <h3 class="panel-title"></h3>
+                    <h3 class="panel-title"></span></h3>
                 </div>
                 <div class="panel-body">
                     <table class="table table-striped" cellspacing="0" width="100%">
                         <colgroup><col width="15%" /><col width="35%" /><col width="15%" /><col width="35%" /></colgroup>
                         <tr>
-                            <th><span>*</span> 제목</th>
+                            <th><span th:text="#{label.subject}"></span> </th>
                             <td th:text="${border.getTitle()}" colspan="3"></td>
                         </tr>
                         <tr>
-                            <th><span>*</span> 등록일</th>
+                            <th><span>*</span> <span th:text="#{label.createdate}"></span></th>
                             <td th:text="${border.getCreatedDate()}"></td>
-                            <th><span>*</span> 조회수</th>
+                            <th><span>*</span> <span th:text="#{label.readcount}"></span></th>
                             <td th:text="${border.getViewCnt()}"></td>
                         </tr>
                         <tr>
-                            <th><span>*</span> 첨부파일</th>
+                            <th><span>*</span> <span th:text="#{label.file}"></span></th>
                             <td colspan="3">
                                 <div th:each="uploadFile : ${border.getBorderFiles()}">
                                     <a th:href="@{/border/download-file/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>
@@ -62,7 +62,8 @@
                     </table>
                     <hr class="bg-gray"/>
                     <div class="input-group pull-right">
-                        <a th:href="@{/border/list/{typeId}(typeId=${border.getBorderMaster().getId()})}" class="btn btn-success">목록</a>
+                        <a th:href="@{/border/list/{typeId}(typeId=${border.getBorderMaster().getId()})}"
+                           class="btn btn-success" th:text="#{label.list}">목록</a>
                     </div>
                 </div><!--panel-body End -->
             </div><!-- panel End -->

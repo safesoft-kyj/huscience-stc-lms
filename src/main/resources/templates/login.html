@@ -40,6 +40,9 @@
                         <div th:if="${param.logout}">
                             <div class="alert alert-info">You have been logged out.</div>
                         </div>
+                        <div th:if="${param.invalid}">
+                            <div class="alert alert-info">invalid session.</div>
+                        </div>
                         <!-- js/demo/form-validation.js 에 작업되어 있음 -->
                         <div class="form-group">
                             <div class="form-group has-feedback">
