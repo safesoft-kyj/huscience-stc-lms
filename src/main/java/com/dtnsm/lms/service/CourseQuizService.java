@@ -1,9 +1,9 @@
 package com.dtnsm.lms.service;
 
 import com.dtnsm.lms.domain.CourseQuiz;
+import com.dtnsm.lms.domain.CourseQuizActionAnswer;
 import com.dtnsm.lms.domain.CourseQuizQuestion;
-import com.dtnsm.lms.domain.CourseQuizQuestionItem;
-import com.dtnsm.lms.repository.CourseQuizQuestionItemRepository;
+import com.dtnsm.lms.repository.CourseQuizQuestionAnswerRepository;
 import com.dtnsm.lms.repository.CourseQuizQuestionRepository;
 import com.dtnsm.lms.repository.CourseQuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class CourseQuizService {
     CourseQuizQuestionRepository questionRepository;
 
     @Autowired
-    CourseQuizQuestionItemRepository itemRepository;
+    CourseQuizQuestionAnswerRepository questionAnswerRepository;
 
      /*
         Quiz
@@ -61,26 +61,4 @@ public class CourseQuizService {
     public CourseQuizQuestion getCourseQuizQuestionById(Long id) {
         return questionRepository.findById(id).get();
     }
-
-    /*
-        Question Item
-     */
-
-    public CourseQuizQuestionItem saveQuizQuestionItem(CourseQuizQuestionItem quizItem){
-        return itemRepository.save(quizItem);
-    }
-
-    public void deleteQuizQuestionItem(CourseQuizQuestionItem quizItem) {
-        itemRepository.delete(quizItem);
-    }
-
-    public void deleteQuizQuestionItem(Long id) {
-        itemRepository.delete(getCourseQuizQuestionItemById(id));
-    }
-
-    public CourseQuizQuestionItem getCourseQuizQuestionItemById(Long id) {
-        return itemRepository.findById(id).get();
-    }
-
-
 }

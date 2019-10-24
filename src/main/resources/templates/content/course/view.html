@@ -33,7 +33,7 @@
             <!--===================================================-->
             <div class="panel">
                 <div class="panel-heading">
-                    <h3 class="panel-title"></h3>
+                    <h3 class="panel-title" th:text="${account.userId}"></h3>
                 </div>
                 <div class="panel-body">
                     <table class="table table-striped table-bordered" cellspacing="0" width="100%">
@@ -107,13 +107,18 @@
                     <hr class="bg-gray"/>
                     <div class="row">
                         <div class="col-sm-12 input-group pull-right">
+                            <form id="submit_form" th:action="@{/course/request/{id}(id=${course.getId()})}" method="get">
                             <p class="text-center">
-                                <a th:href="@{/course/request/{id}(id=${course.getId()})}" class="btn btn-lg btn-warning">교육신청</a>
+                                <th:block th:if="${#strings.isEmpty(account.parentUserId)}">
+                                    <a href="/mypage/main" class="btn btn-lg btn-danger">교육신청 (팀장/부서장을 설정하세요)</a>
+                                </th:block>
+                                <th:block th:unless="${#strings.isEmpty(account.parentUserId)}">
+                                    <a href="javascript:checkRequest();" class="btn btn-lg btn-warning">교육신청</a>
+                                </th:block>
                             </p>
+                            </form>
                         </div>
                     </div>
-
-
                 </div><!--panel-body End -->
             </div><!-- panel End -->
 
@@ -155,7 +160,7 @@
                                     <tbody>
                                     <tr th:each="sections, index : ${course.getSections()}">
                                         <td class="text-center" th:text="${index.count}"></td>
-                                        <td class="text-center" th:text="${sections.getType().getMinorNm()}"></td>
+                                        <td class="text-center" th:text="#{label.title.section}"></td>
                                         <td class="text-center">
                                             <a th:href="@{/admin/course/section/edit/{id}(id=${sections.getId()})}">
                                                 <span th:text="${sections.getName()}"></span>
@@ -167,18 +172,18 @@
 
                                     <tr th:each="quiz, index : ${course.getQuizzes()}">
                                         <td class="text-center" th:text="${index.count}"></td>
-                                        <td class="text-center" th:text="${quiz.getType().getMinorNm()}"></td>
+                                        <td class="text-center" th:text="#{label.title.quiz}"></td>
                                         <td class="text-center">
                                             <a th:href="@{/admin/course/quiz/edit/{id}(id=${quiz.getId()})}">
                                                 <span th:text="${quiz.getName()}"></span>
                                             </a>
                                         </td>
                                         <td class="text-center" th:text="${quiz.getFromDate() + ' ~ ' + quiz.getToDate()}"></td>
-                                        <td class="text-center" th:text="${quiz.getExamMinute() + '분'}"></td>
+                                        <td class="text-center" th:text="${quiz.getMinute() + '분'}"></td>
                                     </tr>
                                     <tr th:each="survey, index : ${course.getSurveys()}">
                                         <td class="text-center" th:text="${index.count}"></td>
-                                        <td class="text-center" th:text="${survey.getType().getMinorNm()}"></td>
+                                        <td class="text-center" th:text="#{label.title.survey}"></td>
                                         <td class="text-center">
                                             <a th:href="@{/admin/course/survey/edit/{id}(id=${survey.getId()})}">
                                                 <span th:text="${survey.getName()}"></span>
@@ -206,6 +211,41 @@
 </th:block>
 
 <th:block layout:fragment="custom_js">
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var userId = /*[[${account.userId}]]*/;
+
+        var courseId = /*[[${course.getId()}]]*/;
+
+        function checkRequest() {
+
+
+
+            $.ajax({
+                type : 'get',
+                url : '/api/courseAccount/isRequest',
+                dataType : 'json',
+                data : {
+                    'courseId': courseId,
+                    'userId': userId
+                },
+                error: function(xhr, status, error){
+                    alert(error);
+                },
+                success : function(data){
+
+                    if(data == true) alert('이미 신청되었습니다.');
+                    else {
+                        $('#submit_form').submit();
+                        alert('교육 신청되었습니다.');
+                    }
+                },
+            });
+            return;
+        }
+        /*]]>*/
+    </script>
 </th:block>
 
 </html>

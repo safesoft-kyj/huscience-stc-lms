@@ -2,6 +2,7 @@ package com.dtnsm.lms.service;
 
 import com.dtnsm.lms.domain.Border;
 import com.dtnsm.lms.domain.BorderFile;
+import com.dtnsm.lms.domain.Course;
 import com.dtnsm.lms.repository.BorderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -51,6 +52,33 @@ public class BorderService {
         pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
 
         return borderRepository.findAllByBorderMaster_Id(typeId, pageable);
+    }
+
+    // 제목 내용 Like 검색
+    public Page<Border> getPageListByTitleLikeOrContentLike(String typeId, String title, String content, Pageable pageable) {
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+
+        return borderRepository.findAllByBorderMaster_IdAndTitleLikeOrContentLike(typeId,"%" + title + "%", "%" + content + "%", pageable);
+    }
+
+    // 제목 Like 검색
+    public Page<Border> getPageListByTitleLike(String typeId, String title, Pageable pageable) {
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+
+        return borderRepository.findAllByBorderMaster_IdAndTitleLike(typeId, "%" + title + "%", pageable);
+    }
+
+    // 내용 Like 검색
+    public Page<Border> getPageListByContentLike(String typeId, String content, Pageable pageable) {
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+
+        return borderRepository.findAllByBorderMaster_IdAndContentLike(typeId, "%" + content + "%", pageable);
     }
 
     public Border getBorderById(Long id) {

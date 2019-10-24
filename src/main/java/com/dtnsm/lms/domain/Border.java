@@ -30,6 +30,10 @@ public class Border extends AuditorCreateEntity<String> {
     @ColumnDefault("0")
     private int replyCnt;
 
+    @Column(length = 1)
+    @ColumnDefault("0")
+    private String isNotice = "0";  // 0:일반글, 1:공지글
+
     // Parent 필드 추가
     @ManyToOne
     @JoinColumn(name = "type_id")

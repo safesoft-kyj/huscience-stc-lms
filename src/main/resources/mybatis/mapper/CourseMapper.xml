@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dtnsm.lms.mybatis.mapper.CourseMapper">
+
+    <select id="selectCourseCount" resultType="com.dtnsm.lms.mybatis.dto.CourseCountVO">
+        select
+            sum(case when id = 'BC0101' then 1 else 0 end) as 'col01'
+            , sum(case when id = 'BC0102' then 1 else 0 end) as 'col02'
+            , sum(case when id = 'BC0103' then 1 else 0 end) as 'col03'
+            , sum(case when id = 'BC0104' then 1 else 0 end) as 'col04'
+            , sum(course_cnt) as total_cnt
+        from (
+                select a.id
+                --, a.course_name
+                , count(*) as course_cnt
+                from el_course_master a
+                    inner join el_course b
+                        on a.id = b.type_id
+                group by a.id) x
+
+    </select>
+
+
+<!--    <insert id="insertCity">-->
+<!--      INSERT INTO CITY (NAME, COUNTRY, POPULATION)-->
+<!--      VALUES (#{name}, #{country}, #{population})-->
+<!--    </insert>-->
+
+</mapper>

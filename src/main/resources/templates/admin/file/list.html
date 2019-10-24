@@ -58,7 +58,9 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="uploadFile : ${fileList}">
-                                    <td th:text="${uploadFile.getFileName()}"></td>
+                                    <td>
+                                        <a th:href="@{/admin/file/downloadFile/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>
+                                    </td>
                                     <td th:text="${uploadFile.getMimeType()}"></td>
                                     <td th:text="${uploadFile.getSize()}"></td>
                                     <td class="text-center"><a th:href="@{/admin/file/delete/{id}(id=${uploadFile.getId()})}">Delete</a></td>

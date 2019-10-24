@@ -45,7 +45,7 @@
                             <th class="text-center">과정명</th>
 <!--                            <th class="text-center">기간</th>-->
                             <th class="text-center">시간</th>
-                            <th class="text-center">강사</th>
+<!--                            <th class="text-center">강사</th>-->
                             <th class="text-center">진도율</th>
                             <th class="text-center"></th>
                             </thead>
@@ -53,11 +53,11 @@
                             <th:block th:each="section, index : ${course.getSections()}">
                             <tr>
                                 <td class="text-center" th:text="${index.count}"}></td>
-                                <td class="text-center" th:text="${'강의'}"}></td>
+                                <td class="text-center" th:text="#{label.title.section}"}></td>
                                 <td class="text-left" th:text="${section.getName()}"}></td>
 <!--                                <td class="text-center" th:text="${section.getFromDate() + ' ~ ' + section.getToDate()}"></td>-->
                                 <td class="text-center" th:text="${section.getMinute()} + '분'"}></td>
-                                <td class="text-center" th:text="${section.getTeacher()}"}></td>
+<!--                                <td class="text-center" th:text="${section.getTeacher()}"}></td>-->
                                 <td class="text-left" >
 
                                     <div class="progress">
@@ -81,21 +81,32 @@
 
                             <tr th:each="quiz, index : ${course.getQuizzes()}">
                                 <td class="text-center" th:text="${index.count}"></td>
-                                <td class="text-center" th:text="${quiz.getType().getMinorNm()}"></td>
+                                <td class="text-center" th:text="#{label.title.quiz}"></td>
                                 <td class="text-left">
                                     <a th:href="@{/admin/course/quiz/edit/{id}(id=${quiz.getId()})}">
                                         <span th:text="${quiz.getName()}"></span>
                                     </a>
                                 </td>
 <!--                                <td class="text-center" th:text="${quiz.getFromDate() + ' ~ ' + quiz.getToDate()}"></td>-->
-                                <td class="text-center" th:text="${quiz.getExamMinute() + '분'}"></td>
-                                <td class="text-center"></td>
-                                <td class="text-center"></td>
-                                <td class="text-center"><a href="#" class="btn btn-success" onclick="showMessage();">시험응시</a></td>
+                                <td class="text-center" th:text="${quiz.getMinute() + '분'}"></td>
+<!--                                <td class="text-center"></td>-->
+                                <td class="text-left" >
+                                    <th:block th:each="actionQuiz : ${quiz.getQuizActions()}">
+                                        <div class="progress">
+                                            <div id="time2"  class="progress-bar progress-bar-success"
+                                                 th:attr="style=${'width:' + T(Math).round((actionQuiz.getTotalUseSecond()*1.0) / actionQuiz.getSecond() * 100) + '%'}"
+                                                 th:text="${T(Math).round((actionQuiz.getTotalUseSecond()*1.0) / actionQuiz.getSecond() * 100) + ' %'}">0%</div>
+                                        </div>
+                                    </th:block>
+                                </td>
+                                <td class="text-center">
+                                    <a href="#" class="btn btn-success" id="popupQuiz"
+                                       th:onclick="|javascript:popupQuizView('${quiz.getId()}');return false;|" target="_blank">시험응시</a>
+                                </td>
                             </tr>
                             <tr th:each="survey, index : ${course.getSurveys()}">
                                 <td class="text-center" th:text="${index.count}"></td>
-                                <td class="text-center" th:text="${survey.getType().getMinorNm()}"></td>
+                                <td class="text-center" th:text="#{label.title.survey}"></td>
                                 <td class="text-left">
                                     <a th:href="@{/admin/course/survey/edit/{id}(id=${survey.getId()})}">
                                         <span th:text="${survey.getName()}"></span>
@@ -104,8 +115,11 @@
 <!--                                <td class="text-center" th:text="${survey.getFromDate() + ' ~ ' + survey.getToDate()}"}></td>-->
                                 <td class="text-center"></td>
                                 <td class="text-center"></td>
-                                <td class="text-center"></td>
-                                <td class="text-center"><a href="#" class="btn btn-success" onclick="showMessage();">참여</a></td>
+<!--                                <td class="text-center"></td>-->
+                                <td class="text-center">
+                                    <a href="#" class="btn btn-success" id="popupSurvey"
+                                       th:onclick="|javascript:popupSurveyView('${survey.getId()}');return false;|" target="_blank">참여</a>
+                                </td>
                             </tr>
 
                             </tbody>
@@ -131,6 +145,40 @@
 
             var title = "디티앤사노메딕스";
             var url = "/mypage/classroom/pdfview/" + id;
+            // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+            var popupX = (window.screen.width / 2) - (width / 2);
+            // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
+            var popupY= (window.screen.height / 2) - (height / 2);
+
+            var option = "width =" + width + ", height =" + height + ", menubar=no, directories=no, location = no, scrollbars=no, resizable=no";
+            option += ", left=" + popupX + ", top=" + popupY;
+
+            window.open(url, title, option);
+        }
+
+        function popupQuizView(id) {
+            var width = 1000;
+            var height = 720;
+
+            var title = "디티앤사노메딕스";
+            var url = "/mypage/classroom/quizview/" + id;
+            // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+            var popupX = (window.screen.width / 2) - (width / 2);
+            // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
+            var popupY= (window.screen.height / 2) - (height / 2);
+
+            var option = "width =" + width + ", height =" + height + ", menubar=no, directories=no, location = no, scrollbars=no, resizable=no";
+            option += ", left=" + popupX + ", top=" + popupY;
+
+            window.open(url, title, option);
+        }
+
+        function popupSurveyView(id) {
+            var width = 1000;
+            var height = 720;
+
+            var title = "디티앤사노메딕스";
+            var url = "/mypage/classroom/surveyview/" + id;
             // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
             var popupX = (window.screen.width / 2) - (width / 2);
             // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음

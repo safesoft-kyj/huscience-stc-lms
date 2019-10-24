@@ -45,9 +45,17 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="title">제목</label>
                             <div class="col-sm-10">
-                                <input type="text" th:field="*{title}" id="title" placeholder="제목" class="form-control" required="required">
+                                <input type="text" th:field="*{title}" id="title" placeholder="제목" class="form-control col-sm-10" required="required">
                             </div>
                             <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"></label>
+                            <div class="checkbox">
+                                &nbsp;&nbsp;<input id="isNotice" name="isNotice" class="magic-checkbox" type="checkbox" value="1">
+                                <label for="isNotice">공지글</label>
+                            </div>
                         </div>
 
                         <div id="editSection"></div>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default_layout">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css"></th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title"></h3>
+                </div>
+                <div class="panel-body">
+                    <!--===================================================-->
+                    <!--End Horizontal Form-->
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/munjeBank/edit-post/{id}(id=${munjeBank.id})}" th:object="${munjeBank}" method="post">
+                        <input type="hidden" th:field="*{munjeType}">
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="quest" th:text="#{label.munje.quest}">문제</label>
+                            <div class="col-sm-10">
+                                <input type="text" th:field="*{quest}" id="quest" placeholder="" class="form-control" required="required">
+                            </div>
+                            <span th:if="${#fields.hasErrors('quest')}" th:errors="*{quest}"></span>
+                        </div>
+
+                        <!-- 1문항 -->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="ex1">1</label>
+                            <div class="input-group mar-btm">
+                                <div class="input-group-addon">
+                                    <input id="isAns1" name="isAns1" class="magic-checkbox" type="checkbox" value="1" th:checked="${#strings.equalsIgnoreCase(munjeBank.isAns1,'1')}">
+                                    <label for="isAns1"></label>
+                                </div>
+                                <input type="text" th:field="*{ex1}" id="ex1" placeholder="" class="form-control" required="required">
+                            </div>
+                            <span th:if="${#fields.hasErrors('ex1')}" th:errors="*{ex1}"></span>
+                        </div>
+
+                        <!-- 2문항 -->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="ex2">2</label>
+                            <div class="input-group mar-btm">
+                                <div class="input-group-addon">
+                                    <input id="isAns2" name="isAns2" class="magic-checkbox" type="checkbox" value="1" th:checked="${#strings.equalsIgnoreCase(munjeBank.isAns2,'1')}">
+                                    <label for="isAns2"></label>
+                                </div>
+                                <input type="text" th:field="*{ex2}" id="ex2" placeholder="" class="form-control" required="required">
+                            </div>
+                            <span th:if="${#fields.hasErrors('ex2')}" th:errors="*{ex2}"></span>
+                        </div>
+
+                        <!-- 3문항 -->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="ex3">3</label>
+                            <div class="input-group mar-btm">
+                                <div class="input-group-addon">
+                                    <input id="isAns3" name="isAns3" class="magic-checkbox" type="checkbox" value="1" th:checked="${#strings.equalsIgnoreCase(munjeBank.isAns3,'1')}">
+                                    <label for="isAns3"></label>
+                                </div>
+                                <input type="text" th:field="*{ex3}" id="ex3" placeholder="" class="form-control" required="required">
+                            </div>
+                            <span th:if="${#fields.hasErrors('ex3')}" th:errors="*{ex3}"></span>
+                        </div>
+
+                        <!-- 4문항 -->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="ex4">4</label>
+                            <div class="input-group mar-btm">
+                                <div class="input-group-addon">
+                                    <input id="isAns4" name="isAns4" class="magic-checkbox" type="checkbox" value="1" th:checked="${#strings.equalsIgnoreCase(munjeBank.isAns4,'1')}">
+                                    <label for="isAns4"></label>
+                                </div>
+                                <input type="text" th:field="*{ex4}" id="ex4" placeholder="" class="form-control">
+                            </div>
+                            <span th:if="${#fields.hasErrors('ex4')}" th:errors="*{ex4}"></span>
+                        </div>
+
+                        <!-- 5문항 -->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="ex5">5</label>
+                            <div class="input-group mar-btm">
+                                <div class="input-group-addon">
+                                    <input id="isAns5" name="isAns5" class="magic-checkbox" type="checkbox" value="1" th:checked="${#strings.equalsIgnoreCase(munjeBank.isAns5,'1')}">
+                                    <label for="isAns5"></label>
+                                </div>
+                                <input type="text" th:field="*{ex5}" id="ex5" placeholder="" class="form-control">
+                            </div>
+                            <span th:if="${#fields.hasErrors('ex5')}" th:errors="*{ex5}"></span>
+                        </div>
+                        <div class="panel-footer text-right">
+                            <button class="btn btn-success" type="submit" th:text="#{label.save}">저장</button>
+                        </div>
+                    </form>
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+    <script type="text/javascript" th:inline="javascript">
+
+
+
+</script>
+
+</th:block>
+
+</html>

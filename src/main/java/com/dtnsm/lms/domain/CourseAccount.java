@@ -1,6 +1,7 @@
 package com.dtnsm.lms.domain;
 
 import com.dtnsm.lms.auth.AuditorCreateEntity;
+import com.dtnsm.lms.auth.AuditorEntity;
 import com.dtnsm.lms.domain.constant.ApprovalStatusType;
 import com.dtnsm.lms.domain.constant.CourseRequestType;
 import lombok.Data;
@@ -8,12 +9,13 @@ import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.net.Authenticator;
+import java.util.Date;
 
 @Entity
 @Data
 @Table(name="el_course_account")
 @IdClass(CourseAccountId.class)
-public class CourseAccount extends AuditorCreateEntity<String> {
+public class CourseAccount extends AuditorEntity<String> {
 
     @Id
     @ManyToOne
@@ -55,18 +57,30 @@ public class CourseAccount extends AuditorCreateEntity<String> {
     @Column(length = 10)
     private String apprDate1;
 
-    @Column(length = 30)
-    private String apprUserId1;
+    private Date apprDateTime1;
+
+//    @Column(length = 30)
+//    private String apprUserId1;
+
+    @ManyToOne
+    @JoinColumn(name = "appr_user_id1",columnDefinition="VARCHAR(30)")
+    private Account apprUserId1;
 
     // 팀장 승인일자
     @Column(length = 10)
     private String apprDate2;
 
-    @Column(length = 30)
-    private String apprUserId2;
+    private Date apprDateTime2;
+
+//    @Column(length = 30)
+//    private String apprUserId2;
+
+    @ManyToOne
+    @JoinColumn(name = "appr_user_id2",columnDefinition="VARCHAR(30)")
+    private Account apprUserId2;
 
     // 최종상태 : 1:신청완료(팀장승인진행중), 2:팀장승인완료(관리자확인중), 3:승인완료
-    @Column(length = 20)
+    @Column(length = 30)
     @ColumnDefault(value = "0")
     @Enumerated(EnumType.STRING)
     private ApprovalStatusType status;

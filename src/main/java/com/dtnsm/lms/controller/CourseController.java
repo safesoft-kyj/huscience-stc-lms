@@ -11,6 +11,7 @@ import com.dtnsm.lms.domain.constant.CourseRequestType;
 import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.PageInfo;
+import com.dtnsm.lms.util.SessionUtil;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -23,10 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
@@ -47,6 +45,9 @@ public class CourseController {
 
     @Autowired
     CourseService courseService;
+
+    @Autowired
+    CourseAccountService courseAccountService;
 
     @Autowired
     private CourseSectionService sectionService;
@@ -73,7 +74,11 @@ public class CourseController {
     }
 
     @GetMapping("/list/{typeId}")
-    public String listPage(@PathVariable("typeId") String typeId, @PageableDefault Pageable pageable, Model model) {
+    public String listPage(@PathVariable("typeId") String typeId
+                            , @RequestParam("searchType") String searchType
+                            , @RequestParam("searchText") String searchText
+                            , @PageableDefault Pageable pageable
+                            , Model model) {
 
         // 초기생성만 되고 타이틀이 없는 경우 삭제
         //courseService.deleteBlankCourse();
@@ -81,7 +86,17 @@ public class CourseController {
         String courseName = courseMasterService.getById(typeId).getCourseName();
         pageInfo.setPageTitle(courseName + "조회");
 
-        Page<Course> courses = courseService.getPageList(typeId, pageable);
+        Page<Course> courses;
+        if(searchType.equals("all") && searchText.equals("")) {
+            courses = courseService.getPageList(typeId, pageable);
+        } else if(searchType.equals("all") && !searchText.equals("")) {
+            courses = courseService.getPageListByTitleLikeOrContentLike(typeId, searchText, searchText, pageable);
+        } else if (searchType.equals("subject")) {
+            courses = courseService.getPageListByTitleLike(typeId, searchText, pageable);
+        } else {
+            courses = courseService.getPageListByContentLike(typeId, searchText, pageable);
+        }
+
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courses);
 
@@ -98,12 +113,80 @@ public class CourseController {
 
         Course course= courseService.save(oldCourse);
 
+        pageInfo.setPageId("self");
+        pageInfo.setPageTitle(course.getCourseMaster().getCourseName() + " 상세");
+
+        Account account = userService.getAccountByUserId(SessionUtil.getUserId());
+
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("course", course);
+        model.addAttribute("account", account);
+
+        return "content/course/view";
+    }
+
+    // 결재현황
+    @GetMapping("/approval/{id}")
+    public String approval(@PathVariable("id") long id, Model model) {
+
+        Course oldCourse = courseService.getCourseById(id);
+
+        oldCourse.setViewCnt(oldCourse.getViewCnt() + 1);
+
+        Course course= courseService.save(oldCourse);
+
+        CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserId(id, SessionUtil.getUserId());
+
         pageInfo.setPageTitle(course.getCourseMaster().getCourseName() + " 상세");
 
         model.addAttribute(pageInfo);
         model.addAttribute("course", course);
+        model.addAttribute("courseAccount", courseAccount);
 
-        return "content/course/view";
+        return "content/course/approval";
+    }
+
+    // 교육신청 1차 결재 승인
+    @GetMapping("/approvalAppr1/{id}")
+    public String approvalAppr1(@PathVariable("id") long id, Model model) {
+
+        Course oldCourse = courseService.getCourseById(id);
+
+        oldCourse.setViewCnt(oldCourse.getViewCnt() + 1);
+
+        Course course= courseService.save(oldCourse);
+
+        CourseAccount courseAccount = courseAccountService.getByCourseIdAndApprUserId1(id, SessionUtil.getUserId());
+
+        pageInfo.setPageTitle(course.getCourseMaster().getCourseName() + " 상세");
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("course", course);
+        model.addAttribute("courseAccount", courseAccount);
+
+        return "content/course/approvalAppr1";
+    }
+
+    // 교육신청 2차 결재 승인
+    @GetMapping("/approvalAppr2/{id}")
+    public String approvalAppr2(@PathVariable("id") long id, Model model) {
+
+        Course oldCourse = courseService.getCourseById(id);
+
+        oldCourse.setViewCnt(oldCourse.getViewCnt() + 1);
+
+        Course course= courseService.save(oldCourse);
+
+        CourseAccount courseAccount = courseAccountService.getByCourseIdAndApprUserId2(id, SessionUtil.getUserId());
+
+        pageInfo.setPageTitle(course.getCourseMaster().getCourseName() + " 상세");
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("course", course);
+        model.addAttribute("courseAccount", courseAccount);
+
+        return "content/course/approvalAppr2";
     }
 
     @GetMapping("/request/{id}")
@@ -126,10 +209,10 @@ public class CourseController {
         courseAccount.setRequestDate(DateUtil.getTodayString());
         courseAccount.setRequestType(CourseRequestType.SPECIFY);        // 교육신청유형(관리자지정, 사용자 신청)
         courseAccount.setStatus(ApprovalStatusType.REQUEST_DONE);    // 신청완료(팀장승인진행중)
-        courseAccount.setApprUserId1(courseManagerService.getCourseManager().getUserId());
+        courseAccount.setApprUserId1(userService.getAccountByUserId(account.getParentUserId()));
+        courseAccount.setApprUserId2(userService.getAccountByUserId(courseManagerService.getCourseManager().getUserId()));
         courseAccount.setIsTeamMangerApproval(course.getCourseMaster().getIsTeamMangerApproval());
         courseAccount.setIsCourseMangerApproval(course.getCourseMaster().getIsCourseMangerApproval());
-        courseAccount.setApprUserId2(account.getParentUserId());
 
         courseAccountList.add(courseAccount);
         course.setCourseAccountList(courseAccountList);

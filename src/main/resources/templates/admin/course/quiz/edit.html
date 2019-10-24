@@ -37,15 +37,16 @@
                     <!--End Horizontal Form-->
                     <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/quiz/edit-post/{id}(id=${courseQuiz.getId()})}" th:object="${courseQuiz}" method="post" enctype="multipart/form-data">
                         <input type="hidden" th:value="${id}" id="id" name="id">
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" th:text="#{label.gubun}">구분</label>
-                            <div class="col-sm-10">
-                                <select th:field="*{type}" class="form-control" readonly="readonly">
-                                    <option th:each="code : ${codeList}" th:value="${code.getMinorCd()}" th:text="${code.getMinorNm()}"></option>
-                                </select>
-                            </div>
-                            <span th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></span>
-                        </div>
+<!--                        <input type="hidden" th:field="*{type}" id="type" >-->
+<!--                        <div class="form-group">-->
+<!--                            <label class="col-sm-2 control-label" th:text="#{label.gubun}">구분</label>-->
+<!--                            <div class="col-sm-10">-->
+<!--                                <select th:field="*{type}" class="form-control" readonly="readonly">-->
+<!--                                    <option th:each="code : ${codeList}" th:value="${code.getMinorCd()}" th:text="${code.getMinorNm()}"></option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                            <span th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></span>-->
+<!--                        </div>-->
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="name" th:text="#{label.course.quiz.name}">시험명</label>
                             <div class="col-sm-10">
@@ -55,7 +56,7 @@
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="fromDate" th:text="#{label.course.quiz.period}">시험기간</label>
-                            <div class="col-sm-10">
+                            <div class="col-sm-4">
                                 <div id="demo-dp-range">
                                     <div class="input-daterange input-group" id="datepicker2">
                                         <input type="text" th:field="*{fromDate}" id="fromDate" placeholder="from" class="form-control" required="required">
@@ -68,21 +69,53 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" for="questionCount" th:text="#{label.questioncount}">문제수</label>
-                            <div class="col-sm-2">
-                                <input type="number" th:field="*{questionCount}" id="questionCount" placeholder="" class="form-control" required="required">
+                            <label class="col-sm-2 control-label" for="minute" th:text="#{label.course.quiz.minute}">시험시간(분)</label>
+                            <div class="col-sm-4">
+                                <input type="number" th:field="*{minute}" id="minute" placeholder="" class="form-control" required="required">
                             </div>
-                            <span th:if="${#fields.hasErrors('questionCount')}" th:errors="*{questionCount}"></span>
-                            <label class="col-sm-2 control-label" for="itemCount" th:text="#{label.itemcount}">항목수</label>
-                            <div class="col-sm-2">
-                                <input type="number" th:field="*{itemCount}" id="itemCount" placeholder="" class="form-control" required="required">
+                            <span th:if="${#fields.hasErrors('minute')}" th:errors="*{minute}"></span>
+                            <label class="col-sm-2 control-label" for="pathCount" th:text="#{label.course.quiz.pathCount}">합격문항수</label>
+                            <div class="col-sm-4">
+                                <input type="number" th:field="*{pathCount}" id="pathCount" placeholder="" class="form-control" required="required">
                             </div>
-                            <span th:if="${#fields.hasErrors('itemCount')}" th:errors="*{itemCount}"></span>
-                            <label class="col-sm-2 control-label" for="examMinute" th:text="#{label.course.quiz.minute}">시험시간(분)</label>
-                            <div class="col-sm-2">
-                                <input type="number" th:field="*{examMinute}" id="examMinute" placeholder="" class="form-control" required="required">
+                            <span th:if="${#fields.hasErrors('pathCount')}" th:errors="*{pathCount}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" th:text="#{label.course.quiz.file}">첨부파일</label>
+                            <div class="col-sm-10">
+                                <div th:switch="${courseQuiz.getQuizFiles().isEmpty()}">
+                                    <div th:case="true"></div>
+                                    <div th:case="*">
+                                        <table id="customer-list-page" class="table table-striped table-courseed" cellspacing="0" width="100%">
+                                            <thead>
+                                            <tr>
+                                                <th class="text-center col-sm-8" th:text="#{label.filename}">파일명</th>
+                                                <th class="text-center col-sm-2" th:text="#{label.filesize}">사이즈</th>
+                                                <th class="text-center col-sm-2" th:text="#{label.delete}">삭제</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="uploadFile : ${courseQuiz.getQuizFiles()}">
+                                                <td>
+                                                    <a th:href="@{/admin/course/quiz/download-file/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>
+                                                </td>
+                                                <td th:text="${uploadFile.getSize()}" class="text-center"></td>
+                                                <td class="text-center col-sm-2">
+                                                    <a class="btn btn-xs btn-danger" th:href="@{/admin/course/quiz/delete-file/{quiz_id}/{file_id}(quiz_id=${courseQuiz.getId()}, file_id=${uploadFile.getId()})}"><i class="demo-psi-trash"></i></a>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
-                            <span th:if="${#fields.hasErrors('examMinute')}" th:errors="*{examMinute}"></span>
+
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" th:text="#{label.course.quiz.file}">문제파일</label>
+                            <div class="col-sm-10">
+                                <input type="file" name="file">
+                            </div>
                         </div>
                         <div class="panel-footer text-right">
                             <button class="btn btn-primary" type="submit" id="submit-all" th:text="#{label.save}">

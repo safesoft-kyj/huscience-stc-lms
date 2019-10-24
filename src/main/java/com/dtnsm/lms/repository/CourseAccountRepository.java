@@ -18,7 +18,26 @@ public interface CourseAccountRepository extends JpaRepository<CourseAccount, Co
 
     CourseAccount findByCourse_IdAndAccount_UserId(long courseId, String userId);
 
+    CourseAccount findByCourse_IdAndApprUserId1_UserId(long courseId, String userId);
+
+    CourseAccount findByCourse_IdAndApprUserId2_UserId(long courseId, String userId);
+
+
+
     void deleteCourseAccountByAccount_UserId(String userId);
     void deleteCourseAccountByCourse_Id(long courseId);
+
+    // 내신청함
+    Page<CourseAccount> findByAccount_UserId(String userId, Pageable pageable);
+
+    // 1차 결재자(팀장/부서장)
+    Page<CourseAccount> findByApprUserId1_UserId(String userId, Pageable pageable);
+
+    Page<CourseAccount> findByApprUserId1_UserIdAndIsAppr1(String userId, String isAppr1, Pageable pageable);
+
+    // 2차 결재자(과정 관리자)
+    Page<CourseAccount> findByApprUserId2_UserId(String userId, Pageable pageable);
+
+    Page<CourseAccount> findByApprUserId2_UserIdAndIsAppr2(String userId, String isAppr2, Pageable pageable);
 
 }

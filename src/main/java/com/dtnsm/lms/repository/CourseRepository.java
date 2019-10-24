@@ -12,6 +12,15 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     Page<Course> findAllByCourseMaster_Id(String typeId, Pageable pageable);
 
+    // 제목, 내용 검색
+    Page<Course> findAllByCourseMaster_IdAndTitleLikeOrContentLike(String typeId, String title, String content, Pageable pageable);
+    // 내용 검색
+    Page<Course> findAllByCourseMaster_IdAndContentLike(String typeId, String content, Pageable pageable);
+    // 제목 검색
+    Page<Course> findAllByCourseMaster_IdAndTitleLike(String typeId, String title, Pageable pageable);
+
+    Page<Course> findAllByTitleLike(String title, Pageable pageable);
+
     List<Course> findAllByTitle(String title);
 
     List<Course> findByFromDateBetween(String fromDate, String toDate);

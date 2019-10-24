@@ -57,7 +57,7 @@ public class CourseSection extends AuditorCreateEntity<String> {
     @ColumnDefault("0")
     private int second;
 
-    // 학습한 시간(초) => 진동율 계산시 필요
+    // 학습한 시간(초) => 진도율 계산시 필요
     @Column(name="total_use_second")
     @ColumnDefault("0")
     private int totalUseSecond;

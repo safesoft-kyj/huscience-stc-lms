@@ -70,9 +70,9 @@
                                     <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy/MM/dd')} : ${border.getCreatedDate()}" class="text-center"></td>
                                     <td th:text="${border.getViewCnt()}" class="text-center"></td>
                                     <td class="text-left">
-                                        <a class="btn btn-warning" th:href="@{/admin/course/section/add/{id}(id=${border.getId()})}">강의등록</a>
-                                        <a th:if="${border.getIsQuiz().equals('Y')}" class="btn btn-warning" th:href="@{/admin/course/quiz/add/{id}(id=${border.getId()})}">문제등록</a>
-                                        <a th:if="${border.getIsSurvey().equals('Y')}" class="btn btn-warning" th:href="@{/admin/course/survey/add/{id}(id=${border.getId()})}">설문등록</a>
+                                        <a class="btn btn-warning" th:href="@{/admin/course/section/add/{id}(id=${border.getId()})}" th:text="#{label.course.section.add}">강의등록</a>
+                                        <a th:if="${border.getIsQuiz().equals('Y')}" class="btn btn-warning" th:href="@{/admin/course/quiz/add/{id}(id=${border.getId()})}" th:text="#{label.course.quiz.add}">시험등록</a>
+                                        <a th:if="${border.getIsSurvey().equals('Y')}" class="btn btn-warning" th:href="@{/admin/course/survey/add/{id}(id=${border.getId()})}" th:text="#{label.course.survey.add}">설문등록</a>
                                     </td>
                                     <td class="text-center"><a th:href="@{/admin/course/edit/{id}(id=${border.getId()})}">Edit</a></td>
                                     <td class="text-center"><a th:href="@{/admin/course/delete/{id}(id=${border.getId()})}">Delete</a></td>

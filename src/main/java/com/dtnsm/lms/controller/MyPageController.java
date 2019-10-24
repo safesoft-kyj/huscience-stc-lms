@@ -3,29 +3,25 @@ package com.dtnsm.lms.controller;
 import com.dtnsm.lms.auth.CustomUserDetails;
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.*;
-import com.dtnsm.lms.mybatis.dto.UserVO;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.repository.UserRepository;
-import com.dtnsm.lms.service.CourseAccountService;
-import com.dtnsm.lms.service.CourseSectionFileService;
-import com.dtnsm.lms.service.CourseSectionService;
-import com.dtnsm.lms.service.CourseService;
+import com.dtnsm.lms.service.*;
+import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
+import com.dtnsm.lms.util.SessionUtil;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +39,15 @@ public class MyPageController {
     CourseSectionService courseSectionService;
 
     @Autowired
+    CourseQuizService courseQuizService;
+
+    @Autowired
+    CourseQuizActionService courseQuizActionService;
+
+    @Autowired
+    CourseSurveyService courseSurveyService;
+
+    @Autowired
     UserServiceImpl userService;
 
     @Autowired
@@ -54,9 +59,13 @@ public class MyPageController {
     @Autowired
     private CourseSectionFileService courseSectionFileService;
 
+
     private MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
 
     private PageInfo pageInfo = new PageInfo();
+
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseAdminController.class);
+
 
     public MyPageController() {
         pageInfo.setParentId("m-mypage");
@@ -69,7 +78,7 @@ public class MyPageController {
         pageInfo.setPageId("m-mypage-main");
         pageInfo.setPageTitle("메인");
 
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CustomUserDetails userDetails = SessionUtil.getUserDetail();
         Account account = userService.getAccountByUserId(userDetails.getUserId());
         List<CourseAccount> courseAccountList = courseAccountService.getCourseAccountByUserId(userDetails.getUserId());
 
@@ -90,9 +99,7 @@ public class MyPageController {
     @PostMapping("/teamManager/add-post")
     public String courseManagerAddPost(@RequestParam("parentUserId") String parentUserId) {
 
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        Account account = userService.getAccountByUserId(userDetails.getUserId());
+        Account account = userService.getAccountByUserId(SessionUtil.getUserId());
         account.setParentUserId(parentUserId);
 
         userRepository.save(account);
@@ -110,24 +117,13 @@ public class MyPageController {
         return "content/mypage/main";
     }
 
-    @GetMapping("/approval")
-    public String approval(Model model) {
-
-        pageInfo.setPageId("m-mypage-approval");
-        pageInfo.setPageTitle("교육결재조회");
-        model.addAttribute(pageInfo);
-
-        return "content/mypage/approval";
-    }
-
     @GetMapping("/certificate/view")
     public String certificateView(Model model) {
 
         pageInfo.setPageId("m-mypage-myinfo");
         pageInfo.setPageTitle("수료증발급");
 
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<CourseAccount> courseAccountList = courseAccountService.getCourseAccountByUserId(userDetails.getUserId());
+        List<CourseAccount> courseAccountList = courseAccountService.getCourseAccountByUserId(SessionUtil.getUserId());
 
         List<Course> courseList = new ArrayList<>();
         for(CourseAccount courseAccount : courseAccountList) {
@@ -146,8 +142,7 @@ public class MyPageController {
         pageInfo.setPageId("m-mypage-myinfo");
         pageInfo.setPageTitle("수료증발급");
 
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CourseAccount courseAccount = courseAccountService.getCourseAccountByCourseIdAndUserId(courseId, userDetails.getUserId());
+        CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserId(courseId, SessionUtil.getUserId());
 
         Course course = courseService.getCourseById(courseId);
 
@@ -163,7 +158,7 @@ public class MyPageController {
         pageInfo.setPageId("m-mypage-myinfo");
         pageInfo.setPageTitle("강의목차");
 
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CustomUserDetails userDetails = SessionUtil.getUserDetail();
         Account account = userService.getAccountByUserId(userDetails.getUserId());
 //        List<CourseAccount> courseAccountList = courseAccountService.getCourseAccountByUserId(userDetails.getUserId());
 
@@ -175,6 +170,8 @@ public class MyPageController {
         return "content/mypage/classroom/view";
     }
 
+
+    // 강의 View
     @GetMapping("/classroom/pdfview/{id}")
     public String pdfView(@PathVariable("id") Long fileId, Model model) {
 
@@ -187,6 +184,87 @@ public class MyPageController {
         model.addAttribute("courseSectionFile", courseSectionFile);
 
         return "content/mypage/classroom/pdfview";
+    }
+
+    // 퀴즈 View
+    @GetMapping("/classroom/quizview/{id}")
+    public String quizView(@PathVariable("id") Long quizId, Model model) {
+
+        CourseQuiz courseQuiz = courseQuizService.getCourseQuizById(quizId);
+
+        Account account = userService.getAccountByUserId(SessionUtil.getUserId());
+
+        CourseQuizAction quizAction = new CourseQuizAction();
+        quizAction.setAccount(account);
+        quizAction.setExamDate(DateUtil.getTodayString());
+        quizAction.setRunCount(0);
+        quizAction.setMinute(0);
+        quizAction.setScore(0);
+        quizAction.setTotalUseSecond(0);
+        quizAction.setQuiz(courseQuiz);
+        CourseQuizAction quizAction1 = courseQuizActionService.saveQuizAction(quizAction);
+
+
+        pageInfo.setPageId("m-mypage-myinfo");
+        pageInfo.setPageTitle(courseQuiz.getName());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("quizAction", quizAction1);
+
+        return "content/mypage/classroom/quizview";
+    }
+
+    // 퀴즈 View
+    @PostMapping("/classroom/quizview-post/{id}")
+    public String quizPost(@PathVariable("id") Long quizActionId
+            , HttpServletRequest request
+            , Model model) {
+
+
+        CourseQuizAction courseQuizAction = courseQuizActionService.getCourseQuizActionById(quizActionId);
+
+        CourseQuizActionAnswer questionAnswer;
+        String question_id, userAnswer;
+        for(CourseQuizQuestion question : courseQuizAction.getQuiz().getQuizQuestions()) {
+
+            question_id = Long.toString(question.getId());
+            userAnswer = request.getParameter(question_id);
+
+            questionAnswer = new CourseQuizActionAnswer();
+            questionAnswer.setAnswer(question.getAnswer());
+            questionAnswer.setUserAnswer(userAnswer);
+            questionAnswer.setQuestion(question);
+            questionAnswer.setQuizAction(courseQuizAction);
+
+            // 정답일 경우 1, 오답일 경우 0으로 설정(정답갯수는 isAnswer 의 합임)
+            if(questionAnswer.getAnswer().equals(questionAnswer.getUserAnswer())) questionAnswer.setAnswerCount(1);
+            else questionAnswer.setAnswerCount(0);
+
+            courseQuizActionService.saveQuizQuestionAnswer(questionAnswer);
+        }
+
+        pageInfo.setPageId("m-mypage-myinfo");
+        pageInfo.setPageTitle(courseQuizAction.getQuiz().getName());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("quizAction", courseQuizActionService.getCourseQuizActionById(quizActionId));
+
+        return "content/mypage/classroom/quizview";
+    }
+
+    // 시험 View
+    @GetMapping("/classroom/surveyview/{id}")
+    public String surveyView(@PathVariable("id") Long surveyId, Model model) {
+
+        CourseSurvey courseSurvey = courseSurveyService.getCourseSurveyById(surveyId);
+
+        pageInfo.setPageId("m-mypage-myinfo");
+        pageInfo.setPageTitle(courseSurvey.getName());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("courseSurvey", courseSurvey);
+
+        return "content/mypage/classroom/surveyview";
     }
 
     @GetMapping("/download-file/{id}")

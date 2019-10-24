@@ -1,6 +1,7 @@
 package com.dtnsm.lms.repository;
 
 import com.dtnsm.lms.domain.Border;
+import com.dtnsm.lms.domain.Course;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,6 +12,13 @@ import java.util.List;
 public interface BorderRepository extends JpaRepository<Border, Long> {
 
     Page<Border> findAllByBorderMaster_Id(String typeId, Pageable pageable);
+
+    // 제목, 내용 검색
+    Page<Border> findAllByBorderMaster_IdAndTitleLikeOrContentLike(String typeId, String title, String content, Pageable pageable);
+    // 내용 검색
+    Page<Border> findAllByBorderMaster_IdAndContentLike(String typeId, String content, Pageable pageable);
+    // 제목 검색
+    Page<Border> findAllByBorderMaster_IdAndTitleLike(String typeId, String title, Pageable pageable);
 
     List<Border> findAllByTitle(String title);
 

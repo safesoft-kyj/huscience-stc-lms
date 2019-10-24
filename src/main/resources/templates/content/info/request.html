@@ -32,10 +32,61 @@
             <!-- Basic Data Tables -->
             <!--===================================================-->
             <div class="panel">
-                <div class="panel-heading">
-                    <h3 class="panel-title"></h3>
-                </div>
                 <div class="panel-body">
+                    <div class="panel">
+                        <div class="panel-body">
+                            <form name="testForm" id="testForm" th:action="@{/info/request}">
+                            <table id="customer-list-page1" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                                <tbody>
+                                <tr>
+                                    <td class="text-right" style="vertical-align: middle">과정구분</td>
+                                    <td>
+                                        <div th:switch="${courseMasterList}">
+                                            <h2 th:case="null">No customer yet!</h2>
+                                            <div th:case="*">
+                                                 <div class="form-group pad-ver">
+<!--                                                    <label class="col-md-3 control-label text-right">Radio Buttons</label>-->
+                                                    <div class="col-md-9 text-left">
+                                                        <!-- Radio Buttons -->
+                                                        <div class="radio">
+                                                                <input id='demo-inline-form-radio0' class="magic-radio" type="radio" name="typeId" value="all" checked>
+                                                                <label for='demo-inline-form-radio0'>전체</label>
+
+                                                            <th:block th:each="courseMaster, index : ${courseMasterList}">
+
+                                                                <input th:id="${'demo-inline-form-radio' + index.count}" class="magic-radio" type="radio" name="typeId" th:value="${courseMaster.getId()}" th:checked="${#strings.equalsIgnoreCase(courseMaster.getId(), param.typeId)}">
+                                                                <label th:for="${'demo-inline-form-radio' + index.count}" th:text="${courseMaster.getCourseName()}">Option 1 (pre-checked)</label>
+                                                            </th:block>
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right" style="vertical-align: middle">과정명</td>
+                                    <td>
+                                        <input class="form-control" type="text" th:value="${param.title}" id="title" name="title" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="text-center">
+                                        <a class="btn btn-lg btn-success" onclick="form_subimt();return false;" th:text="#{label.search}">검색</a>
+                                        <a class="btn btn-lg btn-default" th:href="@{/info/request}" th:text="#{label.init}">초기화</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+
+                            </table>
+
+                            </form>
+                        </div>
+                    </div>
+
                     <div>
                         <h5>
                             <span th:text="${'총 '+borders.getTotalElements() + '건'}" class="text-danger"></span>의 교육과정이 등록되어 있습니다.
@@ -99,6 +150,40 @@
 </th:block>
 
 <th:block layout:fragment="custom_js">
+    <script>
+
+        $(document).ready(function() {
+            $('#title').focus();
+        });
+
+
+        function form_subimt() {
+
+            $('#testForm').submit();
+            $('#title').focus();
+
+            // var formData = $("form[name=testForm]").serialize() ;
+            //
+            //
+            // /* Checked 찾기 */
+            // var id = $('input[name="inline-form-radio"]:checked').attr('id');
+            // var value = $('input[name="inline-form-radio"]:checked').val();
+            //
+            // $.ajax({
+            //     type : 'post',
+            //     url : '/info/request',
+            //     data : formData,
+            //     //dataType : 'json',
+            //     error: function(xhr, status, error){
+            //         alert(error);
+            //     },
+            //     success : function(json){
+            //         alert(json)
+            //     },
+            // });
+
+        }
+    </script>
 </th:block>
 
 </html>

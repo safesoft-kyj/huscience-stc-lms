@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -69,9 +70,30 @@ public class BorderAdminController {
 
 
     // region # 공지사항
+//
+//    @GetMapping("/list/{typeId}")
+//    public String noticeListMulti(@PathVariable("typeId") String typeId, @PageableDefault Pageable pageable, Model model) {
+//
+//        // 초기생성만 되고 타이틀이 없는 경우 삭제
+//        //borderService.deleteBlankBorder();
+//
+//        String borderName = borderMasterService.getById(typeId).getBorderName();
+//        pageInfo.setPageTitle(borderName + "조회");
+//
+//        Page<Border> borders = borderService.getPageList(typeId, pageable);
+//        model.addAttribute(pageInfo);
+//        model.addAttribute("borders", borders);
+//        model.addAttribute("typeId", typeId);
+//
+//        return "admin/border/list";
+//    }
 
     @GetMapping("/list/{typeId}")
-    public String noticeListMulti(@PathVariable("typeId") String typeId, @PageableDefault Pageable pageable, Model model) {
+    public String listPage(@PathVariable("typeId") String typeId
+            , @RequestParam(value = "searchType", defaultValue = "all") String searchType
+            , @RequestParam(value = "searchText", defaultValue = "") String searchText
+            , @PageableDefault Pageable pageable
+            , Model model) {
 
         // 초기생성만 되고 타이틀이 없는 경우 삭제
         //borderService.deleteBlankBorder();
@@ -79,13 +101,26 @@ public class BorderAdminController {
         String borderName = borderMasterService.getById(typeId).getBorderName();
         pageInfo.setPageTitle(borderName + "조회");
 
-        Page<Border> borders = borderService.getPageList(typeId, pageable);
+        Page<Border> borders;
+
+        if(searchType.equals("all") && searchText.equals("")) {
+            borders = borderService.getPageList(typeId, pageable);
+        } else if (searchType.equals("all") && !searchText.equals("")) {
+            borders = borderService.getPageListByTitleLikeOrContentLike(typeId, searchText, searchText, pageable);
+        } else if (searchType.equals("subject")) {
+            borders = borderService.getPageListByTitleLike(typeId, searchText, pageable);
+        } else {
+            borders = borderService.getPageListByContentLike(typeId, searchText, pageable);
+        }
+
+
         model.addAttribute(pageInfo);
         model.addAttribute("borders", borders);
         model.addAttribute("typeId", typeId);
 
         return "admin/border/list";
     }
+
 
     @GetMapping("/view/{id}")
     public String noticeView(@PathVariable("id") long id, Model model) {
@@ -244,6 +279,36 @@ public class BorderAdminController {
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + newFileName + "\"")
                 .body(resource);
+    }
+
+
+    @GetMapping("/download-file2/{id}")
+    @ResponseBody
+    public ResponseEntity<Resource> downloadFile2(@PathVariable int id, HttpServletRequest request){
+
+        BorderFile borderFile = borderFileService.getUploadFile(id);
+
+        // Load file as Resource
+        Resource resource = borderFileService.loadFileAsResource(borderFile.getSaveName());
+
+        // Try to determine file's content type
+        String contentType = mimeTypesMap.getContentType(borderFile.getSaveName());
+        // contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+
+
+        // Fallback to the default content type if type could not be determined
+        if(contentType.equals("")) {
+            contentType = "application/octet-stream";
+        }
+
+        // 한글파일명 깨짐 현상 해소
+        String newFileName = FileUtil.getNewFileName(request, borderFile.getFileName());
+
+        final HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentType(MediaType.parseMediaType(contentType));
+        responseHeaders.add("Content-Disposition", "attachment; filename=\"" + newFileName + "\"");
+
+        return new ResponseEntity<Resource>(resource, responseHeaders, HttpStatus.OK);
     }
 
     // endregion

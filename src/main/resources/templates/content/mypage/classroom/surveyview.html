@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--Meta Data-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title th:text="${pageInfo.getPageTitle()}"></title>
+
+    <!--Css lib-->
+    <!--Open Sans Font [ OPTIONAL ]-->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+
+    <!--Bootstrap Stylesheet [ REQUIRED ]-->
+    <link rel="stylesheet" th:href="@{/default/css/bootstrap.min.css}" />
+    <!--Themify Icons [ OPTIONAL ]-->
+    <link th:href="@{/default/plugins/themify-icons/themify-icons.min.css}" rel="stylesheet">
+
+    <!--Ion Icons [ OPTIONAL ]-->
+    <link th:href="@{/default/plugins/ionicons/css/ionicons.min.css}" rel="stylesheet">
+
+    <style>
+    </style>
+
+</head>
+<body oncontextmenu="return false">
+    <div id="container" class="effect aside-float aside-bright mainnav-lg">
+        <div class="col-md-12">
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="col-sm-10">
+                        <h3 class="text-primary" th:text="${courseSurvey.getName()}"></span> </h3>
+                    </div>
+                    <div class="col-sm-2 text-right">
+                        <h3 class="demo-icon btn btn-warning" onclick="closeWindow();"><i class="ti-close"></i> <span>종료</span></h3>
+                    </div>
+                </div>
+                <div class="panel-body" style="padding-bottom: 0;">
+                    <table class="table table-striped table-condensed" cellspacing="0" width="100%" style="padding-bottom: 0">
+                        <colgroup><col width="80%" /><col width="20%" /></colgroup>
+                        <tr>
+                            <td colspan="2">
+                                <div id="example1"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: bottom;">
+                                <br>
+                                <div class="progress">
+                                    <div id="time" style="width: 0%;" class="progress-bar progress-bar-success">0%</div>
+                                </div>
+                            </td>
+                            <td class="text-right" style="vertical-align: top">
+                                <h3 id="ptimer"><div class="demo-icon"><i class="ti-timer"></i> <span id="timer">0:0:00</span></div> </h3>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!--jQuery [ REQUIRED ]-->
+<script th:src="@{/default/js/jquery.min.js}"></script>
+
+<!--BootstrapJS [ RECOMMENDED ]-->
+<script th:src="@{/default/js/bootstrap.min.js}"></script>
+
+<!-- PDF 라이브러리-->
+<script th:src="@{/default/plugins/pdfjs/build/pdfobject.js}"></script>
+
+<script th:inline="javascript">
+
+    function closeWindow() {
+        this.close();
+    }
+
+    // 새로고침 방지
+    function doNotReload(){
+        //ctrl+N , ctrl+R, function F5
+        if( (event.ctrlKey == true && (event.keyCode == 78 || event.keyCode == 82)) || (event.keyCode == 116))
+        {
+            event.keyCode = 0;
+            event.cancelBubble = true;
+            event.returnValue = false;
+        }
+    }
+    document.onkeydown = doNotReload;
+
+</SCRIPT>
+
+
+</body>
+</html>

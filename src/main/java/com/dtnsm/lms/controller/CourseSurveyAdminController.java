@@ -51,7 +51,7 @@ public class CourseSurveyAdminController {
 
         model.addAttribute(pageInfo);
         model.addAttribute("survey", survey);
-        model.addAttribute("codeList", codeService.getMinorList(majorCode));
+//        model.addAttribute("codeList", codeService.getMinorList(majorCode));
         model.addAttribute("id", courseId);
 
         return "admin/course/survey/add";
@@ -83,7 +83,7 @@ public class CourseSurveyAdminController {
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseSurvey", courseSurvey);
-        model.addAttribute("codeList", codeService.getMinorList(majorCode));
+//        model.addAttribute("codeList", codeService.getMinorList(majorCode));
         model.addAttribute("id", courseSurvey.getId());
 
         return "admin/course/survey/edit";

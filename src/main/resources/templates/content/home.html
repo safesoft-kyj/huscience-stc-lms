@@ -39,13 +39,76 @@
     <div id="content-container">
 
         <!--Page Title-->
-        <div th:replace="fragments/common/content_title :: content-title"></div>
+<!--        <div th:replace="fragments/common/content_title :: content-title"></div>-->
         <!--Page Title End-->
 
         <!--Page content-->
 
         <!--===================================================-->
         <div id="page-content">
+            <div class="row">
+
+                <div class="col-md-3">
+                    <div class="panel panel-warning panel-colorful media middle pad-all">
+                        <div class="media-left">
+                            <div class="pad-hor">
+                                <i class="demo-pli-file-word icon-3x"></i>
+                            </div>
+                        </div>
+                        <div class="media-body">
+                            <p class="text-2x mar-no text-semibold">
+                                <a th:href="@{/info/request/BC0101}" th:text="${courseCountVO.getCol01()}" style="color:white"></a>
+                            </p>
+                            <p class="mar-no">self training</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="panel panel-info panel-colorful media middle pad-all">
+                        <div class="media-left">
+                            <div class="pad-hor">
+                                <i class="demo-pli-file-zip icon-3x"></i>
+                            </div>
+                        </div>
+                        <div class="media-body">
+                            <p class="text-2x mar-no text-semibold">
+                                <a th:href="@{/info/request/BC0102}" th:text="${courseCountVO.getCol02()}" style="color:white"></a>
+                            </p>
+                            <p class="mar-no">class training</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="panel panel-mint panel-colorful media middle pad-all">
+                        <div class="media-left">
+                            <div class="pad-hor">
+                                <i class="demo-pli-camera-2 icon-3x"></i>
+                            </div>
+                        </div>
+                        <div class="media-body">
+                            <p class="text-2x mar-no text-semibold">
+                                <a th:href="@{/info/request/BC0103}" th:text="${courseCountVO.getCol03()}" style="color:white"></a>
+                            </p>
+                            <p class="mar-no">부서별 교육</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="panel panel-danger panel-colorful media middle pad-all">
+                        <div class="media-left">
+                            <div class="pad-hor">
+                                <i class="demo-pli-video icon-3x"></i>
+                            </div>
+                        </div>
+                        <div class="media-body">
+                            <p class="text-2x mar-no text-semibold">
+                                <a th:href="@{/info/request/BC0104}" th:text="${courseCountVO.getCol04()}" style="color:white"></a>
+                            </p>
+                            <p class="mar-no">외부 교육</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="row">
                 <div class="eq-height">
@@ -215,61 +278,7 @@
                 </div>
             </div>
 
-            <div class="row">
 
-                <div class="col-md-3">
-                <div class="panel panel-warning panel-colorful media middle pad-all">
-                    <div class="media-left">
-                        <div class="pad-hor">
-                            <i class="demo-pli-file-word icon-3x"></i>
-                        </div>
-                    </div>
-                    <div class="media-body">
-                        <p class="text-2x mar-no text-semibold">241</p>
-                        <p class="mar-no">Documents</p>
-                    </div>
-                </div>
-            </div>
-                <div class="col-md-3">
-                    <div class="panel panel-info panel-colorful media middle pad-all">
-                        <div class="media-left">
-                            <div class="pad-hor">
-                                <i class="demo-pli-file-zip icon-3x"></i>
-                            </div>
-                        </div>
-                        <div class="media-body">
-                            <p class="text-2x mar-no text-semibold">241</p>
-                            <p class="mar-no">Zip Files</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="panel panel-mint panel-colorful media middle pad-all">
-                        <div class="media-left">
-                            <div class="pad-hor">
-                                <i class="demo-pli-camera-2 icon-3x"></i>
-                            </div>
-                        </div>
-                        <div class="media-body">
-                            <p class="text-2x mar-no text-semibold">241</p>
-                            <p class="mar-no">Photos</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="panel panel-danger panel-colorful media middle pad-all">
-                        <div class="media-left">
-                            <div class="pad-hor">
-                                <i class="demo-pli-video icon-3x"></i>
-                            </div>
-                        </div>
-                        <div class="media-body">
-                            <p class="text-2x mar-no text-semibold">241</p>
-                            <p class="mar-no">Videos</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div><!-- Page content End -->
     </div><!-- Content container End -->
 </th:block>

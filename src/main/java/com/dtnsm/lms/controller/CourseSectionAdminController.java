@@ -82,7 +82,7 @@ public class CourseSectionAdminController {
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseSection", courseSection);
-        model.addAttribute("codeList", codeService.getMinorList(majorCode));
+//        model.addAttribute("codeList", codeService.getMinorList(majorCode));
         model.addAttribute("minorCode", minorCode);
         model.addAttribute("id", courseId);
 
@@ -122,7 +122,7 @@ public class CourseSectionAdminController {
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseSection", courseSection);
-        model.addAttribute("codeList", codeService.getMinorList(majorCode));
+//        model.addAttribute("codeList", codeService.getMinorList(majorCode));
         model.addAttribute("id", courseSection.getId());
 
         return "admin/course/section/edit";

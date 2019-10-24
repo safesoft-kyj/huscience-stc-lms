@@ -3,6 +3,7 @@ package com.dtnsm.lms.domain;
 import com.dtnsm.lms.auth.AuditorCreateEntity;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -35,35 +36,19 @@ public class CourseQuiz extends AuditorCreateEntity<String> {
     @Column(name="to_date", length = 10)
     private String toDate;
 
-    // 시험응시일
-    @Column(name="exam_date", length = 10)
-    private String examDate;
+    // 총시험시간(분)
+    @Column(name="exam_minute")
+    @ColumnDefault("0")
+    private int minute;
 
-    // 시험응시시간
-    @Column(name="exam_time", length = 8)
-    private int examTime;
+    // 총시험시간(초)
+    @Column(name="exam_second")
+    @ColumnDefault("0")
+    private int second;
 
-    // 질문수
-    @Column(name="question_count")
-    private int questionCount = 0;
-
-    // 예제수(예제수가 0이면 주관식 그외는 객관식)
-    @Column(name="item_count")
-    private int itemCount = 0;
-
-    // 시험시간(분)
-    @Column(name="examMinute")
-    private int examMinute = 0;
-
-    // 점수
-    @Column(name="score")
-    private int score;
-
-    // 문제 유형(BC0201:객관식, BC0202:주관식) => Major Code : BC02
-    // Parent 필드 추가
-    @ManyToOne
-    @JoinColumn(name = "type")
-    private ElMinor type;
+    // 합격 문제 수
+    @Column(name="path_count")
+    private int pathCount;
 
     // Parent 필드 추가
     @ManyToOne
@@ -71,5 +56,11 @@ public class CourseQuiz extends AuditorCreateEntity<String> {
     private Course course;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CourseQuizFile> quizFiles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CourseQuizQuestion>  quizQuestions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CourseQuizAction> quizActions = new ArrayList<>();
 }

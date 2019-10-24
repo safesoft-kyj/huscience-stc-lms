@@ -44,47 +44,47 @@
                             <td th:text="${course.courseMaster.getCourseName()}" colspan="3"></td>
                         </tr>
                         <tr>
-                            <th><span th:text="#{label.course.name}">*</span> 과정명</th>
+                            <th><span th:text="#{label.course.name}">과정명</span></th>
                             <td th:text="${course.getTitle()}" colspan="3"></td>
                         </tr>
                         <tr>
-                            <th><span th:text="#{label.course.requesperiod}">*</span> 신청기간</th>
+                            <th><span th:text="#{label.course.requesperiod}">신청기간</span></th>
                             <td th:text="${course.getRequestFromDate() + ' ~ ' + course.getToDate()} "></td>
-                            <th><span th:text="#{label.course.period}">*</span> 교육기간</th>
+                            <th><span th:text="#{label.course.period}">교육기간</span></th>
                             <td th:text="${course.getFromDate() + ' ~ ' + course.getToDate()} "></td>
                         </tr>
                         <tr>
-                            <th><span th:text="#{label.course.daycountandtime}">*</span> 학습일수/시간</th>
+                            <th><span th:text="#{label.course.daycountandtime}">학습일수/시간</span></th>
                             <td th:text="${course.getDay()}"></td>
-                            <th><span th:text="#{label.course.place}">*</span> 교육장소</th>
+                            <th><span th:text="#{label.course.place}">교육장</span>소</th>
                             <td th:text="${course.getPlace()}"></td>
                         </tr>
                         <tr>
-                            <th><span th:text="#{label.course.amount}">*</span> 수강료</th>
+                            <th><span th:text="#{label.course.amount}">수강료</span></th>
                             <td th:text="${course.getAmount()}+'원'"></td>
-                            <th><span th:text="#{label.course.peoplecount}">*</span> 교육정원</th>
+                            <th><span th:text="#{label.course.peoplecount}">교육정원</span></th>
                             <td th:text="${course.getCnt()}+'명'"></td>
                         </tr>
                         <tr>
-                            <th><span th:text="#{label.course.accountlist}">*</span> 교육필수대상자</th>
+                            <th><span th:text="#{label.course.accountlist}">교육필수대상자</span></th>
                             <td ><span th:each="account : ${course.getCourseAccountList()}" th:text="${account.getAccount().getName() + ' '}"></span></td>
-                            <th><span th:text="#{label.gubun}">*</span> 참석대상부서</th>
+                            <th><span th:text="#{label.gubun}">참석대상부서</span></th>
                             <td th:text="${course.getTeam()}"></td>
                         </tr>
                         <tr>
-                            <th><span th:text="#{label.course.isbook}">*</span> 교제 재공 여부</th>
+                            <th><span th:text="#{label.course.isbook}">교재 재공 여부</span></th>
                             <td th:text="${course.getIsBook()}"></td>
-                            <th><span th:text="#{label.course.isquiz}">*</span> 시험 진행 여부</th>
+                            <th><span th:text="#{label.course.isquiz}">시험 진행 여부</span></th>
                             <td th:text="${course.getIsQuiz()}"></td>
                         </tr>
                         <tr>
-                            <th><span th:text="#{label.course.issurvey}">*</span> 설문 진행 여부</th>
+                            <th><span th:text="#{label.course.issurvey}">설문 진행 여부</span></th>
                             <td th:text="${course.getIsSurvey()}"></td>
-                            <th><span th:text="#{label.course.iscerti}">*</span> 수료증 발급 여부</th>
+                            <th><span th:text="#{label.course.iscerti}">수료증 발급 여부</span></th>
                             <td th:text="${course.getIsCerti()}"></td>
                         </tr>
                         <tr>
-                            <th><span th:text="#{label.file}">*</span> 첨부파일</th>
+                            <th><span th:text="#{label.file}">첨부파일</span></th>
                             <td colspan="3">
                                 <div th:each="sections : ${course.getCourseFiles()}">
                                     <a th:href="@{/admin/course/download-file/{id}(id=${sections.getId()})}" th:text="${sections.getFileName()}"></a>
@@ -92,9 +92,9 @@
                             </td>
                         </tr>
                         <tr>
-                            <th><span th:text="#{label.createdate}">*</span> 등록일</th>
+                            <th><span th:text="#{label.createdate}">등록일</span></th>
                             <td th:text="${course.getCreatedDate()}"></td>
-                            <th><span th:text="#{label.readcount}">*</span> 조회수</th>
+                            <th><span th:text="#{label.readcount}">조회수</span></th>
                             <td th:text="${course.getViewCnt()}"></td>
                         </tr>
                         </tbody>
@@ -110,7 +110,6 @@
                         </div>
                         <div class="col-sm-6 input-group pull-right">
                             <p class="text-right">
-                                <a th:href="@{/admin/course/edit/{id}(id=${course.getId()})}" class="btn btn-success" th:text="#{label.course.request}">교육신청</a>
                                 <a th:href="@{/admin/course/edit/{id}(id=${course.getId()})}" class="btn btn-success" th:text="#{label.edit}">수정</a>
                                 <a th:href="@{/admin/course/list/{typeId}(typeId=${course.getCourseMaster().getId()})}" class="btn btn-success" th:text="#{label.list}">목록</a>
                             </p>
@@ -160,7 +159,7 @@
                                     <tbody>
                                     <tr th:each="sections, index : ${course.getSections()}">
                                         <td class="text-center" th:text="${index.count}"></td>
-                                        <td class="text-center" th:text="${sections.getType().getMinorNm()}"></td>
+                                        <td class="text-center" th:text="#{label.title.section}"></td>
                                         <td class="text-center">
                                             <a th:href="@{/admin/course/section/edit/{id}(id=${sections.getId()})}">
                                                 <span th:text="${sections.getName()}"></span>
@@ -172,19 +171,19 @@
 
                                     <tr th:each="quiz, index : ${course.getQuizzes()}">
                                         <td class="text-center" th:text="${index.count}"></td>
-                                        <td class="text-center" th:text="${quiz.getType().getMinorNm()}"></td>
+                                        <td class="text-center" th:text="#{label.title.quiz}"></td>
                                         <td class="text-center">
                                             <a th:href="@{/admin/course/quiz/edit/{id}(id=${quiz.getId()})}">
                                                 <span th:text="${quiz.getName()}"></span>
                                             </a>
                                         </td>
                                         <td class="text-center" th:text="${quiz.getFromDate() + ' ~ ' + quiz.getToDate()}"></td>
-                                        <td class="text-center" th:text="#{label.course.minute(${quiz.getExamMinute()})}"></td>
+                                        <td class="text-center" th:text="#{label.course.minute(${quiz.getMinute()})}"></td>
                                     </tr>
 r
                                     <tr th:each="survey, index : ${course.getSurveys()}">
                                         <td class="text-center" th:text="${index.count}"></td>
-                                        <td class="text-center" th:text="${survey.getType().getMinorNm()}"></td>
+                                        <td class="text-center" th:text="#{label.title.survey}"></td>
                                         <td class="text-center">
                                             <a th:href="@{/admin/course/survey/edit/{id}(id=${survey.getId()})}">
                                                 <span th:text="${survey.getName()}"></span>

@@ -1,92 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
 
 <ul id="mainnav-menu" class="list-group" th:fragment="menu">
 
-    <div sec:authorize="hasRole('ROLE_OTHER')">
-
-        <!--Category name-->
-        <li class="list-header">Other Menu</li>
-
-        <!--Menu list item-->
-        <li>
-            <a href="#">
-                <i class="demo-pli-split-vertical-2"></i>
-                <span class="menu-title">교육안내</span>
-                <i class="arrow"></i>
-            </a>
-
-            <!--Submenu-->
-            <ul class="collapse">
-                <li><a data-th-href="@{/info/month}">교육월간일정</a></li>
-                <li><a data-th-href="@{/info/year}">교육연간일정</a></li>
-                <li class="list-divider"></li>
-                <li><a data-th-href="@{/info/request}">교육신청</a></li>
-
-            </ul>
-        </li>
-
-        <!--Menu list item-->
-        <li>
-            <a href="#">
-                <i class="demo-pli-split-vertical-2"></i>
-                <span class="menu-title">학습지원</span>
-                <i class="arrow"></i>
-            </a>
-
-            <!--Submenu-->
-            <ul class="collapse">
-                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0101')}" th:text="#{label.title.notice}">공지사항</a></li>
-                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0104')}" th:text="#{label.title.news}">What's New</a></li>
-                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0102')}" th:text="#{label.title.guide}">법규/가이드라인</a></li>
-                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0103')}" th:text="#{label.title.pds}">자료실</a></li>
-            </ul>
-        </li>
-
-        <!--Menu list item-->
-        <li>
-            <a href="#">
-                <i class="demo-pli-split-vertical-2"></i>
-                <span class="menu-title">Digital Binder</span>
-                <i class="arrow"></i>
-            </a>
-
-            <!--Submenu-->
-            <ul class="collapse">
-                <li><a data-th-href="@{/binder/cv}">CV</a></li>
-                <li><a data-th-href="@{/binder/jd}">JD</a></li>
-                <li><a data-th-href="@{/binder/tmlog}">Employee Training Log(TM)</a></li>
-                <li><a data-th-href="@{/binder/soplog}">Employee Training Log(eSOP)</a></li>
-                <li><a data-th-href="@{/binder/certi}">Certificates</a></li>
-
-            </ul>
-        </li>
-
-        <!--Menu list item-->
-        <li>
-            <a href="#">
-                <i class="demo-pli-split-vertical-2"></i>
-                <span class="menu-title">마이페이지</span>
-                <i class="arrow"></i>
-            </a>
-
-            <!--Submenu-->
-            <ul class="collapse">
-                <li><a data-th-href="@{/mypage/main}">메인</a></li>
-                <li><a data-th-href="@{/mypage/quiz}">시험/시험결과/수료증발급</a></li>
-                <li><a data-th-href="@{/mypage/approval}">교육결재조회</a></li>
-                <li><a data-th-href="@{/mypage/myinfo}">사용자정보</a></li>
-
-            </ul>
-        </li>
-
-        <li class="list-divider"></li>
-
-    </div>
-
-    <div sec:authorize="hasRole('ROLE_USER')">
+    <th:block sec:authorize="hasRole('ROLE_USER')">
 
         <!--Category name-->
         <li class="list-header">User Menu</li>
@@ -94,7 +13,7 @@
         <!--Menu list item-->
         <li>
             <a href="#">
-                <i class="demo-pli-split-vertical-2"></i>
+                <i class="demo-pli-home"></i>
                 <span class="menu-title">교육안내</span>
                 <i class="arrow"></i>
             </a>
@@ -112,7 +31,7 @@
         <!--Menu list item-->
         <li>
             <a href="#">
-                <i class="demo-pli-split-vertical-2"></i>
+                <i class="demo-pli-home"></i>
                 <span class="menu-title">학습지원</span>
                 <i class="arrow"></i>
             </a>
@@ -129,7 +48,7 @@
         <!--Menu list item-->
         <li>
             <a href="#">
-                <i class="demo-pli-split-vertical-2"></i>
+                <i class="demo-pli-home"></i>
                 <span class="menu-title">Digital Binder</span>
                 <i class="arrow"></i>
             </a>
@@ -145,10 +64,28 @@
             </ul>
         </li>
 
+        <li>
+            <a href="#">
+                <i class="demo-pli-home"></i>
+                <span class="menu-title">교육결재</span>
+                <i class="arrow"></i>
+            </a>
+
+            <!--Submenu-->
+            <ul class="collapse">
+                <li><a href="#" data-th-href="@{/approval/listMyAppr}">내신청함</a></li>
+                <li><a href="#" data-th-href="@{/approval/listAppr1Process}">미결함</a></li>
+                <li><a href="#" data-th-href="@{/approval/listAppr1Commit}">진행함</a></li>
+                <li><a href="#" data-th-href="@{/approval/listAppr1}">완료함</a></li>
+            </ul>
+        </li>
+
+
+
         <!--Menu list item-->
         <li>
             <a href="#">
-                <i class="demo-pli-split-vertical-2"></i>
+                <i class="demo-pli-home"></i>
                 <span class="menu-title">마이페이지</span>
                 <i class="arrow"></i>
             </a>
@@ -157,26 +94,24 @@
             <ul class="collapse">
                 <li><a data-th-href="@{/mypage/main}">메인</a></li>
                 <li><a data-th-href="@{/mypage/certificate/view}">수료증발급</a></li>
-                <li><a data-th-href="@{/mypage/quiz}">시험/시험결과/수료증발급</a></li>
-                <li><a data-th-href="@{/mypage/approval}">교육결재조회</a></li>
-                <li><a data-th-href="@{/mypage/myinfo}">사용자정보</a></li>
-
+<!--                <li><a data-th-href="@{/mypage/quiz}">시험/시험결과/수료증발급</a></li>-->
+<!--                <li><a data-th-href="@{/mypage/myinfo}">사용자정보</a></li>-->
             </ul>
         </li>
 
         <li class="list-divider"></li>
 
-    </div>
+    </th:block>
 
     <!--  ROLE_ADMIN  관리자만 보이게 -->
-    <div sec:authorize="hasRole('ROLE_MANAGER')">
+    <th:block sec:authorize="hasRole('ROLE_MANAGER')">
 
         <!--Category name-->
         <li class="list-header">Manager Menu</li>
 
         <li>
             <a href="#">
-                <i class="demo-pli-boot-2"></i>
+                <i class="demo-pli-gear"></i>
                 <span class="menu-title">교육과정</span>
                 <i class="arrow"></i>
             </a>
@@ -193,14 +128,28 @@
 
         <li>
             <a href="#">
-                <i class="demo-pli-boot-2"></i>
+                <i class="demo-pli-gear"></i>
+                <span class="menu-title">교육결재</span>
+                <i class="arrow"></i>
+            </a>
+
+            <!--Submenu-->
+            <ul class="collapse">
+                <li><a href="#" data-th-href="@{/approval/listAppr2Process}">진행함</a></li>
+                <li><a href="#" data-th-href="@{/approval/listAppr2Commit}">완료함</a></li>
+                <li><a href="#" data-th-href="@{/approval/listAppr2}">전체함</a></li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="#">
+                <i class="demo-pli-gear"></i>
                 <span class="menu-title">자료등록</span>
                 <i class="arrow"></i>
             </a>
 
             <!--Submenu-->
             <ul class="collapse">
-
                 <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0101')}">공지사항</a></li>
                 <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0104')}">What's New</a></li>
                 <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0102')}">법규/가이드라인</a></li>
@@ -208,20 +157,35 @@
                 <li><a href="#" data-th-href="@{/admin/customer/list}">협약기관관리</a></li>
                 <li><a href="#" data-th-href="@{/admin/schedule/list/{sctype}(sctype=${T(com.dtnsm.lms.domain.constant.ScheduleType).CALENDAR})}">연간일정등록</a></li>
                 <li><a href="#" data-th-href="@{/admin/schedule/list/{sctype}(sctype=${T(com.dtnsm.lms.domain.constant.ScheduleType).MATRIX})}">Employee Matrix</a></li>
+                <li><a href="#" data-th-href="@{/admin/quiz/list}">문제은행</a></li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="#">
+                <i class="demo-pli-gear"></i>
+                <span class="menu-title">문제은행</span>
+                <i class="arrow"></i>
+            </a>
+
+            <!--Submenu-->
+            <ul class="collapse">
+                <li><a href="#" data-th-href="@{/admin/munjeBank/list/{munjeType}(munjeType=${T(com.dtnsm.lms.domain.constant.MunjeType).QUIZ})}">시험문제등록</a></li>
+                <li><a href="#" data-th-href="@{/admin/munjeBank/list/{munjeType}(munjeType=${T(com.dtnsm.lms.domain.constant.MunjeType).SURVEY})}">설문문제등록</a></li>
             </ul>
         </li>
 
         <li class="list-divider"></li>
 
-    </div>
+    </th:block>
     <!--  ROLE_ADMIN  관리자만 보이게 -->
-    <div sec:authorize="hasRole('ROLE_ADMIN')">
+    <th:block sec:authorize="hasRole('ROLE_ADMIN')">
         <!--Category name-->
         <li class="list-header">Admin Menu</li>
 
         <li>
             <a href="#">
-                <i class="demo-pli-boot-2"></i>
+                <i class="demo-pli-file-html"></i>
                 <span class="menu-title">파일관리</span>
                 <i class="arrow"></i>
             </a>
@@ -235,7 +199,7 @@
         <!--Menu list item-->
         <li>
             <a href="#">
-                <i class="demo-pli-boot-2"></i>
+                <i class="demo-pli-file-html"></i>
                 <span class="menu-title">기준정보등록</span>
                 <i class="arrow"></i>
             </a>
@@ -253,7 +217,7 @@
 
         <li>
             <a href="#">
-                <i class="demo-pli-boot-2"></i>
+                <i class="demo-pli-file-html"></i>
                 <span class="menu-title">사용자관리</span>
                 <i class="arrow"></i>
             </a>
@@ -263,21 +227,21 @@
                 <li><a href="#" data-th-href="@{/admin/registration/account/list}">사용자관리</a></li>
                 <li><a href="#" data-th-href="@{/admin/registration/role/list}">Role관리</a></li>
                 <li><a href="#" data-th-href="@{/admin/registration/courseManager/list}">교육과정 관리자관리</a></li>
-<!--                <li><a href="#" data-th-href="@{/admin/registration/accountRole/list}">사용자별Role관리</a></li>-->
+                <!--                <li><a href="#" data-th-href="@{/admin/registration/accountRole/list}">사용자별Role관리</a></li>-->
 
             </ul>
         </li>
 
         <li>
             <a href="#">
-                <i class="demo-pli-boot-2"></i>
+                <i class="demo-pli-file-html"></i>
                 <span class="menu-title">기준정보</span>
                 <i class="arrow"></i>
             </a>
 
             <!--Submenu-->
             <ul class="collapse">
-<!--                <li><a href="#" data-th-href="@{/admin/depart/treeView}">조직도</a></li>-->
+                <!--                <li><a href="#" data-th-href="@{/admin/depart/treeView}">조직도</a></li>-->
                 <li><a href="#" data-th-href="@{/admin/depart/list}">부서조회</a></li>
                 <li><a href="#" data-th-href="@{/admin/user/list}">사원조회</a></li>
             </ul>
@@ -285,7 +249,7 @@
 
         <li class="list-divider"></li>
 
-    </div>
+    </th:block>
 
 </ul>
 

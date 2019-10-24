@@ -25,7 +25,7 @@ public  class FileUtil {
         String docName = "";
 
         try {
-            if (header.contains("MSIE")) {
+            if (header.contains("MSIE") || header.contains("Trident")) {
                 docName = URLEncoder.encode(fileName,"UTF-8").replaceAll("\\+", "%20");
             } else if (header.contains("Firefox")) {
                 docName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");

@@ -135,7 +135,6 @@ public class FileService {
         UUID uuid = UUID.randomUUID();
         // 랜던생성 + 파일이름 저장
         String  saveName = uuid.toString() + "_" + originalName;
-
         return saveName;
     }
 }

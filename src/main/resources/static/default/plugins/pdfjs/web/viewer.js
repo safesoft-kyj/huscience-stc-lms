@@ -1869,6 +1869,25 @@ function webViewerInitialized() {
     appConfig.toolbar.viewFind.classList.add('hidden');
   }
 
+
+  /*
+  createBy : 황강석
+  createDate : 2019-10-23
+  print 툴바 숨김
+   */
+  appConfig.toolbar.print.classList.add('hidden');
+  appConfig.secondaryToolbar.printButton.classList.add('hidden');
+  appConfig.toolbar.download.classList.add('hidden');
+  appConfig.secondaryToolbar.downloadButton.classList.add('hidden');
+  // appConfig.toolbar.presentationModeButton.classList.add('hidden');
+  // appConfig.secondaryToolbar.presentationModeButton.classList.add('hidden');
+  /*
+
+  황강석 툴바 숨김 ENd
+
+   */
+
+
   appConfig.mainContainer.addEventListener('transitionend', function (evt) {
     if (evt.target === this) {
       PDFViewerApplication.eventBus.dispatch('resize', {

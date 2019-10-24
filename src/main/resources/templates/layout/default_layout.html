@@ -8,7 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-        <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Igorski.co</title>
+        <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">LMS</title>
 
         <!--기본적인 html head 추가부-->
         <th:block layout:fragment="html_head"></th:block>
@@ -16,6 +16,9 @@
         <!--Css lib-->
         <!--Open Sans Font [ OPTIONAL ]-->
         <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+
+
+        <link rel="stylesheet" th:href="@{/default/css/themes/type-a/theme-lime.css}" />
 
         <!--Bootstrap Stylesheet [ REQUIRED ]-->
         <link rel="stylesheet" th:href="@{/default/css/bootstrap.min.css}" />
@@ -25,8 +28,13 @@
         <!--Nifty Stylesheet [ REQUIRED ]-->
         <link rel="stylesheet" th:href="@{/default/css/nifty.min.css}" />
 
+
+
         <!--Nifty Premium Icon [ DEMONSTRATION ]-->
         <link rel="stylesheet" th:href="@{/default/css/demo/nifty-demo-icons.min.css}" />
+
+        <!--Ion Icons [ OPTIONAL ]-->
+        <link th:href="@{/default/plugins/ionicons/css/ionicons.min.css}" rel="stylesheet">
 
         <!--Pace - Page Load Progress Par [OPTIONAL]-->
         <link rel="stylesheet" th:href="@{/default/plugins/pace/pace.css}" />
@@ -39,18 +47,35 @@
         <link rel="stylesheet" th:href="@{/default/plugins/datatables/media/css/dataTables.bootstrap.css}" />
         <link rel="stylesheet" th:href="@{/default/plugins/datatables/extensions/Responsive/css/responsive.dataTables.min.css}" />
 
+
+
+        <!--Bootstrap Select [ OPTIONAL ]-->
+        <link th:href="@{/default/plugins/bootstrap-select/bootstrap-select.min.css}" rel="stylesheet">
+
+
+        <!--Bootstrap Tags Input [ OPTIONAL ]-->
+        <link th:href="@{/default/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.css}" rel="stylesheet">
+
+
+        <!--Chosen [ OPTIONAL ]-->
+        <link th:href="@{/default/plugins/chosen/chosen.min.css}" rel="stylesheet">
+
+        <!--noUiSlider [ OPTIONAL ]-->
+        <link th:href="@{/default/plugins/noUiSlider/nouislider.min.css}" rel="stylesheet">
+
+        <!--Select2 [ OPTIONAL ]-->
+        <link th:href="@{/default/plugins/select2/css/select2.min.css}" rel="stylesheet">
+
         <!--Bootstrap Timepicker [ OPTIONAL ]-->
         <link th:href="@{/default/plugins/bootstrap-timepicker/bootstrap-timepicker.min.css}" rel="stylesheet">
 
         <!--Bootstrap Datepicker [ OPTIONAL ]-->
         <link th:href="@{/default/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css}" rel="stylesheet">
 
-        <!--Chosen [ OPTIONAL ]-->
-        <link th:href="@{/default/plugins/chosen/chosen.min.css}" rel="stylesheet">
-
         <!--Themify Icons [ OPTIONAL ]-->
         <link th:href="@{/default/plugins/themify-icons/themify-icons.min.css}" rel="stylesheet">
 
+<!--        <link rel="stylesheet" th:href="@{/default/css/themes/type-a/theme-dark.css}" />-->
 
         <!--Custom or page css-->
         <th:block layout:fragment="custom_css"></th:block>
@@ -113,6 +138,31 @@
         <!--DataTables Sample [ SAMPLE ]-->
 <!--        <script th:src="@{/default/js/demo/tables-datatables.js}"></script>-->
 
+
+
+        <!--Switchery [ OPTIONAL ]-->
+        <script th:src="@{/default/plugins/switchery/switchery.min.js}"></script>
+
+
+        <!--Bootstrap Select [ OPTIONAL ]-->
+        <script th:src="@{/default/plugins/bootstrap-select/bootstrap-select.min.js}"></script>
+
+
+        <!--Bootstrap Tags Input [ OPTIONAL ]-->
+        <script th:src="@{/default/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.js}"></script>
+
+
+        <!--Chosen [ OPTIONAL ]-->
+        <script th:src="@{/default/plugins/chosen/chosen.jquery.min.js}"></script>
+
+        <!--noUiSlider [ OPTIONAL ]-->
+        <script th:src="@{/default/plugins/noUiSlider/nouislider.min.js}"></script>
+
+        <!--Select2 [ OPTIONAL ]-->
+        <script th:src="@{/default/plugins/select2/js/select2.min.js}"></script>
+
+
+
         <!--Bootstrap Timepicker [ OPTIONAL ]-->
         <script th:src="@{/default/plugins/bootstrap-timepicker/bootstrap-timepicker.min.js}"></script>
 
@@ -120,9 +170,6 @@
         <script th:src="@{/default/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js}"></script>
 
 
-
-        <!--Chosen [ OPTIONAL ]-->
-        <script th:src="@{/default/plugins/chosen/chosen.jquery.min.js}"></script>
 
 
         <th:block layout:fragment="custom_js"></th:block>

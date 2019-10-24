@@ -5,6 +5,7 @@ import com.dtnsm.lms.domain.CourseSectionFile;
 import com.dtnsm.lms.domain.Schedule;
 import com.dtnsm.lms.domain.ScheduleFile;
 import com.dtnsm.lms.domain.constant.ScheduleType;
+import com.dtnsm.lms.service.CourseMasterService;
 import com.dtnsm.lms.service.CourseService;
 import com.dtnsm.lms.service.ScheduleFileService;
 import com.dtnsm.lms.service.ScheduleService;
@@ -32,6 +33,9 @@ public class InfoController {
 
     @Autowired
     ScheduleService scheduleService;
+
+    @Autowired
+    CourseMasterService courseMasterService;
 
     @Autowired
     ScheduleFileService fileService;
@@ -96,15 +100,46 @@ public class InfoController {
 
     // 교육 신청
     @GetMapping("/request")
-    public String noticeListMulti(@PageableDefault Pageable pageable, Model model) {
+    public String noticeListMulti(@RequestParam(value = "typeId", defaultValue = "all") String typeId
+            , @RequestParam(value = "title", defaultValue = "") String title
+            , @PageableDefault Pageable pageable
+            , Model model) {
 
         pageInfo.setPageId("m-info-request");
         pageInfo.setPageTitle("교육신청");
 
-        Page<Course> courses = courseService.getPageList(pageable);
+        Page<Course> courses;
+        if(typeId.equals("all") && title.equals("")) {
+            courses = courseService.getPageList(pageable);
+        } else if (typeId.equals("all") && !title.equals("") ){
+            courses = courseService.getPageListByTitleLike(title, pageable);
+        } else if (!typeId.equals("all") && title.equals("") ){
+            courses = courseService.getPageLisByTypeId(typeId, pageable);
+        } else {
+            courses = courseService.getPageLisByTypeIdAndTitleLike(typeId, title, pageable);
+        }
+
+
 
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courses);
+        model.addAttribute("courseMasterList", courseMasterService.getList());
+
+        return "content/info/request";
+    }
+
+    // 교육 신청
+    @GetMapping("/request/{typeId}")
+    public String requestCourseTypeId(@PathVariable("typeId") String typeId, @PageableDefault Pageable pageable, Model model) {
+
+        pageInfo.setPageId("m-info-request");
+        pageInfo.setPageTitle("교육신청");
+
+        Page<Course> courses = courseService.getPageLisByTypeId(typeId, pageable);
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("borders", courses);
+        model.addAttribute("courseMasterList", courseMasterService.getList());
 
         return "content/info/request";
     }

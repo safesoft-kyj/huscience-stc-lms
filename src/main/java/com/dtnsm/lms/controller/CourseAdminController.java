@@ -92,7 +92,11 @@ public class CourseAdminController {
 
     // region # 공지사항
     @GetMapping("/list/{typeId}")
-    public String noticeListMulti(@PathVariable("typeId") String typeId, @PageableDefault Pageable pageable, Model model) {
+    public String listPage(@PathVariable("typeId") String typeId
+            , @RequestParam(value = "searchType", defaultValue = "all") String searchType
+            , @RequestParam(value = "searchText", defaultValue = "") String searchText
+            , @PageableDefault Pageable pageable
+            , Model model) {
 
         // 초기생성만 되고 타이틀이 없는 경우 삭제
         //courseService.deleteBlankCourse();
@@ -100,13 +104,24 @@ public class CourseAdminController {
         String courseName = courseMasterService.getById(typeId).getCourseName();
         pageInfo.setPageTitle(courseName + "조회");
 
-        Page<Course> courses = courseService.getPageList(typeId, pageable);
+        Page<Course> courses;
+        if(searchType.equals("all") && searchText.equals("")) {
+            courses = courseService.getPageList(typeId, pageable);
+        } else if(searchType.equals("all") && !searchText.equals("")) {
+            courses = courseService.getPageListByTitleLikeOrContentLike(typeId, searchText, searchText, pageable);
+        } else if (searchType.equals("subject")) {
+            courses = courseService.getPageListByTitleLike(typeId, searchText, pageable);
+        } else {
+            courses = courseService.getPageListByContentLike(typeId, searchText, pageable);
+        }
+
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courses);
         model.addAttribute("typeId", typeId);
 
         return "admin/course/list";
     }
+
 
     @GetMapping("/view/{id}")
     public String noticeView(@PathVariable("id") long id, Model model) {
@@ -192,8 +207,8 @@ public class CourseAdminController {
                 courseAccount.setAccount(account);
                 courseAccount.setRequestDate(DateUtil.getTodayString());
                 courseAccount.setRequestType(CourseRequestType.SPECIFY);
-                courseAccount.setApprUserId1(courseManagerService.getCourseManager().getUserId());
-                courseAccount.setApprUserId2(account.getParentUserId());
+                courseAccount.setApprUserId1(userService.getAccountByUserId(account.getParentUserId()));
+                courseAccount.setApprUserId2(userService.getAccountByUserId(courseManagerService.getCourseManager().getUserId()));
                 courseAccount.setIsTeamMangerApproval(course1.getCourseMaster().getIsTeamMangerApproval());
                 courseAccount.setIsCourseMangerApproval(course1.getCourseMaster().getIsCourseMangerApproval());
 
@@ -270,6 +285,9 @@ public class CourseAdminController {
             return "/admin/course/list/" + course.getCourseMaster().getId();
         }
 
+        course.setSurveys(courseService.getCourseById(course.getId()).getSurveys());
+        course.setQuizzes(courseService.getCourseById(course.getId()).getQuizzes());
+        course.setSections(courseService.getCourseById(course.getId()).getSections());
 
         List<CourseFile> courseFile= courseService.getCourseById(id).getCourseFiles();
         course.setCourseFiles(courseFile);
@@ -279,8 +297,6 @@ public class CourseAdminController {
 
         List<CourseAccount> courseAccountList = courseService.getCourseById(id).getCourseAccountList();
         courseAccountList.clear();
-
-
 
 
         //  교육 필수대상자 수정 처리
@@ -299,8 +315,8 @@ public class CourseAdminController {
                     courseAccount.setRequestDate(DateUtil.getTodayString());
                     courseAccount.setRequestType(CourseRequestType.SPECIFY);        // 교육신청유형(관리자지정, 사용자 신청)
                     courseAccount.setStatus(ApprovalStatusType.REQUEST_DONE);    // 신청완료(팀장승인진행중)
-                    courseAccount.setApprUserId1(courseManagerService.getCourseManager().getUserId());
-                    courseAccount.setApprUserId2(account.getParentUserId());
+                    courseAccount.setApprUserId1(userService.getAccountByUserId(account.getParentUserId()));
+                    courseAccount.setApprUserId2(userService.getAccountByUserId(courseManagerService.getCourseManager().getUserId()));
                     courseAccount.setIsTeamMangerApproval(course.getCourseMaster().getIsTeamMangerApproval());
                     courseAccount.setIsCourseMangerApproval(course.getCourseMaster().getIsCourseMangerApproval());
                     courseAccountList.add(courseAccount);
@@ -321,8 +337,8 @@ public class CourseAdminController {
                     courseAccount.setRequestDate(DateUtil.getTodayString());
                     courseAccount.setRequestType(CourseRequestType.SPECIFY);        // 교육신청유형(관리자지정, 사용자 신청)
                     courseAccount.setStatus(ApprovalStatusType.REQUEST_DONE);    // 신청완료(팀장승인진행중)
-                    courseAccount.setApprUserId1(courseManagerService.getCourseManager().getUserId());
-                    courseAccount.setApprUserId2(account.getParentUserId());
+                    courseAccount.setApprUserId1(userService.getAccountByUserId(account.getParentUserId()));
+                    courseAccount.setApprUserId2(userService.getAccountByUserId(courseManagerService.getCourseManager().getUserId()));
                     courseAccount.setIsTeamMangerApproval(course.getCourseMaster().getIsTeamMangerApproval());
                     courseAccount.setIsCourseMangerApproval(course.getCourseMaster().getIsCourseMangerApproval());
                     courseAccountList.add(courseAccount);

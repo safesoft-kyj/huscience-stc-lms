@@ -1,24 +1,17 @@
 package com.dtnsm.lms.controller;
 
-import com.dtnsm.lms.auth.CustomUserDetails;
 import com.dtnsm.lms.auth.UserServiceImpl;
-import com.dtnsm.lms.domain.Account;
-import com.dtnsm.lms.domain.CourseManager;
-import com.dtnsm.lms.domain.Schedule;
 import com.dtnsm.lms.domain.constant.ScheduleType;
+import com.dtnsm.lms.mybatis.service.CourseMapperService;
 import com.dtnsm.lms.service.BorderService;
+import com.dtnsm.lms.service.CourseMasterService;
 import com.dtnsm.lms.service.CustomerService;
 import com.dtnsm.lms.service.ScheduleService;
 import com.dtnsm.lms.util.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-
-import javax.validation.Valid;
 
 @Controller
 public class MainController {
@@ -35,10 +28,16 @@ public class MainController {
     @Autowired
     CustomerService customerService;
 
+    @Autowired
+    CourseMasterService courseMasterService;
+
+    @Autowired
+    CourseMapperService courseMapperService;
+
     private PageInfo pageInfo = new PageInfo();
 
     public MainController() {
-        pageInfo.setParentId("m-basecode");
+        pageInfo.setParentId("m-base-home");
         pageInfo.setParentTitle("코드관리");
     }
 
@@ -47,18 +46,25 @@ public class MainController {
 
         model.addAttribute(pageInfo);
         model.addAttribute("customers", customerService.getCustomerList());
+        // 공지사항
         model.addAttribute("borders", borderService.getListTop5ByBorderMasterId("BA0101"));
+        // What's New
         model.addAttribute("borders2", borderService.getListTop5ByBorderMasterId("BA0104"));
 
+        // Employee training matrix
         model.addAttribute("schedule", scheduleService.getTop1BySctypeOrderByCreatedDateDesc(ScheduleType.MATRIX));
 
+
+        // 과정그룹별 과정 수
+        model.addAttribute("courseMasterList", courseMasterService.getList());
+
+        // 과정그룹별 과정 수
+        model.addAttribute("courseCountVO", courseMapperService.getCourseCount());
 
         model.addAttribute(pageInfo);
 
         return "content/home";
     }
-
-
 
     @GetMapping("/home")
     public String home(Model model) {

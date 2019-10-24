@@ -2,6 +2,7 @@ package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.domain.Border;
 import com.dtnsm.lms.domain.BorderFile;
+import com.dtnsm.lms.domain.Course;
 import com.dtnsm.lms.service.BorderFileService;
 import com.dtnsm.lms.service.BorderMasterService;
 import com.dtnsm.lms.service.BorderService;
@@ -19,10 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +59,11 @@ public class BorderController {
     }
 
     @GetMapping("/list/{typeId}")
-    public String listPage(@PathVariable("typeId") String typeId, @PageableDefault Pageable pageable, Model model) {
+    public String listPage(@PathVariable("typeId") String typeId
+            , @RequestParam(value = "searchType", defaultValue = "all") String searchType
+            , @RequestParam(value = "searchText", defaultValue = "") String searchText
+            , @PageableDefault Pageable pageable
+            , Model model) {
 
         // 초기생성만 되고 타이틀이 없는 경우 삭제
         //borderService.deleteBlankBorder();
@@ -69,7 +71,19 @@ public class BorderController {
         String borderName = borderMasterService.getById(typeId).getBorderName();
         pageInfo.setPageTitle(borderName + "조회");
 
-        Page<Border> borders = borderService.getPageList(typeId, pageable);
+        Page<Border> borders;
+
+        if(searchType.equals("all") && searchText.equals("")) {
+            borders = borderService.getPageList(typeId, pageable);
+        } else if (searchType.equals("all") && !searchText.equals("")) {
+            borders = borderService.getPageListByTitleLikeOrContentLike(typeId, searchText, searchText, pageable);
+        } else if (searchType.equals("subject")) {
+            borders = borderService.getPageListByTitleLike(typeId, searchText, pageable);
+        } else {
+            borders = borderService.getPageListByContentLike(typeId, searchText, pageable);
+        }
+
+
         model.addAttribute(pageInfo);
         model.addAttribute("borders", borders);
 
@@ -101,7 +115,7 @@ public class BorderController {
         borderFile = borderFileService.getUploadFile(id);
 
         // Load file as Resource
-        resource = fileService.loadFileAsResource(borderFile.getSaveName());
+        resource = borderFileService.loadFileAsResource(borderFile.getSaveName());
 
         // Try to determine file's content type
         contentType = mimeTypesMap.getContentType(borderFile.getSaveName());

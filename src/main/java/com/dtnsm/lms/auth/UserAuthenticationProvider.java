@@ -99,4 +99,6 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         return authentication.equals(UsernamePasswordAuthenticationToken.class);
     }
 
+
+
 }

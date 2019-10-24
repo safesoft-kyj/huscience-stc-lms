@@ -37,14 +37,31 @@
                 </div>
                 <div class="panel-body">
                     <div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6" style="vertical-align: top">
                             <span th:text="#{label.list.title(${borders.getTotalElements()})}"></span>
                         </div>
-                        <div class="col-sm-6 text-right">
-                            <p><a th:href="@{/admin/border/add/{typeId}(typeId=${typeId})}"
-                                  class="btn btn-success" th:text="#{label.add}">Add new</a></p>
+                        <div class="col-sm-6">
+                            <form class="form-horizontal" th:action="@{/admin/border/list/{typeid}(typeid=__${typeId}__)}" method="get">
+                                <div class="input-group mar-btm">
+                                    <select id="selectOption" class="selectpicker" name="searchType">
+                                        <option value="all" th:selected="${#strings.equalsIgnoreCase(param.searchType,'all')}">&nbsp;&nbsp;전체&nbsp;&nbsp;</option>
+                                        <option value="subject" th:selected="${#strings.equalsIgnoreCase(param.searchType,'subject')}">&nbsp;&nbsp;제목&nbsp;&nbsp;</option>
+                                        <option value="content" th:selected="${#strings.equalsIgnoreCase(param.searchType,'content')}">&nbsp;&nbsp;내용&nbsp;&nbsp;</option>
+                                    </select>
+                                    <input type="text" name="searchText" placeholder="Search" class="form-control" th:value="${param.searchText}">
+                                    <span class="input-group-btn">
+					                        <button class="btn btn-primary" type="submit">Search</button>
+                                            <a th:href="@{/admin/border/add/{typeId}(typeId=${typeId})}"
+                                           class="btn btn-success" th:text="#{label.add}">Add new</a>
+                                    </span>
+                                </div>
+                            </form>
                         </div>
                     </div>
+
+
+
+
                     <div th:switch="${borders}">
                         <h2 th:case="null">No customer yet!</h2>
                         <div th:case="*">
@@ -52,22 +69,28 @@
                                 <thead>
                                 <tr>
                                     <th class="text-center col-sm-1" th:text="#{label.no}">번호</th>
+                                    <th class="text-center col-sm-1" th:text="#{label.notice}"></th>
+                                    <th class="text-center col-sm-1" th:text="#{label.filecount}">첨부</th>
                                     <th class="text-center" th:text="#{label.subject}">제목</th>
                                     <th class="text-center col-sm-2" th:text="#{label.createby}">이름</th>
                                     <th class="text-center col-sm-1" th:text="#{label.createdate}">등록일</th>
                                     <th class="text-center col-sm-1" th:text="#{label.readcount}">조회수</th>
-                                    <th class="text-center col-sm-1" th:text="#{label.filecount}">첨부파일수</th>
                                     <th class="text-center col-sm-2" th:text="#{label.edit}"></th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="border, index : ${borders}">
                                     <td th:text="${index.count}" class="text-center"></td>
+                                    <td  class="text-center">
+                                        <span th:if="${#strings.equalsIgnoreCase(border.isNotice, '1')}">!</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div th:if="${border.getBorderFiles().size() > 0}" class="demo-icon"><i class="ion-paperclip"></i><span></span></div>
+                                    </td>
                                     <td><a th:href="@{/admin/border/view/{id}(id=${border.getId()})}" th:text="${border.getTitle()}">Edit</a></td>
                                     <td th:text="${border.getCreatedBy()}" class="text-center"></td>
                                     <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy/MM/dd')} : ${border.getCreatedDate()}" class="text-center"></td>
                                     <td th:text="${border.getViewCnt()}" class="text-center"></td>
-                                    <td th:text="${border.getBorderFiles().size()}" class="text-center"></td>
                                     <td class="text-center">
                                         <div class="form-inline">
                                             <a class="btn btn-warning" th:href="@{/admin/border/edit/{id}(id=${border.getId()})}" th:text="#{label.edit}">Edit</a>
@@ -79,8 +102,8 @@
                             </table>
                             <nav th:replace="fragments/common/pagenation_admin :: pagenation"> </nav>
                         </div>
-
                     </div><!--switch End -->
+
                 </div><!--panel-body End -->
             </div><!-- panel End -->
         </div><!-- Page content End -->
