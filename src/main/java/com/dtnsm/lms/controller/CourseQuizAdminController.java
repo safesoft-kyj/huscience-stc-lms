@@ -102,8 +102,11 @@ public class CourseQuizAdminController {
 
                 for (CourseQuizQuestion quizQuestion : courseQuizQuestions) {
                     // 시험문제와 연결한다.
-                    quizQuestion.setQuiz(quiz1);
-                    quizService.saveQuizQuestion(quizQuestion);
+
+                    if (!quizQuestion.getQuestion().isEmpty()) {
+                        quizQuestion.setQuiz(quiz1);
+                        quizService.saveQuizQuestion(quizQuestion);
+                    }
                 }
 
             } catch (Exception e) {
@@ -158,8 +161,10 @@ public class CourseQuizAdminController {
 
                 for (CourseQuizQuestion quizQuestion : courseQuizQuestions) {
                     // 시험문제와 연결한다.
-                    quizQuestion.setQuiz(courseQuiz1);
-                    quizService.saveQuizQuestion(quizQuestion);
+                    if (!quizQuestion.getQuestion().isEmpty()) {
+                        quizQuestion.setQuiz(courseQuiz1);
+                        quizService.saveQuizQuestion(quizQuestion);
+                    }
                 }
 
             } catch (Exception e) {

@@ -1,6 +1,7 @@
 package com.dtnsm.lms.domain;
 
 import com.dtnsm.lms.auth.AuditorCreateEntity;
+import com.dtnsm.lms.domain.constant.QuizStatusType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -48,7 +49,7 @@ public class CourseQuiz extends AuditorCreateEntity<String> {
 
     // 합격 문제 수
     @Column(name="path_count")
-    private int pathCount;
+    private int passCount;
 
     // Parent 필드 추가
     @ManyToOne

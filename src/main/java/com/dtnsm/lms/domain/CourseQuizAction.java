@@ -1,6 +1,7 @@
 package com.dtnsm.lms.domain;
 
 import com.dtnsm.lms.auth.AuditorCreateEntity;
+import com.dtnsm.lms.domain.constant.QuizStatusType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -24,16 +25,6 @@ public class CourseQuizAction extends AuditorCreateEntity<String> {
     @Column(name="exam_date", length = 10)
     private String examDate;
 
-    // 총시험시간(분)
-    @Column(name="run_minute")
-    @ColumnDefault("0")
-    private int minute;
-
-    // 총시험시간(초)
-    @Column(name="run_second")
-    @ColumnDefault("0")
-    private int second;
-
     // 학습한 시간(초) => 진도율 계산시 필요
     @Column(name="total_use_second")
     @ColumnDefault("0")
@@ -46,6 +37,11 @@ public class CourseQuizAction extends AuditorCreateEntity<String> {
     // 맞은 갯수
     @Column(name="run_count")
     private int runCount;
+
+    @Column(name="status", length=10)
+    @ColumnDefault(value = "0")
+    @Enumerated(EnumType.STRING)
+    private QuizStatusType status;
 
     // Parent 필드 추가
     @ManyToOne

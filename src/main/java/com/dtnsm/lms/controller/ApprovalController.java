@@ -124,14 +124,16 @@ public class ApprovalController {
 
 
     // 교육결재(1차 팀장/부서장) 승인
-    @GetMapping("/successAppr1/{courseId}")
-    public String successAppr1(@PathVariable("courseId") Long courseId, Model model) {
+    @GetMapping("/successAppr1/{courseId}/{userId}")
+    public String successAppr1(@PathVariable("courseId") Long courseId
+            , @PathVariable("userId") String userId
+            , Model model) {
 
         // 세션 아이디를 가지고 온다.
-        String userId = SessionUtil.getUserId();
+//        String userId = SessionUtil.getUserId();
 
         // 과정ID와 사용자ID로 과정신청정보를 가지고 온다.
-        CourseAccount courseAccount = courseAccountService.getByCourseIdAndApprUserId1(courseId, userId);
+        CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserId(courseId, userId);
 
         // 과정 승인 처리한다.
         // isAppr1 = 'Y'
@@ -150,12 +152,14 @@ public class ApprovalController {
 
     // 교육결재(1차 팀장/부서장) 기각
     @GetMapping("/rejectAppr1/{courseId}")
-    public String rejectAppr1(@PathVariable("courseId") Long courseId, Model model) {
+    public String rejectAppr1(@PathVariable("courseId") Long courseId
+            , @PathVariable("userId") String userId
+            , Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
         pageInfo.setPageTitle("교육결재조회");
 
-        String userId = SessionUtil.getUserDetail().getUserId();
+//        String userId = SessionUtil.getUserDetail().getUserId();
 
         model.addAttribute(pageInfo);
         // 완결
@@ -213,14 +217,16 @@ public class ApprovalController {
     }
 
     // 교육결재(2차 과정 관리자) 승인
-    @GetMapping("/successAppr2/{courseId}")
-    public String successAppr2(@PathVariable("courseId") Long courseId, Model model) {
+    @GetMapping("/successAppr2/{courseId}/{userId}")
+    public String successAppr2(@PathVariable("courseId") Long courseId
+            , @PathVariable("userId") String userId
+            , Model model) {
 
         // 세션 아이디를 가지고 온다.
-        String userId = SessionUtil.getUserId();
+//        String apprUserId = SessionUtil.getUserId();
 
         // 과정ID와 사용자ID로 과정신청정보를 가지고 온다.
-        CourseAccount courseAccount = courseAccountService.getByCourseIdAndApprUserId2(courseId, userId);
+        CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserId(courseId, userId);
 
         // 과정 승인 처리한다.
         // isAppr1 = 'Y'
@@ -239,12 +245,14 @@ public class ApprovalController {
 
     // 교육결재(2차 과정 관리자) 기각
     @GetMapping("/rejectAppr2/{courseId}")
-    public String rejectAppr2(@PathVariable("courseId") Long courseId, Model model) {
+    public String rejectAppr2(@PathVariable("courseId") Long courseId
+            , @PathVariable("userId") String userId
+            , Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
         pageInfo.setPageTitle("교육결재조회");
 
-        String userId = SessionUtil.getUserDetail().getUserId();
+//        String userId = SessionUtil.getUserDetail().getUserId();
 
         model.addAttribute(pageInfo);
         // 완결

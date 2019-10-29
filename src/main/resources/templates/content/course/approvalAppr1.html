@@ -39,8 +39,8 @@
                     <div class="row" th:if="${courseAccount.getStatus() == T(com.dtnsm.lms.domain.constant.ApprovalStatusType).REQUEST_DONE}">
                         <div class="col-sm-12 input-group pull-right">
                             <p class="pull-right">
-                                <a th:href="@{/approval/successAppr1/{courseId}(courseId=${course.getId()})}" class="btn btn-lg btn-warning">승인</a>
-                                <a th:href="@{/approval/rejectAppr1/{courseId}(courseId=${course.getId()})}" class="btn btn-lg btn-danger">기각</a>
+                                <a th:href="@{/approval/successAppr1/{courseId}/{userId}(courseId=${course.getId()}, userId=${courseAccount.getAccount().getUserId()})}" class="btn btn-success">승인</a>
+                                <a th:href="@{/approval/rejectAppr1/{courseId}/{userId}(courseId=${course.getId()}, userId=${courseAccount.getAccount().getUserId()})}" class="btn btn-danger">기각</a>
                             </p>
                         </div>
                     </div>

@@ -66,6 +66,24 @@
 
         <li>
             <a href="#">
+                <i class="demo-pli-gear"></i>
+                <span class="menu-title">전자결재</span>
+                <i class="arrow"></i>
+            </a>
+
+            <!--Submenu-->
+            <ul class="collapse">
+                <li><a href="#" data-th-href="@{/document/templateView}">기안작성</a></li>
+                <li><a href="#" data-th-href="@{/document/list}">내작성함</a></li>
+                <li><a href="#" data-th-href="@{/approval/document/listMyAppr}">내신청함</a></li>
+                <li><a href="#" data-th-href="@{/approval/document/listAppr1Process}">미결함</a></li>
+                <li><a href="#" data-th-href="@{/approval/document/listAppr1Commit}">진행함</a></li>
+                <li><a href="#" data-th-href="@{/approval/document/listAppr1}">완료함</a></li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="#">
                 <i class="demo-pli-home"></i>
                 <span class="menu-title">교육결재</span>
                 <i class="arrow"></i>
@@ -112,17 +130,13 @@
         <li>
             <a href="#">
                 <i class="demo-pli-gear"></i>
-                <span class="menu-title">교육과정</span>
+                <span class="menu-title">전자결재</span>
                 <i class="arrow"></i>
             </a>
 
             <!--Submenu-->
             <ul class="collapse">
-
-                <li><a href="#" data-th-href="@{/admin/course/list/{typeId}(typeId='BC0101')}">Self교육</a></li>
-                <li><a href="#" data-th-href="@{/admin/course/list/{typeId}(typeId='BC0102')}">Class교육</a></li>
-                <li><a href="#" data-th-href="@{/admin/course/list/{typeId}(typeId='BC0103')}">부서교육</a></li>
-                <li><a href="#" data-th-href="@{/admin/course/list/{typeId}(typeId='BC0104')}">외부교육</a></li>
+                <li><a href="#" data-th-href="@{/admin/document/template/list}">결재양식등록</a></li>
             </ul>
         </li>
 
@@ -140,6 +154,25 @@
                 <li><a href="#" data-th-href="@{/approval/listAppr2}">전체함</a></li>
             </ul>
         </li>
+
+        <li>
+            <a href="#">
+                <i class="demo-pli-gear"></i>
+                <span class="menu-title">교육과정</span>
+                <i class="arrow"></i>
+            </a>
+
+            <!--Submenu-->
+            <ul class="collapse">
+
+                <li><a href="#" data-th-href="@{/admin/course/list/{typeId}(typeId='BC0101')}">Self교육</a></li>
+                <li><a href="#" data-th-href="@{/admin/course/list/{typeId}(typeId='BC0102')}">Class교육</a></li>
+                <li><a href="#" data-th-href="@{/admin/course/list/{typeId}(typeId='BC0103')}">부서교육</a></li>
+                <li><a href="#" data-th-href="@{/admin/course/list/{typeId}(typeId='BC0104')}">외부교육</a></li>
+            </ul>
+        </li>
+
+
 
         <li>
             <a href="#">

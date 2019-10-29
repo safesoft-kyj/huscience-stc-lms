@@ -156,11 +156,11 @@
                                 <td class="text-center">
                                     <div th:switch="${courseAccount.getStatus()}">
                                         <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).REQUEST_DONE}"
-                                              style="color: red;"><span th:text="${courseAccount.getApprUserId1().getName()}"></span> 결재 진행중</span>
+                                              class="text-warning"><span th:text="${courseAccount.getApprUserId1().getName()}"></span> 결재 진행중</span>
                                         <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_TEAM_DONE}"
-                                              style="color: orange;"><span th:text="${courseAccount.getApprUserId2().getName()}"></span> 결재 진행중</span>
+                                              class="text-mint"><span th:text="${courseAccount.getApprUserId2().getName()}"></span> 결재 진행중</span>
                                         <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_MANAGER_DONE}"
-                                              style="color: yellow;">교육 진행중</span>
+                                              class="text-info">교육 진행중</span>
                                     </div>
 
                                 </td>
@@ -185,7 +185,16 @@
                                 <tr th:if="${courseAccount.getStatus() == T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_MANAGER_DONE }">
                                     <td class="text-left" th:text="${courseAccount.getCourse().getTitle()}"}></td>
                                     <td class="text-center" th:text="${courseAccount.getCourse().getFromDate() + '~' + courseAccount.getCourse().getToDate()}"></td>
-                                    <td class="text-center"></td>
+                                    <td class="text-center">
+                                        <div th:switch="${courseAccount.getStatus()}">
+                                        <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).REQUEST_DONE}"
+                                              class="text-warning"><span th:text="${courseAccount.getApprUserId1().getName()}"></span> 결재 진행중</span>
+                                            <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_TEAM_DONE}"
+                                                  class="text-mint"><span th:text="${courseAccount.getApprUserId2().getName()}"></span> 결재 진행중</span>
+                                            <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_MANAGER_DONE}"
+                                                  class="text-info">교육 진행중</span>
+                                        </div>
+                                    </td>
                                     <td class="text-center"><a th:href="@{/mypage/classroom/view/{id}(id=${courseAccount.getCourse().getId()})}" class="btn btn-success">입장</a></td>
                                 </tr>
                             </th:block>

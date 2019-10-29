@@ -13,6 +13,7 @@ public class FileUploadProperties {
 
     // 강의 파일 업로드 경로
     private String courseSectionUploadDir;
+
     // 교육과정 에디터 이미지 업로드 경로
     private String coursePhotoUploadDir;
 
@@ -21,6 +22,17 @@ public class FileUploadProperties {
 
     // 연간일정 파일 업로드 경로
     private String scheduleUploadDir;
+
+    // 전자결재 파일 업로드 경로
+    private String documentUploadDir;
+
+    public String getDocumentUploadDir() {
+        return documentUploadDir;
+    }
+
+    public void setDocumentUploadDir(String documentUploadDir) {
+        this.documentUploadDir = documentUploadDir;
+    }
 
     public String getCourseQuizUploadDir() {
         return courseQuizUploadDir;

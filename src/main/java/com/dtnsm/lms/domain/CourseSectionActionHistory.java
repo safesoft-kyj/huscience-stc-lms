@@ -10,8 +10,8 @@ import java.util.Date;
 @Entity
 @Getter
 @Setter
-@Table(name="el_course_section_history")
-public class CourseSectionHistory extends AuditorCreateEntity<String> {
+@Table(name="el_course_section_action_history")
+public class CourseSectionActionHistory extends AuditorCreateEntity<String> {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -29,6 +29,6 @@ public class CourseSectionHistory extends AuditorCreateEntity<String> {
 
     // Parent 필드 추가
     @ManyToOne
-    @JoinColumn(name = "section_id")
-    private CourseSection courseSection;
+    @JoinColumn(name = "section_action_id")
+    private CourseSectionAction sectionAction;
 }

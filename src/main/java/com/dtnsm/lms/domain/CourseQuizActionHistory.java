@@ -29,6 +29,6 @@ public class CourseQuizActionHistory extends AuditorCreateEntity<String> {
 
     // Parent 필드 추가
     @ManyToOne
-    @JoinColumn(name = "action_quiz_id")
+    @JoinColumn(name = "quiz_action_id")
     private CourseQuizAction quizAction;
 }

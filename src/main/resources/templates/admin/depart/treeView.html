@@ -68,7 +68,7 @@
                     <button class="btn btn-success" id="btn_save" onclick="saveWindow();">저장</button>
                     <button class="btn btn-active-success" id="btn_close" onclick="closeWindow();">닫기</button>
                 </div>
-                <div id="selectList"></div>
+<!--                <div id="selectList"></div>-->
             </div>
         </div><!-- page-content End -->
     </div>
@@ -140,12 +140,12 @@
             var checkNodes = zTree.getCheckedNodes(true);
 
             $('#demo1-cs-multiselect').empty();
-            $('#selectList').empty();
+            // $('#selectList').empty();
             for (var i = 0, j = checkNodes.length; i < j; i++) {
                 var n = checkNodes[i];
 
                 if (n.isEmp) {
-                    $('#selectList').append(n.name + "&lt;" + n.email + "&gt;;\r\n");
+                    // $('#selectList').append(n.name + "&lt;" + n.email + "&gt;;\r\n");
 
                     var option = "<option value='" + n.id + "'>" + n.name + "</option>";
 

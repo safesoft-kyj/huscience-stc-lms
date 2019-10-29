@@ -65,18 +65,7 @@
 
                         <!--                        <th:block th:unless="${course.getCourseMaster().getRequestType().equals('1')}">-->
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" for="title" th:text="#{lable.course.requesperiod}">신청기간</label>
-                            <div class="col-sm-4">
-                                <div id="demo-dp-range">
-                                    <div class="input-daterange input-group" id="datepicker">
-                                        <input type="text" th:field="*{requestFromDate}" id="requestFromDate" placeholder="From" class="form-control" required="required">
-                                        <span th:if="${#fields.hasErrors('requestFromDate')}" th:errors="*{requestFromDate}"></span>
-                                        <span class="input-group-addon">to</span>
-                                        <input type="text" th:field="*{requestToDate}" id="requestToDate" placeholder="To" class="form-control" required="required">
-                                        <span th:if="${#fields.hasErrors('requestToDate')}" th:errors="*{requestToDate}"></span>
-                                    </div>
-                                </div>
-                            </div>
+
                             <label class="col-sm-2 control-label" for="title" th:text="#{label.course.requesperiod}">교육기간</label>
                             <div class="col-sm-4">
                                 <div id="demo-dp-range2">
@@ -86,6 +75,18 @@
                                         <span class="input-group-addon">to</span>
                                         <input type="text" th:field="*{toDate}" id="toDate" placeholder="To" class="form-control" required="required">
                                         <span th:if="${#fields.hasErrors('toDate')}" th:errors="*{toDate}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <label class="col-sm-2 control-label" for="title" th:text="#{label.course.period}">교육기간</label>
+                            <div class="col-sm-4">
+                                <div id="demo-dp-range">
+                                    <div class="input-daterange input-group" id="datepicker">
+                                        <input type="text" th:field="*{requestFromDate}" id="requestFromDate" placeholder="From" class="form-control" required="required">
+                                        <span th:if="${#fields.hasErrors('requestFromDate')}" th:errors="*{requestFromDate}"></span>
+                                        <span class="input-group-addon">to</span>
+                                        <input type="text" th:field="*{requestToDate}" id="requestToDate" placeholder="To" class="form-control" required="required">
+                                        <span th:if="${#fields.hasErrors('requestToDate')}" th:errors="*{requestToDate}"></span>
                                     </div>
                                 </div>
                             </div>

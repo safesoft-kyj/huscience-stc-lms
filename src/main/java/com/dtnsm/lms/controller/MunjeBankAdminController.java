@@ -13,10 +13,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -84,7 +82,31 @@ public class MunjeBankAdminController {
     @PostMapping("/add-post")
     public String noticeAddPost(@Valid MunjeBank munjeBank, BindingResult result) {
         if(result.hasErrors()) {
-            return "notice-add";
+            return "admin/munjeBank/add";
+        }
+
+        munjeBankService.save(munjeBank);
+
+        return "redirect:/admin/munjeBank/list/" + munjeBank.getMunjeType();
+    }
+
+    @GetMapping("/addExcel")
+    public String addExcel(Model model) {
+
+        MunjeBank munjeBank = new MunjeBank();
+
+        pageInfo.setPageId("m-course-add");
+        pageInfo.setPageTitle("교육과정등록");
+        model.addAttribute(pageInfo);
+        model.addAttribute("munjeBank", munjeBank);
+
+        return "admin/munjeBank/addExcel";
+    }
+
+    @PostMapping("/addExcel-post")
+    public String addExcelPost(@RequestParam("file") MultipartFile file, @Valid MunjeBank munjeBank, BindingResult result) {
+        if(result.hasErrors()) {
+            return "admin/munjeBank/addExcel";
         }
 
         munjeBankService.save(munjeBank);

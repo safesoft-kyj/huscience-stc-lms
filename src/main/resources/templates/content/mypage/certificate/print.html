@@ -87,7 +87,7 @@
     function fnSaveAsPdf() {
         html2canvas(document.body).then(function(canvas) {
 
-            var name = '[[${courseAccount.getCourse().getTitle()}]]' + '수료증';
+            var name = '[[${courseAccount.getCourse().getTitle()}]]' + '수료증.pdf';
             // alert('test');
             // var imgData = canvas.toDataURL('image/png');
             // var imgWidth = 293; //210

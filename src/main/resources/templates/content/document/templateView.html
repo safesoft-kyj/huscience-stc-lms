@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <!--Dropzone [ OPTIONAL ]-->
+    <link th:href="@{/default/plugins/dropzone/dropzone.min.css}" rel="stylesheet">
+
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <div class="row">
+                <div class="eq-height">
+                    <div class="col-md-6 col-lg-4 eq-box-lg">
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"></h3>
+                            </div>
+                            <div class="panel-body">
+
+                                <!--Large-->
+                                <!--===================================================-->
+                                <div class="list-group">
+                                    <a class="list-group-item  list-item-lg active" href="#">기안작성 양식 선택</a>
+                                    <th:block th:each="template, index : ${templateList}">
+                                        <a class="list-group-item list-item-lg" th:href="@{/document/add/{templateId}(templateId=${template.getId()})}" th:text="${template.getTitle()}">Edit</a>
+                                    </th:block>
+                                </div>
+                                <!--===================================================-->
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+
+</th:block>
+
+<th:block layout:fragment="custom_js">
+
+    <script type="text/javascript" th:src="@{/editor/js/HuskyEZCreator.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/default/js/custom/border-editor.js}" charset="utf-8"></script>
+
+    <script>
+
+    </script>
+</th:block>
+
+</html>

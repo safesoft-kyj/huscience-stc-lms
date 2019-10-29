@@ -1,15 +1,14 @@
 package com.dtnsm.lms.service;
 
-import com.dtnsm.lms.domain.CourseQuiz;
-import com.dtnsm.lms.domain.CourseQuizAction;
-import com.dtnsm.lms.domain.CourseQuizActionAnswer;
-import com.dtnsm.lms.domain.CourseQuizQuestion;
+import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.repository.CourseQuizActionRepository;
 import com.dtnsm.lms.repository.CourseQuizQuestionAnswerRepository;
 import com.dtnsm.lms.repository.CourseQuizQuestionRepository;
 import com.dtnsm.lms.repository.CourseQuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class CourseQuizActionService {
@@ -42,6 +41,14 @@ public class CourseQuizActionService {
 
     public CourseQuizAction getCourseQuizActionById(Long id) {
         return quizActionRepository.findById(id).get();
+    }
+
+    public List<CourseQuizAction> getAllByUserId(String userId) {
+        return quizActionRepository.findAllByAccount_UserId(userId);
+    }
+
+    public CourseQuizAction getTop1ByUserId(String userId) {
+        return quizActionRepository.findTop1ByAccount_UserIdOrderByCreatedDateDesc(userId);
     }
 
 

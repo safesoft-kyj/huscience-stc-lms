@@ -41,11 +41,13 @@
                 </div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-sm-12 input-group pull-right">
-                            <p class="pull-right">
-                                <a th:href="@{/approval/successAppr2/{courseId}(courseId=${course.getId()})}" class="btn btn-success">승인</a>
-                                <a th:href="@{/approval/rejectAppr2/{courseId}(courseId=${course.getId()})}" class="btn btn-danger">기각</a>
-                            </p>
+                        <div class="row" th:if="${courseAccount.getStatus() == T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_TEAM_DONE}">
+                            <div class="col-sm-12 input-group pull-right">
+                                <p class="pull-right">
+                                    <a th:href="@{/approval/successAppr2/{courseId}/{userId}(courseId=${course.getId()}, userId=${courseAccount.getAccount().getUserId()})}" class="btn btn-success">승인</a>
+                                    <a th:href="@{/approval/rejectAppr2/{courseId}/{userId}(courseId=${course.getId()}, userId=${courseAccount.getAccount().getUserId()})}" class="btn btn-danger">기각</a>
+                                </p>
+                            </div>
                         </div>
                     </div>
                     <hr style="border:1.2px solid #0a6aa1">

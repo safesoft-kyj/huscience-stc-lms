@@ -3,6 +3,7 @@ package com.dtnsm.lms.controller;
 import com.dtnsm.lms.auth.CustomUserDetails;
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.*;
+import com.dtnsm.lms.domain.constant.QuizStatusType;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.*;
@@ -37,6 +38,9 @@ public class MyPageController {
 
     @Autowired
     CourseSectionService courseSectionService;
+
+    @Autowired
+    CourseSectionActionService courseSectionActionService;
 
     @Autowired
     CourseQuizService courseQuizService;
@@ -164,59 +168,80 @@ public class MyPageController {
 
         Course course = courseService.getCourseById(courseId);
 
+        List<CourseSectionAction> courseSectionActions = courseSectionActionService.getAllByUserId(SessionUtil.getUserId());
+        CourseQuizAction courseQuizAction = courseQuizActionService.getTop1ByUserId(SessionUtil.getUserId());
+
         model.addAttribute(pageInfo);
         model.addAttribute("course", course);
+        model.addAttribute("courseSectionActions", courseSectionActions);
+        model.addAttribute("quizAction", courseQuizAction);
 
         return "content/mypage/classroom/view";
     }
 
 
     // 강의 View
-    @GetMapping("/classroom/pdfview/{id}")
-    public String pdfView(@PathVariable("id") Long fileId, Model model) {
+    @GetMapping("/classroom/pdfview/{id}/{sectionActionId}")
+    public String pdfView(@PathVariable("id") Long fileId
+            ,@PathVariable("sectionActionId") Long sectionActionId
+            , Model model) {
 
         CourseSectionFile courseSectionFile = courseSectionFileService.getUploadFile(fileId);
+        CourseSectionAction sectionAction = courseSectionActionService.getById(sectionActionId);
 
         pageInfo.setPageId("m-mypage-myinfo");
         pageInfo.setPageTitle(courseSectionFile.getCourseSection().getName());
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseSectionFile", courseSectionFile);
+        model.addAttribute("sectionAction", sectionAction);
 
         return "content/mypage/classroom/pdfview";
     }
 
     // 퀴즈 View
-    @GetMapping("/classroom/quizview/{id}")
-    public String quizView(@PathVariable("id") Long quizId, Model model) {
-
-        CourseQuiz courseQuiz = courseQuizService.getCourseQuizById(quizId);
+    @GetMapping("/classroom/quizview/{quizActionId}/{isNew}")
+    public String quizView(@PathVariable("quizActionId") Long quizId
+            , @PathVariable("isNew") String isNew
+            , Model model) {
 
         Account account = userService.getAccountByUserId(SessionUtil.getUserId());
 
-        CourseQuizAction quizAction = new CourseQuizAction();
-        quizAction.setAccount(account);
-        quizAction.setExamDate(DateUtil.getTodayString());
-        quizAction.setRunCount(0);
-        quizAction.setMinute(0);
-        quizAction.setScore(0);
-        quizAction.setTotalUseSecond(0);
-        quizAction.setQuiz(courseQuiz);
-        CourseQuizAction quizAction1 = courseQuizActionService.saveQuizAction(quizAction);
+        CourseQuizAction quizAction = courseQuizActionService.getCourseQuizActionById(quizId);
+
+        quizAction.setStatus(QuizStatusType.FAIL);
+
+
+
+        if(isNew.equals("Y")) {
+            // isNew가 Y인경우는 재응시 이므로 이전 시험을 Fail로 처리한다.
+            quizAction = courseQuizActionService.saveQuizAction(quizAction);
+
+            CourseQuiz courseQuiz = quizAction.getQuiz();
+
+            quizAction = new CourseQuizAction();
+            quizAction.setAccount(account);
+            quizAction.setExamDate(DateUtil.getTodayString());
+            quizAction.setRunCount(0);
+            quizAction.setScore(0);
+            quizAction.setTotalUseSecond(0);
+            quizAction.setQuiz(courseQuiz);
+            quizAction = courseQuizActionService.saveQuizAction(quizAction);
+        }
 
 
         pageInfo.setPageId("m-mypage-myinfo");
-        pageInfo.setPageTitle(courseQuiz.getName());
+        pageInfo.setPageTitle(quizAction.getQuiz().getName());
 
         model.addAttribute(pageInfo);
-        model.addAttribute("quizAction", quizAction1);
+        model.addAttribute("quizAction", quizAction);
 
         return "content/mypage/classroom/quizview";
     }
 
     // 퀴즈 View
-    @PostMapping("/classroom/quizview-post/{id}")
-    public String quizPost(@PathVariable("id") Long quizActionId
+    @PostMapping("/classroom/quizview-post/{quizActionId}")
+    public String quizPost(@PathVariable("quizActionId") Long quizActionId
             , HttpServletRequest request
             , Model model) {
 
@@ -224,11 +249,13 @@ public class MyPageController {
         CourseQuizAction courseQuizAction = courseQuizActionService.getCourseQuizActionById(quizActionId);
 
         CourseQuizActionAnswer questionAnswer;
+        CourseQuizActionAnswer resultAnswer = null;
         String question_id, userAnswer;
         for(CourseQuizQuestion question : courseQuizAction.getQuiz().getQuizQuestions()) {
 
             question_id = Long.toString(question.getId());
-            userAnswer = request.getParameter(question_id);
+            userAnswer = request.getParameter("question-" + question_id.toString());
+            if(userAnswer == null) userAnswer = "0";
 
             questionAnswer = new CourseQuizActionAnswer();
             questionAnswer.setAnswer(question.getAnswer());
@@ -240,7 +267,27 @@ public class MyPageController {
             if(questionAnswer.getAnswer().equals(questionAnswer.getUserAnswer())) questionAnswer.setAnswerCount(1);
             else questionAnswer.setAnswerCount(0);
 
-            courseQuizActionService.saveQuizQuestionAnswer(questionAnswer);
+            resultAnswer = courseQuizActionService.saveQuizQuestionAnswer(questionAnswer);
+        }
+
+        // 시험 결과를 저장한다.
+        if (resultAnswer != null) {
+
+            int answer_count = 0;
+            for(CourseQuizActionAnswer answer : courseQuizAction.getActionAnswers()) {
+                answer_count +=  answer.getAnswerCount();
+            }
+
+            courseQuizAction.setScore(answer_count);
+
+            if(courseQuizAction.getQuiz().getPassCount() > answer_count) {
+                courseQuizAction.setStatus(QuizStatusType.FAIL);
+            }
+            else {
+                courseQuizAction.setStatus(QuizStatusType.SUCCESS);
+            }
+
+            CourseQuizAction courseQuizAction1 = courseQuizActionService.saveQuizAction(courseQuizAction);
         }
 
         pageInfo.setPageId("m-mypage-myinfo");

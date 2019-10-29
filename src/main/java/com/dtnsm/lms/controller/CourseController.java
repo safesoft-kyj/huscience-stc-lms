@@ -2,10 +2,7 @@ package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.auth.CustomUserDetails;
 import com.dtnsm.lms.auth.UserServiceImpl;
-import com.dtnsm.lms.domain.Account;
-import com.dtnsm.lms.domain.Course;
-import com.dtnsm.lms.domain.CourseAccount;
-import com.dtnsm.lms.domain.CourseFile;
+import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.ApprovalStatusType;
 import com.dtnsm.lms.domain.constant.CourseRequestType;
 import com.dtnsm.lms.service.*;
@@ -52,11 +49,19 @@ public class CourseController {
     @Autowired
     private CourseSectionService sectionService;
 
+
+
+    @Autowired
+    private CourseSectionActionService sectionActionService;
+
     @Autowired
     private CourseSurveyService surveyService;
 
     @Autowired
     private CourseQuizService quizService;
+
+    @Autowired
+    private CourseQuizActionService quizActionService;
 
     @Autowired
     private CourseFileService fileService;
@@ -148,8 +153,10 @@ public class CourseController {
     }
 
     // 교육신청 1차 결재 승인
-    @GetMapping("/approvalAppr1/{id}")
-    public String approvalAppr1(@PathVariable("id") long id, Model model) {
+    @GetMapping("/approvalAppr1/{id}/{userId}")
+    public String approvalAppr1(@PathVariable("id") long id
+            , @PathVariable("userId") String userId
+            , Model model) {
 
         Course oldCourse = courseService.getCourseById(id);
 
@@ -157,7 +164,7 @@ public class CourseController {
 
         Course course= courseService.save(oldCourse);
 
-        CourseAccount courseAccount = courseAccountService.getByCourseIdAndApprUserId1(id, SessionUtil.getUserId());
+        CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserId(id, userId);
 
         pageInfo.setPageTitle(course.getCourseMaster().getCourseName() + " 상세");
 
@@ -169,8 +176,10 @@ public class CourseController {
     }
 
     // 교육신청 2차 결재 승인
-    @GetMapping("/approvalAppr2/{id}")
-    public String approvalAppr2(@PathVariable("id") long id, Model model) {
+    @GetMapping("/approvalAppr2/{id}/{userId}")
+    public String approvalAppr2(@PathVariable("id") long id
+            , @PathVariable("userId") String userId
+            , Model model) {
 
         Course oldCourse = courseService.getCourseById(id);
 
@@ -178,7 +187,7 @@ public class CourseController {
 
         Course course= courseService.save(oldCourse);
 
-        CourseAccount courseAccount = courseAccountService.getByCourseIdAndApprUserId2(id, SessionUtil.getUserId());
+        CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserId(id, userId);
 
         pageInfo.setPageTitle(course.getCourseMaster().getCourseName() + " 상세");
 
@@ -217,7 +226,43 @@ public class CourseController {
         courseAccountList.add(courseAccount);
         course.setCourseAccountList(courseAccountList);
 
-        courseService.save(course);
+        course = courseService.save(course);
+
+        // 강의 생성
+        if(course.getSections().size() > 0) {
+            for (CourseSection courseSection : course.getSections()) {
+                CourseSectionAction courseSectionAction = new CourseSectionAction();
+                courseSectionAction.setAccount(account);
+                courseSectionAction.setCourseSection(courseSection);
+                courseSectionAction.setTotalUseSecond(0);
+                courseSectionAction.setRunCount(0);
+                sectionActionService.save(courseSectionAction);
+            }
+        }
+
+
+        // 시험 생성
+        if(course.getIsQuiz().equals("Y") && course.getQuizzes().size() > 0) {
+            for (CourseQuiz courseQuiz : course.getQuizzes()) {
+                CourseQuizAction courseQuizAction = new CourseQuizAction();
+                courseQuizAction.setAccount(account);
+                courseQuizAction.setQuiz(courseQuiz);
+                courseQuizAction.setTotalUseSecond(0);
+                courseQuizAction.setRunCount(0);
+                quizActionService.saveQuizAction(courseQuizAction);
+            }
+        }
+
+        // 시험 생성
+//        if(course.getIsSurvey().equals("Y") && course.getSurveys().size() > 0) {
+//            for (CourseSurvey courseSurvey : course.getSurveys()) {
+//                CourseQuizAction courseQuizAction = new CourseQuizAction();
+//                courseQuizAction.setAccount(account);
+//                courseQuizAction.setQuiz(courseQuiz);
+//                quizActionService.saveQuizAction(courseQuizAction);
+//            }
+//        }
+
 
         return "redirect:/course/request/commit/" + id;
     }

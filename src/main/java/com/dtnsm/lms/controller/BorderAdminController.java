@@ -281,35 +281,5 @@ public class BorderAdminController {
                 .body(resource);
     }
 
-
-    @GetMapping("/download-file2/{id}")
-    @ResponseBody
-    public ResponseEntity<Resource> downloadFile2(@PathVariable int id, HttpServletRequest request){
-
-        BorderFile borderFile = borderFileService.getUploadFile(id);
-
-        // Load file as Resource
-        Resource resource = borderFileService.loadFileAsResource(borderFile.getSaveName());
-
-        // Try to determine file's content type
-        String contentType = mimeTypesMap.getContentType(borderFile.getSaveName());
-        // contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-
-
-        // Fallback to the default content type if type could not be determined
-        if(contentType.equals("")) {
-            contentType = "application/octet-stream";
-        }
-
-        // 한글파일명 깨짐 현상 해소
-        String newFileName = FileUtil.getNewFileName(request, borderFile.getFileName());
-
-        final HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.setContentType(MediaType.parseMediaType(contentType));
-        responseHeaders.add("Content-Disposition", "attachment; filename=\"" + newFileName + "\"");
-
-        return new ResponseEntity<Resource>(resource, responseHeaders, HttpStatus.OK);
-    }
-
     // endregion
 }

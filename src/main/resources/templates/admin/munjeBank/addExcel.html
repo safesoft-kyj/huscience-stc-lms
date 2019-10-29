@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css"></th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title"></h3>
+                </div>
+                <div class="panel-body">
+                    <!--===================================================-->
+                    <!--End Horizontal Form-->
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/munjeBank/add-post}" th:object="${munjeBank}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" th:value="${param.munjeType}" name="munjeType">
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="file" th:text="#{label.course.quiz.file}">문제파일</label>
+                            <div class="col-sm-10">
+                                <input type="file" name="file" id="file">
+                            </div>
+                        </div>
+
+                        <div class="panel-footer text-right">
+                            <button class="btn btn-success" type="submit" th:text="#{label.save}">저장</button>
+                        </div>
+                    </form>
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+
+</th:block>
+
+<th:block layout:fragment="custom_js">
+
+    <script type="text/javascript" th:inline="javascript">
+
+
+//    $( document ).ready(function() {
+//
+//        /*<![CDATA[*/
+//        $('#course-type').change(function () {
+//
+//            var course_footer = /*[[${courseNoFooter}]]*/;
+//
+//            var newNumber = $('#course-type option:selected').val() + course_footer;
+//
+//            $('#id').val(newNumber);
+//        });
+//        /*]]>*/
+//
+//        $("#course-type option[value='0']").attr('selected', 'selected');
+//        //$("#course-type option:eq(0)").attr('selected', 'selected');
+//    });
+
+
+    </script>
+
+</th:block>
+
+</html>

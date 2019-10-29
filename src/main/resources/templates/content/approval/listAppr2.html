@@ -62,7 +62,7 @@
                                 <tbody>
                                 <tr th:each="border, index : ${borders}">
                                     <td th:text="${index.count}" class="text-center"></td>
-                                    <td><a th:href="@{/course/approvalAppr2/{id}(id=${border.getCourse().getId()})}" th:text="${border.getCourse().getTitle()}"></a></td>
+                                    <td><a th:href="@{/course/approvalAppr2/{id}/{userId}(id=${border.getCourse().getId()}, userId=${border.getAccount().getUserId()})}" th:text="${border.getCourse().getTitle()}"></a></td>
                                     <td th:text="${border.getRequestDate()}" class="text-center"></td>
                                     <td th:text="${border.getAccount().getName()}" class="text-center"></td>
                                     <td th:text="${border.getApprUserId1().getName()}" class="text-center"></td>

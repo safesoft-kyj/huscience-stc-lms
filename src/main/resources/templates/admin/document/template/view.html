@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content" style="margin-bottom:0">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title"></h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-striped" cellspacing="0" width="100%">
+<!--                        <colgroup><col width="15%" /><col width="85%" /></colgroup>-->
+                        <tr>
+                            <td class="text-center">
+                                <h4 th:text="${border.getTitle()}"></h4>
+                            </td>
+                        </tr>
+                        <tr style="height:400px;">
+                            <td th:utext="${border.getContent()}" style="height:400px; vertical-align:top;">
+                                <div th:utext="${border.getContent()}" style="overflow: hidden;"></div>
+                            </td>
+                        </tr>
+                    </table>
+                    <hr class="bg-gray"/>
+                    <div class="input-group pull-right">
+                        <p>
+                            <a th:href="@{/admin/document/template/edit/{id}(id=${border.getId()})}"
+                               class="btn btn-warning" th:text="#{label.edit}">수정</a>
+                            <a th:href="@{/admin/document/template/list}"
+                               class="btn btn-success" th:text="#{label.list}">목록</a>
+                        </p>
+                    </div>
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+</th:block>
+
+</html>
+
+

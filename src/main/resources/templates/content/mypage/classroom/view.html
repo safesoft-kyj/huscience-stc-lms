@@ -46,24 +46,24 @@
 <!--                            <th class="text-center">기간</th>-->
                             <th class="text-center">시간</th>
 <!--                            <th class="text-center">강사</th>-->
-                            <th class="text-center">진도율</th>
+                            <th class="text-center">진도율/상태</th>
                             <th class="text-center"></th>
                             </thead>
                             <tbody>
-                            <th:block th:each="section, index : ${course.getSections()}">
+                            <th:block th:each="sectionAction, index : ${courseSectionActions}">
                             <tr>
                                 <td class="text-center" th:text="${index.count}"}></td>
                                 <td class="text-center" th:text="#{label.title.section}"}></td>
-                                <td class="text-left" th:text="${section.getName()}"}></td>
+                                <td class="text-left" th:text="${sectionAction.getCourseSection().getName()}"}></td>
 <!--                                <td class="text-center" th:text="${section.getFromDate() + ' ~ ' + section.getToDate()}"></td>-->
-                                <td class="text-center" th:text="${section.getMinute()} + '분'"}></td>
+                                <td class="text-center" th:text="${sectionAction.getCourseSection().getMinute()} + '분'"}></td>
 <!--                                <td class="text-center" th:text="${section.getTeacher()}"}></td>-->
                                 <td class="text-left" >
 
                                     <div class="progress">
                                         <div id="time"  class="progress-bar progress-bar-success"
-                                             th:attr="style=${'width:' + T(Math).round((section.getTotalUseSecond()*1.0) / section.getSecond() * 100) + '%'}"
-                                             th:text="${T(Math).round((section.getTotalUseSecond()*1.0) / section.getSecond() * 100) + ' %'}">0%</div>
+                                             th:attr="style=${'width:' + T(Math).round((sectionAction.getTotalUseSecond()*1.0) / sectionAction.getCourseSection().getSecond() * 100) + '%'}"
+                                             th:text="${T(Math).round((sectionAction.getTotalUseSecond()*1.0) / sectionAction.getCourseSection().getSecond() * 100) + ' %'}">0%</div>
                                     </div>
 
                                 </td>
@@ -71,39 +71,46 @@
 <!--                                    <a href="#" class="btn btn-success" id="popupBtn" onclick="popupPdfView('11', '디티앤사노메딕스')" target="_blank">학습하기</a>-->
 <!--                                    <span th:id="${'id' + index.count}" th:text="${section.getId()}"></span>-->
 
-                                    <th:block th:inline="text" th:each="sectionFile : ${section.getSectionFiles()}">
+                                    <th:block th:inline="text" th:each="sectionFile : ${sectionAction.getCourseSection().getSectionFiles()}">
                                         <a href="#" class="btn btn-success" id="popupBtn"
-                                           th:onclick="|javascript:popupPdfView('${sectionFile.getId()}');return false;|" target="_blank">학습하기</a>
+                                           th:onclick="|javascript:popupPdfView('${sectionFile.getId()}', '${sectionAction.getId()}');return false;|" target="_blank">학습하기</a>
                                     </th:block>
                                 </td>
                             </tr>
                             </th:block>
 
-                            <tr th:each="quiz, index : ${course.getQuizzes()}">
-                                <td class="text-center" th:text="${index.count}"></td>
+<!--                            <tr th:each="quizAction, index : ${courseQuizActions}">-->
+                            <th:block th:unless="${#strings.isEmpty(quizAction)}">
+                            <tr>
+                                <td class="text-center">1</td>
                                 <td class="text-center" th:text="#{label.title.quiz}"></td>
-                                <td class="text-left">
-                                    <a th:href="@{/admin/course/quiz/edit/{id}(id=${quiz.getId()})}">
-                                        <span th:text="${quiz.getName()}"></span>
-                                    </a>
-                                </td>
+                                <td class="text-left" th:text="${quizAction.getQuiz().getName()}"}></td>
 <!--                                <td class="text-center" th:text="${quiz.getFromDate() + ' ~ ' + quiz.getToDate()}"></td>-->
-                                <td class="text-center" th:text="${quiz.getMinute() + '분'}"></td>
+                                <td class="text-center" th:text="${quizAction.getQuiz().getMinute() + '분'}"></td>
 <!--                                <td class="text-center"></td>-->
-                                <td class="text-left" >
-                                    <th:block th:each="actionQuiz : ${quiz.getQuizActions()}">
-                                        <div class="progress">
-                                            <div id="time2"  class="progress-bar progress-bar-success"
-                                                 th:attr="style=${'width:' + T(Math).round((actionQuiz.getTotalUseSecond()*1.0) / actionQuiz.getSecond() * 100) + '%'}"
-                                                 th:text="${T(Math).round((actionQuiz.getTotalUseSecond()*1.0) / actionQuiz.getSecond() * 100) + ' %'}">0%</div>
-                                        </div>
+<!--                                <td class="text-left" >-->
+<!--                                    <th:block th:each="actionQuiz : ${quiz.getQuizActions()}">-->
+<!--                                        <div class="progress">-->
+<!--                                            <div id="time2"  class="progress-bar progress-bar-success"-->
+<!--                                                 th:attr="style=${'width:' + T(Math).round((actionQuiz.getTotalUseSecond()*1.0) / actionQuiz.getSecond() * 100) + '%'}"-->
+<!--                                                 th:text="${T(Math).round((actionQuiz.getTotalUseSecond()*1.0) / actionQuiz.getSecond() * 100) + ' %'}">0%</div>-->
+<!--                                        </div>-->
+<!--                                    </th:block>-->
+<!--                                </td>-->
+                                <td class="text-center" th:text="${quizAction.getStatus()}"></td>
+                                <td class="text-center">
+                                    <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'FAIL')}">
+                                        <a href="#" class="btn btn-success" id="popupQuiz"
+                                           th:onclick="|javascript:popupQuizView('${quizAction.getId()}', 'Y');return false;|" target="_blank">재응시</a>
+                                    </th:block>
+                                    <th:block th:unless="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'FAIL')}">
+                                        <a href="#" class="btn btn-success" id="popupQuiz2"
+                                           th:onclick="|javascript:popupQuizView('${quizAction.getId()}', 'N');return false;|" target="_blank">시험응시</a>
                                     </th:block>
                                 </td>
-                                <td class="text-center">
-                                    <a href="#" class="btn btn-success" id="popupQuiz"
-                                       th:onclick="|javascript:popupQuizView('${quiz.getId()}');return false;|" target="_blank">시험응시</a>
-                                </td>
                             </tr>
+                            </th:block>
+
                             <tr th:each="survey, index : ${course.getSurveys()}">
                                 <td class="text-center" th:text="${index.count}"></td>
                                 <td class="text-center" th:text="#{label.title.survey}"></td>
@@ -115,7 +122,6 @@
 <!--                                <td class="text-center" th:text="${survey.getFromDate() + ' ~ ' + survey.getToDate()}"}></td>-->
                                 <td class="text-center"></td>
                                 <td class="text-center"></td>
-<!--                                <td class="text-center"></td>-->
                                 <td class="text-center">
                                     <a href="#" class="btn btn-success" id="popupSurvey"
                                        th:onclick="|javascript:popupSurveyView('${survey.getId()}');return false;|" target="_blank">참여</a>
@@ -139,12 +145,12 @@
             alert('준비중입니다..');
         }
 
-        function popupPdfView(id) {
+        function popupPdfView(id, sectionActionId) {
            var width = 1000;
            var height = 720;
 
             var title = "디티앤사노메딕스";
-            var url = "/mypage/classroom/pdfview/" + id;
+            var url = "/mypage/classroom/pdfview/" + id + "/" + sectionActionId;
             // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
             var popupX = (window.screen.width / 2) - (width / 2);
             // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
@@ -156,12 +162,12 @@
             window.open(url, title, option);
         }
 
-        function popupQuizView(id) {
+        function popupQuizView(quizActionId, isNew) {
             var width = 1000;
             var height = 720;
 
             var title = "디티앤사노메딕스";
-            var url = "/mypage/classroom/quizview/" + id;
+            var url = "/mypage/classroom/quizview/" + quizActionId + "/" + isNew;
             // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
             var popupX = (window.screen.width / 2) - (width / 2);
             // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
@@ -173,12 +179,12 @@
             window.open(url, title, option);
         }
 
-        function popupSurveyView(id) {
+        function popupSurveyView(id, quizActionId) {
             var width = 1000;
             var height = 720;
 
             var title = "디티앤사노메딕스";
-            var url = "/mypage/classroom/surveyview/" + id;
+            var url = "/mypage/classroom/surveyview/" + id + "/" + quizActionId;
             // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
             var popupX = (window.screen.width / 2) - (width / 2);
             // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음

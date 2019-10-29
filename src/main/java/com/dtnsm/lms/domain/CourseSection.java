@@ -57,10 +57,7 @@ public class CourseSection extends AuditorCreateEntity<String> {
     @ColumnDefault("0")
     private int second;
 
-    // 학습한 시간(초) => 진도율 계산시 필요
-    @Column(name="total_use_second")
-    @ColumnDefault("0")
-    private int totalUseSecond;
+
 
     // 문제 유형(BC0201:객관식, BC0202:주관식) => Major Code : BC02
     // Parent 필드 추가
@@ -77,16 +74,19 @@ public class CourseSection extends AuditorCreateEntity<String> {
     private List<CourseSectionFile> sectionFiles = new ArrayList<>();
 
     @OneToMany(mappedBy = "courseSection", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CourseSectionHistory> courseSectionHistories = new ArrayList<>();
+    private List<CourseSectionAction> courseSectionActions = new ArrayList<>();
+
+
 
     public CourseSection() {
     }
 
 
-    public boolean addCourseSectionHistory(CourseSectionHistory sectionHistory) {
-        if(courseSectionHistories == null)
-            courseSectionHistories = new ArrayList<>();
 
-        return courseSectionHistories.add(sectionHistory);
+    public boolean addCourseSectionAction(CourseSectionAction sectionAction) {
+        if(courseSectionActions == null)
+            courseSectionActions = new ArrayList<>();
+
+        return courseSectionActions.add(sectionAction);
     }
 }

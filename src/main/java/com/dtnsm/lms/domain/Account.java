@@ -66,6 +66,9 @@ public class Account {
     @OneToMany(mappedBy = "account")
     private List<CourseAccount> courseAccountList;
 
+    @OneToMany(mappedBy = "document")
+    private List<DocumentAccount> documentAccountList;
+
     public Account() {}
 
     public Account(String userId, String name, String email, String password) {
@@ -88,6 +91,13 @@ public class Account {
             courseAccountList = new ArrayList<>();
 
         return courseAccountList.add(courseAccount);
+    }
+
+    public boolean addDocumentAccount(DocumentAccount documentAccount) {
+        if(documentAccountList == null)
+            documentAccountList = new ArrayList<>();
+
+        return documentAccountList.add(documentAccount);
     }
 
 //    public Long getId() {

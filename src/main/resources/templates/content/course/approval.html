@@ -39,8 +39,8 @@
                     <div class="row" th:if="${courseAccount.getStatus() == T(com.dtnsm.lms.domain.constant.ApprovalStatusType).REQUEST_DONE}">
                         <div class="col-sm-12 input-group pull-right">
                             <p class="pull-right">
-                                <a th:href="@{/approval/successAppr1/{courseId}(courseId=${course.getId()})}" class="btn btn-lg btn-warning">승인</a>
-                                <a th:href="@{/approval/rejectAppr1/{courseId}(courseId=${course.getId()})}" class="btn btn-lg btn-danger">기각</a>
+                                <a th:href="@{/approval/successAppr1/{courseId}/{userId}(courseId=${course.getId()}, userId=${courseAccount.getAccount().getUserId()})}" class="btn btn-lg btn-warning">승인</a>
+                                <a th:href="@{/approval/rejectAppr1/{courseId}/{userId}(courseId=${course.getId()}, userId=${courseAccount.getAccount().getUserId()})}" class="btn btn-lg btn-danger">기각</a>
                             </p>
                         </div>
                     </div>
@@ -84,7 +84,9 @@
                                     <td class="text-center" th:text="${courseAccount.getApprUserId2().getName()}"></td>
                                 </tr>
                                 <tr>
-                                    <td class="text-center"><img src="" style="width:100px; height:100px;"></td>
+                                    <td class="text-center">
+                                        <img src="http://gw.dtnsm.com/common/download.aspx?DownType=approsign2&sUserID=safesoft&file=safesoft_2019-10-02.png" style="width:40px; height:40px;">
+                                    </td>
                                     <td class="text-center" th:text="${courseAccount.getApprDateTime1()}"></td>
                                     <td class="text-center" th:text="${courseAccount.getApprDateTime2()}"></td>
                                 </tr>

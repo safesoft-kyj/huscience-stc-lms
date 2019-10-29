@@ -1,8 +1,11 @@
 package com.dtnsm.lms.domain;
 
 import com.dtnsm.lms.auth.AuditorCreateEntity;
+import com.dtnsm.lms.domain.constant.QuizStatusType;
+import com.dtnsm.lms.domain.constant.SurveyStatusType;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -49,6 +52,11 @@ public class CourseSurvey extends AuditorCreateEntity<String> {
     // 예제수(예제수가 0이면 주관식 그외는 객관식)
     @Column(name="item_count")
     private int itemCount = 0;
+
+    @ColumnDefault(value = "0")
+    @Enumerated(EnumType.STRING)
+    private SurveyStatusType status = SurveyStatusType.ONGOING;
+
 
     // 문제 유형(BC0201:객관식, BC0202:주관식) => Major Code : BC02
     // Parent 필드 추가

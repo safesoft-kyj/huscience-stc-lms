@@ -91,9 +91,9 @@
                             </div>
                             <label class="col-sm-2 control-label" for="pathCount" th:text="#{label.course.quiz.pathCount}">합격문항수</label>
                             <div class="col-sm-4">
-                                <input type="number" th:field="*{pathCount}" id="pathCount" placeholder="" class="form-control" required="required">
+                                <input type="number" th:field="*{getPassCount}" id="pathCount" placeholder="" class="form-control" required="required">
                             </div>
-                            <span th:if="${#fields.hasErrors('pathCount')}" th:errors="*{pathCount}"></span>
+                            <span th:if="${#fields.hasErrors('pathCount')}" th:errors="*{getPassCount}"></span>
                         </div>
                         <div class="panel-footer text-right">
                             <button class="btn btn-primary" type="submit" id="submit-all" th:text="#{label.save}">

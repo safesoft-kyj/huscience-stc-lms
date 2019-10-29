@@ -41,7 +41,8 @@
                             <span th:text="#{label.list.title(${borders.size()})}"></span>
                         </div>
                         <div class="col-sm-6 text-right">
-                            <p><a th:href="@{/admin/munjeBank/add(munjeType=__${munjeType}__)}" class="btn btn-success" th:text="#{label.add}">Add new</a></p>
+<!--                            <span><a th:href="@{/admin/munjeBank/add(munjeType=__${munjeType}__)}" class="btn btn-success" th:text="#{label.add}">Add new</a></span>-->
+                            <span><a th:href="@{/admin/munjeBank/addExcel(munjeType=__${munjeType}__)}" class="btn btn-success" th:text="#{label.excelUpload}">Add new</a></span>
                         </div>
                     </div>
                     <div th:switch="${borders}">

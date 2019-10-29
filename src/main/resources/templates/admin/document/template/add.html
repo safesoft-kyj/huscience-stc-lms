@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <!--Dropzone [ OPTIONAL ]-->
+    <link th:href="@{/default/plugins/dropzone/dropzone.min.css}" rel="stylesheet">
+
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title"></h3>
+                </div>
+                <div class="panel-body">
+                    <!--===================================================-->
+                    <!--End Horizontal Form-->
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/document/template/add-post}" th:object="${border}" method="post">
+                        <input type="hidden" th:field="*{id}" id="id" name="id">
+                        <div class="form-group">
+<!--                            <label class="col-sm-2 control-label text-center" for="title">제목</label>-->
+                            <div class="col-sm-12">
+                                <input type="text" th:field="*{title}" id="title" placeholder="제목" class="form-control col-sm-10" required="required">
+                            </div>
+                            <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" th:text="#{label.course.isCourseTeamApproval}">팀장/부서장 승인 여부</label>
+                            <div class="col-sm-10">
+                                <select th:field="*{isTeamMangerApproval}" class="form-control">
+                                    <option value="Y" >Select Option</option>
+                                    <option value="Y" >Y</option>
+                                    <option value="N" >N</option>
+                                </select>
+                            </div>
+                            <span th:if="${#fields.hasErrors('isTeamMangerApproval')}" th:errors="*{isTeamMangerApproval}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" th:text="#{label.course.isCourseManagerApproval}">교육과정 관리자 승인여부</label>
+                            <div class="col-sm-10">
+                                <select th:field="*{isCourseMangerApproval}" class="form-control">
+                                    <option value="Y" >Select Option</option>
+                                    <option value="Y" >Y</option>
+                                    <option value="N" >N</option>
+                                </select>
+                            </div>
+                            <span th:if="${#fields.hasErrors('isCourseMangerApproval')}" th:errors="*{isCourseMangerApproval}"></span>
+                        </div>
+
+                        <div id="editSection"></div>
+
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <textarea class="form-control" th:field="*{content}" name="content" id="editor" style="width: 100%; height: 500px;" required></textarea>
+                            </div>
+                            <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
+                        </div>
+                        <div class="panel-footer text-right">
+                            <button class="btn btn-primary" type="submit" id="submit-all">
+                                <i class="fa fa-upload-cloud"></i> 저장
+                            </button>
+                            <a th:href="@{/admin/document/template/list}" class="btn btn-success">
+                                <i class="fa fa-upload-cloud"></i> 목록
+                            </a>
+                        </div>
+                    </form>
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+
+</th:block>
+
+<th:block layout:fragment="custom_js">
+
+    <script type="text/javascript" th:src="@{/editor/js/HuskyEZCreator.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/default/js/custom/border-editor.js}" charset="utf-8"></script>
+
+    <script>
+
+    </script>
+</th:block>
+
+</html>

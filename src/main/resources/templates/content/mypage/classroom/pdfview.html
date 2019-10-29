@@ -84,8 +84,8 @@
 <script th:inline="javascript">
     var section_minute = [[${courseSectionFile.getCourseSection().getMinute()}]];
     var section_second = [[${courseSectionFile.getCourseSection().getSecond()}]];
-    var total_use_second = [[${courseSectionFile.getCourseSection().getTotalUseSecond()}]];
-    var section_id = [[${courseSectionFile.getCourseSection().getId()}]];
+    var total_use_second = [[${sectionAction.getTotalUseSecond()}]];
+    var action_id = [[${sectionAction.getId()}]];
 
     // 학습시간 업데이틀 여부를 관리(0:업데이트 되지 않음, 1:업데이트 됨)
     var update_flag = '0';
@@ -182,7 +182,7 @@
                 type: "POST",
                 url: url,
                 data: {
-                    'sectionId': section_id,
+                    'sectionActionId': action_id,
                     'useSecond': curr_second,
                     'startDate': currDate,
                     'endDate': endDate
