@@ -1,5 +1,6 @@
 package com.dtnsm.lms.service;
 
+import com.dtnsm.lms.domain.constant.MailSendType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +31,36 @@ public class MailService {
     }
 
     public void send(Mail mail) {
+        send(mail, MailSendType.REQUEST);
+    }
+
+    public void send(Mail mail, MailSendType mailSendType) {
         //get and fill the template
         final Context context = new Context();
+        context.setVariable("subject", mail.getObject());
         context.setVariable("message", mail.getMessage());
-        String body = templateEngine.process("email/email-template", context);
+        String templateUri = "email/email-template";
+
+        if (mailSendType.equals(MailSendType.REQUEST)) {
+            templateUri = "email/course-request";
+        } else if (mailSendType.equals(MailSendType.APPROVAL1)) {
+            templateUri = "email/course-appr1";
+
+        } else if (mailSendType.equals(MailSendType.REQUEST)) {
+            templateUri = "email/course-appr2";
+        }
+
+        String body = templateEngine.process(templateUri, context);
+
         //send the html template
         sendPreparedMail(mail.getEmail(), mail.getObject(), body, true);
+
+
     }
 
     private void sendPreparedMail(String to, String subject, String text, Boolean isHtml) {
+        LOGGER.error("Problem with sending email to: {}, error message: {}", to, subject);
+
         new Thread(() -> {
             try {
                 MimeMessage mail = javaMailSender.createMimeMessage();

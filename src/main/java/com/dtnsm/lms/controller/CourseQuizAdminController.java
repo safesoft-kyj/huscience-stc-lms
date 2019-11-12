@@ -142,12 +142,14 @@ public class CourseQuizAdminController {
             return "/admin/course/list/" + courseQuiz.getCourse().getId();
         }
 
-        CourseQuiz courseSurveyOld = quizService.getCourseQuizById(id);
+        CourseQuiz courseQuizOld = quizService.getCourseQuizById(id);
 
-        Course course = courseSurveyOld.getCourse();
+        Course course = courseQuizOld.getCourse();
         courseQuiz.setCourse(course);
-        courseQuiz.setQuizFiles(courseSurveyOld.getQuizFiles());
-        courseQuiz.setSecond(courseQuiz.getMinute()*60);
+        courseQuiz.setQuizFiles(courseQuizOld.getQuizFiles());
+        courseQuiz.setQuizActions(courseQuizOld.getQuizActions());
+        courseQuiz.setQuizQuestions(courseQuizOld.getQuizQuestions());
+        courseQuiz.setSecond(courseQuizOld.getMinute()*60);
 
         CourseQuiz courseQuiz1 = quizService.saveQuiz(courseQuiz);
 

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <style>
+        .pdfobject-container{
+            /*margin-top:50px;*/
+            /*margin-left:50px;*/
+            /*width: 600px;*/
+            height: 600px;
+        }
+
+        .pdfobject {
+            border: 1px solid #666;
+        }
+    </style>
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content" style="margin-bottom:0">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title" th:text="${jdVersion.getJd().getTitle() + ' (' + jdVersion.getJd().getShortName() + ') Version ' + #numbers.formatDecimal(jdVersion.getVer(), 1, 1)}"></h3>
+                </div>
+                <div class="panel-body">
+
+                    <table class="table table-striped" cellspacing="0" width="100%" style="height:600px;">
+                        <tr style="">
+                            <td>
+                                <div id="example1"></div>
+                            </td>
+                        </tr>
+                    </table>
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+
+    <!-- PDF 라이브러리-->
+    <script th:src="@{/default/plugins/pdfjs/build/pdfobject.js}"></script>
+
+    <script th:inline="javascript">
+
+        // PDF 교육자료 실행
+        /*<![CDATA[*/
+        var id = '[[${jdVersion.getJdFiles().get(0).getId()}]]'
+
+        if (id != null) {
+
+            var options = {
+                height: "600px",
+                page: '1',
+                pdfOpenParams: {
+                    view: 'FitV',
+                    pagemode: 'thumbs',
+                    search: 'lorem ipsum'
+                },
+
+                forcePDFJS: true, // 강제로 PDF Viewer를 실행시키는 옵션
+                PDFJS_URL: "/default/plugins/pdfjs/web/viewer.html" //PDF.js의 PDF viewer를 viewer로 지정.
+            };
+
+            //제일 처음 열리는 pdf파일 경로 설정.
+            PDFObject.embed("/admin/jd/version/download-file/" + id, "#example1", options);
+        }
+
+        /*]]>*/
+
+        // 새로고침 방지
+        function doNotReload(){
+            //ctrl+N , ctrl+R, function F5
+            if( (event.ctrlKey == true && (event.keyCode == 78 || event.keyCode == 82)) || (event.keyCode == 116))
+            {
+                event.keyCode = 0;
+                event.cancelBubble = true;
+                event.returnValue = false;
+            }
+        }
+        document.onkeydown = doNotReload;
+    </script>
+</th:block>
+
+</html>
+
+

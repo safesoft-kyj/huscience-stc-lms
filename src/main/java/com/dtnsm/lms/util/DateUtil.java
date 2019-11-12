@@ -23,6 +23,37 @@ public  class DateUtil {
         return retrunValue;
     }
 
+    // 달의 마지막 일자 스트링으로 받기
+    public static String getStringMonthStartDate() {
+
+        int nYear, nMonth, nDay;
+        Calendar cal = Calendar.getInstance();
+
+        nYear = cal.get(Calendar.YEAR);
+        nMonth = cal.get(Calendar.MONTH);
+        nDay = 1;
+
+        cal.set(nYear, nMonth, nDay);
+
+        return getDateToString(cal.getTime());
+    }
+
+    public static String getStringMonthEndDate() {
+
+        int nYear, nMonth, nDay;
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(getToday());
+
+        nYear = cal.get(Calendar.YEAR);
+        nMonth = cal.get(Calendar.MONTH);
+        nDay = cal.getActualMaximum  (Calendar.DAY_OF_MONTH);
+
+        cal.set(nYear, nMonth, nDay);
+
+        return getDateToString(cal.getTime());
+    }
+
     public static Date getStringToDate(String stringDate) {
         Date date = null;
         try {

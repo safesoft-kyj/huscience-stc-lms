@@ -47,7 +47,7 @@
                         <tr>
                             <td >
                                 <h4 th:text="#{label.course.accountlist}"></h4>
-                                <span th:each="account : ${border.getDocumentAccountList()}" th:text="${account.getAccount().getName() + ' '}"></span>
+                                <span th:each="account : ${border.getDocumentCourseAccountList()}" th:text="${account.getAccount().getName() + ' '}"></span>
                             </td>
                         </tr>
                         <tr style="height:400px;">

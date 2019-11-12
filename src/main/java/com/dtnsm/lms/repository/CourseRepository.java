@@ -14,8 +14,10 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     // 제목, 내용 검색
     Page<Course> findAllByCourseMaster_IdAndTitleLikeOrContentLike(String typeId, String title, String content, Pageable pageable);
+
     // 내용 검색
     Page<Course> findAllByCourseMaster_IdAndContentLike(String typeId, String content, Pageable pageable);
+
     // 제목 검색
     Page<Course> findAllByCourseMaster_IdAndTitleLike(String typeId, String title, Pageable pageable);
 
@@ -26,5 +28,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     List<Course> findByFromDateBetween(String fromDate, String toDate);
 
     List<Course> findByRequestFromDateBetween(String fromDate, String toDate);
+
+    List<Course> findTop5ByRequestFromDateBetween(String fromDate, String toDate);
 
 }

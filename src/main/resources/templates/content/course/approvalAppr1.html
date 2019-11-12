@@ -36,7 +36,7 @@
 <!--                    <h3 class="panel-title" th:text="${courseAccount.getStatus()}"></h3>-->
                 </div>
                 <div class="panel-body">
-                    <div class="row" th:if="${courseAccount.getStatus() == T(com.dtnsm.lms.domain.constant.ApprovalStatusType).REQUEST_DONE}">
+                    <div class="row" th:if="${#strings.equalsIgnoreCase(courseAccount.getApprUserId1().userId, userId) and #strings.equalsIgnoreCase(courseAccount.getIsAppr1(), 'N') and #strings.equalsIgnoreCase(courseAccount.isTeamMangerApproval, 'Y')}">
                         <div class="col-sm-12 input-group pull-right">
                             <p class="pull-right">
                                 <a th:href="@{/approval/successAppr1/{courseId}/{userId}(courseId=${course.getId()}, userId=${courseAccount.getAccount().getUserId()})}" class="btn btn-success">승인</a>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+
+    <style>
+
+
+    </style>
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content" style="margin-bottom:0">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-body">
+
+                    <h4>Job Description Current Version</h4>
+                    <div th:switch="${borders}">
+                        <h2 th:case="null">No customer yet!</h2>
+                        <div th:case="*">
+
+                            <div class="row">
+                                <div id="example1"></div>
+                            </div>
+
+                        </div>
+                    </div><!--switch End -->
+                </div>
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+
+    <script th:inline="javascript">
+        // PDF 교육자료 실행
+        /*<![CDATA[*/
+        var id = '[[${borders.getJdFiles().get(0).getId()}]]'
+
+        var options = {
+            height: '100%',
+            page: '1',
+            pdfOpenParams: {
+                view: 'FitV',
+                pagemode: 'thumbs',
+                search: 'lorem ipsum',
+                statusbar: 0,
+                toolbar: 0,
+                navpanes: 0
+            },
+
+            forcePDFJS: true, // 강제로 PDF Viewer를 실행시키는 옵션
+            PDFJS_URL: "/default/plugins/pdfjs/web/viewer.html" //PDF.js의 PDF viewer를 viewer로 지정.
+        };
+
+        //제일 처음 열리는 pdf파일 경로 설정.
+        PDFObject.embed("/admin/jd/version/download-file/" + id, "#example1", options);
+
+    </script>
+
+</th:block>
+
+</html>
+
+

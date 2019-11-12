@@ -92,7 +92,10 @@ public class Course extends AuditorCreateEntity<String> {
     // 수료증 발급 여부
     private String isCerti = "N" ;
 
-    // 교육 대상자
+    @Column(length = 20)
+    private String certiHead;
+
+   // 교육 대상자
     @Column(length = 1000)
     private String mailSender;
 

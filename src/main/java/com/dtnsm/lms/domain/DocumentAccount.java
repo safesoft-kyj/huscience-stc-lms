@@ -83,5 +83,6 @@ public class DocumentAccount extends AuditorEntity<String> {
     @Enumerated(EnumType.STRING)
     private ApprovalStatusType status;
 
-
+    // 종결 여부(최종승인이나 기각시, 1:종결, 0:진행중)
+    private String isCommit = "0";
 }

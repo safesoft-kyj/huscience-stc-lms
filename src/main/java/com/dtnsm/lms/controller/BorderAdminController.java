@@ -9,6 +9,7 @@ import com.dtnsm.lms.service.BorderService;
 import com.dtnsm.lms.service.FileService;
 import com.dtnsm.lms.service.Mail;
 import com.dtnsm.lms.service.MailService;
+import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
 import org.slf4j.LoggerFactory;
@@ -164,6 +165,13 @@ public class BorderAdminController {
         }
 
         border.setBorderMaster(borderMasterService.getById(border.getBorderMaster().getId()));
+        if (!border.getIsNotice().equals("1")) {
+            border.setFromDate("1900-01-01");
+            border.setToDate("1900-01-01");
+        } else {
+            border.setFromDate(DateUtil.getTodayString());
+        }
+
         Border border1 = borderService.save(border);
 
         Arrays.asList(files)
@@ -218,6 +226,13 @@ public class BorderAdminController {
         }
 
         List<BorderFile> borderFiles = borderService.getBorderById(id).getBorderFiles();
+        if (!border.getIsNotice().equals("1")) {
+            border.setFromDate("1900-01-01");
+            border.setToDate("1900-01-01");
+        } else {
+            border.setFromDate(DateUtil.getTodayString());
+        }
+
         border.setBorderFiles(borderFiles);
 
         Border border1 = borderService.save(border);

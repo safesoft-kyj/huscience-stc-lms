@@ -1,0 +1,65 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<style>
+    * { margin: 0; padding:0; }
+    div { background: red; }
+</style>
+
+<div id="wpps_popup"></div>
+
+<script>
+
+    jQuery(document).ready(function(){
+        var wpps_popup_width = 			800; 									// 팝업창 가로 길이
+        var wpps_popup_height = 			400; 								// 팝업창 세로 길이
+        var wpps_popup_wh_ratio = 		wpps_popup_height / wpps_popup_width; 	// 팝업창 세로/가로 비율
+
+        var wpps_rowser_width = 		window.innerWidth; 						// 현재 표시 화면 가로
+        var wpps_browser_height = 		window.innerHeight;  					// 현재 표시 화면 세로
+
+        var wpps_popup_width_catch = 	jQuery("#wpps_popup").width(); 				// 현재 팝업 창 가로 값
+
+        jQuery("#wpps_popup").css("max-width", wpps_popup_width );					// 팝업창 최대 크기 제한
+
+
+        /*--------------------------------------------------
+        * 처음 화면이 보일 때:
+                          팝업창 가로 크기가 화면보다 클 때 와 작은 경우
+        ---------------------------------------------------*/
+        if (wpps_popup_width > wpps_rowser_width) {   							// 팝업창이 화면보다 클 때
+            var wpps_popup_width_catch = jQuery("#wpps_popup").width();
+            jQuery("#wpps_popup").css("width", "98%" );
+            jQuery("#wpps_popup").css("margin", "10% 1%" );
+            jQuery("#wpps_popup").css("height", wpps_popup_width_catch * wpps_popup_wh_ratio );
+        } else {														// 팝업창이 화면에 충분히 들어 갈 때
+            jQuery("#wpps_popup").css("width", wpps_popup_width );
+            jQuery("#wpps_popup").css("height", wpps_popup_height );
+            jQuery("#wpps_popup").css("margin", "0 auto" );
+            jQuery("#wpps_popup").css("margin-top", "10%" );
+        }
+
+        /*--------------------------------------------------
+        * 화면 크기가 바뀌고 있는 도중 일때(시작)
+        ---------------------------------------------------*/
+        jQuery( window ).resize(function() {
+            var wpps_rowser_width = window.innerWidth;
+            jQuery("#wpps_popup").css("margin", "0 auto");
+
+            if (wpps_popup_width > wpps_rowser_width) {  						// 팝업창이 화면보다 클 때
+                var wpps_popup_width_catch = jQuery("#wpps_popup").width();
+                jQuery("#wpps_popup").css("width", "98%" );
+                jQuery("#wpps_popup").css("margin", "10% 1%" );
+                jQuery("#wpps_popup").css("height", wpps_popup_width_catch * wpps_popup_wh_ratio / .98 );
+
+            } else {  													// 팝업창이 화면에 충분히 들어 갈 때
+                jQuery("#wpps_popup").css("width", wpps_popup_width );
+                jQuery("#wpps_popup").css("height", wpps_popup_height );
+                jQuery("#wpps_popup").css("margin", "0 auto" );
+                jQuery("#wpps_popup").css("margin-top", "10%" );
+            }
+        });
+        /*--------------------------------------------------
+        * 화면 크기가 바뀌고 있는 도중 일때 (끝)
+        ---------------------------------------------------*/
+
+    });
+</script>

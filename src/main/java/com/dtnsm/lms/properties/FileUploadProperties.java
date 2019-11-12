@@ -26,6 +26,28 @@ public class FileUploadProperties {
     // 전자결재 파일 업로드 경로
     private String documentUploadDir;
 
+    // 설문 파일 업로드 경로
+    private String surveyUploadDir;
+
+    // Digital Binder JD 업로드 경로
+    private String BinderJdUploadDir;
+
+    public String getBinderJdUploadDir() {
+        return BinderJdUploadDir;
+    }
+
+    public void setBinderJdUploadDir(String binderJdUploadDir) {
+        BinderJdUploadDir = binderJdUploadDir;
+    }
+
+    public String getSurveyUploadDir() {
+        return surveyUploadDir;
+    }
+
+    public void setSurveyUploadDir(String surveyUploadDir) {
+        this.surveyUploadDir = surveyUploadDir;
+    }
+
     public String getDocumentUploadDir() {
         return documentUploadDir;
     }

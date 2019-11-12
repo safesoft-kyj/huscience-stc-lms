@@ -162,7 +162,7 @@ public class ScheduleController {
 
         scheduleService.delete(schedule);
 
-        return "redirect:/admin/schedule/list";
+        return "redirect:/admin/schedule/list/CALENDAR";
     }
 
     @GetMapping("/delete-file/{schedule_id}/{file_id}")

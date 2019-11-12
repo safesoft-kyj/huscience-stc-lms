@@ -93,6 +93,7 @@ public class InitialDataLoader implements
                 account.setEnabled(true);
                 userRepository.save(account);
             }
+
         }
 
         alreadySetup = true;

@@ -6,6 +6,8 @@ import com.dtnsm.lms.repository.CourseSectionFileRepository;
 import com.dtnsm.lms.exception.FileDownloadException;
 import com.dtnsm.lms.exception.FileUploadException;
 import com.dtnsm.lms.properties.FileUploadProperties;
+import com.dtnsm.lms.util.FileUtil;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -49,12 +51,16 @@ public class CourseSectionFileService {
 
 
     public CourseSectionFile storeFile(MultipartFile file, CourseSection courseSection) {
-        String originName = StringUtils.cleanPath(file.getOriginalFilename());
+        String originName = FilenameUtils.getBaseName(file.getOriginalFilename());
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        String contentType = file.getContentType();
+        long fileSize = file.getSize();
 
-        if (originName.equals("")) return null;
+        originName = originName + "." + extension;
+        if (originName.equals("") || originName.equals(".")) return null;
 
         // 파일명을 생성한다.
-        String saveName = StringUtils.cleanPath(CreateFileName(file.getOriginalFilename()));
+        String saveName = StringUtils.cleanPath(FileUtil.CreateFileName(originName));
 
         try {
             // 파일명에 부적합 문자가 있는지 확인한다.
@@ -65,7 +71,7 @@ public class CourseSectionFileService {
 
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            CourseSectionFile courseSectionFile = new CourseSectionFile(originName, saveName, file.getSize(), file.getContentType(), courseSection);
+            CourseSectionFile courseSectionFile = new CourseSectionFile(originName, saveName, fileSize, contentType, courseSection);
 
             return fileRepository.save(courseSectionFile);
         }catch(Exception e) {
@@ -128,16 +134,4 @@ public class CourseSectionFileService {
             e.printStackTrace();
         }
     }
-
-    public String CreateFileName(String originalName){
-
-        //uuid 생성
-        UUID uuid = UUID.randomUUID();
-        // 랜던생성 + 파일이름 저장
-        String  saveName = uuid.toString() + "_" + originalName;
-
-        return saveName;
-    }
-
-
 }

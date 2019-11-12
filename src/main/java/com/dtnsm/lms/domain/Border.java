@@ -1,6 +1,7 @@
 package com.dtnsm.lms.domain;
 
 import com.dtnsm.lms.auth.AuditorCreateEntity;
+import com.dtnsm.lms.auth.AuditorEntity;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -11,7 +12,7 @@ import java.util.List;
 @Entity
 @Data
 @Table(name="el_border")
-public class Border extends AuditorCreateEntity<String> {
+public class Border extends AuditorEntity<String> {
     @Id
     @GeneratedValue
     private long id;
@@ -33,6 +34,12 @@ public class Border extends AuditorCreateEntity<String> {
     @Column(length = 1)
     @ColumnDefault("0")
     private String isNotice = "0";  // 0:일반글, 1:공지글
+
+    @Column(length = 10)
+    private String fromDate;
+
+    @Column(length = 10)
+    private String toDate;
 
     // Parent 필드 추가
     @ManyToOne

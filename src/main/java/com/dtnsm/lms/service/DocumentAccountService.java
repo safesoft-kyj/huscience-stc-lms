@@ -1,5 +1,6 @@
 package com.dtnsm.lms.service;
 
+import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.domain.DocumentAccount;
 import com.dtnsm.lms.repository.DocumentAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -103,6 +105,49 @@ public class DocumentAccountService {
         pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
 
         return documentAccountRepository.findByApprUserId2_UserIdAndIsAppr2(userId, isAppr2, pageable);
+    }
+
+
+    //진행중 문서
+    public Page<DocumentAccount> getCustomByUserIdAndIsCommit(Pageable pageable, String userId, String isCommit) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+
+        return documentAccountRepository.getCustomListByUserIdAndIsCommit(userId, isCommit, pageable);
+    }
+
+    public List<DocumentAccount> getCustomListByUserIdAndIsCommit(String userId, String isCommit) {
+
+        return documentAccountRepository.getCustomListByUserIdAndIsCommit(userId, isCommit);
+    }
+
+    // 1차 미결건 조회
+    public List<DocumentAccount> getListByAppr1Process(String userId, String isAppr1, String isCommit) {
+
+        return documentAccountRepository.findAllByApprUserId1_UserIdAndIsAppr1AndIsCommit(userId, isAppr1, isCommit);
+    }
+
+    // 2차 미결건 조회
+    public List<DocumentAccount> getListByAppr2Process(String userId, String isAppr2, String isCommit) {
+
+        return documentAccountRepository.findAllByApprUserId2_UserIdAndIsAppr2AndIsCommit(userId, isAppr2, isCommit);
+    }
+
+    public List<DocumentAccount> getCustomListTop5ByUserIdAndIsCommit(String userId, String isCommit) {
+
+        List<DocumentAccount> returnList = new ArrayList<>();
+
+        int i = 0;
+        for(DocumentAccount courseAccount : getCustomListByUserIdAndIsCommit(userId, isCommit)) {
+
+            if(i >= 5) break;
+            returnList.add(courseAccount);
+            i++;
+        }
+
+        return returnList;
     }
 
 }

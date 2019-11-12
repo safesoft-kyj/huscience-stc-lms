@@ -64,6 +64,12 @@ public class Account {
     private Collection<Role> roles;
 
     @OneToMany(mappedBy = "account")
+    private List<BinderCv> binderCvList;
+
+    @OneToMany(mappedBy = "account")
+    private List<BinderJd> binderJdList;
+
+    @OneToMany(mappedBy = "account")
     private List<CourseAccount> courseAccountList;
 
     @OneToMany(mappedBy = "document")

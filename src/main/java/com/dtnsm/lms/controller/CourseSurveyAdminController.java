@@ -1,10 +1,10 @@
 package com.dtnsm.lms.controller;
 
+import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.service.CodeService;
-import com.dtnsm.lms.domain.Course;
-import com.dtnsm.lms.domain.CourseSurvey;
 import com.dtnsm.lms.service.CourseService;
 import com.dtnsm.lms.service.CourseSurveyService;
+import com.dtnsm.lms.service.SurveyService;
 import com.dtnsm.lms.util.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,7 +24,10 @@ public class CourseSurveyAdminController {
     private CourseService courseService;
 
     @Autowired
-    private CourseSurveyService surveyService;
+    private CourseSurveyService courseSurveyService;
+
+    @Autowired
+    private SurveyService surveyService;
 
     private PageInfo pageInfo = new PageInfo();
 
@@ -43,22 +46,21 @@ public class CourseSurveyAdminController {
     public String noticeAdd(@PathVariable("courseId") Long courseId, Model model) {
 
         course = courseService.getCourseById(courseId);
-        CourseSurvey survey = new CourseSurvey();
-        survey.setCourse(course);
-        survey.setType(codeService.getMinorById(minorCode));
+        CourseSurvey courseSurvey = new CourseSurvey();
+        courseSurvey.setCourse(course);
 
         pageInfo.setPageTitle(course.getTitle() + " 등록");
 
         model.addAttribute(pageInfo);
-        model.addAttribute("survey", survey);
-//        model.addAttribute("codeList", codeService.getMinorList(majorCode));
+        model.addAttribute("courseSurvey", courseSurvey);
+        model.addAttribute("surveyList", surveyService.getList());
         model.addAttribute("id", courseId);
 
         return "admin/course/survey/add";
     }
 
     @PostMapping("/add-post")
-    public String noticeAddPost(@Valid CourseSurvey survey
+    public String noticeAddPost(@Valid CourseSurvey courseSurvey
             , @RequestParam("id") Long id
             , BindingResult result) {
         if(result.hasErrors()) {
@@ -66,24 +68,50 @@ public class CourseSurveyAdminController {
         }
 
         Course course = courseService.getCourseById(id);
-        survey.setCourse(course);
+        courseSurvey.setCourse(course);
 
         // Section 저장
-        CourseSurvey survey1 = surveyService.saveSurvey(survey);
+        CourseSurvey courseSurvey1 = courseSurveyService.saveSurvey(courseSurvey);
 
-        return "redirect:/admin/course/list/" + survey1.getCourse().getCourseMaster().getId();
+
+        if(courseSurvey1.getSurvey() != null) {
+
+            // 설문 template을 과정 설문에 복사
+            for(SurveyQuestion surveyQuestion : courseSurvey.getSurvey().getSurveyQuestions()) {
+
+                CourseSurveyQuestion courseSurveyQuestion = new CourseSurveyQuestion();
+                courseSurveyQuestion.setCourseSurvey(courseSurvey1);
+                courseSurveyQuestion.setQuestion(surveyQuestion.getQuestion());
+                courseSurveyQuestion.setEx1(surveyQuestion.getEx1());
+                courseSurveyQuestion.setEx2(surveyQuestion.getEx2());
+                courseSurveyQuestion.setEx3(surveyQuestion.getEx3());
+                courseSurveyQuestion.setEx4(surveyQuestion.getEx4());
+                courseSurveyQuestion.setEx5(surveyQuestion.getEx5());
+                courseSurveyQuestion.setEx1_score(surveyQuestion.getEx1_score());
+                courseSurveyQuestion.setEx2_score(surveyQuestion.getEx2_score());
+                courseSurveyQuestion.setEx3_score(surveyQuestion.getEx3_score());
+                courseSurveyQuestion.setEx4_score(surveyQuestion.getEx4_score());
+                courseSurveyQuestion.setEx5_score(surveyQuestion.getEx5_score());
+                courseSurveyQuestion.setSurveyGubun(surveyQuestion.getSurveyGubun());
+
+                courseSurveyService.saveSurveyQuestion(courseSurveyQuestion);
+            }
+
+        }
+
+        return "redirect:/admin/course/list/" + courseSurvey1.getCourse().getCourseMaster().getId();
     }
 
     @GetMapping("/edit/{id}")
     public String noticeEdit(@PathVariable("id") long id, Model model) {
 
-        CourseSurvey courseSurvey = surveyService.getCourseSurveyById(id);
+        CourseSurvey courseSurvey = courseSurveyService.getCourseSurveyById(id);
 
         pageInfo.setPageTitle(courseSurvey.getName() + " 수정");
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseSurvey", courseSurvey);
-//        model.addAttribute("codeList", codeService.getMinorList(majorCode));
+        model.addAttribute("surveyList", surveyService.getList());
         model.addAttribute("id", courseSurvey.getId());
 
         return "admin/course/survey/edit";
@@ -98,12 +126,12 @@ public class CourseSurveyAdminController {
             return "/admin/course/list/" + course.getCourseMaster().getId();
         }
 
-        CourseSurvey courseSurveyOld = surveyService.getCourseSurveyById(id);
+        CourseSurvey courseSurveyOld = courseSurveyService.getCourseSurveyById(id);
 
         Course course = courseSurveyOld.getCourse();
         courseSurvey.setCourse(course);
 
-        CourseSurvey courseSurvey1 = surveyService.saveSurvey(courseSurvey);
+        CourseSurvey courseSurvey1 = courseSurveyService.saveSurvey(courseSurvey);
 
         return "redirect:/admin/course/view/" + courseSurvey1.getCourse().getId();
     }

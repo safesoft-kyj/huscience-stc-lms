@@ -45,7 +45,10 @@ public class Document extends AuditorCreateEntity<String> {
     private List<DocumentFile> documentFiles = new ArrayList<>();
 
     @OneToMany(mappedBy = "document", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DocumentAccount> documentAccountList;
+    private List<DocumentAccount> documentAccountList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "document", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DocumentCourseAccount> documentCourseAccountList = new ArrayList<>();
 
     public Document(){}
 

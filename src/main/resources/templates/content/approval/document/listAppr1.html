@@ -52,8 +52,8 @@
                                 <tr>
                                     <th class="text-center col-sm-1" th:text="#{label.no}">번호</th>
                                     <th class="text-center col-sm-6" th:text="#{label.subject}">과정명</th>
-                                    <th class="text-center col-sm-1" th:text="#{label.requestdate}">신청일</th>
-                                    <th class="text-center col-sm-1" th:text="#{label.requestby}">신청자</th>
+                                    <th class="text-center col-sm-1" th:text="#{label.document.createDate}">기안일</th>
+                                    <th class="text-center col-sm-1" th:text="#{label.document.createBy}">기안자</th>
                                     <th class="text-center col-sm-1" th:text="#{label.approval1by}">1차결재자</th>
                                     <th class="text-center col-sm-1" th:text="#{label.approval2by}">관리자</th>
                                     <th class="text-center col-sm-2" th:text="#{label.status}">상태</th>
@@ -62,7 +62,7 @@
                                 <tbody>
                                 <tr th:each="border, index : ${borders}">
                                     <td th:text="${index.count}" class="text-center"></td>
-                                    <td><a th:href="@{/document/approvalAppr1/{id}(id=${border.getDocument().getId()})}" th:text="${border.getDocument().getTitle()}"></a></td>
+                                    <td><a th:href="@{/document/approvalAppr1/{id}/{userId}(id=${border.getDocument().getId()}, userId=${border.getAccount().getUserId()})}" th:text="${border.getDocument().getTitle()}"></a></td>
                                     <td th:text="${border.getRequestDate()}" class="text-center"></td>
                                     <td th:text="${border.getAccount().getName()}" class="text-center"></td>
                                     <td th:text="${border.getApprUserId1().getName()}" class="text-center"></td>

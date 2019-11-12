@@ -3,10 +3,7 @@ package com.dtnsm.lms.controller;
 import com.dtnsm.lms.auth.CustomUserDetails;
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.*;
-import com.dtnsm.lms.domain.constant.ApprovalStatusType;
-import com.dtnsm.lms.domain.constant.CourseRequestType;
 import com.dtnsm.lms.service.*;
-import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 import org.slf4j.LoggerFactory;
@@ -47,27 +44,10 @@ public class CourseController {
     CourseAccountService courseAccountService;
 
     @Autowired
-    private CourseSectionService sectionService;
-
-
-
-    @Autowired
-    private CourseSectionActionService sectionActionService;
-
-    @Autowired
-    private CourseSurveyService surveyService;
-
-    @Autowired
-    private CourseQuizService quizService;
-
-    @Autowired
-    private CourseQuizActionService quizActionService;
-
-    @Autowired
     private CourseFileService fileService;
 
     @Autowired
-    private CourseManagerService courseManagerService;
+    private ApprovalCourseProcessService approvalCourseProcessService;
 
     private PageInfo pageInfo = new PageInfo();
 
@@ -171,6 +151,7 @@ public class CourseController {
         model.addAttribute(pageInfo);
         model.addAttribute("course", course);
         model.addAttribute("courseAccount", courseAccount);
+        model.addAttribute("userId", SessionUtil.getUserId());
 
         return "content/course/approvalAppr1";
     }
@@ -194,6 +175,7 @@ public class CourseController {
         model.addAttribute(pageInfo);
         model.addAttribute("course", course);
         model.addAttribute("courseAccount", courseAccount);
+        model.addAttribute("userId", SessionUtil.getUserId());
 
         return "content/course/approvalAppr2";
     }
@@ -203,66 +185,13 @@ public class CourseController {
 
         CustomUserDetails userDetails = (CustomUserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        logger.info("유저아이디:" + userDetails.getUserId());
-
         Course course = courseService.getCourseById(id);
         Account account = userService.getAccountByUserId(userDetails.getUserId());
 
         List<CourseAccount> courseAccountList = courseService.getCourseById(id).getCourseAccountList();
 
-
-        // 교육신청
-        CourseAccount courseAccount = new CourseAccount();
-        courseAccount.setCourse(course);
-        courseAccount.setAccount(account);
-        courseAccount.setRequestDate(DateUtil.getTodayString());
-        courseAccount.setRequestType(CourseRequestType.SPECIFY);        // 교육신청유형(관리자지정, 사용자 신청)
-        courseAccount.setStatus(ApprovalStatusType.REQUEST_DONE);    // 신청완료(팀장승인진행중)
-        courseAccount.setApprUserId1(userService.getAccountByUserId(account.getParentUserId()));
-        courseAccount.setApprUserId2(userService.getAccountByUserId(courseManagerService.getCourseManager().getUserId()));
-        courseAccount.setIsTeamMangerApproval(course.getCourseMaster().getIsTeamMangerApproval());
-        courseAccount.setIsCourseMangerApproval(course.getCourseMaster().getIsCourseMangerApproval());
-
-        courseAccountList.add(courseAccount);
-        course.setCourseAccountList(courseAccountList);
-
-        course = courseService.save(course);
-
-        // 강의 생성
-        if(course.getSections().size() > 0) {
-            for (CourseSection courseSection : course.getSections()) {
-                CourseSectionAction courseSectionAction = new CourseSectionAction();
-                courseSectionAction.setAccount(account);
-                courseSectionAction.setCourseSection(courseSection);
-                courseSectionAction.setTotalUseSecond(0);
-                courseSectionAction.setRunCount(0);
-                sectionActionService.save(courseSectionAction);
-            }
-        }
-
-
-        // 시험 생성
-        if(course.getIsQuiz().equals("Y") && course.getQuizzes().size() > 0) {
-            for (CourseQuiz courseQuiz : course.getQuizzes()) {
-                CourseQuizAction courseQuizAction = new CourseQuizAction();
-                courseQuizAction.setAccount(account);
-                courseQuizAction.setQuiz(courseQuiz);
-                courseQuizAction.setTotalUseSecond(0);
-                courseQuizAction.setRunCount(0);
-                quizActionService.saveQuizAction(courseQuizAction);
-            }
-        }
-
-        // 시험 생성
-//        if(course.getIsSurvey().equals("Y") && course.getSurveys().size() > 0) {
-//            for (CourseSurvey courseSurvey : course.getSurveys()) {
-//                CourseQuizAction courseQuizAction = new CourseQuizAction();
-//                courseQuizAction.setAccount(account);
-//                courseQuizAction.setQuiz(courseQuiz);
-//                quizActionService.saveQuizAction(courseQuizAction);
-//            }
-//        }
-
+        // 교육 신청 처리
+        approvalCourseProcessService.courseRequestProcess(account, course);
 
         return "redirect:/course/request/commit/" + id;
     }
@@ -305,6 +234,4 @@ public class CourseController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + courseFile.getFileName() + "\"")
                 .body(resource);
     }
-
-
 }

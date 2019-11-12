@@ -74,11 +74,11 @@
                                 <input type="number" th:field="*{minute}" id="minute" placeholder="" class="form-control" required="required">
                             </div>
                             <span th:if="${#fields.hasErrors('minute')}" th:errors="*{minute}"></span>
-                            <label class="col-sm-2 control-label" for="pathCount" th:text="#{label.course.quiz.pathCount}">합격문항수</label>
+                            <label class="col-sm-2 control-label" for="passCount" th:text="#{label.course.quiz.pathCount}">합격문항수</label>
                             <div class="col-sm-4">
-                                <input type="number" th:field="*{getPassCount}" id="pathCount" placeholder="" class="form-control" required="required">
+                                <input type="number" th:field="*{passCount}" id="passCount" placeholder="" class="form-control" required="required">
                             </div>
-                            <span th:if="${#fields.hasErrors('pathCount')}" th:errors="*{getPassCount}"></span>
+                            <span th:if="${#fields.hasErrors('passCount')}" th:errors="*{passCount}"></span>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label" th:text="#{label.course.quiz.file}">첨부파일</label>

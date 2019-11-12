@@ -8,6 +8,7 @@ import com.dtnsm.lms.exception.FileUploadException;
 import com.dtnsm.lms.properties.FileUploadProperties;
 import com.dtnsm.lms.repository.DocumentFileRepository;
 import com.dtnsm.lms.util.FileUtil;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -49,12 +50,16 @@ public class DocumentFileService {
     }
 
     public DocumentFile storeFile(MultipartFile file, Document document) {
-        String originName = StringUtils.cleanPath(file.getOriginalFilename());
+        String originName = FilenameUtils.getBaseName(file.getOriginalFilename());
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        String contentType = file.getContentType();
+        long fileSize = file.getSize();
 
-        if (originName.equals("")) return null;
+        originName = originName + "." + extension;
+        if (originName.equals("") || originName.equals(".")) return null;
 
         // 파일명을 생성한다.
-        String saveName = StringUtils.cleanPath(CreateFileName(file.getOriginalFilename()));
+        String saveName = StringUtils.cleanPath(FileUtil.CreateFileName(originName));
 
         try {
             // 파일명에 부적합 문자가 있는지 확인한다.
@@ -65,7 +70,7 @@ public class DocumentFileService {
 
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            DocumentFile documentFile = new DocumentFile(originName, saveName, file.getSize(), file.getContentType(), document);
+            DocumentFile documentFile = new DocumentFile(originName, saveName, fileSize, contentType, document);
 
             fileRepository.save(documentFile);
 
@@ -129,15 +134,5 @@ public class DocumentFileService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public String CreateFileName(String originalName){
-
-        //uuid 생성
-        UUID uuid = UUID.randomUUID();
-        // 랜던생성 + 파일이름 저장
-        String  saveName = uuid.toString() + "_" + originalName;
-
-        return saveName;
     }
 }

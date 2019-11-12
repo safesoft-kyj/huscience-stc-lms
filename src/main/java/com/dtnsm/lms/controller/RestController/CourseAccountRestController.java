@@ -1,13 +1,17 @@
 package com.dtnsm.lms.controller.RestController;
 
 import com.dtnsm.lms.domain.CourseAccount;
+import com.dtnsm.lms.domain.DocumentAccount;
 import com.dtnsm.lms.mybatis.dto.DepartTreeVO;
 import com.dtnsm.lms.mybatis.service.DepartMapperService;
 import com.dtnsm.lms.service.CourseAccountService;
+import com.dtnsm.lms.service.DocumentAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/courseAccount")

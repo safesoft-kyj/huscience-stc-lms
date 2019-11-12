@@ -1,7 +1,12 @@
 package com.dtnsm.lms.service;
 
-import com.dtnsm.lms.domain.CourseAccount;
+import com.dtnsm.lms.auth.UserServiceImpl;
+import com.dtnsm.lms.domain.*;
+import com.dtnsm.lms.domain.constant.ApprovalStatusType;
+import com.dtnsm.lms.domain.constant.CourseRequestType;
+import com.dtnsm.lms.domain.constant.SurveyStatusType;
 import com.dtnsm.lms.repository.CourseAccountRepository;
+import com.dtnsm.lms.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -9,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,6 +22,36 @@ public class CourseAccountService {
 
     @Autowired
     CourseAccountRepository courseAccountRepository;
+
+    @Autowired
+    UserServiceImpl userService;
+
+    @Autowired
+    CourseManagerService courseManagerService;
+
+    @Autowired
+    private CourseSectionService sectionService;
+
+    @Autowired
+    private CourseSectionActionService sectionActionService;
+
+
+    @Autowired
+    private CourseSurveyService courseSurveyService;
+
+    @Autowired
+    private CourseSurveyActionService surveyActionService;
+
+
+    @Autowired
+    private CourseQuizService quizService;
+
+    @Autowired
+    private CourseQuizActionService quizActionService;
+
+    @Autowired
+    private MailService mailService;
+
 
     public CourseAccount save(CourseAccount courseAccount){
         return courseAccountRepository.save(courseAccount);
@@ -55,6 +91,11 @@ public class CourseAccountService {
         return courseAccountRepository.findByAccount_UserId(userId);
     }
 
+
+    public List<CourseAccount> getCourseAccountIsCommitByUserId(String userId, String isCommit) {
+        return courseAccountRepository.findAllByAccount_UserIdAndIsCommit(userId, isCommit);
+    }
+
     // 내신청함
     public Page<CourseAccount> getListUserId(Pageable pageable, String userId) {
 
@@ -76,14 +117,66 @@ public class CourseAccountService {
     }
 
     // 1차결재자(팀장/부서장) 미결, 완결 구분
-    public Page<CourseAccount> getListApprUserId1AndIsAppr1(Pageable pageable, String userId, String isAppr1) {
+    public Page<CourseAccount> getListApprUserId1AndIsAppr1(String isTeamApproval, String userId, String isAppr1, Pageable pageable) {
 
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
         pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
 
-        return courseAccountRepository.findByApprUserId1_UserIdAndIsAppr1(userId, isAppr1, pageable);
+        return courseAccountRepository.findAllByIsTeamMangerApprovalAndApprUserId1_UserIdAndIsAppr1(isTeamApproval, userId, isAppr1, pageable);
     }
+
+    //진행중 문서
+    public Page<CourseAccount> getCustomByUserIdAndIsCommit(Pageable pageable, String userId, String isCommit) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+
+        return courseAccountRepository.getCustomListByUserIdAndIsCommit(userId, isCommit, pageable);
+
+
+    }
+
+    public List<CourseAccount> getCustomListByUserIdAndIsCommit(String userId, String isCommit) {
+
+        return courseAccountRepository.getCustomListByUserIdAndIsCommit(userId, isCommit);
+    }
+
+    public List<CourseAccount> getCustomListTop5ByUserIdAndIsCommit(String userId, String isCommit) {
+
+        List<CourseAccount> returnList = new ArrayList<>();
+
+        int i = 0;
+        for(CourseAccount courseAccount : getCustomListByUserIdAndIsCommit(userId, isCommit)) {
+
+            if(i >= 5) break;
+            returnList.add(courseAccount);
+            i++;
+        }
+
+        return returnList;
+    }
+
+    // 1차 미결문서 5개 조회 (홈에서 사용)
+    public List<CourseAccount> getListTop5ByApprUserId1AndIsAppr1(String userId, String isAppr1) {
+
+        return courseAccountRepository.findTOp5ByApprUserId1_UserIdAndIsAppr1(userId, isAppr1);
+    }
+
+    // 1차 미결건 조회
+    public List<CourseAccount> getListByAppr1Process(String isTeamManagerApproval, String userId, String isAppr1) {
+
+        return courseAccountRepository.findAllByIsTeamMangerApprovalAndApprUserId1_UserIdAndIsAppr1(isTeamManagerApproval, userId, isAppr1);
+    }
+
+    // 1차 미결건 조회
+    public List<CourseAccount> getListByAppr2Process(String isManagerApproval, String userId, String isAppr2) {
+
+        return courseAccountRepository.findAllByIsTeamMangerApprovalAndApprUserId2_UserIdAndIsAppr2(isManagerApproval, userId, isAppr2);
+    }
+
+
 
     // 2차결재자(과정 관리자) 전체
     public Page<CourseAccount> getListApprUserId2(Pageable pageable, String userId) {
@@ -104,5 +197,4 @@ public class CourseAccountService {
 
         return courseAccountRepository.findByApprUserId2_UserIdAndIsAppr2(userId, isAppr2, pageable);
     }
-
 }

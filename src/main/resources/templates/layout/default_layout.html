@@ -75,13 +75,20 @@
         <!--Themify Icons [ OPTIONAL ]-->
         <link th:href="@{/default/plugins/themify-icons/themify-icons.min.css}" rel="stylesheet">
 
-<!--        <link rel="stylesheet" th:href="@{/default/css/themes/type-a/theme-dark.css}" />-->
+        <link rel="stylesheet" th:href="@{/default/css/themes/type-d/theme-dark.css}" />
 
         <!--Custom or page css-->
         <th:block layout:fragment="custom_css"></th:block>
+
+        <style>
+            td, th, p, span {
+                /*font-size: 0.9em;*/
+            /*    color: red;*/
+            }
+        </style>
     </head>
 
-    <body th:fragment="mainBody" >
+    <body th:fragment="mainBody">
         <div id="container" class="effect aside-float aside-bright mainnav-lg">
 
             <!--NAVBAR-->
@@ -178,6 +185,8 @@
         <script th:src="@{/default/js/custom/menu-select.js}"></script>
 
 
+        <!-- menu select -->
+        <script th:src="@{/default/js/custom/appr-ajax.js}"></script>
 
     </body>
 </html>

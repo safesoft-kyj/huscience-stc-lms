@@ -46,9 +46,9 @@
                             <form class="form-horizontal" th:action="@{/border/list/{typeid}(typeid=__${typeId}__)}" method="get">
                                     <div class="input-group mar-btm">
                                         <select id="selectOption" class="selectpicker" name="searchType">
-                                            <option value="all" th:selected="${#strings.equalsIgnoreCase(param.searchType,'all')}">&nbsp;&nbsp;전체&nbsp;&nbsp;</option>
-                                            <option value="subject" th:selected="${#strings.equalsIgnoreCase(param.searchType,'subject')}">&nbsp;&nbsp;제목&nbsp;&nbsp;</option>
-                                            <option value="content" th:selected="${#strings.equalsIgnoreCase(param.searchType,'content')}">&nbsp;&nbsp;내용&nbsp;&nbsp;</option>
+                                            <option value="all" th:selected="${#strings.equalsIgnoreCase(param.searchType,'all')}">&nbsp;&nbsp;All&nbsp;&nbsp;</option>
+                                            <option value="subject" th:selected="${#strings.equalsIgnoreCase(param.searchType,'subject')}">&nbsp;&nbsp;Subject&nbsp;&nbsp;</option>
+                                            <option value="content" th:selected="${#strings.equalsIgnoreCase(param.searchType,'content')}">&nbsp;&nbsp;Content&nbsp;&nbsp;</option>
                                         </select>
                                         <input type="text" name="searchText" placeholder="Search" class="form-control" th:value="${param.searchText}">
                                         <span class="input-group-btn">
@@ -84,8 +84,8 @@
                                         <div th:if="${border.getBorderFiles().size() > 0}" class="demo-icon"><i class="ion-paperclip"></i><span></span></div>
                                     </td>
                                     <td><a th:href="@{/border/view/{id}(id=${border.getId()})}" th:text="${border.getTitle()}"></a></td>
-                                    <td th:text="${border.getCreatedBy()}" class="text-center"></td>
                                     <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy/MM/dd')} : ${border.getCreatedDate()}" class="text-center"></td>
+                                    <td th:text="${border.getCreatedBy()}" class="text-center"></td>
                                     <td th:text="${border.getViewCnt()}" class="text-center"></td>
 
                                 </tr>

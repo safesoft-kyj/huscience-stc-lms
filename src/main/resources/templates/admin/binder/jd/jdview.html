@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--Meta Data-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title th:text="${pageInfo.getPageTitle()}"></title>
+
+    <!--Css lib-->
+    <!--Open Sans Font [ OPTIONAL ]-->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+
+    <!--Bootstrap Stylesheet [ REQUIRED ]-->
+    <link rel="stylesheet" th:href="@{/default/css/bootstrap.min.css}" />
+    <!--Themify Icons [ OPTIONAL ]-->
+    <link th:href="@{/default/plugins/themify-icons/themify-icons.min.css}" rel="stylesheet">
+
+    <!--Ion Icons [ OPTIONAL ]-->
+    <link th:href="@{/default/plugins/ionicons/css/ionicons.min.css}" rel="stylesheet">
+
+    <style>
+        .pdfobject-container{
+            /*margin-top:50px;*/
+            /*margin-left:50px;*/
+            /*width: 600px;*/
+            height: 682px;
+        }
+
+        .pdfobject {
+            border: 1px solid #666;
+        }
+    </style>
+
+</head>
+<body oncontextmenu="return false">
+    <div class="container-fluid">
+    <!--<div id="container" class="effect aside-float aside-bright mainnav-lg" style="heigh:100%">-->
+    <!--                    <div class="pull-right" style="margin-bottom: 5px;">-->
+    <!--                        <div class="btn btn-success"><i class="ti-close"></i> <span>닫기</span></div>-->
+    <!--                    </div>-->
+
+
+        <div class="row">
+            <div th:text="${border.getJobDescription().getTitle() + ' (' + border.getJobDescription().getShortName() + ')'}"></div>
+        </div>
+
+        <div class="row">
+            <div id="example1"></div>
+        </div>
+
+    </div>
+
+</body>
+
+<!--jQuery [ REQUIRED ]-->
+<script th:src="@{/default/js/jquery.min.js}"></script>
+
+<!--BootstrapJS [ RECOMMENDED ]-->
+<script th:src="@{/default/js/bootstrap.min.js}"></script>
+
+<!-- PDF 라이브러리-->
+<script th:src="@{/default/plugins/pdfjs/build/pdfobject.js}"></script>
+
+<script th:inline="javascript">
+    // PDF 교육자료 실행
+    /*<![CDATA[*/
+    var id = '[[${border.getBinderJdFiles().get(0).getId()}]]'
+
+    // var width_size;
+    // var height_size;
+    //
+    // $(window).resize(function (){
+    //     // width값을 가져오기
+    //     width_size = window.outerWidth;
+    //     height_size = windows.outerHeight;
+    //
+    //     // $('#example1').css('width', width_size);
+    //     // $('#example1').css('height', height_size);
+    //     //
+    //     // $('.container-fluid').css('height', height_size);
+    //     // $('.pdfobject-container').css('height', height_size);
+    //
+    //     // 800 이하인지 if문으로 확인
+    //     // if (width_size <= 800) {
+    //     //     alert('현재 브라우저 크기가 <= 800px');
+    //     // }
+    // })
+
+
+    var options = {
+        height: '100%',
+        page: '1',
+        pdfOpenParams: {
+            view: 'FitV',
+            pagemode: 'thumbs',
+            search: 'lorem ipsum',
+            statusbar: 0,
+            toolbar: 0,
+            navpanes: 0
+        },
+
+        forcePDFJS: true, // 강제로 PDF Viewer를 실행시키는 옵션
+        PDFJS_URL: "/default/plugins/pdfjs/web/viewer.html" //PDF.js의 PDF viewer를 viewer로 지정.
+    };
+
+    //제일 처음 열리는 pdf파일 경로 설정.
+    PDFObject.embed("/admin/binder/jd/download-file/" + id, "#example1", options);
+
+    /*]]>*/
+    function closeWindow() {
+        this.close();
+    }
+
+    // 새로고침 방지
+    function doNotReload(){
+        //ctrl+N , ctrl+R, function F5
+        if( (event.ctrlKey == true && (event.keyCode == 78 || event.keyCode == 82)) || (event.keyCode == 116))
+        {
+            event.keyCode = 0;
+            event.cancelBubble = true;
+            event.returnValue = false;
+        }
+    }
+    document.onkeydown = doNotReload;
+
+
+</SCRIPT>
+
+</body>
+</html>

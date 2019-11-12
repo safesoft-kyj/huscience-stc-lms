@@ -6,6 +6,7 @@ import com.dtnsm.lms.domain.DocumentAccountId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -40,4 +41,16 @@ public interface DocumentAccountRepository extends JpaRepository<DocumentAccount
 
     Page<DocumentAccount> findByApprUserId2_UserIdAndIsAppr2(String userId, String isAppr2, Pageable pageable);
 
+    // 미결건중 내가 1차 결재자인 건
+    List<DocumentAccount> findAllByApprUserId1_UserIdAndIsAppr1AndIsCommit(String userId, String isAppr1, String isCommit);
+
+    // 미결건중 내가 2차 결재자인 건
+    List<DocumentAccount> findAllByApprUserId2_UserIdAndIsAppr2AndIsCommit(String userId, String isAppr2, String isCommit);
+
+
+    @Query("SELECT g FROM DocumentAccount g where (g.account.userId = :userId or g.apprUserId1.userId = :userId or g.apprUserId2.userId = :userId) and g.isCommit = :isCommit")
+    Page<DocumentAccount> getCustomListByUserIdAndIsCommit(String userId, String isCommit, Pageable pageable);
+
+    @Query("SELECT g FROM DocumentAccount g where (g.account.userId = :userId or g.apprUserId1.userId = :userId or g.apprUserId2.userId = :userId) and g.isCommit = :isCommit")
+    List<DocumentAccount> getCustomListByUserIdAndIsCommit(String userId, String isCommit);
 }

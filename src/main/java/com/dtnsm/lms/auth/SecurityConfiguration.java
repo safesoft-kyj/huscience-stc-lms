@@ -41,6 +41,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/file_uploader_html5/**",
                         "/content/**",
                         "/fragments/**",
+                         "/home",
                          "/login",
                          "/webjars/**")
                         .permitAll()

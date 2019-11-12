@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+
+    <style>
+
+        .cv-title {
+            text-align: center;
+            color: black;
+            margin: 0px
+
+        }
+
+        .title-hr {
+            height: 1px;
+            background: black;
+
+        }
+
+        .section-hr {
+            border: 0;
+            height: 2px;
+            background: #2783D6;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .section-title {
+            border: 0;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            padding-top: 0;
+            color: #2783D6;
+        }
+
+        .group-hr {
+            border: 0;
+            height: 1px;
+            background: black;
+            margin-top: 0px;
+            padding-top: 0px;
+            margin-bottom: 0px;
+            padding-bottom: 0px;
+        }
+
+        table {
+            /*margin-left: 10px;*/
+        }
+
+        td {
+            padding: 5px;
+            color: black;
+            font-size: 1.2em;
+        }
+
+    </style>
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content" style="margin-bottom:0">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-body">
+
+                    <hr class="title-hr">
+                    <h3 th:text="${account.getEngName()}" class="cv-title"></h3>
+                    <hr class="title-hr">
+
+                    <div th:switch="${border}">
+                        <h2 th:case="null">No customer yet!</h2>
+                        <div th:case="*">
+
+                            <!-- EDUCATION -->
+                            <div class="panel">
+
+                                <div class="panel-body">
+                                    <!--===================================================-->
+                                    <!--End Horizontal Form-->
+                                    <hr class="section-hr">
+                                    <h4 class="section-title">EDUCATION</h4>
+                                    <hr class="group-hr">
+
+                                    <table class="" cellspacing="0" width="100%">
+                                        <colgroup>
+                                            <col width="20%">
+                                            <col width="50%">
+                                            <col width="30%">
+                                        </colgroup>
+                                        <tbody>
+                                        <th:block th:each="education, index : ${border.getBinderCvEducations()}">
+                                            <tr >
+                                                <td>Period</td>
+                                                <td th:text="${education.getEduPeriod()}" colspan="2"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Institute</td>
+                                                <td th:text="${education.getInstitute()}"></td>
+                                                <td th:text="${education.getInstituteAddress()}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Degree</td>
+                                                <td th:text="${education.getDegree()}"></td>
+                                                <td th:text="${education.getInstituteAddress()}"></td>
+                                            </tr>
+                                        </th:block>
+                                        </tbody>
+                                    </table>
+                                    <hr class="group-hr">
+
+                                </div><!--panel-body End -->
+                            </div><!-- panel End -->
+
+
+                            <!-- CAREER HISTORY -->
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <!--===================================================-->
+                                    <!--End Horizontal Form-->
+                                    <hr class="section-hr">
+                                    <h4 class="section-title">CAREER HISTORY</h4>
+                                    <hr class="group-hr">
+
+                                    <table class="" cellspacing="0" width="100%">
+                                        <colgroup>
+                                            <col width="20%">
+                                            <col width="50%">
+                                            <col width="30%">
+                                        </colgroup>
+                                        <tbody>
+                                        <th:block th:each="career, index : ${border.getBinderCvCareerHistories()}">
+                                            <tr >
+                                                <td>Company</td>
+                                                <td th:text="${career.getCompany()}"></td>
+                                                <td th:text="${career.getCompanyAddress()}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Period</td>
+                                                <td th:text="${career.getPeriod()}" colspan="2"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Position</td>
+                                                <td th:text="${career.getPosition()}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Team/Department</td>
+                                                <td th:text="${career.getTeamDepartment()}" colspan="2"></td>
+                                            </tr>
+                                            <tr th:if="${border.getBinderCvCareerHistories().size() != index.count}">
+                                                <td colspan="3"><div><hr class="group-hr"></div></td>
+                                            </tr>
+                                        </th:block>
+                                        </tbody>
+                                    </table>
+                                    <hr class="group-hr">
+
+                                </div><!--panel-body End -->
+                            </div><!-- panel End -->
+
+
+                            <!-- LICENSES & CERTIFICATION -->
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <!--===================================================-->
+                                    <!--End Horizontal Form-->
+                                    <hr class="section-hr">
+                                    <h4 class="section-title">LICENSES & CERTIFICATION</h4>
+                                    <hr class="group-hr">
+
+                                    <table class="" cellspacing="0" width="100%">
+                                        <colgroup>
+                                            <col width="20%">
+                                            <col width="80%">
+                                        </colgroup>
+                                        <tbody>
+                                        <th:block th:each="license, index : ${border.getBinderCvLicensesCertifications()}">
+                                            <tr >
+                                                <td>Licenses</td>
+                                                <td th:utext="${#strings.replace(license.getLicenses(), T(System).getProperty('line.separator'), '&lt;br /&gt;')}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Certifications</td>
+                                                <td th:utext="${#strings.replace(license.getCertifications(), T(System).getProperty('line.separator'), '&lt;br /&gt;')}"></td>
+                                            </tr>
+                                        </th:block>
+                                        </tbody>
+                                    </table>
+                                    <hr class="group-hr">
+
+                                </div><!--panel-body End -->
+                            </div><!-- panel End -->
+
+                            <!-- PROFESSIONAL AFFILIATIONS -->
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <!--===================================================-->
+                                    <!--End Horizontal Form-->
+                                    <hr class="section-hr">
+                                    <h4 class="section-title">PROFESSIONAL AFFILIATIONS</h4>
+                                    <hr class="group-hr">
+
+                                    <table class="" cellspacing="0" width="100%">
+                                        <colgroup>
+                                            <col width="20%">
+                                            <col width="80%">
+                                        </colgroup>
+                                        <tbody>
+                                        <th:block th:each="professional, index : ${border.getBinderCvProfessionalAffiliations()}">
+                                            <tr >
+                                                <td>Membership</td>
+                                                <td th:text="${professional.membership}"></td>
+                                            </tr>
+                                        </th:block>
+                                        </tbody>
+                                    </table>
+                                    <hr class="group-hr">
+
+                                </div><!--panel-body End -->
+                            </div><!-- panel End -->
+
+                            <!-- SKILLS -->
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <!--===================================================-->
+                                    <!--End Horizontal Form-->
+                                    <hr class="section-hr">
+                                    <h4 class="section-title">SKILLS</h4>
+                                    <hr class="group-hr">
+
+                                    <table class="" cellspacing="0" width="100%">
+                                        <colgroup>
+                                            <col width="20%">
+                                            <col width="50%">
+                                            <col width="30%">
+                                        </colgroup>
+                                        <tbody>
+                                        <th:block th:each="skill, index : ${border.getBinderCvSkills()}">
+                                            <tr >
+                                                <td>Period</td>
+                                                <td th:text="${skill.getLanguages()}"></td>
+                                                <td th:text="${skill.getLanguagesLevel()}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Institute</td>
+                                                <td th:text="${skill.getComputerKnowledge()}"></td>
+                                                <td th:text="${skill.getComputerKnowledgeLevel()}"></td>
+                                            </tr>
+                                        </th:block>
+                                        </tbody>
+                                    </table>
+                                    <hr class="group-hr">
+
+                                </div><!--panel-body End -->
+                            </div><!-- panel End -->
+
+                            <!-- EXPERIENCE -->
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <!--===================================================-->
+                                    <!--End Horizontal Form-->
+                                    <hr class="section-hr">
+                                    <h4 class="section-title">EXPERIENCE</h4>
+                                    <hr class="group-hr">
+
+                                    <table class="" cellspacing="0" width="100%">
+                                        <colgroup>
+                                            <col width="20%">
+                                            <col width="80%">
+                                        </colgroup>
+                                        <tbody>
+                                        <th:block th:each="experiences, index : ${border.getBinderCvExperiences()}">
+                                            <tr >
+                                                <td th:text="${experiences.getName()}"></td>
+                                                <td th:utext="${#strings.replace(experiences.getContent(), T(System).getProperty('line.separator'), '&lt;br /&gt;')}"></td>
+                                            </tr>
+                                            <tr th:if="${border.getBinderCvCareerHistories().size() != index.count}">
+                                                <td colspan="3"><div><hr class="group-hr"></div></td>
+                                            </tr>
+                                        </th:block>
+                                        </tbody>
+                                    </table>
+                                    <hr class="group-hr">
+
+                                </div><!--panel-body End -->
+                            </div><!-- panel End -->
+
+
+                            <hr class="bg-gray"/>
+                            <div class="input-group pull-right">
+                                <p>
+                                    <a th:href="@{/binder/cv/list}"
+                                       class="btn btn-success" th:text="#{label.list}">목록</a>
+                                </p>
+                            </div>
+                        </div><!--panel-body End -->
+                    </div>
+                </div>
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+</th:block>
+
+</html>
+
+

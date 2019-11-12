@@ -73,6 +73,9 @@ file:
   schedule-upload-dir: D://elearning//upload//schedule//
   course-quiz-upload-dir: D://elearning//upload//course//quiz//
   document-upload-dir: D://elearning//upload//document//
+  survey-upload-dir: D://elearning//upload//survey//
+  binder-jd-upload-dir: D://elearning//upload//binder//jd//
+
 
 image-file:
   matric: D://elearning//images//matrix//

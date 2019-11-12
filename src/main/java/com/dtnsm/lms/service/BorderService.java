@@ -1,9 +1,12 @@
 package com.dtnsm.lms.service;
 
+import com.dtnsm.lms.controller.BorderController;
 import com.dtnsm.lms.domain.Border;
 import com.dtnsm.lms.domain.BorderFile;
 import com.dtnsm.lms.domain.Course;
 import com.dtnsm.lms.repository.BorderRepository;
+import com.dtnsm.lms.util.DateUtil;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Page;
@@ -12,12 +15,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class BorderService {
 
     BorderRepository borderRepository;
+
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(BorderController.class);
 
     @Autowired
     BorderFileService borderFileService;
@@ -27,6 +33,7 @@ public class BorderService {
     }
 
     public List<Border> getList() {
+
         return borderRepository.findAll();
     }
 
@@ -47,9 +54,16 @@ public class BorderService {
     }
 
     public Page<Border> getPageList(String typeId, Pageable pageable) {
+
+        logger.info("수정 공지사항 갯수 : {}", updateNotice());
+
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+//        List<Sort> sorts = new ArrayList<>();
+//        sorts.add(new Sort(Sort.Direction.DESC, "createdDate"));
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "isNotice", "createdDate"));
+
 
         return borderRepository.findAllByBorderMaster_Id(typeId, pageable);
     }
@@ -58,7 +72,7 @@ public class BorderService {
     public Page<Border> getPageListByTitleLikeOrContentLike(String typeId, String title, String content, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "isNotice", "createdDate"));
 
         return borderRepository.findAllByBorderMaster_IdAndTitleLikeOrContentLike(typeId,"%" + title + "%", "%" + content + "%", pageable);
     }
@@ -67,7 +81,7 @@ public class BorderService {
     public Page<Border> getPageListByTitleLike(String typeId, String title, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "isNotice", "createdDate"));
 
         return borderRepository.findAllByBorderMaster_IdAndTitleLike(typeId, "%" + title + "%", pageable);
     }
@@ -76,7 +90,7 @@ public class BorderService {
     public Page<Border> getPageListByContentLike(String typeId, String content, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "isNotice", "createdDate"));
 
         return borderRepository.findAllByBorderMaster_IdAndContentLike(typeId, "%" + content + "%", pageable);
     }
@@ -120,6 +134,21 @@ public class BorderService {
     }
     public long getCount() {
         return borderRepository.count();
+    }
+
+    public int updateNotice() {
+        List<Border> borders = borderRepository.findAllByIsNoticeAndToDateLessThan("1", DateUtil.getTodayString());
+
+        if (borders.size() > 0) {
+
+            for(Border border : borders) {
+                border.setIsNotice("0");
+
+                borderRepository.save(border);
+            }
+        }
+
+        return borders.size();
     }
 
 }

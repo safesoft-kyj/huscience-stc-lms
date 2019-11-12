@@ -5,7 +5,6 @@ import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.ApprovalStatusType;
 import com.dtnsm.lms.domain.constant.CourseRequestType;
 import com.dtnsm.lms.service.*;
-import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
@@ -51,15 +50,6 @@ public class CourseAdminController {
     @Autowired
     CourseService courseService;
 
-//    @Autowired
-//    CourseAccountService courseAccountService;
-
-    @Autowired
-    private CourseAccountService courseAccountService;
-
-    @Autowired
-    private CourseSectionService courseSectionService;
-
     @Autowired
     private CourseFileService courseFileService;
 
@@ -71,10 +61,7 @@ public class CourseAdminController {
     private CourseManagerService courseManagerService;
 
     @Autowired
-    private CodeService codeService;
-
-    @Autowired
-    private UserMapperService userMapperService;
+    private ApprovalCourseProcessService approvalCourseProcessService;
 
     private PageInfo pageInfo = new PageInfo();
 
@@ -150,14 +137,9 @@ public class CourseAdminController {
 
         pageInfo.setPageTitle(courseMaster.getCourseName() + " 등록");
 
-
-
-
         model.addAttribute(pageInfo);
         model.addAttribute("course", course);
         model.addAttribute("id", typeId);
-
-
 
         model.addAttribute("mailList", userService.getAccountList());
 
@@ -200,41 +182,11 @@ public class CourseAdminController {
 
             // 교육대상자 등록
             for(String userId : mails) {
-
                 Account account = userService.findByUserId(userId);
-                CourseAccount courseAccount = new CourseAccount();
-                courseAccount.setCourse(course1);
-                courseAccount.setAccount(account);
-                courseAccount.setRequestDate(DateUtil.getTodayString());
-                courseAccount.setRequestType(CourseRequestType.SPECIFY);
-                courseAccount.setApprUserId1(userService.getAccountByUserId(account.getParentUserId()));
-                courseAccount.setApprUserId2(userService.getAccountByUserId(courseManagerService.getCourseManager().getUserId()));
-                courseAccount.setIsTeamMangerApproval(course1.getCourseMaster().getIsTeamMangerApproval());
-                courseAccount.setIsCourseMangerApproval(course1.getCourseMaster().getIsCourseMangerApproval());
 
-                courseAccountService.save(courseAccount);
-
-//                Account account = userService.findByUserId(userId);
-//                CourseAccount courseAccount = new CourseAccount();
-//                courseAccount.setCourse(course);
-//                courseAccount.setAccount(account);
-//                courseAccountService.save(courseAccount);
+                // 교육 신청 처리
+                approvalCourseProcessService.courseRequestProcess(account, course);
             }
-
-            // 메일 보내기
-//            for(String userId : mails) {
-//
-//                String email = userMapperService.getUserById(userId).getEmail();
-//
-//                // 메일보내기(서비스 전까지는 메일 보내지 않음
-//                Mail mail = new Mail();
-//                //mail.setEmail(email);
-//                mail.setEmail("ks.hwang@safesoft.co.kr");
-//                mail.setMessage(course1.getContent());
-//                mail.setObject(course1.getTitle());
-//
-//                mailService.send(mail);
-//            }
         }
 
         return "redirect:/admin/course/edit/" + course1.getId();

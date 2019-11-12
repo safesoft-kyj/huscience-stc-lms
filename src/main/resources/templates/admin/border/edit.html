@@ -52,6 +52,17 @@
                                 <label for="isNotice">공지글</label>
                             </div>
                         </div>
+                        <div class="form-group" id="notice_period">
+                            <label class="col-sm-2 control-label" for="title" th:text="#{label.course.noticePeriod}">공지기간</label>
+                            <div class="col-sm-10">
+                                <div id="demo-dp-component">
+                                    <div class="input-group date">
+                                        <input type="text" class="form-control" th:field="*{toDate}">
+                                        <span class="input-group-addon"><i class="demo-pli-calendar-4"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="editor">내용</label>
                             <div class="col-sm-10">
@@ -213,6 +224,32 @@
 
     <script>
 
+        $('#demo-dp-component .input-group.date').datepicker({
+            format: "yyyy-mm-dd",
+            autoclose: true,
+            todayHighlight: true
+        });
+
+        // document ready
+        $(function(){
+
+            notic_toggle();
+
+            $('#isNotice').click(function() {
+
+                notic_toggle();
+            });
+        });
+
+
+        // notice가 체크되어 있으면 게시간을 설정할 수 있다.
+        function notic_toggle() {
+            if ($("input:checkbox[id='isNotice']").is(":checked") == true) {
+                $('#notice_period').show();
+            } else {
+                $('#notice_period').hide();
+            }
+        }
     </script>
 
     <!--Form File Upload [ SAMPLE ]-->

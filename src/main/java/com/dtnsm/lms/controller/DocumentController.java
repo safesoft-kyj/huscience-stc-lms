@@ -37,14 +37,22 @@ import java.util.stream.Collectors;
 @RequestMapping("/document")
 public class DocumentController {
 
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseController.class);
+
     @Autowired
     MailService mailService;
+
+    @Autowired
+    ApprovalDocumentProcessService approvalDocumentProcessService;
 
     @Autowired
     DocumentTemplateService templateService;
 
     @Autowired
     private DocumentAccountService documentAccountService;
+
+    @Autowired
+    private DocumentCourseAccountService documentCourseAccountService;
 
     @Autowired
     DocumentService documentService;
@@ -178,39 +186,20 @@ public class DocumentController {
                     .collect(Collectors.toList());
         }
 
+        // 기안 정보 등록
+        Account account = userService.findByUserId(SessionUtil.getUserId());
+        approvalDocumentProcessService.documentRequestProcess(account, document1);
+
         if(isMail) {
 
             // 교육대상자 등록
             for(String userId : mails) {
-
-                Account account = userService.findByUserId(userId);
-                DocumentAccount documentAccount = new DocumentAccount();
-                documentAccount.setDocument(document1);
-                documentAccount.setAccount(account);
-                documentAccount.setRequestDate(DateUtil.getTodayString());
-                documentAccount.setRequestType(CourseRequestType.SPECIFY);
-                documentAccount.setApprUserId1(userService.getAccountByUserId(account.getParentUserId()));
-                documentAccount.setApprUserId2(userService.getAccountByUserId(courseManagerService.getCourseManager().getUserId()));
-                documentAccount.setIsTeamMangerApproval(document1.getTemplate().getIsTeamMangerApproval());
-                documentAccount.setIsCourseMangerApproval(document1.getTemplate().getIsCourseMangerApproval());
-
-                documentAccountService.save(documentAccount);
+                Account courseAccount = userService.findByUserId(userId);
+                DocumentCourseAccount documentCourseAccount = new DocumentCourseAccount();
+                documentCourseAccount.setDocument(document1);
+                documentCourseAccount.setAccount(courseAccount);
+                documentCourseAccountService.save(documentCourseAccount);
             }
-
-            // 메일 보내기
-//            for(String userId : mails) {
-//
-//                String email = userMapperService.getUserById(userId).getEmail();
-//
-//                // 메일보내기(서비스 전까지는 메일 보내지 않음
-//                Mail mail = new Mail();
-//                //mail.setEmail(email);
-//                mail.setEmail("ks.hwang@safesoft.co.kr");
-//                mail.setMessage(course1.getContent());
-//                mail.setObject(course1.getTitle());
-//
-//                mailService.send(mail);
-//            }
         }
 
         return "redirect:/document/list";
@@ -249,34 +238,10 @@ public class DocumentController {
         List<DocumentAccount> documentAccountList = documentService.getById(id).getDocumentAccountList();
         documentAccountList.clear();
 
-
-        //  교육 필수대상자 수정 처리
-
-        if(!mails[0].equals("0")) {
-
-            // 교육대상자 알림 메일 보내기
-            for (String userId : mails) {
-
-                Account account = userService.getAccountByUserId(userId);
-                if(account != null) {
-                    DocumentAccount courseAccount = new DocumentAccount();
-
-                    courseAccount.setDocument(document);
-                    courseAccount.setAccount(account);
-                    courseAccount.setRequestDate(DateUtil.getTodayString());
-                    courseAccount.setRequestType(CourseRequestType.SPECIFY);        // 교육신청유형(관리자지정, 사용자 신청)
-                    courseAccount.setStatus(ApprovalStatusType.REQUEST_DONE);    // 신청완료(팀장승인진행중)
-                    courseAccount.setApprUserId1(userService.getAccountByUserId(account.getParentUserId()));
-                    courseAccount.setApprUserId2(userService.getAccountByUserId(courseManagerService.getCourseManager().getUserId()));
-                    courseAccount.setIsTeamMangerApproval(document.getTemplate().getIsTeamMangerApproval());
-                    courseAccount.setIsCourseMangerApproval(document.getTemplate().getIsCourseMangerApproval());
-                    documentAccountList.add(courseAccount);
-                }
-            }
-        }
+        Account account = userService.getAccountByUserId(SessionUtil.getUserId());
+        approvalDocumentProcessService.documentRequestProcess(account, document);
 
         document.setDocumentAccountList(documentAccountList);
-
 
         Document document1 = documentService.save(document);
 
@@ -343,7 +308,8 @@ public class DocumentController {
 
     // 결재현황
     @GetMapping("/approval/{id}")
-    public String approval(@PathVariable("id") long id, Model model) {
+    public String approval(@PathVariable("id") long id
+            , Model model) {
 
         Document oldDocument = documentService.getById(id);
 
@@ -363,45 +329,95 @@ public class DocumentController {
     }
 
     // 교육신청 1차 결재 승인
-    @GetMapping("/approvalAppr1/{id}")
-    public String approvalAppr1(@PathVariable("id") long id, Model model) {
+    @GetMapping("/approvalAppr1/{documentId}/{userId}")
+    public String approvalAppr1(@PathVariable("documentId") long documentId
+            , @PathVariable("userId") String userId
+            , Model model) {
 
-        Document oldDocument = documentService.getById(id);
+        Document oldDocument = documentService.getById(documentId);
 
         oldDocument.setViewCnt(oldDocument.getViewCnt() + 1);
 
         Document document= documentService.save(oldDocument);
 
-        DocumentAccount documentAccount = documentAccountService.getByDocumentIdAndUserId(id, SessionUtil.getUserId());
+        DocumentAccount documentAccount = documentAccountService.getByDocumentIdAndUserId(documentId, userId);
+
+        approvalDocumentProcessService.documentApproval1Proces(documentAccount);
 
         pageInfo.setPageTitle(document.getTemplate().getTitle() + " 상세");
 
         model.addAttribute(pageInfo);
-        model.addAttribute("course", document);
-        model.addAttribute("courseAccount", documentAccount);
+        model.addAttribute("document", document);
+        model.addAttribute("documentAccount", documentAccount);
+        model.addAttribute("userId", SessionUtil.getUserId());
 
         return "content/document/approvalAppr1";
     }
 
     // 교육신청 2차 결재 승인
-    @GetMapping("/approvalAppr2/{id}")
-    public String approvalAppr2(@PathVariable("id") long id, Model model) {
+    @GetMapping("/approvalAppr2/{documentId}/{userId}")
+    public String approvalAppr2(@PathVariable("documentId") long documentId
+            , @PathVariable("userId") String userId
+            , Model model) {
 
-        Document oldDocument = documentService.getById(id);
+        Document oldDocument = documentService.getById(documentId);
 
         oldDocument.setViewCnt(oldDocument.getViewCnt() + 1);
 
         Document document= documentService.save(oldDocument);
 
-        DocumentAccount documentAccount = documentAccountService.getByDocumentIdAndUserId(id, SessionUtil.getUserId());
+        DocumentAccount documentAccount = documentAccountService.getByDocumentIdAndUserId(documentId, userId);
+        approvalDocumentProcessService.documentApproval2Proces(documentAccount);
 
         pageInfo.setPageTitle(document.getTemplate().getTitle() + " 상세");
 
         model.addAttribute(pageInfo);
-        model.addAttribute("course", document);
-        model.addAttribute("courseAccount", documentAccount);
+        model.addAttribute("document", document);
+        model.addAttribute("documentAccount", documentAccount);
+        model.addAttribute("userId", SessionUtil.getUserId());
 
         return "content/document/approvalAppr2";
     }
+
+    // 교육결재(1차 팀장/부서장) 기각
+    @GetMapping("/rejectAppr1/{documentId}/{userId}")
+    public String rejectAppr1(@PathVariable("documentId") long documentId
+            , @PathVariable("userId") String userId
+            , Model model) {
+
+        pageInfo.setPageId("m-mypage-approval");
+        pageInfo.setPageTitle("교육결재조회");
+
+        // 과정ID와 사용자ID로 과정신청정보를 가지고 온다.
+        DocumentAccount documentAccount = documentAccountService.getByDocumentIdAndUserId(documentId, userId);
+
+        // 1차 기각 처리
+        approvalDocumentProcessService.documentReject1Proces(documentAccount);
+
+        model.addAttribute(pageInfo);
+
+        return "redirect:/content/document/listAppr1Process";
+    }
+
+    // 교육결재(2차 과정관리자) 기각
+    @GetMapping("/rejectAppr2/{documentId}/{userId}")
+    public String rejectAppr2(@PathVariable("documentId") long documentId
+            , @PathVariable("userId") String userId
+            , Model model) {
+
+        pageInfo.setPageId("m-mypage-approval");
+        pageInfo.setPageTitle("교육결재조회");
+
+        // 과정ID와 사용자ID로 과정신청정보를 가지고 온다.
+        DocumentAccount documentAccount = documentAccountService.getByDocumentIdAndUserId(documentId, userId);
+
+        // 2차 기각 처리
+        approvalDocumentProcessService.documentReject2Proces(documentAccount);
+
+        model.addAttribute(pageInfo);
+
+        return "redirect:/content/document/listAppr2Process";
+    }
+
 
 }

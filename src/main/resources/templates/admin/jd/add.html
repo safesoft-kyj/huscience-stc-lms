@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css"></th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title"></h3>
+                </div>
+                <div class="panel-body">
+                    <!--===================================================-->
+                    <!--End Horizontal Form-->
+                    <form class="form-horizontal" action="#" th:action="@{/admin/jd/add-post}" th:object="${jobDescription}" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="title" th:text="#{label.jd.title}">Job Title</label>
+                            <div class="col-sm-9">
+                                <input type="text" th:field="*{title}" id="title" placeholder="Job Title" class="form-control" required>
+                            </div>
+                            <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="shortName" th:text="#{label.jd.shortName}">Short Name</label>
+                            <div class="col-sm-9">
+                                <!--Bootstrap Datepicker : Text Input-->
+                                <!--===================================================-->
+                                <div id="demo-dp-txtinput">
+                                    <input type="text" th:field="*{shortName}" id="shortName" placeholder="Short Name" class="form-control" required>
+                                </div>
+                                <!--===================================================-->
+                            </div>
+                            <span th:if="${#fields.hasErrors('shortName')}" th:errors="*{shortName}"></span>
+                        </div>
+                        <div class="panel-footer text-right">
+                            <button class="btn btn-success" type="submit" th:text="#{label.save}">Submit</button>
+                        </div>
+                    </form>
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+    <script>
+
+    </script>
+</th:block>
+
+</html>

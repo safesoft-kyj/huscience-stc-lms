@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/binder/cv/add-post}" method="post" enctype="multipart/form-data" >
+                <div class="panel">
+                    <div class="panel-body">
+
+
+                        <!-- EDUCATION -->
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">EDUCATION</h3>
+                            </div>
+                            <div class="panel-body">
+                                <!--===================================================-->
+                                <!--End Horizontal Form-->
+
+                                    <input type="hidden" th:field="*{education.id}">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Period</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" th:field="*{education.eduPeriod}" id="period" placeholder="Mmm YYYY~Mmm YYYY" class="form-control col-sm-10" required="required">
+                                        </div>
+                                        <span th:if="${#fields.hasErrors('education.eduPeriod')}" th:errors="*{education.eduPeriod}"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Institute</label>
+                                        <div class="col-sm-4">
+                                            <input type="text" th:field="*{education.institute}" id="institute" placeholder="Name of University" class="form-control col-sm-10" required="required">
+                                        </div>
+                                        <span th:if="${#fields.hasErrors('education.institute')}" th:errors="*{education.institute}"></span>
+                                        <label class="col-sm-2 control-label">City, Country</label>
+                                        <div class="col-sm-4">
+                                            <input type="text" th:field="*{education.instituteAddress}" placeholder="City, Country" class="form-control col-sm-10" required="required">
+                                        </div>
+                                        <span th:if="${#fields.hasErrors('education.instituteAddress')}" th:errors="*{education.instituteAddress}"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="degree">Degree</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" th:field="*{education.degree}" id="degree" placeholder="Degree description, concentration listing" class="form-control col-sm-10" required="required">
+                                        </div>
+                                        <span th:if="${#fields.hasErrors('education.institute')}" th:errors="*{education.degree}"></span>
+                                    </div>
+                            </div><!--panel-body End -->
+                        </div><!-- panel End -->
+
+
+                        <!-- Career History -->
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title col-md-11">CAREER HISTORY</h3>
+                                <a class="btn btn-primary col-md-1" type="submit" onclick="careerRowAdd()">ROW 추가</a>
+                            </div>
+                            <div class="panel-body">
+                                <!--===================================================-->
+                                <!--End Horizontal Form-->
+                                <div class="row" id="ex-row1">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Company</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" name="career_company" placeholder="Company Name" class="form-control col-sm-10" required="required">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input type="text" name="career_company_address" placeholder="City, Country" class="form-control col-sm-10" required="required">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Period</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" name="career_period" placeholder="Mmm YYYY~Mmm YYYY" class="form-control col-sm-10" required="required">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Position</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" name="career_position" placeholder="Position" class="form-control col-sm-10" required="required">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Team/Department</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" name="career_team" placeholder="Team/Department" class="form-control col-sm-10" required="required">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" id="append-row1"></div>
+                            </div><!--panel-body End -->
+                        </div><!-- panel End -->
+
+
+                        <!-- Licenses & Certification -->
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">LICENSES & CERTIFICATION</h3>
+                            </div>
+                            <div class="panel-body">
+                                <!--===================================================-->
+                                <!--End Horizontal Form-->
+
+                                <input type="hidden" th:field="*{license.id}">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Licenses</label>
+                                    <div class="col-sm-10">
+                                        <textarea th:field="*{license.licenses}" placeholder="Name of License&#13;&#10;	License No.:          /License in Country: " required="required" class="form-control col-sm-10" rows="2"></textarea>
+                                    </div>
+                                    <span th:if="${#fields.hasErrors('license.licenses')}" th:errors="*{license.licenses}"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Certifications</label>
+                                    <div class="col-sm-10">
+                                        <textarea th:field="*{license.certifications}" placeholder="Certified completion of GCP Training, Organizers, MMM YYYY&#13;&#10;Certificate programs listed" required="required" class="form-control col-sm-10" rows="6"></textarea>
+                                    </div>
+                                    <span th:if="${#fields.hasErrors('license.certifications')}" th:errors="*{license.certifications}"></span>
+                                </div>
+                            </div><!--panel-body End -->
+                        </div><!-- panel End -->
+
+                        <!-- Professional Affiliations -->
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">PROFESSIONAL AFFILIATIONS</h3>
+                            </div>
+                            <div class="panel-body">
+                                <!--===================================================-->
+                                <!--End Horizontal Form-->
+
+                                <input type="hidden" th:field="*{professional.id}">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Membership</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" th:field="*{professional.membership}" placeholder="Name of Association (YYYY~YYYY)" class="form-control col-sm-10" required="required">
+                                    </div>
+                                    <span th:if="${#fields.hasErrors('professional.membership')}" th:errors="*{professional.membership}"></span>
+                                </div>
+                            </div><!--panel-body End -->
+                        </div><!-- panel End -->
+
+                        <!-- Skils -->
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">SKILLS</h3>
+                            </div>
+                            <div class="panel-body">
+                                <!--===================================================-->
+                                <!--End Horizontal Form-->
+
+                                <input type="hidden" th:field="*{skills.id}">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Languages</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" th:field="*{skills.languages}"  placeholder="Language (Business)" class="form-control col-sm-10" required="required">
+                                    </div>
+                                    <span th:if="${#fields.hasErrors('skills.languages')}" th:errors="*{skills.languages}"></span>
+                                    <div class="col-sm-4">
+                                        <input type="text" th:field="*{skills.languagesLevel}" placeholder="Level" class="form-control col-sm-10" required="required">
+                                    </div>
+                                    <span th:if="${#fields.hasErrors('skills.languagesLevel')}" th:errors="*{skills.languagesLevel}"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="degree">Computer Knowledge</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" th:field="*{skills.computerKnowledge}" placeholder="MS Word, MS Excel, PowerPoint" class="form-control col-sm-10" required="required">
+                                    </div>
+                                    <span th:if="${#fields.hasErrors('skills.computerKnowledge')}" th:errors="*{skills.computerKnowledge}"></span>
+                                    <div class="col-sm-4">
+                                        <input type="text" th:field="*{skills.computerKnowledgeLevel}" placeholder="Level" class="form-control col-sm-10" required="required">
+                                    </div>
+                                    <span th:if="${#fields.hasErrors('skills.computerKnowledgeLevel')}" th:errors="*{skills.computerKnowledgeLevel}"></span>
+                                </div>
+                            </div><!--panel-body End -->
+                        </div><!-- panel End -->
+
+                        <!-- Experience -->
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title col-md-11">EXPERIENCE</h3>
+                                <a class="btn btn-primary col-md-1" type="submit" onclick="experienceRowAdd(5)">ROW 추가</a>
+                            </div>
+                            <div class="panel-body">
+                                <!--===================================================-->
+                                <!--End Horizontal Form-->
+
+                                <div class="row">
+                                    <div class="form-group" id="ex-row2">
+                                        <label class="col-sm-2 control-label">Agent for Indication</label>
+                                        <div class="col-sm-4">
+                                            <input type="text" name="experience_name" placeholder="Agent for Indication" class="form-control col-sm-10" required="required">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <textarea name="experience_content" placeholder="Phase, Global or Local Study&#13;&#10;Role&#13;&#10;Working Details (Responsibilities)" required="required" class="form-control col-sm-10" rows="8"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" id="append-row2"></div>
+                            </div><!--panel-body End -->
+                        </div><!-- panel End -->
+                    </div>
+                    <div class="panel-footer text-right">
+                        <button class="btn btn-primary" type="submit" id="submit-all">
+                            <i class="fa fa-upload-cloud"></i> 저장
+                        </button>
+                        <a th:href="@{/binder/list}" class="btn btn-success">
+                            <i class="fa fa-upload-cloud"></i> 목록
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+
+</th:block>
+
+<th:block layout:fragment="custom_js">
+    <!--Dropzone [ OPTIONAL ]-->
+<!--    <script th:src="@{/default/plugins/dropzone/dropzone.js}"></script>-->
+
+
+<!--    <script type="text/javascript" th:src="@{/static/editor/js/HuskyEZCreator.js}" charset="utf-8"></script>-->
+<!--    <script type="text/javascript" th:src="@{/static/default/js/custom/border-editor.js}" charset="utf-8"></script>-->
+
+<!--    <script type="text/javascript" th:src="@{/default/js/custom/border-file.js}" charset="utf-8"></script>-->
+
+<!--    <script type="text/javascript" th:src="@{/default/js/custom/border-add.js}" charset="utf-8"></script>-->
+
+    <script>
+
+        function careerRowAdd() {
+
+            var html = $('#ex-row1').html();
+
+            var appendHtml = $('#append-row1').html();
+
+            $('#append-row1').html(appendHtml + html);
+
+        }
+
+        function experienceRowAdd() {
+
+            var html = $('#ex-row2').html();
+
+            var appendHtml = $('#append-row2').html();
+
+            $('#append-row2').html(appendHtml + html);
+
+        }
+
+    </script>
+
+
+</th:block>
+
+</html>

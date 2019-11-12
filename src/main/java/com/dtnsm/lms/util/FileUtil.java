@@ -12,6 +12,7 @@ import java.net.MalformedURLException;
 import java.net.URLEncoder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 
 public  class FileUtil {
 
@@ -41,7 +42,7 @@ public  class FileUtil {
         return docName;
     }
 
-    public Resource loadFileAsResource(String uploadDir, String fileName) {
+    public static Resource loadFileAsResource(String uploadDir, String fileName) {
 
         Path fileLocation = Paths.get(uploadDir).toAbsolutePath().normalize();
         try {
@@ -57,4 +58,26 @@ public  class FileUtil {
             throw new FileDownloadException(fileName + " 파일을 찾을 수 없습니다.", e);
         }
     }
+
+    public static String CreateFileName(String originalName){
+
+        //uuid 생성
+        UUID uuid = UUID.randomUUID();
+        // 랜던생성 + 파일이름 저장
+        String  saveName = uuid.toString() + "_" + originalName;
+
+        return saveName;
+    }
+
+    public static String CreateFileName(String originalName, String contentType){
+
+        //uuid 생성
+        UUID uuid = UUID.randomUUID();
+        // 랜던생성 + 파일이름 저장
+        //String  saveName = uuid.toString() + "_" + originalName;
+        String saveName = uuid.toString() + "." + contentType;
+
+        return saveName;
+    }
+
 }

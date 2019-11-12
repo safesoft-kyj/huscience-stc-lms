@@ -58,23 +58,41 @@
 <!--                                <td class="text-center" th:text="${section.getFromDate() + ' ~ ' + section.getToDate()}"></td>-->
                                 <td class="text-center" th:text="${sectionAction.getCourseSection().getMinute()} + '분'"}></td>
 <!--                                <td class="text-center" th:text="${section.getTeacher()}"}></td>-->
-                                <td class="text-left" >
+                                <td class="text-center" >
 
                                     <div class="progress">
-                                        <div id="time"  class="progress-bar progress-bar-success"
+                                        <div id="time"  class="progress-bar progress-bar-info"
                                              th:attr="style=${'width:' + T(Math).round((sectionAction.getTotalUseSecond()*1.0) / sectionAction.getCourseSection().getSecond() * 100) + '%'}"
                                              th:text="${T(Math).round((sectionAction.getTotalUseSecond()*1.0) / sectionAction.getCourseSection().getSecond() * 100) + ' %'}">0%</div>
                                     </div>
+                                    <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'REQUEST')}">
+                                        <span th:text="${sectionAction.getStatus()}" class="label label-info"></span>
+                                    </th:block>
+                                    <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'ONGOING')}">
+                                        <span th:text="${sectionAction.getStatus()}" class="label label-danger"></span>
+                                    </th:block>
+                                    <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE')}">
+                                        <span th:text="${sectionAction.getStatus()}" class="label label-success"></span>
+                                    </th:block>
 
                                 </td>
                                 <td class="text-center">
 <!--                                    <a href="#" class="btn btn-success" id="popupBtn" onclick="popupPdfView('11', '디티앤사노메딕스')" target="_blank">학습하기</a>-->
 <!--                                    <span th:id="${'id' + index.count}" th:text="${section.getId()}"></span>-->
 
-                                    <th:block th:inline="text" th:each="sectionFile : ${sectionAction.getCourseSection().getSectionFiles()}">
-                                        <a href="#" class="btn btn-success" id="popupBtn"
-                                           th:onclick="|javascript:popupPdfView('${sectionFile.getId()}', '${sectionAction.getId()}');return false;|" target="_blank">학습하기</a>
+
+                                    <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE')}">
+                                        <span class="label label-table label-success" th:text="#{label.course.section.commit}">학습종료</span>
                                     </th:block>
+
+                                    <th:block th:unless="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE') or #strings.isEmpty(sectionAction.getStatus())}">
+                                        <th:block th:inline="text" th:each="sectionFile : ${sectionAction.getCourseSection().getSectionFiles()}">
+                                            <a href="#" class="label label-table label-success" id="popupBtn"
+                                               th:onclick="|javascript:popupPdfView('${sectionFile.getId()}', '${sectionAction.getId()}');return false;|" target="_blank" th:text="#{label.course.section.request}">학습하기</a>
+                                        </th:block>
+                                    </th:block>
+
+
                                 </td>
                             </tr>
                             </th:block>
@@ -97,36 +115,71 @@
 <!--                                        </div>-->
 <!--                                    </th:block>-->
 <!--                                </td>-->
-                                <td class="text-center" th:text="${quizAction.getStatus()}"></td>
                                 <td class="text-center">
-                                    <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'FAIL')}">
-                                        <a href="#" class="btn btn-success" id="popupQuiz"
-                                           th:onclick="|javascript:popupQuizView('${quizAction.getId()}', 'Y');return false;|" target="_blank">재응시</a>
+                                    <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'REQUEST')}">
+                                        <span th:text="${quizAction.getStatus()}" class="label label-info"></span>
                                     </th:block>
-                                    <th:block th:unless="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'FAIL')}">
-                                        <a href="#" class="btn btn-success" id="popupQuiz2"
-                                           th:onclick="|javascript:popupQuizView('${quizAction.getId()}', 'N');return false;|" target="_blank">시험응시</a>
+                                    <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'ONGOING')}">
+                                        <span th:text="${quizAction.getStatus()}" class="label label-info"></span>
+                                    </th:block>
+                                    <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'FAIL')}">
+                                        <span th:text="${quizAction.getStatus()}" class="label label-danger"></span>
+                                    </th:block>
+                                    <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'COMPLETE')}">
+                                        <span th:text="${quizAction.getStatus()}" class="label label-success"></span>
+                                    </th:block>
+                                </td>
+                                <td class="text-center">
+                                    <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'REQUEST')}">
+                                        <span class="label label-table label-warning" th:text="#{label.course.quiz.request}">미진행</span>
+                                    </th:block>
+                                    <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'FAIL')}">
+                                        <a href="#" class="label label-table label-danger" id="popupQuiz"
+                                           th:onclick="|javascript:popupQuizView('${quizAction.getId()}', 'Y');return false;|" target="_blank" th:text="#{label.course.quiz.reRequest}">재응시</a>
+                                    </th:block>
+                                    <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'COMPLETE')}">
+                                        <span class="label label-table label-success" th:text="#{label.course.quiz.commit}">시험완료</span>
+                                    </th:block>
+                                    <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'ONGOING')}">
+                                        <a href="#" class="label label-table label-success" id="popupQuiz2"
+                                           th:onclick="|javascript:popupQuizView('${quizAction.getId()}', 'N');return false;|" target="_blank" th:text="#{label.course.quiz.request}">시험응시</a>
                                     </th:block>
                                 </td>
                             </tr>
                             </th:block>
 
-                            <tr th:each="survey, index : ${course.getSurveys()}">
-                                <td class="text-center" th:text="${index.count}"></td>
+                            <th:block th:unless="${#strings.isEmpty(surveyAction)}">
+                            <tr>
+                                <td class="text-center">1</td>
                                 <td class="text-center" th:text="#{label.title.survey}"></td>
-                                <td class="text-left">
-                                    <a th:href="@{/admin/course/survey/edit/{id}(id=${survey.getId()})}">
-                                        <span th:text="${survey.getName()}"></span>
-                                    </a>
-                                </td>
+                                <td class="text-left" th:text="${surveyAction.getCourseSurvey().getName()}"}></td>
 <!--                                <td class="text-center" th:text="${survey.getFromDate() + ' ~ ' + survey.getToDate()}"}></td>-->
                                 <td class="text-center"></td>
-                                <td class="text-center"></td>
                                 <td class="text-center">
-                                    <a href="#" class="btn btn-success" id="popupSurvey"
-                                       th:onclick="|javascript:popupSurveyView('${survey.getId()}');return false;|" target="_blank">참여</a>
+                                    <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'REQUEST')}">
+                                        <span th:text="${surveyAction.getStatus()}" class="label label-info"></span>
+                                    </th:block>
+                                    <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'COMPLETE')}">
+                                        <span th:text="${surveyAction.getStatus()}" class="label label-success"></span>
+                                    </th:block>
+                                    <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'ONGOING')}">
+                                        <span th:text="${surveyAction.getStatus()}" class="label label-danger"></span>
+                                    </th:block>
+                                </td>
+                                <td class="text-center">
+                                    <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'REQUEST')}">
+                                        <span class="label label-table label-info" th:text="#{label.course.survey.request}">미진행</span>
+                                    </th:block>
+                                    <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'COMPLETE')}">
+                                        <span class="label label-table label-success" th:text="#{label.course.survey.commit}">설문완료</span>
+                                    </th:block>
+                                    <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'ONGOING')}">
+                                        <a href="#" class="label label-table label-danger" id="popupSurvey2"
+                                           th:onclick="|javascript:popupSurveyView('${surveyAction.getId()}');return false;|" target="_blank" th:text="#{label.course.survey.request}">참여</a>
+                                    </th:block>
                                 </td>
                             </tr>
+                            </th:block>
 
                             </tbody>
                         </table>
@@ -156,7 +209,7 @@
             // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
             var popupY= (window.screen.height / 2) - (height / 2);
 
-            var option = "width =" + width + ", height =" + height + ", menubar=no, directories=no, location = no, scrollbars=no, resizable=no";
+            var option = "width =" + width + ", height =" + height + ", menubar=no, directories=no, location = no, scrollbars=yes, resizable=yes";
             option += ", left=" + popupX + ", top=" + popupY;
 
             window.open(url, title, option);
@@ -173,24 +226,24 @@
             // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
             var popupY= (window.screen.height / 2) - (height / 2);
 
-            var option = "width =" + width + ", height =" + height + ", menubar=no, directories=no, location = no, scrollbars=no, resizable=no";
+            var option = "width =" + width + ", height =" + height + ", menubar=no, directories=no, location = no, scrollbars=yes, resizable=no";
             option += ", left=" + popupX + ", top=" + popupY;
 
             window.open(url, title, option);
         }
 
-        function popupSurveyView(id, quizActionId) {
+        function popupSurveyView(quizActionId) {
             var width = 1000;
             var height = 720;
 
             var title = "디티앤사노메딕스";
-            var url = "/mypage/classroom/surveyview/" + id + "/" + quizActionId;
+            var url = "/mypage/classroom/surveyview/" + quizActionId;
             // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
             var popupX = (window.screen.width / 2) - (width / 2);
             // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
             var popupY= (window.screen.height / 2) - (height / 2);
 
-            var option = "width =" + width + ", height =" + height + ", menubar=no, directories=no, location = no, scrollbars=no, resizable=no";
+            var option = "width =" + width + ", height =" + height + ", menubar=no, directories=no, location = no, scrollbars=yes, resizable=no";
             option += ", left=" + popupX + ", top=" + popupY;
 
             window.open(url, title, option);

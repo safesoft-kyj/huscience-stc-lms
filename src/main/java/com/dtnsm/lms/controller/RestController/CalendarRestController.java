@@ -182,18 +182,22 @@ public class CalendarRestController {
 
         Date date = null;
         StringBuilder sb;
-        for(Course course : courses) {
-            sb = new StringBuilder();
-            //sb.append("[" + course.getCourseMaster().getCourseName() + "]");
-            sb.append("<div class='text-success'><a href='/course/view/" + course.getId() + "'>");
-            if (course.getTitle().length() > 30) {
-                sb.append(course.getTitle().substring(0, 30) + "..</a></div>") ;
-            } else {
-                sb.append(course.getTitle() + "</a></div>");
-            }
+        sb = new StringBuilder();
 
-            dates.add(sb.toString());
+        sb.append("<table id=\"customer-list-page5\" class=\"table\" cellspacing=\"0\" width=\"100%\">");
+        for(Course course : courses) {
+
+            //sb.append("[" + course.getCourseMaster().getCourseName() + "]");
+            sb.append("<tr><td>" + course.getRequestFromDate() + "</td><td><a href='/course/view/" + course.getId() + "'>");
+            if (course.getTitle().length() > 30) {
+                sb.append(course.getTitle().substring(0, 30) + "..</a></td>") ;
+            } else {
+                sb.append(course.getTitle() + "</a></td>");
+            }
+            sb.append("</tr>");
         }
+        sb.append("</tbody></table>");
+        dates.add(sb.toString());
         return dates;
 
     }

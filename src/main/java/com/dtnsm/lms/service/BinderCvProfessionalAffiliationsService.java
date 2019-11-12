@@ -1,0 +1,55 @@
+package com.dtnsm.lms.service;
+
+import com.dtnsm.lms.domain.BinderCvExperience;
+import com.dtnsm.lms.domain.BinderCvProfessionalAffiliations;
+import com.dtnsm.lms.repository.BinderCvExperienceRepository;
+import com.dtnsm.lms.repository.BinderProfessionalAffiliationsRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class BinderCvProfessionalAffiliationsService {
+
+    BinderProfessionalAffiliationsRepository repository;
+
+    public BinderCvProfessionalAffiliationsService(BinderProfessionalAffiliationsRepository repository) {
+        this.repository = repository;
+    }
+
+    public List<BinderCvProfessionalAffiliations> getList() {
+        return repository.findAll();
+    }
+
+    public Page<BinderCvProfessionalAffiliations> getPageList(Pageable pageable) {
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+
+        return repository.findAll(pageable);
+    }
+
+    public BinderCvProfessionalAffiliations getById(Long id) {
+
+        return repository.findById(id).get();
+    }
+
+    public BinderCvProfessionalAffiliations save(BinderCvProfessionalAffiliations obj){
+
+        return repository.save(obj);
+    }
+
+    public void delete(BinderCvProfessionalAffiliations obj) {
+        // 게시판 데이터및 파일 데이터 delete
+        repository.delete(obj);
+    }
+
+    public long getCount() {
+        return repository.count();
+    }
+
+}

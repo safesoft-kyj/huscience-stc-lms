@@ -206,9 +206,6 @@
 <!--BootstrapJS [ RECOMMENDED ]-->
 <script th:src="@{/default/js/bootstrap.min.js}"></script>
 
-<!-- PDF 라이브러리-->
-<script th:src="@{/default/plugins/pdfjs/build/pdfobject.js}"></script>
-
 <script th:inline="javascript">
     var section_minute = [[${quizAction.getQuiz().getMinute()}]];
     var section_second = [[${quizAction.getQuiz().getSecond()}]];

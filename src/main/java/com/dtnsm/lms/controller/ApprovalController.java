@@ -2,14 +2,9 @@ package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.CourseAccount;
-import com.dtnsm.lms.domain.constant.ApprovalStatusType;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.repository.UserRepository;
-import com.dtnsm.lms.service.CourseAccountService;
-import com.dtnsm.lms.service.CourseSectionFileService;
-import com.dtnsm.lms.service.CourseSectionService;
-import com.dtnsm.lms.service.CourseService;
-import com.dtnsm.lms.util.DateUtil;
+import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +15,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.activation.MimetypesFileTypeMap;
-import java.util.Date;
 
 @Controller
 @RequestMapping("/approval")
@@ -47,6 +41,8 @@ public class ApprovalController {
     @Autowired
     private CourseSectionFileService courseSectionFileService;
 
+    @Autowired
+    private ApprovalCourseProcessService approvalCourseProcessService;
 
     private MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
 
@@ -84,7 +80,9 @@ public class ApprovalController {
         String userId = SessionUtil.getUserDetail().getUserId();
 
         model.addAttribute(pageInfo);
-        model.addAttribute("borders", courseAccountService.getListApprUserId1(pageable, userId));
+//        model.addAttribute("borders", courseAccountService.getListApprUserId1(pageable, userId));
+
+        model.addAttribute("borders", courseAccountService.getCustomByUserIdAndIsCommit(pageable, userId, "1"));
 
         return "content/approval/listAppr1";
     }
@@ -101,7 +99,7 @@ public class ApprovalController {
         model.addAttribute(pageInfo);
 
         // 완결
-        model.addAttribute("borders", courseAccountService.getListApprUserId1AndIsAppr1(pageable, userId, "N"));
+        model.addAttribute("borders", courseAccountService.getListApprUserId1AndIsAppr1("Y", userId, "N", pageable));
 
         return "content/approval/listAppr1Process";
     }
@@ -117,7 +115,10 @@ public class ApprovalController {
 
         model.addAttribute(pageInfo);
         // 완결
-        model.addAttribute("borders", courseAccountService.getListApprUserId1AndIsAppr1(pageable, userId, "Y"));
+//        model.addAttribute("borders", courseAccountService.getListApprUserId1AndIsAppr1(pageable, userId, "Y"));
+
+        model.addAttribute("borders", courseAccountService.getCustomByUserIdAndIsCommit(pageable, userId, "0"));
+
 
         return "content/approval/listAppr1Commit";
     }
@@ -129,29 +130,17 @@ public class ApprovalController {
             , @PathVariable("userId") String userId
             , Model model) {
 
-        // 세션 아이디를 가지고 온다.
-//        String userId = SessionUtil.getUserId();
-
         // 과정ID와 사용자ID로 과정신청정보를 가지고 온다.
         CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserId(courseId, userId);
 
-        // 과정 승인 처리한다.
-        // isAppr1 = 'Y'
-        // apprDate1 = today
-        // status = ApprovalStatusType.APPROVAL_TEAM_DONE
-
-        courseAccount.setIsAppr1("Y");
-        courseAccount.setApprDate1(DateUtil.getTodayString());
-        courseAccount.setApprDateTime1(new Date());
-        courseAccount.setStatus(ApprovalStatusType.APPROVAL_TEAM_DONE);
-
-        courseAccountService.save(courseAccount);
+        // 1차 승인 처리
+        approvalCourseProcessService.courseApproval1Proces(courseAccount);
 
         return "redirect:/approval/listAppr1Commit";
     }
 
     // 교육결재(1차 팀장/부서장) 기각
-    @GetMapping("/rejectAppr1/{courseId}")
+    @GetMapping("/rejectAppr1/{courseId}/{userId}")
     public String rejectAppr1(@PathVariable("courseId") Long courseId
             , @PathVariable("userId") String userId
             , Model model) {
@@ -159,10 +148,13 @@ public class ApprovalController {
         pageInfo.setPageId("m-mypage-approval");
         pageInfo.setPageTitle("교육결재조회");
 
-//        String userId = SessionUtil.getUserDetail().getUserId();
+        // 과정ID와 사용자ID로 과정신청정보를 가지고 온다.
+        CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserId(courseId, userId);
+
+        // 1차 기각 처리
+        approvalCourseProcessService.courseReject1Proces(courseAccount);
 
         model.addAttribute(pageInfo);
-        // 완결
 
         return "redirect:/approval/listAppr1Process";
     }
@@ -228,23 +220,14 @@ public class ApprovalController {
         // 과정ID와 사용자ID로 과정신청정보를 가지고 온다.
         CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserId(courseId, userId);
 
-        // 과정 승인 처리한다.
-        // isAppr1 = 'Y'
-        // apprDate1 = today
-        // status = ApprovalStatusType.APPROVAL_MANAGER_DONE
-
-        courseAccount.setIsAppr2("Y");
-        courseAccount.setApprDate2(DateUtil.getTodayString());
-        courseAccount.setApprDateTime2(new Date());
-        courseAccount.setStatus(ApprovalStatusType.APPROVAL_MANAGER_DONE);
-
-        courseAccountService.save(courseAccount);
+        // 2차 승인 처리
+        approvalCourseProcessService.courseApproval2Proces(courseAccount);
 
         return "redirect:/approval/listAppr2Commit";
     }
 
     // 교육결재(2차 과정 관리자) 기각
-    @GetMapping("/rejectAppr2/{courseId}")
+    @GetMapping("/rejectAppr2/{courseId}/{userId}")
     public String rejectAppr2(@PathVariable("courseId") Long courseId
             , @PathVariable("userId") String userId
             , Model model) {
@@ -252,7 +235,11 @@ public class ApprovalController {
         pageInfo.setPageId("m-mypage-approval");
         pageInfo.setPageTitle("교육결재조회");
 
-//        String userId = SessionUtil.getUserDetail().getUserId();
+        // 과정ID와 사용자ID로 과정신청정보를 가지고 온다.
+        CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserId(courseId, userId);
+
+        // 2차 승인 처리
+        approvalCourseProcessService.courseReject2Proces(courseAccount);
 
         model.addAttribute(pageInfo);
         // 완결

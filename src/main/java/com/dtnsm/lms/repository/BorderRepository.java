@@ -5,6 +5,7 @@ import com.dtnsm.lms.domain.Course;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -25,4 +26,6 @@ public interface BorderRepository extends JpaRepository<Border, Long> {
     List<Border> findAllByBorderMaster_Id(String masterId);
 
     List<Border> findFirst5ByBorderMaster_Id(String masterId);
+
+    List<Border> findAllByIsNoticeAndToDateLessThan(String isNotice, String toDate);
 }

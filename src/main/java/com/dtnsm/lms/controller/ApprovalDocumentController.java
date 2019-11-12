@@ -114,21 +114,20 @@ public class ApprovalDocumentController {
 
         model.addAttribute(pageInfo);
         // 완결
-        model.addAttribute("borders", documnetAccountService.getListApprUserId1AndIsAppr1(pageable, userId, "Y"));
+        model.addAttribute("borders", documnetAccountService.getCustomByUserIdAndIsCommit(pageable, userId, "0"));
 
         return "content/approval/document/listAppr1Commit";
     }
 
 
     // 교육결재(1차 팀장/부서장) 승인
-    @GetMapping("/successAppr1/{courseId}")
-    public String successAppr1(@PathVariable("courseId") Long courseId, Model model) {
-
-        // 세션 아이디를 가지고 온다.
-        String userId = SessionUtil.getUserId();
+    @GetMapping("/successAppr1/{documentId}/{userId}")
+    public String successAppr1(@PathVariable("documentId") Long documentId
+            , @PathVariable("userId") String userId
+            , Model model) {
 
         // 과정ID와 사용자ID로 과정신청정보를 가지고 온다.
-        DocumentAccount documentAccount = documnetAccountService.getByDocumentIdAndApprUserId1(courseId, userId);
+        DocumentAccount documentAccount = documnetAccountService.getByDocumentIdAndUserId(documentId, userId);
 
         // 과정 승인 처리한다.
         // isAppr1 = 'Y'
@@ -140,19 +139,38 @@ public class ApprovalDocumentController {
         documentAccount.setApprDateTime1(new Date());
         documentAccount.setStatus(ApprovalStatusType.APPROVAL_TEAM_DONE);
 
+        // 최종승인이 팀장인 경우 상태를 종결한다.
+        if(documentAccount.getIsTeamMangerApproval().equals("Y") && documentAccount.getIsCourseMangerApproval().equals("N")) documentAccount.setIsCommit("1");
+
         documnetAccountService.save(documentAccount);
 
         return "redirect:/approval/document/listAppr1Commit";
     }
 
     // 교육결재(1차 팀장/부서장) 기각
-    @GetMapping("/rejectAppr1/{documentId}")
-    public String rejectAppr1(@PathVariable("documentId") Long documentId, Model model) {
+    @GetMapping("/rejectAppr1/{documentId}/{userId}")
+    public String rejectAppr1(@PathVariable("documentId") Long documentId
+            , @PathVariable("userId") String userId
+            , Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
         pageInfo.setPageTitle("교육결재조회");
 
-        String userId = SessionUtil.getUserDetail().getUserId();
+        // 과정ID와 사용자ID로 과정신청정보를 가지고 온다.
+        DocumentAccount documentAccount = documnetAccountService.getByDocumentIdAndUserId(documentId, userId);
+
+        // 과정 승인 처리한다.
+        // isAppr1 = 'Y'
+        // apprDate1 = today
+        // status = ApprovalStatusType.APPROVAL_TEAM_DONE
+
+        documentAccount.setIsAppr1("Y");
+        documentAccount.setApprDate1(DateUtil.getTodayString());
+        documentAccount.setApprDateTime1(new Date());
+        documentAccount.setStatus(ApprovalStatusType.APPROVAL_TEAM_DONE);
+
+        // 최종승인이 팀장인 경우 상태를 종결한다.
+        if(documentAccount.getIsTeamMangerApproval().equals("Y") && documentAccount.getIsCourseMangerApproval().equals("N")) documentAccount.setIsCommit("2");
 
         model.addAttribute(pageInfo);
         // 완결
@@ -210,14 +228,13 @@ public class ApprovalDocumentController {
     }
 
     // 교육결재(2차 과정 관리자) 승인
-    @GetMapping("/successAppr2/{courseId}")
-    public String successAppr2(@PathVariable("courseId") Long courseId, Model model) {
-
-        // 세션 아이디를 가지고 온다.
-        String userId = SessionUtil.getUserId();
+    @GetMapping("/successAppr2/{courseId}/{userId}")
+    public String successAppr2(@PathVariable("documentId") Long documentId
+            , @PathVariable("userId") String userId
+            , Model model) {
 
         // 과정ID와 사용자ID로 과정신청정보를 가지고 온다.
-        DocumentAccount documentAccount = documnetAccountService.getByDocumentIdAndApprUserId2(courseId, userId);
+        DocumentAccount documentAccount = documnetAccountService.getByDocumentIdAndUserId(documentId, userId);
 
         // 과정 승인 처리한다.
         // isAppr1 = 'Y'
@@ -229,19 +246,37 @@ public class ApprovalDocumentController {
         documentAccount.setApprDateTime2(new Date());
         documentAccount.setStatus(ApprovalStatusType.APPROVAL_MANAGER_DONE);
 
-        documnetAccountService.save(documentAccount);
+        // 최종승인이 팀장인 경우 상태를 종결한다.
+        if(documentAccount.getIsTeamMangerApproval().equals("Y") && documentAccount.getIsCourseMangerApproval().equals("Y")) documentAccount.setIsCommit("1");
 
+        documnetAccountService.save(documentAccount);
         return "redirect:/approval/document/listAppr2Commit";
     }
 
     // 교육결재(2차 과정 관리자) 기각
-    @GetMapping("/rejectAppr2/{courseId}")
-    public String rejectAppr2(@PathVariable("courseId") Long courseId, Model model) {
+    @GetMapping("/rejectAppr2/{documentId}/{userId}")
+    public String rejectAppr2(@PathVariable("documentId") Long documentId
+            , @PathVariable("userId") String userId
+            , Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
         pageInfo.setPageTitle("교육결재조회");
 
-        String userId = SessionUtil.getUserDetail().getUserId();
+        // 과정ID와 사용자ID로 과정신청정보를 가지고 온다.
+        DocumentAccount documentAccount = documnetAccountService.getByDocumentIdAndUserId(documentId, userId);
+
+        // 과정 승인 처리한다.
+        // isAppr1 = 'Y'
+        // apprDate1 = today
+        // status = ApprovalStatusType.APPROVAL_MANAGER_DONE
+
+        documentAccount.setIsAppr2("Y");
+        documentAccount.setApprDate2(DateUtil.getTodayString());
+        documentAccount.setApprDateTime2(new Date());
+        documentAccount.setStatus(ApprovalStatusType.APPROVAL_MANAGER_DONE);
+
+        // 최종승인이 팀장인 경우 상태를 종결한다.
+        if(documentAccount.getIsTeamMangerApproval().equals("Y") && documentAccount.getIsCourseMangerApproval().equals("Y")) documentAccount.setIsCommit("2");
 
         model.addAttribute(pageInfo);
         // 완결

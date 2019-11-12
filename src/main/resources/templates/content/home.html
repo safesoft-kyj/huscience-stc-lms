@@ -46,8 +46,177 @@
 
         <!--===================================================-->
         <div id="page-content">
-<!--            <div class="row">-->
 
+
+            <div class="row">
+
+                <div class="eq-height">
+
+
+
+
+                    <div class="col-sm-4 col-lg-4 eq-box-lg">
+                        <div class="panel">
+
+                            <div class="panel-body">
+                                <h5 class="panel-title col-md-6" th:text="#{label.title.notice}" style="padding-bottom: 10px">공지사항</h5>
+                                <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="/border/list/BA0101">more ></a></small>
+
+                                <div class="col-md-12" th:switch="${borders}">
+                                    <h2 th:case="null">No customer yet!</h2>
+                                    <div th:case="*">
+                                        <table id="customer-list-page" class="table" cellspacing="0" width="100%">
+<!--                                            <thead>-->
+<!--                                            <tr>-->
+<!--                                                <th class="text-center col-sm-1">번호</th>-->
+<!--                                                <th class="text-center">제목</th>-->
+<!--                                            </tr>-->
+<!--                                            </thead>-->
+                                            <tbody>
+                                            <tr th:each="border, index : ${borders}">
+<!--                                                <td th:text="${index.count}" class="text-center"></td>-->
+                                                <td><a th:href="@{/border/view/{id}(id=${border.getId()})}" th:text="${border.getTitle()}">Edit</a></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div><!--switch End -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 col-lg-4 eq-box-lg">
+                        <div class="panel">
+                            <div class="panel-body">
+                                <h5 class="panel-title col-md-6" th:text="#{label.title.news}" style="padding-bottom: 10px">What's New</h5>
+                                <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="/border/list/BA0104">more ></a></small>
+
+                                <div th:switch="${borders2}">
+                                    <h2 th:case="null"></h2>
+                                    <div th:case="*">
+                                        <table id="customer-list-page2" class="table" cellspacing="0" width="100%">
+<!--                                            <thead>-->
+<!--                                            <tr>-->
+<!--                                                <th class="text-center col-sm-1">번호</th>-->
+<!--                                                <th class="text-center">제목</th>-->
+<!--                                            </tr>-->
+<!--                                            </thead>-->
+                                            <tbody>
+                                            <tr th:each="border, index : ${borders2}">
+<!--                                                <td th:text="${index.count}" class="text-center"></td>-->
+                                                <td><a th:href="@{/border/view/{id}(id=${border.getId()})}" th:text="${border.getTitle()}">Edit</a></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div><!--switch End -->
+                            </div>
+                        </div>
+                    </div>
+<!--                    <div class="col-sm-4 col-lg-4 eq-box-lg">-->
+<!--                        <div class="row">-->
+<!--                            <div class="col-md-6">-->
+<!--                                <div class="panel panel-warning panel-colorful media middle pad-all">-->
+<!--                                    <div class="media-left">-->
+<!--                                        <div class="pad-hor">-->
+<!--                                            <i class="demo-pli-file-word icon-3x"></i>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="media-body">-->
+<!--                                        <p class="text-2x mar-no text-semibold">-->
+<!--                                            <a th:href="@{/info/request/BC0101}" th:text="${courseCountVO.getCol01()}" style="color:white"></a>-->
+<!--                                        </p>-->
+<!--                                        <p class="mar-no">self training</p>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-6">-->
+<!--                                <div class="panel panel-info panel-colorful media middle pad-all">-->
+<!--                                    <div class="media-left">-->
+<!--                                        <div class="pad-hor">-->
+<!--                                            <i class="demo-pli-file-zip icon-3x"></i>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="media-body">-->
+<!--                                        <p class="text-2x mar-no text-semibold">-->
+<!--                                            <a th:href="@{/info/request/BC0102}" th:text="${courseCountVO.getCol02()}" style="color:white"></a>-->
+<!--                                        </p>-->
+<!--                                        <p class="mar-no">class training</p>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="row"><div>&nbsp;</div></div>-->
+<!--                        <div class="row">-->
+<!--                            <div class="col-md-6">-->
+<!--                                <div class="panel panel-mint panel-colorful media middle pad-all">-->
+<!--                                    <div class="media-left">-->
+<!--                                        <div class="pad-hor">-->
+<!--                                            <i class="demo-pli-camera-2 icon-3x"></i>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="media-body">-->
+<!--                                        <p class="text-2x mar-no text-semibold">-->
+<!--                                            <a th:href="@{/info/request/BC0103}" th:text="${courseCountVO.getCol03()}" style="color:white"></a>-->
+<!--                                        </p>-->
+<!--                                        <p class="mar-no">부서별 교육</p>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-6">-->
+<!--                                <div class="panel panel-danger panel-colorful media middle pad-all">-->
+<!--                                    <div class="media-left">-->
+<!--                                        <div class="pad-hor">-->
+<!--                                            <i class="demo-pli-video icon-3x"></i>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="media-body">-->
+<!--                                        <p class="text-2x mar-no text-semibold">-->
+<!--                                            <a th:href="@{/info/request/BC0104}" th:text="${courseCountVO.getCol04()}" style="color:white"></a>-->
+<!--                                        </p>-->
+<!--                                        <p class="mar-no">외부 교육</p>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="row"><div>&nbsp;</div></div>-->
+<!--                        <div class="row">-->
+<!--                            <div class="col-md-6">-->
+<!--                                <div class="panel panel-mint panel-colorful media middle pad-all">-->
+<!--                                    <div class="media-left">-->
+<!--                                        <div class="pad-hor">-->
+<!--                                            <i class="demo-pli-camera-2 icon-3x"></i>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="media-body">-->
+<!--                                        <p class="text-2x mar-no text-semibold">-->
+<!--                                            <a th:href="@{/info/request/BC0103}" th:text="${courseCountVO.getCol03()}" style="color:white"></a>-->
+<!--                                        </p>-->
+<!--                                        <p class="mar-no">부서별 교육</p>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-6">-->
+<!--                                <div class="panel panel-danger panel-colorful media middle pad-all">-->
+<!--                                    <div class="media-left">-->
+<!--                                        <div class="pad-hor">-->
+<!--                                            <i class="demo-pli-video icon-3x"></i>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="media-body">-->
+<!--                                        <p class="text-2x mar-no text-semibold">-->
+<!--                                            <a th:href="@{/info/request/BC0104}" th:text="${courseCountVO.getCol04()}" style="color:white"></a>-->
+<!--                                        </p>-->
+<!--                                        <p class="mar-no">외부 교육</p>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+<!--                    </div>-->
+                </div>
+            </div>
+
+<!--            <div class="row">-->
 <!--                <div class="col-md-3">-->
 <!--                    <div class="panel panel-warning panel-colorful media middle pad-all">-->
 <!--                        <div class="media-left">-->
@@ -110,67 +279,7 @@
 <!--                </div>-->
 <!--            </div>-->
 
-            <div class="row">
-                <div class="eq-height">
-                    <div class="col-sm-6 col-lg-6 eq-box-lg">
-                        <div class="panel">
 
-                            <div class="panel-body">
-                                <h5 class="panel-title col-md-6" th:text="#{label.title.notice}" style="padding-bottom: 10px">공지사항</h5>
-                                <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="/border/list/BA0101">more ></a></small>
-
-                                <div class="col-md-12" th:switch="${borders}">
-                                    <h2 th:case="null">No customer yet!</h2>
-                                    <div th:case="*">
-                                        <table id="customer-list-page" class="table" cellspacing="0" width="100%">
-<!--                                            <thead>-->
-<!--                                            <tr>-->
-<!--                                                <th class="text-center col-sm-1">번호</th>-->
-<!--                                                <th class="text-center">제목</th>-->
-<!--                                            </tr>-->
-<!--                                            </thead>-->
-                                            <tbody>
-                                            <tr th:each="border, index : ${borders}">
-<!--                                                <td th:text="${index.count}" class="text-center"></td>-->
-                                                <td><a th:href="@{/border/view/{id}(id=${border.getId()})}" th:text="${border.getTitle()}">Edit</a></td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div><!--switch End -->
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-lg-6 eq-box-lg">
-                        <div class="panel">
-                            <div class="panel-body">
-                                <h5 class="panel-title col-md-6" th:text="#{label.title.news}" style="padding-bottom: 10px">공지사항</h5>
-                                <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="/border/list/BA0104">more ></a></small>
-
-                                <div th:switch="${borders2}">
-                                    <h2 th:case="null"></h2>
-                                    <div th:case="*">
-                                        <table id="customer-list-page2" class="table" cellspacing="0" width="100%">
-<!--                                            <thead>-->
-<!--                                            <tr>-->
-<!--                                                <th class="text-center col-sm-1">번호</th>-->
-<!--                                                <th class="text-center">제목</th>-->
-<!--                                            </tr>-->
-<!--                                            </thead>-->
-                                            <tbody>
-                                            <tr th:each="border, index : ${borders2}">
-<!--                                                <td th:text="${index.count}" class="text-center"></td>-->
-                                                <td><a th:href="@{/border/view/{id}(id=${border.getId()})}" th:text="${border.getTitle()}">Edit</a></td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div><!--switch End -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="row">
                 <div class="eq-height">
                     <div class="col-sm-6 col-lg-6 eq-box-lg">
@@ -196,7 +305,16 @@
                                 <hr>
                                 <div class="row">
                                     <div class="col-md-7">
-                                        <div id="dayList" class="text-left"></div>
+                                        <div id="dayList" class="text-left">
+                                            <table id="customer-list-page5" class="table" cellspacing="0" width="100%">
+                                                <tbody>
+                                                <tr th:each="reqMonth, index : ${monthRequestList}">
+                                                    <td  th:text="${reqMonth.getRequestFromDate()}"></td>
+                                                    <td class="col-md-9"><a th:href="@{/course/view/{id}(id=${reqMonth.getId()})}" th:text="${reqMonth.getTitle()}">Edit</a></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                     <div class="col-md-5 text-center">
                                         <div id="custom-date-format"></div>
@@ -214,24 +332,60 @@
 
                     <div class="col-sm-6 col-lg-6 eq-box-lg">
                         <div class="panel">
+
+                            <!--Panel heading-->
+                            <div class="panel-heading">
+                                <div class="panel-control">
+                                    <ul class="nav nav-tabs">
+                                        <li class="active"><a href="#demo-tabs-box-1" data-toggle="tab">결재요청 <span class="badge badge-purple" th:text="${app1List.size()}"></span></a></li>
+                                        <li><a href="#demo-tabs-box-2" data-toggle="tab">결재진행 <span class="badge badge-purple" th:text="${app1CommitList.size()}"></span></a></li>
+                                    </ul>
+                                </div>
+                                <h3 class="panel-title" th:text="#{label.title.approval}">교육결재</h3>
+                            </div>
+
+                            <!--Panel body-->
                             <div class="panel-body">
-                                <h5 class="panel-title col-md-6" th:text="#{label.title.approval}" style="padding-bottom: 10px">교육결재조회</h5>
-                                <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="#">more ></a></small>
-                                <table id="customer-list-page3" class="table" cellspacing="0" width="100%">
-                                    <tbody>
-                                    <tr>
-                                        <td><a href="#">테스트 교육결재</a></td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                                <div class="tab-content">
+                                    <div class="tab-pane fade in active" id="demo-tabs-box-1">
+                                        <table id="customer-list-page6" class="table" cellspacing="0" width="100%">
+                                            <tbody>
+                                            <tr th:each="app1, index : ${app1List}">
+                                                <td class="col-md-2" th:text="${app1.getRequestDate()}"></td>
+
+                                                <td class="col-md-8 text-left">
+                                                    <a th:href="@{/course/approvalAppr1/{id}/{userId}(id=${app1.getCourse().getId()}, userId=${app1.getAccount().getUserId()})}" th:text="${app1.getCourse().getTitle()}">Edit</a>
+                                                </td>
+                                                <td class="col-md-2" th:text="${app1.getAccount().getName()}"></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="tab-pane fade" id="demo-tabs-box-2">
+                                        <table id="customer-list-page8" class="table" cellspacing="0" width="100%">
+                                            <tbody>
+                                            <tr th:each="app1, index : ${app1CommitList}">
+<!--                                                <td class="col-md-2" th:text="${#temporals.createDate(app1.getRequestDate(), 'yyyy-MM-dd')}"></td>-->
+                                                <td class="col-md-2" th:text="${app1.getRequestDate()}"></td>
+
+                                                <td class="col-md-8 text-left">
+                                                    <a th:href="@{/course/approvalAppr1/{id}/{userId}(id=${app1.getCourse().getId()}, userId=${app1.getAccount().getUserId()})}" th:text="${app1.getCourse().getTitle()}">Edit</a>
+                                                </td>
+                                                <td class="col-md-2" th:text="${app1.getAccount().getName()}"></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
                     </div>
                     <div class="col-md-4 col-lg-4 eq-box-lg">
                         <div class="panel">
                             <div class="panel-body">
-                                <h5 class="panel-title col-md-6" th:text="#{label.title.customer}" style="padding-bottom: 10px">알림사항</h5>
-                                <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="#">more ></a></small>
+                                <h5 class="panel-title col-md-6" th:text="#{label.title.customer}" style="padding-bottom: 10px">협약기관</h5>
+                                <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a th:href="@{/customer/list-page}">more ></a></small>
                                 <div th:switch="${customers}">
                                     <h2 th:case="null">No customer yet!</h2>
                                     <div th:case="*">
@@ -323,7 +477,6 @@
             window.open(url, title, option);
         }
 
-
         $(document).ready(function() {
 
             var nowDate = new Date();
@@ -407,7 +560,9 @@
             }
         });
 
+
     </script>
+
 
 </th:block>
 

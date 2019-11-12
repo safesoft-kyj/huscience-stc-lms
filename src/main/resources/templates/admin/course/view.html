@@ -136,9 +136,9 @@
                             <li>
                                 <a data-toggle="tab" href="#demo-lft-tab-2" th:text="#{label.tablecontent}">목차</a>
                             </li>
-                            <li>
-                                <a data-toggle="tab" href="#demo-lft-tab-3" th:text="#{label.course.agenda}">교육일정</a>
-                            </li>
+<!--                            <li>-->
+<!--                                <a data-toggle="tab" href="#demo-lft-tab-3" th:text="#{label.course.agenda}">교육일정</a>-->
+<!--                            </li>-->
                         </ul>
 
                         <!--Tabs Content-->
@@ -180,7 +180,6 @@
                                         <td class="text-center" th:text="${quiz.getFromDate() + ' ~ ' + quiz.getToDate()}"></td>
                                         <td class="text-center" th:text="#{label.course.minute(${quiz.getMinute()})}"></td>
                                     </tr>
-r
                                     <tr th:each="survey, index : ${course.getSurveys()}">
                                         <td class="text-center" th:text="${index.count}"></td>
                                         <td class="text-center" th:text="#{label.title.survey}"></td>
@@ -196,9 +195,9 @@ r
                                     </tbody>
                                 </table>
                             </div>
-                            <div id="demo-lft-tab-3" class="tab-pane fade" style="height:100%; vertical-align:top">
-                                <div th:utext="${course.getAgenda()}" colspan="4"></div>
-                            </div>
+<!--                            <div id="demo-lft-tab-3" class="tab-pane fade" style="height:100%; vertical-align:top">-->
+<!--                                <div th:utext="${course.getAgenda()}" colspan="4"></div>-->
+<!--                            </div>-->
                         </div>
                     </div>
                 </div>

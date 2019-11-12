@@ -42,7 +42,7 @@
                         </div>
                         <div class="col-sm-6 text-right">
                             <p>
-                                <a th:href="@{/admin/document/template/add}" class="btn btn-success" th:text="#{label.title.document.template}">양식등록</a>
+                                <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/document/template/add}"><i class="demo-pli-add"></i> Add</a>
                             </p>
                         </div>
                     </div>
@@ -52,9 +52,9 @@
                             <table id="demo-dt-basic" class="table table-striped table-bordered" cellspacing="0" width="100%">
                                 <thead>
                                 <tr>
-                                    <th class="text-center col-sm-1">번호</th>
-                                    <th class="text-center">제목</th>
-                                    <th class="text-center col-sm-2">Edit</th>
+                                    <th class="text-center col-sm-1" th:text="#{label.no}">번호</th>
+                                    <th class="text-center" th:text="#{label.subject}">제목</th>
+                                    <th class="text-center col-sm-2" th:text="#{label.actions}">Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -62,8 +62,8 @@
                                     <td th:text="${index.count}" class="text-center"></td>
                                     <td><a th:href="@{/admin/document/template/view/{id}(id=${border.getId()})}" th:text="${border.getTitle()}">Edit</a></td>
                                     <td class="text-center">
-                                        <a class="btn btn-warning" th:href="@{/admin/document/template/edit/{id}(id=${border.getId()})}" th:text="#{label.edit}">Edit</a>
-                                        <a class="btn btn-danger" th:href="@{/admin/document/template/delete/{id}(id=${border.getId()})}" th:text="#{label.delete}">Delete</a>
+                                        <a th:text="#{label.edit}" th:href="@{/admin/document/template/edit/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                        <a th:text="#{label.delete}" th:href="@{/admin/document/template/delete/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
                                     </td>
                                 </tr>
                                 </tbody>

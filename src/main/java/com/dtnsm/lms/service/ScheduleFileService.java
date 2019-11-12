@@ -9,6 +9,8 @@ import com.dtnsm.lms.exception.FileUploadException;
 import com.dtnsm.lms.properties.FileUploadProperties;
 import com.dtnsm.lms.repository.CourseSectionFileRepository;
 import com.dtnsm.lms.repository.ScheduleFileRepository;
+import com.dtnsm.lms.util.FileUtil;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -52,12 +54,16 @@ public class ScheduleFileService {
 
 
     public ScheduleFile storeFile(MultipartFile file, Schedule schedule) {
-        String originName = StringUtils.cleanPath(file.getOriginalFilename());
+        String originName = FilenameUtils.getBaseName(file.getOriginalFilename());
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        String contentType = file.getContentType();
+        long fileSize = file.getSize();
 
-        if (originName.equals("")) return null;
+        originName = originName + "." + extension;
+        if (originName.equals("") || originName.equals(".")) return null;
 
         // 파일명을 생성한다.
-        String saveName = StringUtils.cleanPath(CreateFileName(file.getOriginalFilename()));
+        String saveName = StringUtils.cleanPath(FileUtil.CreateFileName(originName));
 
         try {
             // 파일명에 부적합 문자가 있는지 확인한다.
@@ -68,7 +74,7 @@ public class ScheduleFileService {
 
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            ScheduleFile scheduleFile = new ScheduleFile(originName, saveName, file.getSize(), file.getContentType(), schedule);
+            ScheduleFile scheduleFile = new ScheduleFile(originName, saveName, fileSize, contentType, schedule);
 
             return fileRepository.save(scheduleFile);
         }catch(Exception e) {
@@ -131,16 +137,4 @@ public class ScheduleFileService {
             e.printStackTrace();
         }
     }
-
-    public String CreateFileName(String originalName){
-
-        //uuid 생성
-        UUID uuid = UUID.randomUUID();
-        // 랜던생성 + 파일이름 저장
-        String  saveName = uuid.toString() + "_" + originalName;
-
-        return saveName;
-    }
-
-
 }

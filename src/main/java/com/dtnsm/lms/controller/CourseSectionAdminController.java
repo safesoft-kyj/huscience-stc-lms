@@ -137,27 +137,21 @@ public class CourseSectionAdminController {
             courseSection.setId(id);
             return "/admin/course/section/list/" + courseSection.getId();
         }
+        CourseSection oldCourseSection = sectionService.getCourseSectionById(id);
 
+        courseSection.setCourseSectionActions(oldCourseSection.getCourseSectionActions());
+        courseSection.setSectionFiles(oldCourseSection.getSectionFiles());
+        courseSection.setCourse(oldCourseSection.getCourse());
+        courseSection.setSecond(courseSection.getMinute()*60);
 
-//        List<CourseSectionActionHistory> courseSectionHistories = sectionService.getCourseSectionById(id).getCourseSectionHistories();
-//        courseSection.setCourseSectionHistories(courseSectionHistories);
-//        List<CourseSectionFile> courseSectionFile= sectionService.getCourseSectionById(id).getSectionFiles();
-//        courseSection.setSectionFiles(courseSectionFile);
-//        courseSection.setSecond(courseSection.getMinute()*60);
-//
-//        CourseSection courseSurveyOld = sectionService.getCourseSectionById(id);
-//
-//        Course course = courseSurveyOld.getCourse();
-//        courseSection.setCourse(course);
-//
-//        CourseSection courseSurvey1 = sectionService.saveSection(courseSection);
+        CourseSection courseSection1 = sectionService.saveSection(courseSection);
 
-//        Arrays.asList(files)
-//                .stream()
-//                .map(file -> fileService.storeFile(file, courseSurvey1))
-//                .collect(Collectors.toList());
+        Arrays.asList(files)
+                .stream()
+                .map(file -> fileService.storeFile(file, courseSection1))
+                .collect(Collectors.toList());
 
-        return "redirect:/admin/course/section/edit/" + courseSection.getId();
+        return "redirect:/admin/course/section/edit/" + courseSection1.getId();
     }
 
     @GetMapping("/delete/{id}")

@@ -2,8 +2,6 @@ package com.dtnsm.lms.service;
 
 import com.dtnsm.lms.domain.CourseSurvey;
 import com.dtnsm.lms.domain.CourseSurveyQuestion;
-import com.dtnsm.lms.domain.CourseSurveyQuestionItem;
-import com.dtnsm.lms.repository.CourseSurveyQuestionItemRepository;
 import com.dtnsm.lms.repository.CourseSurveyQuestionRepository;
 import com.dtnsm.lms.repository.CourseSurveyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +15,6 @@ public class CourseSurveyService {
 
     @Autowired
     CourseSurveyQuestionRepository questionRepository;
-
-    @Autowired
-    CourseSurveyQuestionItemRepository itemRepository;
 
      /*
         Quiz
@@ -43,7 +38,7 @@ public class CourseSurveyService {
     }
 
     /*
-        Quiz Item
+        Quiz Questi
      */
 
     public CourseSurveyQuestion saveSurveyQuestion(CourseSurveyQuestion quizItem){
@@ -62,23 +57,4 @@ public class CourseSurveyService {
         return questionRepository.findById(id).get();
     }
 
-    /*
-        Quiz Item
-     */
-
-    public CourseSurveyQuestionItem saveSurveyItem(CourseSurveyQuestionItem quizItem){
-        return itemRepository.save(quizItem);
-    }
-
-    public void deleteSurveyItem(CourseSurveyQuestionItem quizItem) {
-        itemRepository.delete(quizItem);
-    }
-
-    public void deleteSurveyItem(Long id) {
-        itemRepository.delete(getCourseSurveyItemById(id));
-    }
-
-    public CourseSurveyQuestionItem getCourseSurveyItemById(Long id) {
-        return itemRepository.findById(id).get();
-    }
 }
