@@ -110,13 +110,13 @@ public class InfoController {
 
         Page<Course> courses;
         if(typeId.equals("all") && title.equals("")) {
-            courses = courseService.getPageList(pageable);
+            courses = courseService.getPageList(0, pageable);
         } else if (typeId.equals("all") && !title.equals("") ){
-            courses = courseService.getPageListByTitleLike(title, pageable);
+            courses = courseService.getPageListByTitleLike(title, 0, pageable);
         } else if (!typeId.equals("all") && title.equals("") ){
-            courses = courseService.getPageLisByTypeId(typeId, pageable);
+            courses = courseService.getPageLisByTypeId(typeId, 0, pageable);
         } else {
-            courses = courseService.getPageLisByTypeIdAndTitleLike(typeId, title, pageable);
+            courses = courseService.getPageLisByTypeIdAndTitleLike(typeId, title, 0, pageable);
         }
 
 
@@ -135,7 +135,7 @@ public class InfoController {
         pageInfo.setPageId("m-info-request");
         pageInfo.setPageTitle("교육신청");
 
-        Page<Course> courses = courseService.getPageLisByTypeId(typeId, pageable);
+        Page<Course> courses = courseService.getPageLisByTypeId(typeId, 0, pageable);
 
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courses);

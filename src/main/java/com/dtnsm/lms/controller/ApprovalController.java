@@ -2,6 +2,7 @@ package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.CourseAccount;
+import com.dtnsm.lms.domain.constant.ApprovalStatusType;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.*;
@@ -12,7 +13,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.activation.MimetypesFileTypeMap;
 
@@ -60,7 +63,7 @@ public class ApprovalController {
     public String listMyAppr(@PageableDefault Pageable pageable, Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
-        pageInfo.setPageTitle("교육결재조회");
+        pageInfo.setPageTitle("교육결재");
 
         String userId = SessionUtil.getUserDetail().getUserId();
 
@@ -75,14 +78,14 @@ public class ApprovalController {
     public String listAppr1(@PageableDefault Pageable pageable, Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
-        pageInfo.setPageTitle("교육결재조회");
+        pageInfo.setPageTitle("교육결재 승인");
 
         String userId = SessionUtil.getUserDetail().getUserId();
 
         model.addAttribute(pageInfo);
 //        model.addAttribute("borders", courseAccountService.getListApprUserId1(pageable, userId));
 
-        model.addAttribute("borders", courseAccountService.getCustomByUserIdAndIsCommit(pageable, userId, "1"));
+        model.addAttribute("borders", courseAccountService.getCustomByUserCommit(userId, pageable));
 
         return "content/approval/listAppr1";
     }
@@ -92,7 +95,7 @@ public class ApprovalController {
     public String listAppr1Process(@PageableDefault Pageable pageable, Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
-        pageInfo.setPageTitle("진행함");
+        pageInfo.setPageTitle("미결함");
 
         String userId = SessionUtil.getUserDetail().getUserId();
 
@@ -109,7 +112,7 @@ public class ApprovalController {
     public String listAppr1Commit(@PageableDefault Pageable pageable, Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
-        pageInfo.setPageTitle("완료함");
+        pageInfo.setPageTitle("진행함");
 
         String userId = SessionUtil.getUserDetail().getUserId();
 
@@ -121,6 +124,24 @@ public class ApprovalController {
 
 
         return "content/approval/listAppr1Commit";
+    }
+
+    // 교육결재 반려함 조회
+    @GetMapping("/listApprReject")
+    public String listApprReject(@PageableDefault Pageable pageable, Model model) {
+
+        pageInfo.setPageId("m-mypage-approval");
+        pageInfo.setPageTitle("반려함");
+
+        String userId = SessionUtil.getUserDetail().getUserId();
+
+        model.addAttribute(pageInfo);
+        // 완결
+//        model.addAttribute("borders", courseAccountService.getListApprUserId1AndIsAppr1(pageable, userId, "Y"));
+
+        model.addAttribute("borders", courseAccountService.getCustomByUserIdAndReject(pageable, userId));
+
+        return "content/approval/listApprReject";
     }
 
 
@@ -146,7 +167,7 @@ public class ApprovalController {
             , Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
-        pageInfo.setPageTitle("교육결재조회");
+        pageInfo.setPageTitle("교육결재 기각");
 
         // 과정ID와 사용자ID로 과정신청정보를 가지고 온다.
         CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserId(courseId, userId);
@@ -160,41 +181,9 @@ public class ApprovalController {
     }
 
 
-    // 교육결재(2차 과정 관리자) 조회
+    // 교육결재(2차 과정 관리자) 전체함
     @GetMapping("/listAppr2")
     public String listAppr2(@PageableDefault Pageable pageable, Model model) {
-
-        pageInfo.setPageId("m-mypage-approval");
-        pageInfo.setPageTitle("전체함");
-
-        String userId = SessionUtil.getUserDetail().getUserId();
-
-        model.addAttribute(pageInfo);
-        model.addAttribute("borders", courseAccountService.getListApprUserId2(pageable, userId));
-
-        return "content/approval/listAppr2";
-    }
-
-    // 교육결재(2차 과정 관리자) 진행함 조회
-    @GetMapping("/listAppr2Process")
-    public String listAppr2Process(@PageableDefault Pageable pageable, Model model) {
-
-        pageInfo.setPageId("m-mypage-approval");
-        pageInfo.setPageTitle("진행함");
-
-        String userId = SessionUtil.getUserDetail().getUserId();
-
-        model.addAttribute(pageInfo);
-
-        // 완결
-        model.addAttribute("borders", courseAccountService.getListApprUserId2AndIsAppr2(pageable, userId, "N"));
-
-        return "content/approval/listAppr2Process";
-    }
-
-    // 교육결재(2차 과정 관리자) 완료함 조회
-    @GetMapping("/listAppr2Commit")
-    public String listAppr2Commit(@PageableDefault Pageable pageable, Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
         pageInfo.setPageTitle("완료함");
@@ -202,8 +191,40 @@ public class ApprovalController {
         String userId = SessionUtil.getUserDetail().getUserId();
 
         model.addAttribute(pageInfo);
+        model.addAttribute("borders", courseAccountService.getCustomByUserCommit(userId, pageable));
+
+        return "content/approval/listAppr2";
+    }
+
+    // 교육결재(2차 과정 관리자) 미결함
+    @GetMapping("/listAppr2Process")
+    public String listAppr2Process(@PageableDefault Pageable pageable, Model model) {
+
+        pageInfo.setPageId("m-mypage-approval");
+        pageInfo.setPageTitle("미결함");
+
+        String userId = SessionUtil.getUserDetail().getUserId();
+
+        model.addAttribute(pageInfo);
+
         // 완결
-        model.addAttribute("borders", courseAccountService.getListApprUserId2AndIsAppr2(pageable, userId, "Y"));
+        model.addAttribute("borders", courseAccountService.getListApprUserId2AndIsAppr2("Y", userId, "N", "Y", pageable));
+
+        return "content/approval/listAppr2Process";
+    }
+
+    // 교육결재(2차 과정 관리자) 진행함
+    @GetMapping("/listAppr2Commit")
+    public String listAppr2Commit(@PageableDefault Pageable pageable, Model model) {
+
+        pageInfo.setPageId("m-mypage-approval");
+        pageInfo.setPageTitle("진행함");
+
+        String userId = SessionUtil.getUserDetail().getUserId();
+
+        model.addAttribute(pageInfo);
+        // 완결
+        model.addAttribute("borders", courseAccountService.getCustomByUserIdAndIsCommit(pageable, userId, "0"));
 
         return "content/approval/listAppr2Commit";
     }
@@ -233,7 +254,7 @@ public class ApprovalController {
             , Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
-        pageInfo.setPageTitle("교육결재조회");
+        pageInfo.setPageTitle("교육결재 기각");
 
         // 과정ID와 사용자ID로 과정신청정보를 가지고 온다.
         CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserId(courseId, userId);

@@ -10,25 +10,27 @@ import java.util.List;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
-    Page<Course> findAllByCourseMaster_Id(String typeId, Pageable pageable);
+    Page<Course> findAllByActiveGreaterThan(int active, Pageable pageable);
 
-    // 제목, 내용 검색
-    Page<Course> findAllByCourseMaster_IdAndTitleLikeOrContentLike(String typeId, String title, String content, Pageable pageable);
+    Page<Course> findAllByCourseMaster_IdAndActiveGreaterThan(String typeId, int active, Pageable pageable);
+
+    // 제목, 내용 검색(status 0은 서비스 전 교육과정)
+    Page<Course> findAllByCourseMaster_IdAndTitleLikeOrContentLikeAndActiveGreaterThan(String typeId, String title, String content, int active, Pageable pageable);
 
     // 내용 검색
-    Page<Course> findAllByCourseMaster_IdAndContentLike(String typeId, String content, Pageable pageable);
+    Page<Course> findAllByCourseMaster_IdAndContentLikeAndActiveGreaterThan(String typeId, String content, int active, Pageable pageable);
 
     // 제목 검색
-    Page<Course> findAllByCourseMaster_IdAndTitleLike(String typeId, String title, Pageable pageable);
+    Page<Course> findAllByCourseMaster_IdAndTitleLikeAndActiveGreaterThan(String typeId, String title, int active, Pageable pageable);
 
-    Page<Course> findAllByTitleLike(String title, Pageable pageable);
+    Page<Course> findAllByTitleLikeAndActiveGreaterThan(String title, int active, Pageable pageable);
 
-    List<Course> findAllByTitle(String title);
+    List<Course> findAllByTitleAndActiveGreaterThan(String title, int active);
 
-    List<Course> findByFromDateBetween(String fromDate, String toDate);
+    List<Course> findByFromDateBetweenAndActiveGreaterThan(String fromDate, String toDate, int active);
 
-    List<Course> findByRequestFromDateBetween(String fromDate, String toDate);
+    List<Course> findByRequestFromDateBetweenAndActiveGreaterThan(String fromDate, String toDate, int active);
 
-    List<Course> findTop5ByRequestFromDateBetween(String fromDate, String toDate);
+    List<Course> findTop5ByRequestFromDateBetweenAndActiveGreaterThan(String fromDate, String toDate, int active);
 
 }

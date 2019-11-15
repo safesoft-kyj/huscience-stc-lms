@@ -20,13 +20,14 @@ spring:
     username: sa
     password: Dtncro@123##
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-  #  flyway:
-  #    url: jdbc:sqlserver://localhost:1433;DatabaseName=elearning
-  #    user: sa
-  #    password: Dtncro@123##
-  #    locations: classpath:/db/migration/cro
-  #    baseline-on-migrate: true
-  #    encoding: UTF-8
+  flyway:
+#      url: jdbc:sqlserver://localhost:1433;DatabaseName=elearning
+#      user: sa
+#      password: Dtncro@123##
+    locations: classpath:/db/migration/local
+    baseline-on-migrate: true
+    encoding: UTF-8
+    enabled: true
   jpa:
     hibernate:
       ddl-auto: update
@@ -75,6 +76,8 @@ file:
   document-upload-dir: D://elearning//upload//document//
   survey-upload-dir: D://elearning//upload//survey//
   binder-jd-upload-dir: D://elearning//upload//binder//jd//
+  xdoc-upload-dir: D://elearning//upload//xdoc//
+
 
 
 image-file:

@@ -8,6 +8,7 @@ import com.dtnsm.lms.service.CourseQuizService;
 import com.dtnsm.lms.service.CourseService;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
+import com.dtnsm.lms.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -59,6 +60,24 @@ public class CourseQuizAdminController {
         pageInfo.setParentTitle("공지사항");
     }
 
+    @GetMapping("/list/{courseId}")
+    public String list(@PathVariable("courseId") Long courseId, Model model) {
+
+        pageInfo.setPageId("m-course-list-page");
+        pageInfo.setPageTitle("시험조회");
+
+        course = courseService.getCourseById(courseId);
+        // 설문조사 여부가 Y 인경우만 Add 버튼 활성화
+        String isAdd = course.getIsQuiz();
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("borders", quizService.getAllByCourseId(courseId));
+        model.addAttribute("isAdd", isAdd);
+        model.addAttribute("typeId", course.getCourseMaster().getId());
+
+        return "admin/course/quiz/list";
+    }
+
     @GetMapping("/add/{courseId}")
     public String noticeAdd(@PathVariable("courseId") Long courseId, Model model) {
 
@@ -72,6 +91,7 @@ public class CourseQuizAdminController {
         model.addAttribute("courseQuiz", courseQuiz);
 //        model.addAttribute("codeList", codeService.getMinorList(majorCode));
         model.addAttribute("id", courseId);
+
 
         return "admin/course/quiz/add";
     }
@@ -174,7 +194,22 @@ public class CourseQuizAdminController {
             }
         }
 
-        return "redirect:/admin/course/view/" + courseQuiz1.getCourse().getId();
+        return "redirect:/admin/course/quiz/list/" + courseQuiz1.getCourse().getId();
+    }
+
+    @GetMapping("/delete/{id}")
+    public String noticeDelete(@PathVariable("id") long id) {
+
+        CourseQuiz courseQuiz = quizService.getCourseQuizById(id);
+
+        Long courseId = courseQuiz.getCourse().getId();
+
+        // 과정 신청된 내역이 있으면 삭제 하지 않는다.
+        if (courseQuiz.getCourse().getCourseAccountList().size() <= 0) {
+            quizService.deleteQuiz(courseQuiz);
+        }
+
+        return "redirect:/admin/course/quiz/list/" + courseId;
     }
 
     @GetMapping("/delete-file/{quiz_id}/{file_id}")
@@ -185,6 +220,21 @@ public class CourseQuizAdminController {
 
         return "redirect:/admin/course/quiz/edit/" + quiz_id;
 
+    }
+
+    @GetMapping("/view/{id}")
+    public String viewPage(@PathVariable("id") long id, Model model) {
+
+        CourseQuiz courseQuiz = quizService.getCourseQuizById(id);
+
+        pageInfo.setPageId("self");
+        pageInfo.setPageTitle(courseQuiz.getName());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("borders", courseQuiz.getQuizQuestions());
+        model.addAttribute("courseId", courseQuiz.getCourse().getId());
+
+        return "admin/course/quiz/view";
     }
 
     @GetMapping("/download-file/{id}")

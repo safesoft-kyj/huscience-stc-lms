@@ -32,6 +32,17 @@ public class FileUploadProperties {
     // Digital Binder JD 업로드 경로
     private String BinderJdUploadDir;
 
+    // Xdoc 관련 폴더
+    private String xdocUploadDir;
+
+    public String getXdocUploadDir() {
+        return xdocUploadDir;
+    }
+
+    public void setXdocUploadDir(String xdocUploadDir) {
+        this.xdocUploadDir = xdocUploadDir;
+    }
+
     public String getBinderJdUploadDir() {
         return BinderJdUploadDir;
     }

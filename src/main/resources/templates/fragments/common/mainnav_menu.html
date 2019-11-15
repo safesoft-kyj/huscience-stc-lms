@@ -79,6 +79,7 @@
                 <li><a href="#" data-th-href="@{/approval/listAppr1Process}">미결함 <span class="badge badge-purple" id="course-my-approval"></span></a></li>
                 <li><a href="#" data-th-href="@{/approval/listAppr1Commit}">진행함 <span class="badge badge-purple" id="course-my-process"></span></a></li>
                 <li><a href="#" data-th-href="@{/approval/listAppr1}">완료함</a></li>
+                <li><a href="#" data-th-href="@{/approval/listApprReject}">반려함</a></li>
 <!--                <li th:text="${T(com.dtnsm.lms.util.GlobalUtil).apprProcessCount()}"></li>-->
 <!--                <li><a href="#app-process" data-toggle="tab">결재요청 <span class="badge badge-purple" th:text="${app1List.size()}"></span></a></li>-->
             </ul>
@@ -100,6 +101,7 @@
                 <li><a href="#" data-th-href="@{/approval/document/listAppr1Process}">미결함 <span class="badge badge-purple" id="document-my-approval"></span></a></li>
                 <li><a href="#" data-th-href="@{/approval/document/listAppr1Commit}">진행함 <span class="badge badge-purple" id="document-my-process"></span></a></li>
                 <li><a href="#" data-th-href="@{/approval/document/listAppr1}">완료함</a></li>
+                <li><a href="#" data-th-href="@{/approval/document/listApprReject}">반려함</a></li>
             </ul>
         </li>
 
@@ -115,6 +117,7 @@
             <ul class="collapse">
                 <li><a data-th-href="@{/mypage/main}">메인</a></li>
                 <li><a data-th-href="@{/mypage/certificate/view}">수료증발급</a></li>
+                <li><a data-th-href="@{/mypage/myInfo}">사용자정보</a></li>
 <!--                <li><a data-th-href="@{/mypage/quiz}">시험/시험결과/수료증발급</a></li>-->
 <!--                <li><a data-th-href="@{/mypage/myinfo}">사용자정보</a></li>-->
             </ul>
@@ -129,37 +132,6 @@
 
         <!--Category name-->
         <li class="list-header">Manager Menu</li>
-        <li>
-            <a href="#">
-                <i class="demo-pli-gear"></i>
-                <span class="menu-title">교육결재</span>
-                <i class="arrow"></i>
-            </a>
-
-            <!--Submenu-->
-            <ul class="collapse">
-                <li><a href="#" data-th-href="@{/approval/listAppr2Process}">미결함 <span class="badge badge-purple" id="course-my-approval2"></span></a></li>
-                <li><a href="#" data-th-href="@{/approval/listAppr2Commit}">진행함 <span class="badge badge-purple" id="course-my-process2"></span></a></li>
-                <li><a href="#" data-th-href="@{/approval/listAppr2}">전체함</a></li>
-            </ul>
-        </li>
-
-        <li>
-            <a href="#">
-                <i class="demo-pli-gear"></i>
-                <span class="menu-title">전자결재</span>
-                <i class="arrow"></i>
-            </a>
-
-            <!--Submenu-->
-            <ul class="collapse">
-                <li><a href="#" data-th-href="@{/admin/document/template/list}">결재양식등록</a></li>
-                <li><a href="#" data-th-href="@{/approval/document/listAppr1Process}">미결함 <span class="badge badge-purple" id="document-my-approval2"></span></a></li>
-                <li><a href="#" data-th-href="@{/approval/document/listAppr1Commit}">진행함 <span class="badge badge-purple" id="document-my-process2"></span></a></li>
-                <li><a href="#" data-th-href="@{/approval/document/listAppr1}">완료함</a></li>
-            </ul>
-        </li>
-
 
         <li>
             <a href="#">
@@ -175,6 +147,39 @@
                 <li><a href="#" data-th-href="@{/admin/course/list/{typeId}(typeId='BC0102')}">Class교육</a></li>
                 <li><a href="#" data-th-href="@{/admin/course/list/{typeId}(typeId='BC0103')}">부서교육</a></li>
                 <li><a href="#" data-th-href="@{/admin/course/list/{typeId}(typeId='BC0104')}">외부교육</a></li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="#">
+                <i class="demo-pli-gear"></i>
+                <span class="menu-title">교육결재</span>
+                <i class="arrow"></i>
+            </a>
+
+            <!--Submenu-->
+            <ul class="collapse">
+                <li><a href="#" data-th-href="@{/approval/listAppr2Process}">미결함 <span class="badge badge-purple" id="course-my-approval2"></span></a></li>
+                <li><a href="#" data-th-href="@{/approval/listAppr2Commit}">진행함 <span class="badge badge-purple" id="course-my-process2"></span></a></li>
+                <li><a href="#" data-th-href="@{/approval/listAppr2}">완결함</a></li>
+                <li><a href="#" data-th-href="@{/approval/listApprReject}">반려함</a></li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="#">
+                <i class="demo-pli-gear"></i>
+                <span class="menu-title">전자결재</span>
+                <i class="arrow"></i>
+            </a>
+
+            <!--Submenu-->
+            <ul class="collapse">
+                <li><a href="#" data-th-href="@{/admin/document/template/list}">결재양식등록</a></li>
+                <li><a href="#" data-th-href="@{/approval/document/listAppr1Process}">미결함 <span class="badge badge-purple" id="document-my-approval2"></span></a></li>
+                <li><a href="#" data-th-href="@{/approval/document/listAppr1Commit}">진행함 <span class="badge badge-purple" id="document-my-process2"></span></a></li>
+                <li><a href="#" data-th-href="@{/approval/document/listAppr1}">완결함</a></li>
+                <li><a href="#" data-th-href="@{/approval/document/listApprReject}">반려함</a></li>
             </ul>
         </li>
 

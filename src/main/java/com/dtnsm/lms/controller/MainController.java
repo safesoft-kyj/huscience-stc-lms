@@ -1,6 +1,8 @@
 package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.auth.UserServiceImpl;
+import com.dtnsm.lms.domain.CourseAccount;
+import com.dtnsm.lms.domain.DocumentAccount;
 import com.dtnsm.lms.domain.constant.ScheduleType;
 import com.dtnsm.lms.mybatis.service.CourseMapperService;
 import com.dtnsm.lms.service.*;
@@ -12,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.List;
 
 @Controller
 public class MainController {
@@ -39,6 +43,9 @@ public class MainController {
 
     @Autowired
     CourseMapperService courseMapperService;
+
+    @Autowired
+    DocumentAccountService documentAccountService;
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseAdminController.class);
 
@@ -68,7 +75,7 @@ public class MainController {
         model.addAttribute("monthRequestList"
                 , courseService.getCourseTop5ByRequestFromDateBetween(
                         DateUtil.getStringMonthStartDate()
-                        , DateUtil.getStringMonthEndDate()));
+                        , DateUtil.getStringMonthEndDate(), 0));
 
         // Employee training matrix
         model.addAttribute("schedule", scheduleService.getTop1BySctypeOrderByCreatedDateDesc(ScheduleType.MATRIX));
@@ -78,6 +85,34 @@ public class MainController {
 
         // 교육결재 1차 완결함
         model.addAttribute("app1CommitList", courseAccountService.getCustomListTop5ByUserIdAndIsCommit(SessionUtil.getUserId(), "0"));
+
+
+
+        // 교육결재 1차 결재자 미결건
+        int courseApprCount = courseAccountService.getListByAppr1Process("Y",   SessionUtil.getUserId(), "N").size();
+
+        // 교육결재 내가 결재라인에 있으면서 진행중인 건
+        int courseProcessCount = courseAccountService.getCustomListByUserIdAndIsCommit(SessionUtil.getUserId(), "0").size();
+
+        // 전자결재 1차 결재자 미결건
+        int documentApprCount = documentAccountService.getListByAppr1Process(SessionUtil.getUserId(), "N", "0").size();
+
+        // 전자결재 내가 결재라인에 있으면서 진행중인 건
+        int documentProcessCount = documentAccountService.getCustomListByUserIdAndIsCommit(SessionUtil.getUserId(), "0").size();
+
+
+        // 교육결재 1차 미결건수
+        model.addAttribute("courseApprCount", courseApprCount);
+
+        // 교육결재 1차 진행건수
+        model.addAttribute("courseProcessCount", courseProcessCount);
+
+
+        // 전자결재 1차 미결건수
+        model.addAttribute("documentApprCount", documentApprCount);
+
+        // 전자결재 1차 진행건수
+        model.addAttribute("documentProcessCount", documentProcessCount);
 
 
         // 과정그룹별 과정 수

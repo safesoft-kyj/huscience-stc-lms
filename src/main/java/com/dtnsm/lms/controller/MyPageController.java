@@ -107,6 +107,30 @@ public class MyPageController {
         return "content/mypage/main";
     }
 
+    @GetMapping("/myInfo")
+    public String myInfo(Model model) {
+
+        pageInfo.setPageId("m-mypage-main");
+        pageInfo.setPageTitle("메인");
+
+        CustomUserDetails userDetails = SessionUtil.getUserDetail();
+        Account account = userService.getAccountByUserId(userDetails.getUserId());
+        List<CourseAccount> courseAccountList = courseAccountService.getCourseAccountByUserId(userDetails.getUserId());
+
+        Account parentAccount = userService.getAccountByUserId(account.getParentUserId());
+
+//        UserVO userVO = userMapperService.getUserById(account.getUserId());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("courseAccountList", courseAccountList);
+        model.addAttribute("account", account);
+        model.addAttribute("parentAccount", parentAccount);
+        model.addAttribute("accountList", userService.getAccountList());
+
+        return "content/mypage/myInfo";
+    }
+
+
     // 상위결재자 설정
     @PostMapping("/teamManager/add-post")
     public String courseManagerAddPost(@RequestParam("parentUserId") String parentUserId) {

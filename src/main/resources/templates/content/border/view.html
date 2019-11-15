@@ -10,7 +10,22 @@
 </th:block>
 
 <th:block layout:fragment="custom_css">
+    <style>
+        th {
+            background: #FAFAFA;
+            margin: 10px;
+            text-align: center;
+        }
 
+        td {
+
+        }
+
+        .table-head {
+            background: #3A444E;
+            margin-bottom: 0;
+        }
+    </style>
 </th:block>
 
 <th:block layout:fragment="content_body">
@@ -29,41 +44,44 @@
         <!--===================================================-->
         <div id="page-content">
 
+
             <!-- Basic Data Tables -->
             <!--===================================================-->
             <div class="panel">
-                <div class="panel-heading">
-                    <h3 class="panel-title"></span></h3>
-                </div>
                 <div class="panel-body">
-                    <table class="table table-striped" cellspacing="0" width="100%">
-                        <colgroup><col width="15%" /><col width="35%" /><col width="15%" /><col width="35%" /></colgroup>
-                        <tr>
-                            <th><span th:text="#{label.subject}"></span> </th>
-                            <td th:text="${border.getTitle()}" colspan="3"></td>
-                        </tr>
-                        <tr>
-                            <th><span>*</span> <span th:text="#{label.createdate}"></span></th>
-                            <td th:text="${border.getCreatedDate()}"></td>
-                            <th><span>*</span> <span th:text="#{label.readcount}"></span></th>
-                            <td th:text="${border.getViewCnt()}"></td>
-                        </tr>
-                        <tr>
-                            <th><span>*</span> <span th:text="#{label.file}"></span></th>
-                            <td colspan="3">
-                                <div th:each="uploadFile : ${border.getBorderFiles()}">
-                                    <a th:href="@{/border/download-file/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr style="height:400px;">
-                            <td th:utext="${border.getContent()}" colspan="2" style="height:400px; vertical-align:top"></td>
-                        </tr>
-                    </table>
+                    <div class="table-responsive">
+                        <hr class="table-head">
+                        <table class="table" cellspacing="0" width="100%">
+                            <colgroup><col width="15%" /><col width="85%" /></colgroup>
+                            <tr>
+                                <th><span th:text="#{label.subject}"></span> </th>
+                                <td><span th:text="${border.getTitle()}"></span></td>
+                            </tr>
+                            <tr>
+                                <th><span th:text="#{label.createdate}"></span></th>
+                                <td th:text="${border.getCreatedDate()}"></td>
+                            </tr>
+                            <tr>
+                                <th><span th:text="#{label.readcount}"></span></th>
+                                <td th:text="${border.getViewCnt()}"></td>
+                            </tr>
+                            <tr>
+                                <th><span th:text="#{label.file}"></span></th>
+                                <td>
+                                    <div th:each="uploadFile : ${border.getBorderFiles()}">
+                                        <a th:href="@{/border/download-file/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr style="height:400px;">
+                                <td th:utext="${border.getContent()}" colspan="2" style="height:400px; vertical-align:top; overflow-scrolling: auto"></td>
+                            </tr>
+                        </table>
+                    </div>
                     <hr class="bg-gray"/>
                     <div class="input-group pull-right">
                         <a th:href="@{/border/list/{typeId}(typeId=${border.getBorderMaster().getId()})}"
-                           class="btn btn-success" th:text="#{label.list}">목록</a>
+                           class="btn btn-primary" th:text="#{label.list}">목록</a>
                     </div>
                 </div><!--panel-body End -->
             </div><!-- panel End -->

@@ -1,10 +1,7 @@
 package com.dtnsm.lms.service;
 
 import com.dtnsm.lms.domain.Course;
-import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.domain.CourseFile;
-import com.dtnsm.lms.domain.constant.ApprovalStatusType;
-import com.dtnsm.lms.domain.constant.CourseRequestType;
 import com.dtnsm.lms.repository.CourseRepository;
 import com.dtnsm.lms.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,12 +79,12 @@ public class CourseService {
         return courseRepository.findAll();
     }
 
-    public Page<Course> getPageList(Pageable pageable) {
+    public Page<Course> getPageList(int active, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
         pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
 
-        Page<Course> courses = courseRepository.findAll(pageable);
+        Page<Course> courses = courseRepository.findAllByActiveGreaterThan(active, pageable);
 
         for(Course course: courses ) {
             updateStatus(course);
@@ -96,12 +93,12 @@ public class CourseService {
         return courses;
     }
 
-    public Page<Course> getPageLisByTypeId(String typeId, Pageable pageable) {
+    public Page<Course> getPageLisByTypeId(String typeId, int active, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
         pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
 
-        Page<Course> courses = courseRepository.findAllByCourseMaster_Id(typeId, pageable);
+        Page<Course> courses = courseRepository.findAllByCourseMaster_IdAndActiveGreaterThan(typeId, active, pageable);
 
         for(Course course: courses ) {
             updateStatus(course);
@@ -110,12 +107,12 @@ public class CourseService {
         return courses;
     }
 
-    public Page<Course> getPageLisByTypeIdAndTitleLike(String typeId, String title, Pageable pageable) {
+    public Page<Course> getPageLisByTypeIdAndTitleLike(String typeId, String title, int active, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
         pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
 
-        Page<Course> courses = courseRepository.findAllByCourseMaster_IdAndTitleLike(typeId, '%' + title + '%', pageable);
+        Page<Course> courses = courseRepository.findAllByCourseMaster_IdAndTitleLikeAndActiveGreaterThan(typeId, '%' + title + '%', active, pageable);
 
         for(Course course: courses ) {
             updateStatus(course);
@@ -124,12 +121,12 @@ public class CourseService {
         return courses;
     }
 
-    public Page<Course> getPageListByTitleLike(String title, Pageable pageable) {
+    public Page<Course> getPageListByTitleLike(String title, int active, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
         pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
 
-        Page<Course> courses = courseRepository.findAllByTitleLike('%' + title + '%', pageable);
+        Page<Course> courses = courseRepository.findAllByTitleLikeAndActiveGreaterThan('%' + title + '%', active, pageable);
 
         for(Course course: courses ) {
             updateStatus(course);
@@ -138,39 +135,39 @@ public class CourseService {
         return courses;
     }
 
-    public Page<Course> getPageList(String typeId, Pageable pageable) {
+    public Page<Course> getPageList(String typeId, int active, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
         pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
 
-        return courseRepository.findAllByCourseMaster_Id(typeId, pageable);
+        return courseRepository.findAllByCourseMaster_IdAndActiveGreaterThan(typeId, active, pageable);
     }
 
     // 제목 내용 Like 검색
-    public Page<Course> getPageListByTitleLikeOrContentLike(String typeId, String title, String content, Pageable pageable) {
+    public Page<Course> getPageListByTitleLikeOrContentLike(String typeId, String title, String content, int active, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
         pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
 
-        return courseRepository.findAllByCourseMaster_IdAndTitleLikeOrContentLike(typeId,"%" + title + "%", "%" + content + "%", pageable);
+        return courseRepository.findAllByCourseMaster_IdAndTitleLikeOrContentLikeAndActiveGreaterThan(typeId,"%" + title + "%", "%" + content + "%", active, pageable);
     }
 
     // 제목 Like 검색
-    public Page<Course> getPageListByTitleLike(String typeId, String title, Pageable pageable) {
+    public Page<Course> getPageListByTitleLike(String typeId, String title, int active, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
         pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
 
-        return courseRepository.findAllByCourseMaster_IdAndTitleLike(typeId, "%" + title + "%", pageable);
+        return courseRepository.findAllByCourseMaster_IdAndTitleLikeAndActiveGreaterThan(typeId, "%" + title + "%", active, pageable);
     }
 
     // 내용 Like 검색
-    public Page<Course> getPageListByContentLike(String typeId, String content, Pageable pageable) {
+    public Page<Course> getPageListByContentLike(String typeId, String content, int active, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
         pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
 
-        return courseRepository.findAllByCourseMaster_IdAndContentLike(typeId, "%" + content + "%", pageable);
+        return courseRepository.findAllByCourseMaster_IdAndContentLikeAndActiveGreaterThan(typeId, "%" + content + "%", active, pageable);
     }
 
 
@@ -203,7 +200,7 @@ public class CourseService {
     }
 
     private List<Course> getBlankCourse() {
-        return courseRepository.findAllByTitle("");
+        return courseRepository.findAllByTitleAndActiveGreaterThan("", 0);
     }
 
     public void deleteBlankCourse() {
@@ -218,16 +215,16 @@ public class CourseService {
     }
 
 
-    public List<Course> getCourseByFromDateBetween(String fromDate, String toDate) {
-        return courseRepository.findByFromDateBetween(fromDate, toDate);
+    public List<Course> getCourseByFromDateBetween(String fromDate, String toDate, int status) {
+        return courseRepository.findByFromDateBetweenAndActiveGreaterThan(fromDate, toDate, status);
     }
 
-    public List<Course> getCourseByRequestFromDateBetween(String fromDate, String toDate) {
-        return courseRepository.findByRequestFromDateBetween(fromDate, toDate);
+    public List<Course> getCourseByRequestFromDateBetween(String fromDate, String toDate, int status) {
+        return courseRepository.findByRequestFromDateBetweenAndActiveGreaterThan(fromDate, toDate, status);
     }
 
-    public List<Course> getCourseTop5ByRequestFromDateBetween(String fromDate, String toDate) {
-        return courseRepository.findTop5ByRequestFromDateBetween(fromDate, toDate);
+    public List<Course> getCourseTop5ByRequestFromDateBetween(String fromDate, String toDate, int status) {
+        return courseRepository.findTop5ByRequestFromDateBetweenAndActiveGreaterThan(fromDate, toDate, status);
     }
 
 

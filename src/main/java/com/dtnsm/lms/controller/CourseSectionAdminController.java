@@ -12,6 +12,8 @@ import com.dtnsm.lms.util.PageInfo;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -70,6 +72,20 @@ public class CourseSectionAdminController {
         //courseMaster = courseMasterService.getById("A01");
     }
 
+    @GetMapping("/list/{courseId}")
+    public String list(@PathVariable("courseId") Long courseId, Model model) {
+
+        Course course = courseService.getCourseById(courseId);
+
+        pageInfo.setPageId("m-course-list-page");
+        pageInfo.setPageTitle("강의조회");
+        model.addAttribute(pageInfo);
+        model.addAttribute("borders", sectionService.getAllByCourseId(courseId));
+        model.addAttribute("typeId", course.getCourseMaster().getId());
+
+        return "admin/course/section/list";
+    }
+
     @GetMapping("/add/{courseId}")
     public String noticeAdd(@PathVariable("courseId") Long courseId, Model model) {
 
@@ -110,7 +126,7 @@ public class CourseSectionAdminController {
                 .map(file -> fileService.storeFile(file, courseSection1))
                 .collect(Collectors.toList());
 
-        return "redirect:/admin/course/section/edit/" + courseSection1.getId();
+        return "redirect:/admin/course/section/list/" + courseSection1.getCourse().getId();
     }
 
     @GetMapping("/edit/{id}")
@@ -151,7 +167,7 @@ public class CourseSectionAdminController {
                 .map(file -> fileService.storeFile(file, courseSection1))
                 .collect(Collectors.toList());
 
-        return "redirect:/admin/course/section/edit/" + courseSection1.getId();
+        return "redirect:/admin/course/section/list/" + courseSection1.getCourse().getId();
     }
 
     @GetMapping("/delete/{id}")
@@ -161,7 +177,10 @@ public class CourseSectionAdminController {
 
         Long courseId = courseSection.getCourse().getId();
 
-        sectionService.deleteSection(courseSection);
+        // 과정 신청된 내역이 있으면 삭제 하지 않는다.
+        if (courseSection.getCourse().getCourseAccountList().size() <= 0) {
+            sectionService.deleteSection(courseSection);
+        }
 
         return "redirect:/admin/course/section/edit/" + courseId;
     }

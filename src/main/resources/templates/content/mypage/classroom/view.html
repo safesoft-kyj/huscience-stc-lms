@@ -10,6 +10,14 @@
 </th:block>
 
 <th:block layout:fragment="custom_css">
+    <style>
+        .table-head {
+            background: #3A444E;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+
 </th:block>
 
 <th:block layout:fragment="content_body">
@@ -31,160 +39,163 @@
             <!-- Basic Data Tables -->
             <!--===================================================-->
             <div class="panel">
-                <div class="panel-heading">
-                    <h3 class="panel-title"></h3>
-                </div>
                 <div class="panel-body">
                     <div class="row">
-                        <h4 class="text-success">강의목차</h4>
-                        <table class="table table-striped table-bordered" cellspacing="0" width="100%">
-                            <colgroup><col width="5%" /><col width="10%" /><col width="40%" /><col width="10%" /><col width="10%" /><col width="15%" /></colgroup>
-                            <thead>
-                            <th class="text-center">No</th>
-                            <th class="text-center">구분</th>
-                            <th class="text-center">과정명</th>
-<!--                            <th class="text-center">기간</th>-->
-                            <th class="text-center">시간</th>
-<!--                            <th class="text-center">강사</th>-->
-                            <th class="text-center">진도율/상태</th>
-                            <th class="text-center"></th>
-                            </thead>
-                            <tbody>
-                            <th:block th:each="sectionAction, index : ${courseSectionActions}">
-                            <tr>
-                                <td class="text-center" th:text="${index.count}"}></td>
-                                <td class="text-center" th:text="#{label.title.section}"}></td>
-                                <td class="text-left" th:text="${sectionAction.getCourseSection().getName()}"}></td>
-<!--                                <td class="text-center" th:text="${section.getFromDate() + ' ~ ' + section.getToDate()}"></td>-->
-                                <td class="text-center" th:text="${sectionAction.getCourseSection().getMinute()} + '분'"}></td>
-<!--                                <td class="text-center" th:text="${section.getTeacher()}"}></td>-->
-                                <td class="text-center" >
+                        <h4><strong class="text-info"><i class="demo-pli-dot-vertical"></i> 목차</strong></h4>
+                        <hr class="table-head">
+                        <div class="table-responsive">
+                            <table class="table" cellspacing="0" width="100%">
+                                <colgroup><col width="5%" /><col width="10%" /><col width="40%" /><col width="10%" /><col width="10%" /><col width="15%" /></colgroup>
+                                <thead>
+                                <th class="text-center">No</th>
+                                <th class="text-center">구분</th>
+                                <th class="text-center">과정명</th>
+    <!--                            <th class="text-center">기간</th>-->
+                                <th class="text-center">시간</th>
+                                <th class="text-center">진도율</th>
+                                <th class="text-center">상태</th>
+                                <th class="text-center" th:text="#{label.actions}"></th>
+                                </thead>
+                                <tbody>
+                                <th:block th:each="sectionAction, index : ${courseSectionActions}">
+                                <tr>
+                                    <td class="text-center" th:text="${index.count}"}></td>
+                                    <td class="text-center" th:text="#{label.title.section}"}></td>
+                                    <td class="text-left" th:text="${sectionAction.getCourseSection().getName()}"}></td>
+    <!--                                <td class="text-center" th:text="${section.getFromDate() + ' ~ ' + section.getToDate()}"></td>-->
+                                    <td class="text-center" th:text="${sectionAction.getCourseSection().getMinute()} + '분'"}></td>
+    <!--                                <td class="text-center" th:text="${section.getTeacher()}"}></td>-->
+                                    <td class="text-center" >
 
-                                    <div class="progress">
-                                        <div id="time"  class="progress-bar progress-bar-info"
-                                             th:attr="style=${'width:' + T(Math).round((sectionAction.getTotalUseSecond()*1.0) / sectionAction.getCourseSection().getSecond() * 100) + '%'}"
-                                             th:text="${T(Math).round((sectionAction.getTotalUseSecond()*1.0) / sectionAction.getCourseSection().getSecond() * 100) + ' %'}">0%</div>
-                                    </div>
-                                    <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'REQUEST')}">
-                                        <span th:text="${sectionAction.getStatus()}" class="label label-info"></span>
-                                    </th:block>
-                                    <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'ONGOING')}">
-                                        <span th:text="${sectionAction.getStatus()}" class="label label-danger"></span>
-                                    </th:block>
-                                    <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE')}">
-                                        <span th:text="${sectionAction.getStatus()}" class="label label-success"></span>
-                                    </th:block>
-
-                                </td>
-                                <td class="text-center">
-<!--                                    <a href="#" class="btn btn-success" id="popupBtn" onclick="popupPdfView('11', '디티앤사노메딕스')" target="_blank">학습하기</a>-->
-<!--                                    <span th:id="${'id' + index.count}" th:text="${section.getId()}"></span>-->
-
-
-                                    <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE')}">
-                                        <span class="label label-table label-success" th:text="#{label.course.section.commit}">학습종료</span>
-                                    </th:block>
-
-                                    <th:block th:unless="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE') or #strings.isEmpty(sectionAction.getStatus())}">
-                                        <th:block th:inline="text" th:each="sectionFile : ${sectionAction.getCourseSection().getSectionFiles()}">
-                                            <a href="#" class="label label-table label-success" id="popupBtn"
-                                               th:onclick="|javascript:popupPdfView('${sectionFile.getId()}', '${sectionAction.getId()}');return false;|" target="_blank" th:text="#{label.course.section.request}">학습하기</a>
+                                        <div class="progress">
+                                            <div id="time"  class="progress-bar progress-bar-info"
+                                                 th:attr="style=${'width:' + T(Math).round((sectionAction.getTotalUseSecond()*1.0) / sectionAction.getCourseSection().getSecond() * 100) + '%'}"
+                                                 th:text="${T(Math).round((sectionAction.getTotalUseSecond()*1.0) / sectionAction.getCourseSection().getSecond() * 100) + ' %'}">0%</div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center" >
+                                        <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'REQUEST')}">
+                                            <span th:text="${sectionAction.getStatus()}" class="label label-info"></span>
                                         </th:block>
-                                    </th:block>
+                                        <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'ONGOING')}">
+                                            <span th:text="${sectionAction.getStatus()}" class="label label-danger"></span>
+                                        </th:block>
+                                        <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE')}">
+                                            <span th:text="${sectionAction.getStatus()}" class="label label-success"></span>
+                                        </th:block>
+
+                                    </td>
+                                    <td class="text-center">
+    <!--                                    <a href="#" class="btn btn-success" id="popupBtn" onclick="popupPdfView('11', '디티앤사노메딕스')" target="_blank">학습하기</a>-->
+    <!--                                    <span th:id="${'id' + index.count}" th:text="${section.getId()}"></span>-->
 
 
-                                </td>
-                            </tr>
-                            </th:block>
+                                        <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE')}">
+                                            <span class="label label-table label-success" th:text="#{label.course.section.commit}">학습종료</span>
+                                        </th:block>
 
-<!--                            <tr th:each="quizAction, index : ${courseQuizActions}">-->
-                            <th:block th:unless="${#strings.isEmpty(quizAction)}">
-                            <tr>
-                                <td class="text-center">1</td>
-                                <td class="text-center" th:text="#{label.title.quiz}"></td>
-                                <td class="text-left" th:text="${quizAction.getQuiz().getName()}"}></td>
-<!--                                <td class="text-center" th:text="${quiz.getFromDate() + ' ~ ' + quiz.getToDate()}"></td>-->
-                                <td class="text-center" th:text="${quizAction.getQuiz().getMinute() + '분'}"></td>
-<!--                                <td class="text-center"></td>-->
-<!--                                <td class="text-left" >-->
-<!--                                    <th:block th:each="actionQuiz : ${quiz.getQuizActions()}">-->
-<!--                                        <div class="progress">-->
-<!--                                            <div id="time2"  class="progress-bar progress-bar-success"-->
-<!--                                                 th:attr="style=${'width:' + T(Math).round((actionQuiz.getTotalUseSecond()*1.0) / actionQuiz.getSecond() * 100) + '%'}"-->
-<!--                                                 th:text="${T(Math).round((actionQuiz.getTotalUseSecond()*1.0) / actionQuiz.getSecond() * 100) + ' %'}">0%</div>-->
-<!--                                        </div>-->
-<!--                                    </th:block>-->
-<!--                                </td>-->
-                                <td class="text-center">
-                                    <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'REQUEST')}">
-                                        <span th:text="${quizAction.getStatus()}" class="label label-info"></span>
-                                    </th:block>
-                                    <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'ONGOING')}">
-                                        <span th:text="${quizAction.getStatus()}" class="label label-info"></span>
-                                    </th:block>
-                                    <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'FAIL')}">
-                                        <span th:text="${quizAction.getStatus()}" class="label label-danger"></span>
-                                    </th:block>
-                                    <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'COMPLETE')}">
-                                        <span th:text="${quizAction.getStatus()}" class="label label-success"></span>
-                                    </th:block>
-                                </td>
-                                <td class="text-center">
-                                    <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'REQUEST')}">
-                                        <span class="label label-table label-warning" th:text="#{label.course.quiz.request}">미진행</span>
-                                    </th:block>
-                                    <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'FAIL')}">
-                                        <a href="#" class="label label-table label-danger" id="popupQuiz"
-                                           th:onclick="|javascript:popupQuizView('${quizAction.getId()}', 'Y');return false;|" target="_blank" th:text="#{label.course.quiz.reRequest}">재응시</a>
-                                    </th:block>
-                                    <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'COMPLETE')}">
-                                        <span class="label label-table label-success" th:text="#{label.course.quiz.commit}">시험완료</span>
-                                    </th:block>
-                                    <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'ONGOING')}">
-                                        <a href="#" class="label label-table label-success" id="popupQuiz2"
-                                           th:onclick="|javascript:popupQuizView('${quizAction.getId()}', 'N');return false;|" target="_blank" th:text="#{label.course.quiz.request}">시험응시</a>
-                                    </th:block>
-                                </td>
-                            </tr>
-                            </th:block>
+                                        <th:block th:unless="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE') or #strings.isEmpty(sectionAction.getStatus())}">
+                                            <th:block th:inline="text" th:each="sectionFile : ${sectionAction.getCourseSection().getSectionFiles()}">
+                                                <a href="#" class="label label-table label-success" id="popupBtn"
+                                                   th:onclick="|javascript:popupPdfView('${sectionFile.getId()}', '${sectionAction.getId()}');return false;|" target="_blank" th:text="#{label.course.section.request}">학습하기</a>
+                                            </th:block>
+                                        </th:block>
 
-                            <th:block th:unless="${#strings.isEmpty(surveyAction)}">
-                            <tr>
-                                <td class="text-center">1</td>
-                                <td class="text-center" th:text="#{label.title.survey}"></td>
-                                <td class="text-left" th:text="${surveyAction.getCourseSurvey().getName()}"}></td>
-<!--                                <td class="text-center" th:text="${survey.getFromDate() + ' ~ ' + survey.getToDate()}"}></td>-->
-                                <td class="text-center"></td>
-                                <td class="text-center">
-                                    <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'REQUEST')}">
-                                        <span th:text="${surveyAction.getStatus()}" class="label label-info"></span>
-                                    </th:block>
-                                    <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'COMPLETE')}">
-                                        <span th:text="${surveyAction.getStatus()}" class="label label-success"></span>
-                                    </th:block>
-                                    <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'ONGOING')}">
-                                        <span th:text="${surveyAction.getStatus()}" class="label label-danger"></span>
-                                    </th:block>
-                                </td>
-                                <td class="text-center">
-                                    <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'REQUEST')}">
-                                        <span class="label label-table label-info" th:text="#{label.course.survey.request}">미진행</span>
-                                    </th:block>
-                                    <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'COMPLETE')}">
-                                        <span class="label label-table label-success" th:text="#{label.course.survey.commit}">설문완료</span>
-                                    </th:block>
-                                    <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'ONGOING')}">
-                                        <a href="#" class="label label-table label-danger" id="popupSurvey2"
-                                           th:onclick="|javascript:popupSurveyView('${surveyAction.getId()}');return false;|" target="_blank" th:text="#{label.course.survey.request}">참여</a>
-                                    </th:block>
-                                </td>
-                            </tr>
-                            </th:block>
 
-                            </tbody>
-                        </table>
+                                    </td>
+                                </tr>
+                                </th:block>
+
+    <!--                            <tr th:each="quizAction, index : ${courseQuizActions}">-->
+                                <th:block th:unless="${#strings.isEmpty(quizAction)}">
+                                <tr>
+                                    <td class="text-center">1</td>
+                                    <td class="text-center" th:text="#{label.title.quiz}"></td>
+                                    <td class="text-left" th:text="${quizAction.getQuiz().getName()}"}></td>
+    <!--                                <td class="text-center" th:text="${quiz.getFromDate() + ' ~ ' + quiz.getToDate()}"></td>-->
+                                    <td class="text-center" th:text="${quizAction.getQuiz().getMinute() + '분'}"></td>
+    <!--                                <td class="text-center"></td>-->
+    <!--                                <td class="text-left" >-->
+    <!--                                    <th:block th:each="actionQuiz : ${quiz.getQuizActions()}">-->
+    <!--                                        <div class="progress">-->
+    <!--                                            <div id="time2"  class="progress-bar progress-bar-success"-->
+    <!--                                                 th:attr="style=${'width:' + T(Math).round((actionQuiz.getTotalUseSecond()*1.0) / actionQuiz.getSecond() * 100) + '%'}"-->
+    <!--                                                 th:text="${T(Math).round((actionQuiz.getTotalUseSecond()*1.0) / actionQuiz.getSecond() * 100) + ' %'}">0%</div>-->
+    <!--                                        </div>-->
+    <!--                                    </th:block>-->
+    <!--                                </td>-->
+                                    <td class="text-center">
+                                    </td>
+                                    <td class="text-center">
+                                        <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'REQUEST')}">
+                                            <span th:text="${quizAction.getStatus()}" class="label label-info"></span>
+                                        </th:block>
+                                        <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'ONGOING')}">
+                                            <span th:text="${quizAction.getStatus()}" class="label label-info"></span>
+                                        </th:block>
+                                        <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'FAIL')}">
+                                            <span th:text="${quizAction.getStatus()}" class="label label-danger"></span>
+                                        </th:block>
+                                        <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'COMPLETE')}">
+                                            <span th:text="${quizAction.getStatus()}" class="label label-success"></span>
+                                        </th:block>
+                                    </td>
+                                    <td class="text-center">
+                                        <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'REQUEST')}">
+                                            <span class="label label-table label-warning" th:text="#{label.course.quiz.request}">미진행</span>
+                                        </th:block>
+                                        <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'FAIL')}">
+                                            <a href="#" class="label label-table label-danger" id="popupQuiz"
+                                               th:onclick="|javascript:popupQuizView('${quizAction.getId()}', 'Y');return false;|" target="_blank" th:text="#{label.course.quiz.reRequest}">재응시</a>
+                                        </th:block>
+                                        <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'COMPLETE')}">
+                                            <span class="label label-table label-success" th:text="#{label.course.quiz.commit}">시험완료</span>
+                                        </th:block>
+                                        <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'ONGOING')}">
+                                            <a href="#" class="label label-table label-success" id="popupQuiz2"
+                                               th:onclick="|javascript:popupQuizView('${quizAction.getId()}', 'N');return false;|" target="_blank" th:text="#{label.course.quiz.request}">시험응시</a>
+                                        </th:block>
+                                    </td>
+                                </tr>
+                                </th:block>
+
+                                <th:block th:unless="${#strings.isEmpty(surveyAction)}">
+                                <tr>
+                                    <td class="text-center">1</td>
+                                    <td class="text-center" th:text="#{label.title.survey}"></td>
+                                    <td class="text-left" th:text="${surveyAction.getCourseSurvey().getName()}"}></td>
+    <!--                                <td class="text-center" th:text="${survey.getFromDate() + ' ~ ' + survey.getToDate()}"}></td>-->
+                                    <td class="text-center"></td>
+                                    <td class="text-center">
+                                        <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'REQUEST')}">
+                                            <span th:text="${surveyAction.getStatus()}" class="label label-info"></span>
+                                        </th:block>
+                                        <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'COMPLETE')}">
+                                            <span th:text="${surveyAction.getStatus()}" class="label label-success"></span>
+                                        </th:block>
+                                        <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'ONGOING')}">
+                                            <span th:text="${surveyAction.getStatus()}" class="label label-danger"></span>
+                                        </th:block>
+                                    </td>
+                                    <td class="text-center">
+                                        <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'REQUEST')}">
+                                            <span class="label label-table label-info" th:text="#{label.course.survey.request}">미진행</span>
+                                        </th:block>
+                                        <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'COMPLETE')}">
+                                            <span class="label label-table label-success" th:text="#{label.course.survey.commit}">설문완료</span>
+                                        </th:block>
+                                        <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'ONGOING')}">
+                                            <a href="#" class="label label-table label-danger" id="popupSurvey2"
+                                               th:onclick="|javascript:popupSurveyView('${surveyAction.getId()}');return false;|" target="_blank" th:text="#{label.course.survey.request}">참여</a>
+                                        </th:block>
+                                    </td>
+                                </tr>
+                                </th:block>
+
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-
 
                 </div><!--panel-body End -->
             </div><!-- panel End -->

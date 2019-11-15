@@ -1,5 +1,7 @@
 spring:
+  jpa:
+    open-in-view: true
   profiles:
-    active: local
+    active: prod
 
 

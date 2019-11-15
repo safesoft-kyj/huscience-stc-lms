@@ -100,12 +100,16 @@ public class UserServiceImpl implements UserService {
                 Account newUser = new Account();
                 newUser.setUserId(userId);
                 newUser.setName(userVO.getKorName());
+                newUser.setEngName(userVO.getEngName());
                 newUser.setPassword(userVO.getPassword());
                 newUser.setEmail(userVO.getEmail());
                 newUser.setRoles(Arrays.asList(role));
                 // 사용자 구분 (A:admin, U:일반유저, O:외부유저)
                 newUser.setUserType("U");
                 newUser.setEnabled(true);
+                newUser.setOrgDepart(userVO.getOrgDepart());
+                newUser.setComPosition(userVO.getComPosition());
+                newUser.setIndate(userVO.getIndate());
                 user = userRepository.save(newUser);
             }
         }

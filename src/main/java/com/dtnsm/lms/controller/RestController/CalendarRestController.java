@@ -31,7 +31,7 @@ public class CalendarRestController {
 
         String jsonMsg = null;
         try {
-            List<Course> courses = courseService.getCourseByRequestFromDateBetween(start, end);
+            List<Course> courses = courseService.getCourseByRequestFromDateBetween(start, end, 0);
 
             List<CalendarVO> events = new ArrayList<CalendarVO>();
 
@@ -85,7 +85,7 @@ public class CalendarRestController {
 
         String jsonMsg = null;
         try {
-            List<Course> courses = courseService.getCourseByFromDateBetween(start, end);
+            List<Course> courses = courseService.getCourseByFromDateBetween(start, end, 0);
 
             List<CalendarVO> events = new ArrayList<CalendarVO>();
 
@@ -141,7 +141,7 @@ public class CalendarRestController {
 
         List<String> dates = new ArrayList<String>();
 
-        List<Course> courses = courseService.getCourseByRequestFromDateBetween(start, end);
+        List<Course> courses = courseService.getCourseByRequestFromDateBetween(start, end, 0);
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat outFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -178,17 +178,17 @@ public class CalendarRestController {
             e.printStackTrace();
         }
 
-        List<Course> courses = courseService.getCourseByRequestFromDateBetween(searchDate, searchDate);
+        List<Course> courses = courseService.getCourseByRequestFromDateBetween(searchDate, searchDate, 0);
 
         Date date = null;
         StringBuilder sb;
         sb = new StringBuilder();
 
-        sb.append("<table id=\"customer-list-page5\" class=\"table\" cellspacing=\"0\" width=\"100%\">");
+        sb.append("<table id=\"customer-list-page5\" class=\"\" cellspacing=\"0\" width=\"100%\">");
         for(Course course : courses) {
 
             //sb.append("[" + course.getCourseMaster().getCourseName() + "]");
-            sb.append("<tr><td>" + course.getRequestFromDate() + "</td><td><a href='/course/view/" + course.getId() + "'>");
+            sb.append("<tr><td>" + course.getRequestFromDate() + "&nbsp;&nbsp;<a href='/course/view/" + course.getId() + "'>");
             if (course.getTitle().length() > 30) {
                 sb.append(course.getTitle().substring(0, 30) + "..</a></td>") ;
             } else {

@@ -48,6 +48,9 @@ public class CourseAdminController {
     CourseMasterService courseMasterService;
 
     @Autowired
+    CourseAccountService courseAccountService;
+
+    @Autowired
     CourseService courseService;
 
     @Autowired
@@ -93,13 +96,13 @@ public class CourseAdminController {
 
         Page<Course> courses;
         if(searchType.equals("all") && searchText.equals("")) {
-            courses = courseService.getPageList(typeId, pageable);
+            courses = courseService.getPageList(typeId, -1, pageable);
         } else if(searchType.equals("all") && !searchText.equals("")) {
-            courses = courseService.getPageListByTitleLikeOrContentLike(typeId, searchText, searchText, pageable);
+            courses = courseService.getPageListByTitleLikeOrContentLike(typeId, searchText, searchText, -1, pageable);
         } else if (searchType.equals("subject")) {
-            courses = courseService.getPageListByTitleLike(typeId, searchText, pageable);
+            courses = courseService.getPageListByTitleLike(typeId, searchText, -1, pageable);
         } else {
-            courses = courseService.getPageListByContentLike(typeId, searchText, pageable);
+            courses = courseService.getPageListByContentLike(typeId, searchText, -1, pageable);
         }
 
         model.addAttribute(pageInfo);
@@ -189,7 +192,7 @@ public class CourseAdminController {
             }
         }
 
-        return "redirect:/admin/course/edit/" + course1.getId();
+        return "redirect:/admin/course/list/" + course1.getCourseMaster().getId();
     }
 
     // 첨부파일 업로드
@@ -237,15 +240,15 @@ public class CourseAdminController {
             return "/admin/course/list/" + course.getCourseMaster().getId();
         }
 
-        course.setSurveys(courseService.getCourseById(course.getId()).getSurveys());
-        course.setQuizzes(courseService.getCourseById(course.getId()).getQuizzes());
-        course.setSections(courseService.getCourseById(course.getId()).getSections());
+        Course oldCourse = courseService.getCourseById(id);
 
-        List<CourseFile> courseFile= courseService.getCourseById(id).getCourseFiles();
+        course.setActive(oldCourse.getActive());
+        course.setSurveys(oldCourse.getSurveys());
+        course.setQuizzes(oldCourse.getQuizzes());
+        course.setSections(oldCourse.getSections());
+
+        List<CourseFile> courseFile= oldCourse.getCourseFiles();
         course.setCourseFiles(courseFile);
-        course.setSections(courseService.getCourseById(id).getSections());
-        course.setQuizzes(courseService.getCourseById(id).getQuizzes());
-        course.setSurveys(courseService.getCourseById(id).getSurveys());
 
         List<CourseAccount> courseAccountList = courseService.getCourseById(id).getCourseAccountList();
         courseAccountList.clear();
@@ -320,7 +323,31 @@ public class CourseAdminController {
                 .map(file -> courseFileService.storeFile(file, course1))
                 .collect(Collectors.toList());
 
-        return "redirect:/admin/course/edit/" + id;
+        return "redirect:/admin/course/list/" + course1.getCourseMaster().getId();
+    }
+
+
+    @GetMapping("/updateActive/{id}")
+    public String updateActive(@PathVariable("id") long id) {
+
+        Course course = courseService.getCourseById(id);
+
+        if (course.getActive() == 0) {
+            // 교육과정을 신청할 수 있는 상태로 변경한다.
+            course.setActive(1);
+        } else if (course.getActive() == 1) {
+
+            // 직원이 신청한 내역이 있으면 Active를 변경할 수 없다.
+            if(course.getCourseAccountList().size() <= 0) {
+                course.setActive(0);
+            }
+        }
+
+        course = courseService.save(course);
+
+        String courseMastId = course.getCourseMaster().getId();
+
+        return "redirect:/admin/course/list/" + courseMastId;
     }
 
     @GetMapping("/delete/{id}")
@@ -330,7 +357,11 @@ public class CourseAdminController {
 
         String courseMastId = course.getCourseMaster().getId();
 
-        courseService.delete(course);
+        // 과정 신청된 내역이 있으면 삭제 하지 않는다.
+        if (course.getCourseAccountList().size() <= 0) {
+
+            courseService.delete(course);
+        }
 
         return "redirect:/admin/course/list/" + courseMastId;
     }

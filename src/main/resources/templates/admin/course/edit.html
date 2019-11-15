@@ -65,8 +65,8 @@
 
                         <!--                        <th:block th:unless="${course.getCourseMaster().getRequestType().equals('1')}">-->
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" for="title" th:text="#{label.course.requesperiod}">교육기간</label>
-                            <div class="col-sm-4">
+                            <label class="col-sm-2 control-label" for="title" th:text="#{label.course.requesperiod}">신청기간</label>
+                            <div class="col-sm-10">
                                 <div id="demo-dp-range">
                                     <div class="input-daterange input-group" id="datepicker">
                                         <input type="text" th:field="*{requestFromDate}" id="requestFromDate" placeholder="From" class="form-control" required="required">
@@ -77,8 +77,10 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-sm-2 control-label" for="title" th:text="#{label.course.period}">교육기간</label>
-                            <div class="col-sm-4">
+                            <div class="col-sm-10">
                                 <div id="demo-dp-range2">
                                     <div class="input-daterange input-group" id="datepicker2">
                                         <input type="text" th:field="*{fromDate}" id="fromDate" placeholder="From" class="form-control" required="required">
@@ -91,33 +93,18 @@
                             </div>
                         </div>
                         <div class="form-group">
-<!--                            <label class="col-sm-2 control-label" for="amount" th:text="#{label.course.amount}">수강료</label>-->
-<!--                            <div class="col-sm-4">-->
-<!--                                <input type="number" th:field="*{amount}" id="amount" placeholder="교육시간" class="form-control" required="required">-->
-<!--                            </div>-->
-<!--                            <span th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></span>-->
-                            <label class="col-sm-2 control-label" for="cnt" th:text="#{label.course.peoplecount}">교육정원</label>
-                            <div class="col-sm-10">
-                                <input type="number" th:field="*{cnt}" id="cnt" placeholder="교육정원" class="form-control" required="required">
-                            </div>
-                            <span th:if="${#fields.hasErrors('cnt')}" th:errors="*{cnt}"></span>
-                        </div>
-                        <div class="form-group">
                             <label class="col-sm-2 control-label" for="team" th:text="#{label.course.team}">참석대상 부서/팀</label>
                             <div class="col-sm-4">
                                 <input type="text" th:field="*{team}" id="team" placeholder="depart/team" class="form-control" required="required">
                             </div>
                             <span th:if="${#fields.hasErrors('team')}" th:errors="*{team}"></span>
-                            <label class="col-sm-2 control-label" th:text="#{label.course.isbook}">교제제공여부</label>
+                            <label class="col-sm-2 control-label" for="day" th:text="#{label.course.place}">교육장소</label>
                             <div class="col-sm-4">
-                                <select th:field="*{isBook}" class="form-control">
-                                    <option value="Y" >Y</option>
-                                    <option value="N" >N</option>
-                                </select>
+                                <input type="text" th:field="*{place}" id="place" placeholder="place" class="form-control" required="required">
                             </div>
+                            <span th:if="${#fields.hasErrors('place')}" th:errors="*{place}"></span>
+                            <!--                        </th:block>-->
                         </div>
-                        <!--                        </th:block>-->
-
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="day" th:text="#{label.course.daycountandtime}">학습일수/시간</label>
                             <div class="col-sm-2">
@@ -127,19 +114,34 @@
                             <div class="col-sm-2">
                                 <input type="number" th:field="*{hour}" id="hour" placeholder="hour" class="form-control" required="required">
                             </div>
-                            <span th:if="${#fields.hasErrors('hour')}" th:errors="*{hour}"></span>
-                            <label class="col-sm-2 control-label" for="day" th:text="#{label.course.place}">교육장소</label>
+                            <label class="col-sm-2 control-label" for="cnt" th:text="#{label.course.peoplecount}">교육정원</label>
                             <div class="col-sm-4">
-                                <input type="text" th:field="*{place}" id="place" placeholder="place" class="form-control" required="required">
+                                <input type="number" th:field="*{cnt}" id="cnt" placeholder="교육정원" class="form-control" required="required">
                             </div>
-                            <span th:if="${#fields.hasErrors('place')}" th:errors="*{place}"></span>
                         </div>
-
                         <div class="form-group">
+                            <span th:if="${#fields.hasErrors('cnt')}" th:errors="*{cnt}"></span>
+                            <span th:if="${#fields.hasErrors('hour')}" th:errors="*{hour}"></span>
+                            <label class="col-sm-2 control-label" th:text="#{label.course.isbook}">교제제공여부</label>
+                            <div class="col-sm-4">
+                                <select th:field="*{isBook}" class="form-control">
+                                    <option value="Y" >Y</option>
+                                    <option value="N" >N</option>
+                                </select>
+                            </div>
                             <span th:if="${#fields.hasErrors('isQuiz')}" th:errors="*{isQuiz}"></span>
                             <label class="col-sm-2 control-label" th:text="#{label.course.isquiz}">시험진행여부</label>
                             <div class="col-sm-4">
                                 <select th:field="*{isQuiz}" class="form-control">
+                                    <option value="Y" >Y</option>
+                                    <option value="N" >N</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" th:text="#{label.course.iscerti}">수료증여부</label>
+                            <div class="col-sm-4">
+                                <select th:field="*{isCerti}" class="form-control">
                                     <option value="Y" >Y</option>
                                     <option value="N" >N</option>
                                 </select>
@@ -155,21 +157,13 @@
                             <span th:if="${#fields.hasErrors('isSurvey')}" th:errors="*{isSurvey}"></span>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" th:text="#{label.course.iscerti}">수료증발급문자</label>
-                            <div class="col-sm-4">
-                                <select th:field="*{isCerti}" class="form-control">
-                                    <option value="Y" >Y</option>
-                                    <option value="N" >N</option>
-                                </select>
-                            </div>
                             <span th:if="${#fields.hasErrors('isCerti')}" th:errors="*{isCerti}"></span>
                             <label class="col-sm-2 control-label" th:text="#{label.course.certiHeadText}">발급번호(HeadText)</label>
-                            <div class="col-sm-4">
-                                <input type="number" th:field="*{certiHead}" id="certiHead" placeholder="수료증 발급번호" class="form-control">
+                            <div class="col-sm-10">
+                                <input type="text" th:field="*{certiHead}" id="certiHead" placeholder="수료증 발급번호" class="form-control">
                             </div>
                             <span th:if="${#fields.hasErrors('certiHead')}" th:errors="*{certiHead}"></span>
                         </div>
-
                         <div id="editSection"></div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="editor" th:text="#{label.course.introduce}">소개</label>

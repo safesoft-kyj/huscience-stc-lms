@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <style>
+        th {
+            background: #FAFAFA;
+            margin: 10px;
+            text-align: center;
+        }
+
+        td {
+
+        }
+
+        .table-head {
+            background: #3A444E;
+            margin-bottom: 0;
+        }
+    </style>
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content" style="margin-bottom:0">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12 input-group pull-right">
+                            <p class="text-right">
+                                <!--                                <a th:href="@{/admin/course/edit/{id}(id=${course.getId()})}" class="btn btn-success" th:text="#{label.edit}">수정</a>-->
+                                <a class="btn btn-primary" th:href="@{/admin/course/quiz/list/{courseId}(courseId=${courseId})}"><i class="demo-pli-back"></i> Back</a>
+                            </p>
+                        </div>
+                    </div>
+
+
+                    <th:block th:each="question, index : ${borders}">
+                        <div class="panel" th:id="${question.getId()}">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div th:text="${index.count + '. ' + question.getQuestion()}"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group pad-ver">
+                                        <div class="col-md-12">
+                                            <!-- Radio Buttons -->
+                                            <th:block th:unless="${#strings.isEmpty(question.getEx1())}">
+                                                <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx1(), '')}">
+                                                    <input th:id="${question.getId() + '-ex-1'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" value="1" th:checked="${#strings.equalsIgnoreCase(question.getAnswer(), '1')}">
+                                                    <label th:for="${question.getId() + '-ex-1'}" th:text="${question.getEx1()}"></label>
+                                                </div>
+                                            </th:block>
+                                            <th:block th:unless="${#strings.isEmpty(question.getEx2())}">
+                                                <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx2(), '')}">
+                                                    <input th:id="${question.getId() + '-ex-2'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" value="2" th:checked="${#strings.equalsIgnoreCase(question.getAnswer(), '2')}">
+                                                    <label th:for="${question.getId() + '-ex-2'}" th:text="${question.getEx2()}"></label>
+                                                </div>
+                                            </th:block>
+                                            <th:block th:unless="${#strings.isEmpty(question.getEx3())}">
+                                                <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx3(), '')}">
+                                                    <input th:id="${question.getId() + '-ex-3'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" value="3" th:checked="${#strings.equalsIgnoreCase(question.getAnswer(), '3')}">
+                                                    <label th:for="${question.getId() + '-ex-3'}" th:text="${question.getEx3()}"></label>
+                                                </div>
+                                            </th:block>
+                                            <th:block th:unless="${#strings.isEmpty(question.getEx4())}">
+                                                <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx4(), '')}">
+                                                    <input th:id="${question.getId() + '-ex-4'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" value="4" th:checked="${#strings.equalsIgnoreCase(question.getAnswer(), '4')}">
+                                                    <label th:for="${question.getId() + '-ex-4'}" th:text="${question.getEx4()}"></label>
+                                                </div>
+                                            </th:block>
+                                            <th:block th:unless="${#strings.isEmpty(question.getEx5())}">
+                                                <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx5(), '')}">
+                                                    <input th:id="${question.getId() + '-ex-5'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" value="5" th:checked="${#strings.equalsIgnoreCase(question.getAnswer(), '5')}">
+                                                    <label th:for="${question.getId() + '-ex-5'}" th:text="${question.getEx5()}"></label>
+                                                </div>
+                                            </th:block>
+                                            <th:block th:unless="${#strings.isEmpty(question.getEx6())}">
+                                                <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx6(), '')}">
+                                                    <input th:id="${question.getId() + '-ex-6'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" value="6" th:checked="${#strings.equalsIgnoreCase(question.getAnswer(), '6')}">
+                                                    <label th:for="${question.getId() + '-ex-6'}" th:text="${question.getEx6()}"></label>
+                                                </div>
+                                            </th:block>
+                                            <th:block th:unless="${#strings.isEmpty(question.getEx7())}">
+                                                <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx7(), '')}">
+                                                    <input th:id="${question.getId() + '-ex-7'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" value="7" th:checked="${#strings.equalsIgnoreCase(question.getAnswer(), '7')}">
+                                                    <label th:for="${question.getId() + '-ex-7'}" th:text="${question.getEx7()}"></label>
+                                                </div>
+                                            </th:block>
+                                            <th:block th:unless="${#strings.isEmpty(question.getEx8())}">
+                                                <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx8(), '')}">
+                                                    <input th:id="${question.getId() + '-ex-8'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" value="8" th:checked="${#strings.equalsIgnoreCase(question.getAnswer(), '8')}">
+                                                    <label th:for="${question.getId() + '-ex-8'}" th:text="${question.getEx8()}"></label>
+                                                </div>
+                                            </th:block>
+                                            <th:block th:unless="${#strings.isEmpty(question.getEx9())}">
+                                                <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx9(), '')}">
+                                                    <input th:id="${question.getId() + '-ex-9'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" value="9" th:checked="${#strings.equalsIgnoreCase(question.getAnswer(), '9')}">
+                                                    <label th:for="${question.getId() + '-ex-9'}" th:text="${question.getEx9()}"></label>
+                                                </div>
+                                            </th:block>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+</th:block>
+
+</html>
+
+

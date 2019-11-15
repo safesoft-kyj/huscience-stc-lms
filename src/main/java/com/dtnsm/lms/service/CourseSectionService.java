@@ -6,11 +6,13 @@ import com.dtnsm.lms.repository.CourseSectionRepository;
 import com.dtnsm.lms.exception.FileUploadException;
 import com.dtnsm.lms.properties.FileUploadProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @Service
 public class CourseSectionService {
@@ -35,9 +37,13 @@ public class CourseSectionService {
         }
     }
 
-        /*
+     /*
         Section Service
      */
+
+    public List<CourseSection> getAllByCourseId(long courseId) {
+        return sectionRepository.findAllByCourse_Id(courseId);
+    }
 
     public CourseSection saveSection(CourseSection courseSection){
 

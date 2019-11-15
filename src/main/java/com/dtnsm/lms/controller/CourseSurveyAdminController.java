@@ -42,6 +42,23 @@ public class CourseSurveyAdminController {
         pageInfo.setParentTitle("공지사항");
     }
 
+    @GetMapping("/list/{courseId}")
+    public String list(@PathVariable("courseId") Long courseId, Model model) {
+
+        Course course = courseService.getCourseById(courseId);
+        // 설문조사 여부가 Y 인경우만 Add 버튼 활성화
+        String isAdd = course.getIsSurvey();
+
+        pageInfo.setPageId("m-course-list-page");
+        pageInfo.setPageTitle("설문조회");
+        model.addAttribute(pageInfo);
+        model.addAttribute("borders", courseSurveyService.getAllByCourseId(courseId));
+        model.addAttribute("isAdd", isAdd);
+        model.addAttribute("typeId", course.getCourseMaster().getId());
+
+        return "admin/course/survey/list";
+    }
+
     @GetMapping("/add/{courseId}")
     public String noticeAdd(@PathVariable("courseId") Long courseId, Model model) {
 
@@ -135,4 +152,35 @@ public class CourseSurveyAdminController {
 
         return "redirect:/admin/course/view/" + courseSurvey1.getCourse().getId();
     }
+
+    @GetMapping("/delete/{id}")
+    public String noticeDelete(@PathVariable("id") long id) {
+
+        CourseSurvey courseSurvey = courseSurveyService.getCourseSurveyById(id);
+
+        Long courseId = courseSurvey.getCourse().getId();
+
+        // 과정 신청된 내역이 있으면 삭제 하지 않는다.
+        if (courseSurvey.getCourse().getCourseAccountList().size() <= 0) {
+            courseSurveyService.deleteQuiz(courseSurvey);
+        }
+
+        return "redirect:/admin/course/survey/list/" + courseId;
+    }
+
+    @GetMapping("/view/{id}")
+    public String viewPage(@PathVariable("id") long id, Model model) {
+
+        CourseSurvey courseSurvey = courseSurveyService.getCourseSurveyById(id);
+
+        pageInfo.setPageId("self");
+        pageInfo.setPageTitle(courseSurvey.getName());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("borders", courseSurvey.getQuestions());
+        model.addAttribute("courseId", courseSurvey.getCourse().getId());
+
+        return "admin/course/survey/view";
+    }
+
 }

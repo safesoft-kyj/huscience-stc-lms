@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <style>
+        .table-head {
+            background: #3A444E;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-body">
+                    <br>
+                    <div th:switch="${borders}">
+                        <div th:case="null">No customer yet!</div>
+                        <div th:case="*">
+                            <div class="row" style="margin-bottom: 5px;" >
+<!--                                <div class="col-sm-6">-->
+<!--                                    <span th:text="#{label.list.title(${borders.getTotalElements()})}"></span>-->
+<!--                                </div>-->
+                                <div class="col-sm-12 text-right">
+                                    <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/section/add/{courseId}(courseId=__${courseId}__)}"><i class="demo-pli-add"></i> Add</a>
+                                    <a class="btn btn-primary" th:href="@{/admin/course/list/{typeId}(typeId=${typeId})}"><i class="demo-pli-back"></i> Back</a>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <hr class="table-head">
+                                <table id="demo-dt-basic1" class="table" cellspacing="0" width="100%" style="margin-top:0">
+                                    <thead>
+                                    <tr style="background: #FAFAFA;">
+                                        <th class="text-center" th:text="#{label.no}">번호</th>
+                                        <th class="text-center" th:text="#{label.subject}">제목</th>
+                                        <th class="text-center col-sm-2" th:text="#{label.createdate}">등록일</th>
+                                        <th class="text-center col-sm-2" th:text="#{label.actions}">Edit</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="border, index : ${borders}">
+                                        <td th:text="${index.count}" class="text-center"></td>
+                                        <td th:text="${border.getName()}"></a></td>
+                                        <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy-MMM-dd')} : ${border.getCreatedDate()}" class="text-center"></td>
+                                        <td class="text-center">
+                                            <a th:text="#{label.edit}" th:href="@{/admin/course/section/edit/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                            <a th:text="#{label.delete}" th:href="@{/admin/course/section/delete/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div><!--switch End -->
+
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+    <!--DataTables Sample [ SAMPLE ]-->
+    <script th:src="@{/default/js/demo/tables-datatables.js}"></script>
+</th:block>
+
+</html>
+
+

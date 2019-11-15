@@ -10,6 +10,13 @@
 </th:block>
 
 <th:block layout:fragment="custom_css">
+    <style>
+        .table-head {
+            background: #3A444E;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
 </th:block>
 
 <th:block layout:fragment="content_body">
@@ -31,128 +38,41 @@
             <!-- Basic Data Tables -->
             <!--===================================================-->
             <div class="panel">
-                <div class="panel-heading">
-                    <h3 class="panel-title"></h3>
-                </div>
                 <div class="panel-body">
-
-                    <!-- 사용자 정보 -->
                     <div class="row">
-                        <div class="panel">
-                            <div class="panel-body">
-                                <!--
-                                private String userId;
-                                private String korName;
-                                private String engName;
-                                private String password;
-                                private String orgCode;
-                                private String orgDepart;
-                                private String comPosition;
-                                private String duty;
-                                private String comJob;
-                                private String email;
-                                private String indate;
-                                private String outdate;
-                                private String approSign;
-                                private boolean isuse;
-                                -->
-
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <h4 class="text-success">* 나의 정보</h4>
-                                        <div th:switch="${account}">
-                                            <h2 th:case="null">내부직원이 아닙니다.</h2>
-                                            <div th:case="*">
-                                                <table class="table table-striped">
-                                                    <tr>
-                                                        <td th:text="#{label.id}" class="col-sm-2 text-right">아이디</td>
-                                                        <td th:text="${account.getUserId()}"></td>
-                                                        <td th:text="#{label.name}" class="text-right">이름</td>
-                                                        <td>
-                                                            <span th:if="${#strings.isEmpty(account.engName)}" th:text="${account.getName()}"></span>
-                                                            <span th:unless="${#strings.isEmpty(account.engName)}" th:text="${account.getName() + ' ' + account.engName}"></span>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td th:text="#{label.indate}" class="text-right">입사일</td>
-                                                        <td th:text="${account.getIndate()}"></td>
-                                                        <td th:text="#{label.email}" class="text-right">이메일</td>
-                                                        <td th:text="${account.getEmail()}"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td th:text="#{label.depart}" class="text-right">부서</td>
-                                                        <td th:text="${account.getOrgDepart()}"></td>
-                                                        <td th:text="#{label.job}" class="text-right">업무</td>
-                                                        <td th:text="${account.getComJob()}"></td>
-                                                    </tr>
-                                                </table>
-
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6">
-                                        <h4 class="text-success">* 상위결재권자(팀장/부서장) 설정</h4>
-                                        <div th:switch="${account}">
-                                            <div th:case="null">내부직원이 아닙니다.</div>
-                                            <div th:case="*">
-                                                <div th:switch="${#strings.equalsIgnoreCase(user_type, 'O')}">
-                                                    <div th:case="O">외부사용자 계정</div>
-                                                    <div th:case="*">
-                                                        <div th:switch="${account.getParentUserId()}">
-                                                            <div th:case="null">
-                                                                <h5 class="text-warning">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;상위결재권자 지정이 안되었습니다.</h5>
-                                                            </div>
-                                                        </div>
-                                                        <div class="panel">
-                                                            <div class="panel-body">
-                                                                <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/mypage/teamManager/add-post}" method="post" th:object="${account}" >
-                                                                    <div class="form-group">
-                                                                        <label class="col-sm-2 control-label" for="parentUserId" th:text="#{label.teamManager}">팀장/부서장</label>
-                                                                        <div class="col-sm-9">
-                                                                            <select class="form-control" th:field="*{parentUserId}" name="parentUserId" id="parentUserId">
-                                                                                <option value="">팀장/부서장을 지정하세요</option>
-                                                                                <option th:each="optAccount : ${accountList}"
-                                                                                        th:value="${optAccount.getUserId()}"
-                                                                                        th:text="${optAccount.getName()}">
-                                                                                </option>
-                                                                            </select>
-                                                                        </div>
-                                                                        <div class="col-sm-1">
-                                                                            <button class="btn btn-success" type="submit" th:text="#{label.save}">Submit</button>
-                                                                        </div>
-                                                                    </div>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <h4 class="text-success">* 신청중인 과정</h4>
-                        <table class="table table-striped table-bordered" cellspacing="0" width="100%">
-                            <colgroup><col width="40%" /><col width="40%" /><col width="20%" /></colgroup>
+                        <h5><strong class="text-warning"><i class="demo-pli-dot-vertical"></i> 신청중인 과정</strong></h5>
+                        <hr class="table-head">
+                        <table class="table" cellspacing="0" width="100%">
                             <thead>
-                            <th class="text-center">과정명</th>
-                            <th class="text-center">기간</th>
-                            <th class="text-center">상태</th>
+                            <tr style="background: #FAFAFA;">
+                                <th class="text-center col-md-3" th:text="#{label.course.name}">과정명</th>
+                                <th class="text-center col-md-3" th:text="#{label.course.period}">기간</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.section}">강의</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.quiz}">시험</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.survey}">설문</th>
+                                <th class="text-center col-md-2" th:text="#{label.status}">상태</th>
+                                <th class="text-center" th:text="#{label.bigo}">비고</th>
+                            </tr>
                             </thead>
                             <tbody>
                             <th:block th:each="courseAccount, index : ${courseAccountList}">
                             <tr th:if="${courseAccount.getStatus() == T(com.dtnsm.lms.domain.constant.ApprovalStatusType).REQUEST_DONE
                             || courseAccount.getStatus() == T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_TEAM_DONE
                             }">
-                                <td class="text-left" th:text="${courseAccount.getCourse().getTitle()}"}></td>
+                                <td class="text-left">
+                                    <span th:text="${'['+courseAccount.getCourse().getCourseMaster().getCourseName()+']'}"></span>
+                                    <span th:text="${courseAccount.getCourse().getTitle()}"}></span>
+                                </td>
                                 <td class="text-center" th:text="${courseAccount.getCourse().getFromDate() + '~' + courseAccount.getCourse().getToDate()}"></td>
+                                <td class="text-center">
+                                    <span class="badge badge-mint" th:text="${courseAccount.getCourse().getSections().size()}"></span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge badge-success" th:text="${courseAccount.getCourse().getQuizzes().size()}"></span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge badge-warning" th:text="${courseAccount.getCourse().getSurveys().size()}"></span>
+                                </td>
                                 <td class="text-center">
                                     <div th:switch="${courseAccount.getStatus()}">
                                         <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).REQUEST_DONE}"
@@ -161,30 +81,52 @@
                                               class="text-mint"><span th:text="${courseAccount.getApprUserId2().getName()}"></span> 결재 진행중</span>
                                         <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_MANAGER_DONE}"
                                               class="text-info">교육 진행중</span>
+                                        <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_MANAGER_REJECT}"
+                                              class="text-warning"><span th:text="${border.getApprUserId2().getName()}"></span> 기각</span>
+                                        <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_TEAM_REJECT}"
+                                              class="text-warning"><span th:text="${border.getApprUserId1().getName()}"></span> 기각</span>
                                     </div>
-
                                 </td>
+                                <td>&nbsp;</td>
                             </tr>
                             </th:block>
                             </tbody>
                         </table>
                     </div>
 
+                    <br>
                     <div class="row">
-                        <h4 class="text-success">* 교육중인 과정</h4>
-                        <table class="table table-striped table-bordered" cellspacing="0" width="100%">
-                            <colgroup><col width="35%" /><col width="35%" /><col width="20%" /><col width="10%" /></colgroup>
+                        <h5><strong class="text-info"><i class="demo-pli-dot-vertical"></i> 교육중인 과정</strong></h5>
+                        <hr class="table-head">
+                        <table class="table" cellspacing="0" width="100%">
                             <thead>
-                            <th class="text-center">과정명</th>
-                            <th class="text-center">기간</th>
-                            <th class="text-center">상태</th>
-                            <th class="text-center">강의실</th>
+                            <tr style="background: #FAFAFA;">
+                                <th class="text-center col-md-3" th:text="#{label.course.name}">과정명</th>
+                                <th class="text-center col-md-3" th:text="#{label.course.period}">기간</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.section}">강의</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.quiz}">시험</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.survey}">설문</th>
+                                <th class="text-center col-md-2" th:text="#{label.status}">상태</th>
+                                <th class="text-center">강의실</th>
+                            </tr>
                             </thead>
                             <tbody>
                             <th:block th:each="courseAccount, index : ${courseAccountList}">
-                                <tr th:if="${courseAccount.getStatus() == T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_MANAGER_DONE }">
-                                    <td class="text-left" th:text="${courseAccount.getCourse().getTitle()}"}></td>
+                                <tr th:if="${courseAccount.getStatus() == T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_MANAGER_DONE }" style="vertical-align: middle">
+                                    <td class="text-left">
+                                        <span th:text="${'['+courseAccount.getCourse().getCourseMaster().getCourseName()+']'}"></span>
+                                        <span th:text="${courseAccount.getCourse().getTitle()}"}></span>
+                                    </td>
                                     <td class="text-center" th:text="${courseAccount.getCourse().getFromDate() + '~' + courseAccount.getCourse().getToDate()}"></td>
+                                    <td class="text-center">
+                                        <span class="badge badge-mint" th:text="${courseAccount.getCourse().getSections().size()}"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge badge-success" th:text="${courseAccount.getCourse().getQuizzes().size()}"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge badge-warning" th:text="${courseAccount.getCourse().getSurveys().size()}"></span>
+                                    </td>
                                     <td class="text-center">
                                         <div th:switch="${courseAccount.getStatus()}">
                                             <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).REQUEST_DONE}"
@@ -193,34 +135,60 @@
                                                   class="text-mint"><span th:text="${courseAccount.getApprUserId2().getName()}"></span> 결재 진행중</span>
                                             <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_MANAGER_DONE}"
                                                   class="text-info">교육 진행중</span>
+                                            <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_MANAGER_REJECT}"
+                                                  class="text-warning"><span th:text="${border.getApprUserId2().getName()}"></span> 기각</span>
+                                            <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_TEAM_REJECT}"
+                                                  class="text-warning"><span th:text="${border.getApprUserId1().getName()}"></span> 기각</span>
                                         </div>
                                     </td>
-                                    <td class="text-center"><a th:href="@{/mypage/classroom/view/{id}(id=${courseAccount.getCourse().getId()})}" class="btn btn-success">입장</a></td>
+                                    <td class="text-center">
+                                        <a class="btn btn-info" th:href="@{/mypage/classroom/view/{id}(id=${courseAccount.getCourse().getId()})}"><i class="demo-pli-inbox-into"></i> 입장</a>
+                                    </td>
                                 </tr>
                             </th:block>
                             </tbody>
                         </table>
                     </div>
 
+                    <br>
                     <div class="row">
-                        <h4 class="text-success">* 교육완료 과정</h4>
-                        <table class="table table-striped table-bordered" cellspacing="0" width="100%">
-                            <colgroup><col width="35%" /><col width="35%" /><col width="20%" /><col width="10%" /></colgroup>
+                        <h5><strong class="text-success"><i class="demo-pli-dot-vertical"></i> 교육완료 과정</strong></h5>
+                        <hr class="table-head">
+                        <table class="table" cellspacing="0" width="100%">
                             <thead>
-                            <th class="text-center">과정명</th>
-                            <th class="text-center">기간</th>
-                            <th class="text-center">상태</th>
+                            <tr style="background: #FAFAFA;">
+                                <th class="text-center col-md-3" th:text="#{label.course.name}">과정명</th>
+                                <th class="text-center col-md-3" th:text="#{label.course.period}">기간</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.section}">강의</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.quiz}">시험</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.survey}">설문</th>
+                                <th class="text-center col-md-2" th:text="#{label.status}">상태</th>
+                                <th class="text-center" th:text="#{label.bigo}">비고</th>
+                            </tr>
                             </thead>
                             <tbody>
                             <th:block th:each="courseAccount, index : ${courseAccountList}">
                                 <tr th:if="${courseAccount.getStatus() == T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_COMPLETE }">
-                                    <td class="text-left" th:text="${courseAccount.getCourse().getTitle()}"}></td>
+                                    <td class="text-left">
+                                        <span th:text="${'['+courseAccount.getCourse().getCourseMaster().getCourseName()+']'}"></span>
+                                        <span th:text="${courseAccount.getCourse().getTitle()}"}></span>
+                                    </td>
                                     <td class="text-center" th:text="${courseAccount.getCourse().getFromDate() + '~' + courseAccount.getCourse().getToDate()}"></td>
+                                    <td class="text-center">
+                                        <span class="badge badge-mint" th:text="${courseAccount.getCourse().getSections().size()}"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge badge-success" th:text="${courseAccount.getCourse().getQuizzes().size()}"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge badge-warning" th:text="${courseAccount.getCourse().getSurveys().size()}"></span>
+                                    </td>
                                     <td class="text-center">
                                         <div th:switch="${courseAccount.getStatus()}">
                                             <span class="text-info">교육 완료</span>
                                         </div>
                                     </td>
+                                    <td>&nbsp;</td>
                                 </tr>
                             </th:block>
                             </tbody>

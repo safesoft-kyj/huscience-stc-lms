@@ -76,12 +76,12 @@ public class ApprovalDocumentController {
     public String listAppr1(@PageableDefault Pageable pageable, Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
-        pageInfo.setPageTitle("교육결재조회");
+        pageInfo.setPageTitle("완료함");
 
         String userId = SessionUtil.getUserDetail().getUserId();
 
         model.addAttribute(pageInfo);
-        model.addAttribute("borders", documnetAccountService.getListApprUserId1(pageable, userId));
+        model.addAttribute("borders", documnetAccountService.getCustomByUserCommit(userId, pageable));
 
         return "content/approval/document/listAppr1";
     }
@@ -91,7 +91,7 @@ public class ApprovalDocumentController {
     public String listAppr1Process(@PageableDefault Pageable pageable, Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
-        pageInfo.setPageTitle("진행함");
+        pageInfo.setPageTitle("미결함");
 
         String userId = SessionUtil.getUserDetail().getUserId();
 
@@ -108,7 +108,7 @@ public class ApprovalDocumentController {
     public String listAppr1Commit(@PageableDefault Pageable pageable, Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
-        pageInfo.setPageTitle("완료함");
+        pageInfo.setPageTitle("진행함");
 
         String userId = SessionUtil.getUserDetail().getUserId();
 
@@ -117,6 +117,22 @@ public class ApprovalDocumentController {
         model.addAttribute("borders", documnetAccountService.getCustomByUserIdAndIsCommit(pageable, userId, "0"));
 
         return "content/approval/document/listAppr1Commit";
+    }
+
+    // 교육결재(1차 팀장/부서장) 완료함 조회
+    @GetMapping("/listApprReject")
+    public String listApprReject(@PageableDefault Pageable pageable, Model model) {
+
+        pageInfo.setPageId("m-mypage-approval");
+        pageInfo.setPageTitle("반려함");
+
+        String userId = SessionUtil.getUserDetail().getUserId();
+
+        model.addAttribute(pageInfo);
+        // 완결
+        model.addAttribute("borders", documnetAccountService.getCustomByUserIdAndReject(pageable, userId));
+
+        return "content/approval/document/listApprCommit";
     }
 
 
@@ -154,7 +170,7 @@ public class ApprovalDocumentController {
             , Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
-        pageInfo.setPageTitle("교육결재조회");
+        pageInfo.setPageTitle("교육결재 기각");
 
         // 과정ID와 사용자ID로 과정신청정보를 가지고 온다.
         DocumentAccount documentAccount = documnetAccountService.getByDocumentIdAndUserId(documentId, userId);
@@ -184,12 +200,12 @@ public class ApprovalDocumentController {
     public String listAppr2(@PageableDefault Pageable pageable, Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
-        pageInfo.setPageTitle("전체함");
+        pageInfo.setPageTitle("완료함");
 
         String userId = SessionUtil.getUserDetail().getUserId();
 
         model.addAttribute(pageInfo);
-        model.addAttribute("borders", documnetAccountService.getListApprUserId2(pageable, userId));
+        model.addAttribute("borders", documnetAccountService.getCustomByUserCommit(userId, pageable));
 
         return "content/approval/document/listAppr2";
     }
@@ -199,7 +215,7 @@ public class ApprovalDocumentController {
     public String listAppr2Process(@PageableDefault Pageable pageable, Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
-        pageInfo.setPageTitle("진행함");
+        pageInfo.setPageTitle("미결함");
 
         String userId = SessionUtil.getUserDetail().getUserId();
 
@@ -216,7 +232,7 @@ public class ApprovalDocumentController {
     public String listAppr2Commit(@PageableDefault Pageable pageable, Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
-        pageInfo.setPageTitle("완료함");
+        pageInfo.setPageTitle("진행함");
 
         String userId = SessionUtil.getUserDetail().getUserId();
 
@@ -260,7 +276,7 @@ public class ApprovalDocumentController {
             , Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
-        pageInfo.setPageTitle("교육결재조회");
+        pageInfo.setPageTitle("교육결재 기각");
 
         // 과정ID와 사용자ID로 과정신청정보를 가지고 온다.
         DocumentAccount documentAccount = documnetAccountService.getByDocumentIdAndUserId(documentId, userId);

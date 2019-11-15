@@ -3,11 +3,14 @@ package com.dtnsm.lms.service;
 import com.dtnsm.lms.domain.CourseQuiz;
 import com.dtnsm.lms.domain.CourseQuizActionAnswer;
 import com.dtnsm.lms.domain.CourseQuizQuestion;
+import com.dtnsm.lms.domain.CourseSection;
 import com.dtnsm.lms.repository.CourseQuizQuestionAnswerRepository;
 import com.dtnsm.lms.repository.CourseQuizQuestionRepository;
 import com.dtnsm.lms.repository.CourseQuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class CourseQuizService {
@@ -24,6 +27,10 @@ public class CourseQuizService {
      /*
         Quiz
      */
+
+    public List<CourseQuiz> getAllByCourseId(long courseId) {
+        return quizRepository.findAllByCourse_Id(courseId);
+    }
 
     public CourseQuiz saveQuiz(CourseQuiz quiz){
         return quizRepository.save(quiz);

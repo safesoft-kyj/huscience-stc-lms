@@ -24,12 +24,13 @@ $(function() {
         success: function (data) {
             $('#course-my-approval').text(data['courseMyApproval']);
             $('#course-my-process').text(data['courseMyProcess']);
-            $('#course-my-approval2').text(data['courseMyApproval']);
-            $('#course-my-process2').text(data['courseMyProcess2']);
+            $('#course-my-approval2').text(data['courseMyApproval2']);
+            $('#course-my-process2').text(data['courseMyProcess']);
+
             $('#document-my-approval').text(data['documentMyApproval']);
             $('#document-my-process').text(data['documentMyProcess']);
-            $('#document-my-approval2').text(data['documentMyApproval']);
-            $('#document-my-process2').text(data['documentMyProcess2']);
+            $('#document-my-approval2').text(data['documentMyApproval2']);
+            $('#document-my-process2').text(data['documentMyProcess']);
         },
         error: function (e) {
             alert('ajax error');

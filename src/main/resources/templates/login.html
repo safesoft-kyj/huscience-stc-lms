@@ -6,17 +6,33 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Dt&amp;SanoMedics</title>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
-    <link th:href="@{/sano/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/default/css/bootstrap.min.css}" rel="stylesheet">
     <!--Nifty Stylesheet [ REQUIRED ]-->
-    <link th:href="@{/sano/css/nifty.css}" rel="stylesheet">
-    <!--Demo [ DEMONSTRATION ]-->
-    <link th:href="@{/sano/css/demo/nifty-demo.min.css}" rel="stylesheet">
-    <!--new-style-->
-    <link th:href="@{/sano/css/new-style.css}" rel="stylesheet">
+    <link th:href="@{/default/css/nifty.css}" rel="stylesheet">
+    <link th:href="@{/default/plugins/font-awesome/css/font-awesome.min.css}" rel="stylesheet">
 
+    <style>
+        .login {padding-top:18vh; text-align: left;}
+        .cls-content.login .cls-content-sm {width:440px !important;}
+        .login .form-group .control-label{display: block; font-weight: 700; text-align: left}
+        .login h1 {font-size: 16px; font-weight: 800;}
+        .login-form {width:100%;  padding:20px; background: #fff; border-top:3px solid #2783d6;}
+        .login-form .btn-login {margin-top: 15px; height:40px; width:100%; padding:0; font-size:16px; font-weight:700; line-height:40px; display: block; background: #18578f; color: #fff; }
+        .welcome-box {margin-top: 20px;}
+        .welcome-box .logo {width:33%; float: left; padding-right: 5px;}
+        .welcome-box .logo img {width:100%; height: auto;}
+        .welcome-box .text-box {width:64%; float: left; padding-left: 5px; border-left:1px solid #ddd}
+        .welcome-box .text-box p {text-align: left; font-size: 11px;}
+        .welcome-box .text-box p em {display:inline-block; padding-bottom:10px; font-size: 16px; font-weight: 800; color: #333; font-style: normal}
+
+        .login-copyright {margin-top: 100px; text-align: center}
+
+        h3{margin: 7px;}
+    </style>
 </head>
 
 <body>
+
 <div id="container" class="cls-container">
 
     <!-- BACKGROUND IMAGE -->
@@ -29,7 +45,8 @@
             <div class="panel-body">
                 <div class="login-form">
                     <div class="mar-ver pad-btm">
-                        <h1>Dt&SanoMedic LMS</h1>
+                        <h3 class="text-center text-info">Dt&SanoMedics</h3>
+                        <h3 class="text-center">LMS System</h3>
                     </div>
 
                     <form th:action="@{/login}" method="post" id="demo-bvd-notempty">
@@ -64,14 +81,14 @@
                                 </div>
                             </div>
                             <button class="btn btn-login" type="submit">
-                                Login
+                                <i class="fa fa-sign-in"></i> Login
                             </button>
                         </div>
                     </form>
 
-                    <div class="welcom-box clearfix">
+                    <div class="welcome-box clearfix">
                         <div class="logo">
-                            <img src="/sano/img/new-images/logo03.png" alt="logo">
+                            <img src="/default/img/new-images/logo03.png" alt="logo">
                         </div>
                         <div class="text-box">
                             <p>

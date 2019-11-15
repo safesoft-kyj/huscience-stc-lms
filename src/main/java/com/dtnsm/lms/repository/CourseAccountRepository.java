@@ -2,6 +2,7 @@ package com.dtnsm.lms.repository;
 
 import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.domain.CourseAccountId;
+import com.dtnsm.lms.domain.constant.ApprovalStatusType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -41,13 +42,42 @@ public interface CourseAccountRepository extends JpaRepository<CourseAccount, Co
     @Query("SELECT g FROM CourseAccount g where (g.account.userId = :userId or g.apprUserId1.userId = :userId or g.apprUserId2.userId = :userId) and g.isCommit = :isCommit")
     List<CourseAccount> getCustomListByUserIdAndIsCommit(String userId, String isCommit);
 
+    // 내가 결재라인에 속한 경우 상태값 조회(pasing)
+    @Query("SELECT g FROM CourseAccount g where (g.account.userId = :userId or g.apprUserId1.userId = :userId or g.apprUserId2.userId = :userId) and g.status = :status")
+    Page<CourseAccount> getCustomListByUserIdAndStatus(String userId, ApprovalStatusType status, Pageable pageable);
+
+    // 내가 결재라인에 속한 경우 상태값 조회 건
+    @Query("SELECT g FROM CourseAccount g where (g.account.userId = :userId or g.apprUserId1.userId = :userId or g.apprUserId2.userId = :userId) and g.status = :status")
+    List<CourseAccount> getCustomListByUserIdAndStatus(String userId, ApprovalStatusType status);
+
+    // 내가 결재라인에 속한 반려 조회(pasing)
+    @Query("SELECT g FROM CourseAccount g where (g.account.userId = :userId or g.apprUserId1.userId = :userId or g.apprUserId2.userId = :userId) and g.status in ('APPROVAL_TEAM_REJECT', 'APPROVAL_MANAGER_REJECT')")
+    Page<CourseAccount> getCustomListByUserIdAndReject(String userId, Pageable pageable);
+
+    // 내가 결재라인에 속한 반려 조회 건
+    @Query("SELECT g FROM CourseAccount g where (g.account.userId = :userId or g.apprUserId1.userId = :userId or g.apprUserId2.userId = :userId) and g.status in ('APPROVAL_TEAM_REJECT', 'APPROVAL_MANAGER_REJECT')")
+    List<CourseAccount> getCustomListByUserIdAndReject(String userId);
+
+    // 승인 완료된 문서 조회(기각 제외)
+    @Query("SELECT g FROM CourseAccount g where (g.account.userId = :userId or g.apprUserId1.userId = :userId or g.apprUserId2.userId = :userId) and g.isCommit = '1' and g.status not in ('APPROVAL_TEAM_REJECT', 'APPROVAL_MANAGER_REJECT')")
+    Page<CourseAccount> getCustomListByUserCommit(String userId, Pageable pageable);
+
+    // 승인 완료된 문서 조회(기각 제외)
+    @Query("SELECT g FROM CourseAccount g where (g.account.userId = :userId or g.apprUserId1.userId = :userId or g.apprUserId2.userId = :userId) and g.isCommit = '1' and g.status not in ('APPROVAL_TEAM_REJECT', 'APPROVAL_MANAGER_REJECT')")
+    List<CourseAccount> getCustomListByUserCommit(String userId);
+
+
     // 미결건중 내가 1차 결재자인 건
     List<CourseAccount> findAllByIsTeamMangerApprovalAndApprUserId1_UserIdAndIsAppr1(String isTeamApproval, String userId, String isAppr1);
 
-    // 미결건중 내가 2차 결재자인 건
-    List<CourseAccount> findAllByIsTeamMangerApprovalAndApprUserId2_UserIdAndIsAppr2(String isManagerApproval, String userId, String isAppr2);
-
+    // 미결건중 내가 1차 결재자인 건(페이징)
     Page<CourseAccount> findAllByIsTeamMangerApprovalAndApprUserId1_UserIdAndIsAppr1(String isTeamApproval, String userId, String isAppr1, Pageable pageable);
+
+    // 미결건중 내가 2차 결재자인 건
+    List<CourseAccount> findAllByIsCourseMangerApprovalAndApprUserId2_UserIdAndIsAppr2AndIsAppr1(String isManagerApproval, String userId, String isAppr2, String isAppr1);
+
+    // 미결건중 내가 2차 결재자인 건(페이징)
+    Page<CourseAccount> findAllByIsCourseMangerApprovalAndApprUserId2_UserIdAndIsAppr2AndIsAppr1(String isManagerApproval, String userId, String isAppr2, String isAppr1, Pageable pageable);
 
     // 내가 1차결재자이면서 승인을 하지않는건(미결건) 5개
     List<CourseAccount> findTOp5ByApprUserId1_UserIdAndIsAppr1(String userId, String isAppr1);

@@ -2,6 +2,7 @@ package com.dtnsm.lms.service;
 
 import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.domain.DocumentAccount;
+import com.dtnsm.lms.domain.constant.ApprovalStatusType;
 import com.dtnsm.lms.repository.DocumentAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -123,6 +124,37 @@ public class DocumentAccountService {
         return documentAccountRepository.getCustomListByUserIdAndIsCommit(userId, isCommit);
     }
 
+    //진행중 문서
+    public Page<DocumentAccount> getCustomByUserIdAndStatus(Pageable pageable, String userId, ApprovalStatusType status) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+
+        return documentAccountRepository.getCustomListByUserIdAndStatus(userId, status, pageable);
+    }
+
+
+    //반려 문서
+    public Page<DocumentAccount> getCustomByUserIdAndReject(Pageable pageable, String userId) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+
+        return documentAccountRepository.getCustomListByUserIdAndReject(userId, pageable);
+    }
+
+    //완결 조회(기각 제외)
+    public Page<DocumentAccount> getCustomByUserCommit(String userId, Pageable pageable) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+
+        return documentAccountRepository.getCustomListByUserCommit(userId, pageable);
+    }
+
     // 1차 미결건 조회
     public List<DocumentAccount> getListByAppr1Process(String userId, String isAppr1, String isCommit) {
 
@@ -130,9 +162,9 @@ public class DocumentAccountService {
     }
 
     // 2차 미결건 조회
-    public List<DocumentAccount> getListByAppr2Process(String userId, String isAppr2, String isCommit) {
+    public List<DocumentAccount> getListByAppr2Process(String isCourseMangerApproval, String userId, String isAppr2, String isAppr1) {
 
-        return documentAccountRepository.findAllByApprUserId2_UserIdAndIsAppr2AndIsCommit(userId, isAppr2, isCommit);
+        return documentAccountRepository.findAllByIsCourseMangerApprovalAndApprUserId2_UserIdAndIsAppr2AndIsAppr1(isCourseMangerApproval, userId, isAppr2, isAppr1);
     }
 
     public List<DocumentAccount> getCustomListTop5ByUserIdAndIsCommit(String userId, String isCommit) {

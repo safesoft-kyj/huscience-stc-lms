@@ -3,13 +3,20 @@
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="layout/default_layout">
+      layout:decorate="~{layout/default_layout}">
 
 <th:block layout:fragment="html_head">
     <title>TachyonTech Info</title>
 </th:block>
 
 <th:block layout:fragment="custom_css">
+    <style>
+        .table-head {
+            background: #3A444E;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
 </th:block>
 
 <th:block layout:fragment="content_body">
@@ -31,18 +38,110 @@
             <!-- Basic Data Tables -->
             <!--===================================================-->
             <div class="panel">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Basic Data Tables with responsive plugin</h3>
-                </div>
                 <div class="panel-body">
-                    <p th:text="${pageInfo.getPageTitle()}"></p>
+                    <h5><strong class="text-mint"><i class="demo-pli-add-user-star"></i> 사용자 정보</strong></h5>
+                    <div th:switch="${account}">
+                        <h2 th:case="null">내부직원이 아닙니다.</h2>
+                        <div th:case="*">
+                            <hr class="table-head">
+                            <table class="table">
+                                <tr>
+                                    <td th:text="#{label.id}" class="col-sm-2 text-center" style="background: #FAFAFA;">아이디</td>
+                                    <td th:text="${account.getUserId()}"></td>
+                                </tr>
+                                <tr>
+                                    <td th:text="#{label.name}" class="text-center" style="background: #FAFAFA;">이름</td>
+                                    <td>
+                                        <span th:unless="${#strings.isEmpty(account.getName())}" th:text="${account.getName()}"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td th:text="#{label.engName}" class="text-center" style="background: #FAFAFA;">영문명</td>
+                                    <td>
+                                        <span th:unless="${#strings.isEmpty(account.getEngName())}" th:text="${account.getEngName()}"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td th:text="#{label.indate}" class="text-center" style="background: #FAFAFA;">입사일</td>
+                                    <td th:text="${account.getIndate()}"></td>
+                                </tr>
+                                <tr>
+                                    <td th:text="#{label.email}" class="text-center" style="background: #FAFAFA;">이메일</td>
+                                    <td th:text="${account.getEmail()}"></td>
+                                </tr>
+                                <tr>
+                                    <td th:text="#{label.depart}" class="text-center" style="background: #FAFAFA;">부서</td>
+                                    <td th:text="${account.getOrgDepart()}"></td>
+                                </tr>
+                                <tr>
+                                    <td th:text="#{label.job}" class="text-center" style="background: #FAFAFA;">업무</td>
+                                    <td th:text="${account.getComJob()}"></td>
+                                </tr>
+                            </table>
+
+                        </div>
+                    </div>
+
                 </div><!--panel-body End -->
             </div><!-- panel End -->
+
+
+            <div class="panel">
+                <div class="panel-body">
+                    <h5><strong class="text-mint"><i class="demo-pli-checked-user"></i> 상위결재권자(팀장/부서장) 설정</strong></h5>
+                    <div th:switch="${account}">
+                        <div th:case="null">내부직원이 아닙니다.</div>
+                        <div th:case="*">
+                            <div th:switch="${#strings.equalsIgnoreCase(user_type, 'O')}">
+                                <div th:case="O">외부사용자 계정</div>
+                                <div th:case="*">
+                                    <div th:switch="${account.getParentUserId()}">
+                                        <div th:case="null">
+                                            <h5 class="text-warning">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;상위결재권자 지정이 안되었습니다.</h5>
+                                        </div>
+                                    </div>
+                                    <div class="panel">
+                                        <div class="panel-body">
+                                            <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/mypage/teamManager/add-post}" method="post" th:object="${account}" >
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label" for="parentUserId" th:text="#{label.teamManager}">팀장/부서장</label>
+                                                    <div class="col-sm-9">
+                                                        <select class="form-control" th:field="*{parentUserId}" name="parentUserId" id="parentUserId">
+                                                            <option value="">팀장/부서장을 지정하세요</option>
+                                                            <option th:each="optAccount : ${accountList}"
+                                                                    th:value="${optAccount.getUserId()}"
+                                                                    th:text="${optAccount.getName()}">
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-sm-1">
+                                                        <button class="btn btn-primary" type="submit"><i class="demo-pli-data-storage"></i> <span th:text="#{label.save}"></span></button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div><!-- Page content End -->
     </div><!-- Content container End -->
 </th:block>
 
 <th:block layout:fragment="custom_js">
+
+    <script>
+
+        $('#parentUserId').chosen({width:'100%'});
+
+
+
+    </script>
+
 </th:block>
 
 </html>

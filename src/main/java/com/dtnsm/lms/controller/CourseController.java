@@ -73,13 +73,13 @@ public class CourseController {
 
         Page<Course> courses;
         if(searchType.equals("all") && searchText.equals("")) {
-            courses = courseService.getPageList(typeId, pageable);
+            courses = courseService.getPageList(typeId, 0, pageable);
         } else if(searchType.equals("all") && !searchText.equals("")) {
-            courses = courseService.getPageListByTitleLikeOrContentLike(typeId, searchText, searchText, pageable);
+            courses = courseService.getPageListByTitleLikeOrContentLike(typeId, searchText, searchText, 0, pageable);
         } else if (searchType.equals("subject")) {
-            courses = courseService.getPageListByTitleLike(typeId, searchText, pageable);
+            courses = courseService.getPageListByTitleLike(typeId, searchText, 0, pageable);
         } else {
-            courses = courseService.getPageListByContentLike(typeId, searchText, pageable);
+            courses = courseService.getPageListByContentLike(typeId, searchText, 0, pageable);
         }
 
         model.addAttribute(pageInfo);

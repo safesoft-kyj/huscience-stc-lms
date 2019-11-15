@@ -134,13 +134,47 @@ public class CourseAccountService {
         pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
 
         return courseAccountRepository.getCustomListByUserIdAndIsCommit(userId, isCommit, pageable);
-
-
     }
+
+    //상태값으로 조회(내가 결재라인에 속한 경우)
+    public Page<CourseAccount> getCustomByUserIdAndStatus(Pageable pageable, String userId, ApprovalStatusType status) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+
+        return courseAccountRepository.getCustomListByUserIdAndStatus(userId, status, pageable);
+    }
+
+    //반려 조회(내가 결재라인에 속한 경우)
+    public Page<CourseAccount> getCustomByUserIdAndReject(Pageable pageable, String userId) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+
+        return courseAccountRepository.getCustomListByUserIdAndReject(userId, pageable);
+    }
+
+    //완결 조회(기각 제외)
+    public Page<CourseAccount> getCustomByUserCommit(String userId, Pageable pageable) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+
+        return courseAccountRepository.getCustomListByUserCommit(userId, pageable);
+    }
+
 
     public List<CourseAccount> getCustomListByUserIdAndIsCommit(String userId, String isCommit) {
 
         return courseAccountRepository.getCustomListByUserIdAndIsCommit(userId, isCommit);
+    }
+
+    public Page<CourseAccount> getCustomListByUserIdAndIsCommit(String userId, String isCommit, Pageable pageable) {
+
+        return courseAccountRepository.getCustomListByUserIdAndIsCommit(userId, isCommit, pageable);
     }
 
     public List<CourseAccount> getCustomListTop5ByUserIdAndIsCommit(String userId, String isCommit) {
@@ -170,10 +204,10 @@ public class CourseAccountService {
         return courseAccountRepository.findAllByIsTeamMangerApprovalAndApprUserId1_UserIdAndIsAppr1(isTeamManagerApproval, userId, isAppr1);
     }
 
-    // 1차 미결건 조회
-    public List<CourseAccount> getListByAppr2Process(String isManagerApproval, String userId, String isAppr2) {
+    // 2차 교육결재 미결건 조회
+    public List<CourseAccount> getListByAppr2Process(String isCourseMangerApproval, String userId, String isAppr2, String isAppr1) {
 
-        return courseAccountRepository.findAllByIsTeamMangerApprovalAndApprUserId2_UserIdAndIsAppr2(isManagerApproval, userId, isAppr2);
+        return courseAccountRepository.findAllByIsCourseMangerApprovalAndApprUserId2_UserIdAndIsAppr2AndIsAppr1(isCourseMangerApproval, userId, isAppr2, isAppr1);
     }
 
 
@@ -189,12 +223,12 @@ public class CourseAccountService {
     }
 
     // 2차결재자(과정 관리자) 미결, 완결 구분
-    public Page<CourseAccount> getListApprUserId2AndIsAppr2(Pageable pageable, String userId, String isAppr2) {
+    public Page<CourseAccount> getListApprUserId2AndIsAppr2(String isManagerApproval,  String userId, String isAppr2, String isAppr1, Pageable pageable) {
 
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
         pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
 
-        return courseAccountRepository.findByApprUserId2_UserIdAndIsAppr2(userId, isAppr2, pageable);
+        return courseAccountRepository.findAllByIsCourseMangerApprovalAndApprUserId2_UserIdAndIsAppr2AndIsAppr1(isManagerApproval, userId, isAppr2, isAppr1, pageable);
     }
 }

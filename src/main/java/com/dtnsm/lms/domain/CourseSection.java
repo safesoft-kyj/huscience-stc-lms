@@ -24,6 +24,9 @@ public class CourseSection extends AuditorCreateEntity<String> {
     @Column(name="name")
     private String name;
 
+    @Column(name="description", length = 1000)
+    private String description;
+
     // 강사명
     private String teacher ;
 

@@ -74,8 +74,6 @@ public class Course extends AuditorCreateEntity<String> {
     @ColumnDefault("0")
     private int amount ;
 
-
-
     // 참석대상 부서/팀
     @Column(length = 30)
     private String team ;
@@ -103,14 +101,19 @@ public class Course extends AuditorCreateEntity<String> {
     @ColumnDefault("0")
     private int viewCnt;
 
-    // 1: 신청대기, 2:교육신청, 3:교육대기, 4:교육중, 5:교육종료
+    // 0:서비스전, 1: 신청대기, 2:교육신청, 3:교육대기, 4:교육중, 5:교육종료
     @ColumnDefault("0")
     private int status = 0;
+
+    // 0:교육서비스 대기, 1: 교육신청 접수 시작
+    @ColumnDefault("0")
+    private int active = 0;
 
     // Parent 필드 추가
     @ManyToOne
     @JoinColumn(name = "type_id")
     private CourseMaster courseMaster;
+
 
 //    @ManyToMany(fetch = FetchType.EAGER)
 //    @JoinTable(
