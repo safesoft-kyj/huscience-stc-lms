@@ -36,8 +36,8 @@ public class Account {
 
     // 상위 결재권자
     @Column(length = 30)
-    @ColumnDefault(value=" ")
-    private String parentUserId=" ";
+    @ColumnDefault(value="'N'")
+    private String parentUserId="";
 
     // 사용자 구분 (A:admin, U:일반유저, O:외부유저)
     private String userType;
