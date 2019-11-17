@@ -120,11 +120,65 @@ public class MypageRestController {
 
                 // CourseAccount 상태값 처리
                 for(CourseAccount courseAccount : course.getCourseAccountList()) {
-                    courseAccount.setStatus(ApprovalStatusType.APPROVAL_COMPLETE);
+                    courseAccount.setApprovalStatus(ApprovalStatusType.APPROVAL_COMPLETE);
 
                     courseAccountService.save(courseAccount);
                 }
 
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
                 // TODO: 2019/11/12 Digital Binder Employee Training Log 처리 -ks Hwang
             }
         }

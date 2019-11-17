@@ -269,7 +269,7 @@ public class CourseAdminController {
                     courseAccount.setAccount(account);
                     courseAccount.setRequestDate(DateUtil.getTodayString());
                     courseAccount.setRequestType(CourseRequestType.SPECIFY);        // 교육신청유형(관리자지정, 사용자 신청)
-                    courseAccount.setStatus(ApprovalStatusType.REQUEST_DONE);    // 신청완료(팀장승인진행중)
+                    courseAccount.setApprovalStatus(ApprovalStatusType.REQUEST_DONE);    // 신청완료(팀장승인진행중)
                     courseAccount.setApprUserId1(userService.getAccountByUserId(account.getParentUserId()));
                     courseAccount.setApprUserId2(userService.getAccountByUserId(courseManagerService.getCourseManager().getUserId()));
                     courseAccount.setIsTeamMangerApproval(course.getCourseMaster().getIsTeamMangerApproval());
@@ -291,7 +291,7 @@ public class CourseAdminController {
                     courseAccount.setAccount(account);
                     courseAccount.setRequestDate(DateUtil.getTodayString());
                     courseAccount.setRequestType(CourseRequestType.SPECIFY);        // 교육신청유형(관리자지정, 사용자 신청)
-                    courseAccount.setStatus(ApprovalStatusType.REQUEST_DONE);    // 신청완료(팀장승인진행중)
+                    courseAccount.setApprovalStatus(ApprovalStatusType.REQUEST_DONE);    // 신청완료(팀장승인진행중)
                     courseAccount.setApprUserId1(userService.getAccountByUserId(account.getParentUserId()));
                     courseAccount.setApprUserId2(userService.getAccountByUserId(courseManagerService.getCourseManager().getUserId()));
                     courseAccount.setIsTeamMangerApproval(course.getCourseMaster().getIsTeamMangerApproval());

@@ -46,12 +46,12 @@ public class Course extends AuditorCreateEntity<String> {
 
     // 교육시작일
     @Column(length = 10)
-    @ColumnDefault("1900-01-01")
+    @ColumnDefault("'1900-01-01'")
     private String fromDate;
 
     // 교육종료일
     @Column(length = 10)
-    @ColumnDefault("1900-01-01")
+    @ColumnDefault("'1900-01-01'")
     private String toDate;
 
     // 교육장소

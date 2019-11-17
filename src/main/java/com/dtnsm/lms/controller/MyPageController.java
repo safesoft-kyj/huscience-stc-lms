@@ -5,7 +5,6 @@ import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.ApprovalStatusType;
 import com.dtnsm.lms.domain.constant.QuizStatusType;
-import com.dtnsm.lms.domain.constant.SectionStatusType;
 import com.dtnsm.lms.domain.constant.SurveyStatusType;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.repository.UserRepository;
@@ -25,7 +24,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.activation.MimetypesFileTypeMap;
-import javax.persistence.Convert;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
@@ -361,7 +359,7 @@ public class MyPageController {
 
                     // CourseAccount 상태값 처리
                     for(CourseAccount courseAccount : course.getCourseAccountList()) {
-                        courseAccount.setStatus(ApprovalStatusType.APPROVAL_COMPLETE);
+                        courseAccount.setApprovalStatus(ApprovalStatusType.APPROVAL_COMPLETE);
 
                         courseAccountService.save(courseAccount);
                     }
@@ -458,7 +456,7 @@ public class MyPageController {
 
             // CourseAccount 상태값 처리
             for(CourseAccount courseAccount : course.getCourseAccountList()) {
-                courseAccount.setStatus(ApprovalStatusType.APPROVAL_COMPLETE);
+                courseAccount.setApprovalStatus(ApprovalStatusType.APPROVAL_COMPLETE);
 
                 courseAccountService.save(courseAccount);
             }

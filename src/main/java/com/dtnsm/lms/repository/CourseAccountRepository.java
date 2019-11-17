@@ -43,27 +43,27 @@ public interface CourseAccountRepository extends JpaRepository<CourseAccount, Co
     List<CourseAccount> getCustomListByUserIdAndIsCommit(String userId, String isCommit);
 
     // 내가 결재라인에 속한 경우 상태값 조회(pasing)
-    @Query("SELECT g FROM CourseAccount g where (g.account.userId = :userId or g.apprUserId1.userId = :userId or g.apprUserId2.userId = :userId) and g.status = :status")
+    @Query("SELECT g FROM CourseAccount g where (g.account.userId = :userId or g.apprUserId1.userId = :userId or g.apprUserId2.userId = :userId) and g.approvalStatus = :status")
     Page<CourseAccount> getCustomListByUserIdAndStatus(String userId, ApprovalStatusType status, Pageable pageable);
 
     // 내가 결재라인에 속한 경우 상태값 조회 건
-    @Query("SELECT g FROM CourseAccount g where (g.account.userId = :userId or g.apprUserId1.userId = :userId or g.apprUserId2.userId = :userId) and g.status = :status")
+    @Query("SELECT g FROM CourseAccount g where (g.account.userId = :userId or g.apprUserId1.userId = :userId or g.apprUserId2.userId = :userId) and g.approvalStatus = :status")
     List<CourseAccount> getCustomListByUserIdAndStatus(String userId, ApprovalStatusType status);
 
     // 내가 결재라인에 속한 반려 조회(pasing)
-    @Query("SELECT g FROM CourseAccount g where (g.account.userId = :userId or g.apprUserId1.userId = :userId or g.apprUserId2.userId = :userId) and g.status in ('APPROVAL_TEAM_REJECT', 'APPROVAL_MANAGER_REJECT')")
+    @Query("SELECT g FROM CourseAccount g where (g.account.userId = :userId or g.apprUserId1.userId = :userId or g.apprUserId2.userId = :userId) and g.approvalStatus in ('APPROVAL_TEAM_REJECT', 'APPROVAL_MANAGER_REJECT')")
     Page<CourseAccount> getCustomListByUserIdAndReject(String userId, Pageable pageable);
 
     // 내가 결재라인에 속한 반려 조회 건
-    @Query("SELECT g FROM CourseAccount g where (g.account.userId = :userId or g.apprUserId1.userId = :userId or g.apprUserId2.userId = :userId) and g.status in ('APPROVAL_TEAM_REJECT', 'APPROVAL_MANAGER_REJECT')")
+    @Query("SELECT g FROM CourseAccount g where (g.account.userId = :userId or g.apprUserId1.userId = :userId or g.apprUserId2.userId = :userId) and g.approvalStatus in ('APPROVAL_TEAM_REJECT', 'APPROVAL_MANAGER_REJECT')")
     List<CourseAccount> getCustomListByUserIdAndReject(String userId);
 
     // 승인 완료된 문서 조회(기각 제외)
-    @Query("SELECT g FROM CourseAccount g where (g.account.userId = :userId or g.apprUserId1.userId = :userId or g.apprUserId2.userId = :userId) and g.isCommit = '1' and g.status not in ('APPROVAL_TEAM_REJECT', 'APPROVAL_MANAGER_REJECT')")
+    @Query("SELECT g FROM CourseAccount g where (g.account.userId = :userId or g.apprUserId1.userId = :userId or g.apprUserId2.userId = :userId) and g.isCommit = '1' and g.approvalStatus not in ('APPROVAL_TEAM_REJECT', 'APPROVAL_MANAGER_REJECT')")
     Page<CourseAccount> getCustomListByUserCommit(String userId, Pageable pageable);
 
     // 승인 완료된 문서 조회(기각 제외)
-    @Query("SELECT g FROM CourseAccount g where (g.account.userId = :userId or g.apprUserId1.userId = :userId or g.apprUserId2.userId = :userId) and g.isCommit = '1' and g.status not in ('APPROVAL_TEAM_REJECT', 'APPROVAL_MANAGER_REJECT')")
+    @Query("SELECT g FROM CourseAccount g where (g.account.userId = :userId or g.apprUserId1.userId = :userId or g.apprUserId2.userId = :userId) and g.isCommit = '1' and g.approvalStatus not in ('APPROVAL_TEAM_REJECT', 'APPROVAL_MANAGER_REJECT')")
     List<CourseAccount> getCustomListByUserCommit(String userId);
 
 

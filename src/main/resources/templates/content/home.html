@@ -184,12 +184,16 @@
                                                 <table id="customer-list-page6" class="" cellspacing="0" width="100%">
                                                     <tbody>
                                                     <tr th:each="app1, index : ${app1List}">
-                                                        <td class="col-md-2" th:text="${app1.getRequestDate()}"></td>
-
-                                                        <td class="col-md-8 text-left">
-                                                            <a th:href="@{/course/approvalAppr1/{id}/{userId}(id=${app1.getCourse().getId()}, userId=${app1.getAccount().getUserId()})}" th:text="${app1.getCourse().getTitle()}">Edit</a>
+<!--                                                        <td class="col-md-2" th:text="${app1.getRequestDate()}"></td>-->
+                                                        <td class="col-md-9 text-left">
+                                                            <th:block th:if="${#strings.length(app1.getCourse().getTitle()) > 30}">
+                                                                <a th:href="@{/course/approvalAppr1/{id}/{userId}(id=${app1.getCourse().getId()}, userId=${app1.getAccount().getUserId()})}" th:text="${#strings.substring(app1.getCourse().getTitle(), 0, 30) + '...'}"></a>
+                                                            </th:block>
+                                                            <th:block th:unless="${#strings.length(app1.getCourse().getTitle()) > 30}">
+                                                                <a th:href="@{/course/approvalAppr1/{id}/{userId}(id=${app1.getCourse().getId()}, userId=${app1.getAccount().getUserId()})}" th:text="${app1.getCourse().getTitle()}"></a>
+                                                            </th:block>
                                                         </td>
-                                                        <td class="col-md-2" th:text="${app1.getAccount().getName()}"></td>
+                                                        <td class="col-md-3" th:text="${app1.getAccount().getName()}"></td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
@@ -198,13 +202,16 @@
                                                 <table id="customer-list-page8" class="table" cellspacing="0" width="100%">
                                                     <tbody>
                                                     <tr th:each="app1, index : ${app1CommitList}">
-                                                        <!--                                                <td class="col-md-2" th:text="${#temporals.createDate(app1.getRequestDate(), 'yyyy-MM-dd')}"></td>-->
-                                                        <td class="col-md-2" th:text="${app1.getRequestDate()}"></td>
-
-                                                        <td class="col-md-8 text-left">
-                                                            <a th:href="@{/course/approvalAppr1/{id}/{userId}(id=${app1.getCourse().getId()}, userId=${app1.getAccount().getUserId()})}" th:text="${app1.getCourse().getTitle()}">Edit</a>
+<!--                                                        <td class="col-md-2" th:text="${app1.getRequestDate()}"></td>-->
+                                                        <td class="col-md-9 text-left">
+                                                            <th:block th:if="${#strings.length(app1.getCourse().getTitle()) > 30}">
+                                                                <a  th:href="@{/course/approvalAppr1/{id}/{userId}(id=${app1.getCourse().getId()}, userId=${app1.getAccount().getUserId()})}"  th:text="${#strings.substring(app1.getCourse().getTitle(), 0, 30) + '...'}"></a>
+                                                            </th:block>
+                                                            <th:block th:unless="${#strings.length(app1.getCourse().getTitle()) > 30}">
+                                                                <a th:href="@{/course/approvalAppr1/{id}/{userId}(id=${app1.getCourse().getId()}, userId=${app1.getAccount().getUserId()})}"  th:text="${app1.getCourse().getTitle()}"></a>
+                                                            </th:block>
                                                         </td>
-                                                        <td class="col-md-2" th:text="${app1.getAccount().getName()}"></td>
+                                                        <td class="col-md-3" th:text="${app1.getAccount().getName()}"></td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
@@ -306,7 +313,7 @@
                                     /
                                     <a th:href="@{/approval/document/listAppr1Commit}" th:text="${documentProcessCount}" style="color:white"></a>
                                 </p>
-                                <p class="mar-no">전자결재 미결 / 진행중</p>
+                                <p class="mar-no">전자결재 미결/진행중</p>
                             </div>
                         </div>
                     </div>

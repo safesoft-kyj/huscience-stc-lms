@@ -52,14 +52,14 @@ public class ApprovalCourseProcessService {
         courseAccount.setIsCourseMangerApproval(course.getCourseMaster().getIsCourseMangerApproval());
 
         // 기본상태 지정
-        courseAccount.setStatus(ApprovalStatusType.REQUEST_DONE);   // 결재상태
+        courseAccount.setApprovalStatus(ApprovalStatusType.REQUEST_DONE);   // 결재상태
         courseAccount.setIsCommit("0"); // 결재 승인 프로세스 완료 상태
         courseAccount.setIsAppr1("N");  // 1차 결재 완료 여부
         courseAccount.setIsAppr2("N");  // 2차 결재 완료 여부
 
         // 1차 팀장 결재 유무
         if (course.getCourseMaster().getIsTeamMangerApproval().equals("N") && course.getCourseMaster().getIsCourseMangerApproval().equals("N")) {
-            courseAccount.setStatus(ApprovalStatusType.APPROVAL_MANAGER_DONE);    // 최종승인완료
+            courseAccount.setApprovalStatus(ApprovalStatusType.APPROVAL_MANAGER_DONE);    // 최종승인완료
             courseAccount.setIsAppr1("Y");
             courseAccount.setIsAppr2("Y");
             courseAccount.setIsCommit("1");
@@ -123,28 +123,32 @@ public class ApprovalCourseProcessService {
     // 교육 1차 승인 처리
     public void courseApproval1Proces(CourseAccount courseAccount) {
 
+        // 팀장 결재 승인 설정이 Y이고 아직승인되지 않고 완료되지 않은 건
         if(courseAccount.getIsTeamMangerApproval().equals("Y") && courseAccount.getIsAppr1().equals("N") && courseAccount.getIsCommit().equals("0")) {
 
             courseAccount.setIsAppr1("Y");
+            courseAccount.setApprStatus1(ApprovalStatus.approval);
             courseAccount.setApprDate1(DateUtil.getTodayString());
             courseAccount.setApprDateTime1(new Date());
-            courseAccount.setStatus(ApprovalStatusType.APPROVAL_TEAM_DONE);
 
             // 최종승인이 팀장인 경우 상태를 종결한다.
-            if (courseAccount.getIsTeamMangerApproval().equals("Y") && courseAccount.getIsCourseMangerApproval().equals("N"))
-                courseAccount.setIsCommit("1");
+            if (courseAccount.getIsTeamMangerApproval().equals("Y") && courseAccount.getIsCourseMangerApproval().equals("N")) {
+                courseAccount.setApprovalStatus(ApprovalStatusType.APPROVAL_COMPLETE);
+
+                // 최종 승인이면 기안자에게 메일 전송
+                if(courseAccount.getIsCommit().equals("Y") && courseAccount.getAccount() != null) {
+                    sendMail(courseAccount.getAccount(), courseAccount.getCourse(), MailSendType.REQUEST);
+                }
+            } else {
+
+                courseAccount.setApprovalStatus(ApprovalStatusType.APPROVAL_TEAM_DONE);
+                // 2차 결재가 있으면 2차 결재자 메일 전송
+                if(courseAccount.getIsCourseMangerApproval().equals("Y") && courseAccount.getApprUserId2() != null) {
+                    sendMail(courseAccount.getApprUserId2(), courseAccount.getCourse(), MailSendType.REQUEST);
+                }
+            }
 
             courseAccount = courseAccountService.save(courseAccount);
-        }
-
-        // 2차 결재가 있으면 2차 결재자 메일 전송
-        if(courseAccount.getIsCourseMangerApproval().equals("Y") && courseAccount.getApprUserId2() != null) {
-            sendMail(courseAccount.getApprUserId2(), courseAccount.getCourse(), MailSendType.REQUEST);
-        }
-
-        // 최종 승인이면 기안자에게 메일 전송
-        if(courseAccount.getIsCommit().equals("Y") && courseAccount.getAccount() != null) {
-            sendMail(courseAccount.getAccount(), courseAccount.getCourse(), MailSendType.REQUEST);
         }
     }
 
@@ -154,9 +158,10 @@ public class ApprovalCourseProcessService {
         if(courseAccount.getIsTeamMangerApproval().equals("Y") && courseAccount.getIsAppr1().equals("N") && courseAccount.getIsCommit().equals("0")) {
 
             courseAccount.setIsAppr1("Y");
+            courseAccount.setApprStatus1(ApprovalStatus.reject);
             courseAccount.setApprDate1(DateUtil.getTodayString());
             courseAccount.setApprDateTime1(new Date());
-            courseAccount.setStatus(ApprovalStatusType.APPROVAL_TEAM_REJECT);
+            courseAccount.setApprovalStatus(ApprovalStatusType.APPROVAL_TEAM_REJECT);
             courseAccount.setIsCommit("1"); // 2차 승인이 진행되지 않게 완료 처리한다.
 
             courseAccountService.save(courseAccount);
@@ -179,9 +184,10 @@ public class ApprovalCourseProcessService {
         // 2차승인여부가 Y이고 아직 미승인된 경우만 처리
         if(courseAccount.getIsCourseMangerApproval().equals("Y") && courseAccount.getIsAppr2().equals("N")) {
             courseAccount.setIsAppr2("Y");
+            courseAccount.setApprStatus2(ApprovalStatus.approval);
             courseAccount.setApprDate2(DateUtil.getTodayString());
             courseAccount.setApprDateTime2(new Date());
-            courseAccount.setStatus(ApprovalStatusType.APPROVAL_TEAM_DONE);
+            courseAccount.setApprovalStatus(ApprovalStatusType.APPROVAL_TEAM_DONE);
             courseAccount.setIsCommit("1");
 
             courseAccountService.save(courseAccount);
@@ -199,9 +205,10 @@ public class ApprovalCourseProcessService {
         // 2차승인여부가 Y이고 아직 미승인된 경우만 처리
         if(courseAccount.getIsCourseMangerApproval().equals("Y") && courseAccount.getIsAppr2().equals("N")) {
             courseAccount.setIsAppr2("Y");
+            courseAccount.setApprStatus2(ApprovalStatus.reject);
             courseAccount.setApprDate2(DateUtil.getTodayString());
             courseAccount.setApprDateTime2(new Date());
-            courseAccount.setStatus(ApprovalStatusType.APPROVAL_MANAGER_REJECT);
+            courseAccount.setApprovalStatus(ApprovalStatusType.APPROVAL_MANAGER_REJECT);
             courseAccount.setIsCommit("1");
 
             courseAccountService.save(courseAccount);

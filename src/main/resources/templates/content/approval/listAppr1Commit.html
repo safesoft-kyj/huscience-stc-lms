@@ -68,14 +68,16 @@
                                     <tr th:each="border, index : ${borders}">
                                         <td th:text="${index.count}" class="text-center"></td>
                                         <td>
-                                            <span th:text="${'['+border.getCourse().getCourseMaster().getCourseName()+']'}"></span>
-                                            <a th:href="@{/course/approvalAppr1/{id}/{userId}(id=${border.getCourse().getId()}, userId=${border.getAccount().getUserId()})}" th:text="${border.getCourse().getTitle()}"></a>
+                                            <a th:href="@{/course/approvalAppr1/{id}/{userId}(id=${border.getCourse().getId()}, userId=${border.getAccount().getUserId()})}">
+                                                <span th:text="${'['+border.getCourse().getCourseMaster().getCourseName()+']'}"></span>&nbsp;
+                                                <span th:text="${border.getCourse().getTitle()}"></span>
+                                            </a>
                                         </td>
                                         <td th:text="${border.getRequestDate()}" class="text-center"></td>
                                         <td th:text="${border.getAccount().getName()}" class="text-center"></td>
                                         <td th:text="${border.getApprUserId1().getName()}" class="text-center"></td>
                                         <td th:text="${border.getApprUserId2().getName()}" class="text-center"></td>
-                                        <td th:switch="${border.getStatus()}" class="text-center">
+                                        <td th:switch="${border.getApprovalStatus()}" class="text-center">
                                             <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).REQUEST_DONE}"
                                                   class="text-info"><span th:text="${border.getApprUserId1().getName()}"></span> 결재 진행중</span>
                                             <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_TEAM_DONE}"

@@ -1,14 +1,14 @@
 package com.dtnsm.lms.domain;
 
-import com.dtnsm.lms.auth.AuditorCreateEntity;
 import com.dtnsm.lms.auth.AuditorEntity;
 import com.dtnsm.lms.domain.constant.ApprovalStatusType;
+import com.dtnsm.lms.domain.constant.ApprovalStatus;
 import com.dtnsm.lms.domain.constant.CourseRequestType;
+import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import java.net.Authenticator;
 import java.util.Date;
 
 @Entity
@@ -41,9 +41,17 @@ public class CourseAccount extends AuditorEntity<String> {
     @Column(length = 1)
     private String isAppr1="N";
 
+    // 팀장승인상태 : none, approval, reject
+    @Column(length = 10)
+    private ApprovalStatus apprStatus1 = ApprovalStatus.none;
+
     // 관리자승인여부 : Y, N
     @Column(length = 1)
     private String isAppr2="N";
+
+    // 관리자승인상태 : none, approval, reject
+    @Column(length = 10)
+    private ApprovalStatus apprStatus2 = ApprovalStatus.none;
 
     // 팀장/부서장 승인 여부
     @Column(length = 1)
@@ -81,11 +89,16 @@ public class CourseAccount extends AuditorEntity<String> {
 
     // 최종상태 : 1:신청완료(팀장승인진행중), 2:팀장승인완료(관리자확인중), 3:승인완료
     @Column(length = 30)
-    @ColumnDefault(value = "0")
     @Enumerated(EnumType.STRING)
-    private ApprovalStatusType status;
+    private ApprovalStatusType approvalStatus = ApprovalStatusType.none;
+
+    @Column(length = 10)
+    @Enumerated(EnumType.STRING)
+    private CourseStepStatus courseStatus = CourseStepStatus.none;
 
     // 종결 여부(최종승인이나 기각시, 1:종결, 0:진행중)
     private String isCommit = "0";
+
+
 
 }
