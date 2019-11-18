@@ -9,11 +9,11 @@ import java.util.List;
 
 @Entity
 @Data
-@Table(name="job_description")
+@Table(name="job_description", uniqueConstraints = @UniqueConstraint(columnNames = {"shortName"}))
 public class JobDescription extends AuditorEntity<String> {
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
 
     // Job Name
     private String title;
@@ -22,10 +22,6 @@ public class JobDescription extends AuditorEntity<String> {
     @Column(length = 10, nullable = false)
     private String shortName;
 
-    // 등록일
-    @Column(length = 10, nullable = false)
-    private String regDate;
-
-    @OneToMany(mappedBy = "jd", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<JobDescriptionVersion> jdVersions = new ArrayList<>();
+    @OneToMany(mappedBy = "jobDescription")
+    private List<JobDescriptionVersion> jobDescriptionVersions = new ArrayList<>();
 }

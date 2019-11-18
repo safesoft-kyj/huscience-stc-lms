@@ -1,0 +1,658 @@
+alter table account_roles drop constraint FKi84870gssnbi37wfqfifekghb
+alter table account_roles drop constraint FKg75jws9c251epgg4r5swxqkn3
+alter table binder_cv drop constraint FKt45e0m4jqbvm7uclr8rlldrus
+alter table binder_cv_career_history drop constraint FKpft9unqimf38fpoqt4xev5aoj
+alter table binder_cv_education drop constraint FK3q8qswqdgorw9fauc8cgfxwxu
+alter table binder_cv_experience drop constraint FKixktpnsa2agyifc9sc6rf6ylq
+alter table binder_cv_licenses_certification drop constraint FKbarbt46jlhmbd1byh8ip6ueil
+alter table binder_cv_professional_affiliations drop constraint FKi6aryri7vfppffhmye4ehmwan
+alter table binder_cv_skills drop constraint FKp7mb8s7i594ci8h66ictexyjj
+alter table binder_jd drop constraint FK1ak137i8to7tkghiq8iv8cg80
+alter table binder_jd drop constraint FKmw6wtl75xa4r1471usewn9a6q
+alter table el_border drop constraint FK21s2onht2fhjp8uyojj4mxwm5
+alter table el_border_file drop constraint FKcw89wetecuprrf6v902daj6lg
+alter table el_course drop constraint FK60syffjj0r1lwvgsb3ecwt7xp
+alter table el_course_account drop constraint FKq3pu8y0k2sbqcyqaqsrwdrfvg
+alter table el_course_account drop constraint FK55rtxqqxyj2rylvopljr4wgxa
+alter table el_course_account drop constraint FK23ejjw8rtpv6ycsoft35ia7fc
+alter table el_course_account drop constraint FK3jhgcihcqlkj2qybgukcp3q1d
+alter table el_course_file drop constraint FK10w3tpfw9xgwwtcgac0yyai6r
+alter table el_course_quiz drop constraint FK68gu1w947wfxms915lcbyardo
+alter table el_course_quiz_action drop constraint FK3v4uuqb57n2d2ln1vvqti33xc
+alter table el_course_quiz_action drop constraint FKkr7akh2wbeu4lpn7t5m1ty648
+alter table el_course_quiz_action_answer drop constraint FKdsvw10xikq1h7c3ae4hxf7j95
+alter table el_course_quiz_action_answer drop constraint FK5v87kssshbcwlxgc88i9sc8nr
+alter table el_course_quiz_action_history drop constraint FKqtb08y0lr8rd89h4dcl1qs4n6
+alter table el_course_quiz_file drop constraint FK9sl5f3tha9vawrgkddig09d4f
+alter table el_course_quiz_question drop constraint FK9siuo8yywgwi0vyg0fibgv203
+alter table el_course_section drop constraint FKq5b0qs3n2b8alit9u9ocvgobl
+alter table el_course_section drop constraint FK1gjwgd0ap6qie4we9niei56oq
+alter table el_course_section_action drop constraint FKf0s43o6k2xgaf1ng8p4wl64xr
+alter table el_course_section_action drop constraint FKnkv1oju5ob41ck6x4c9515qba
+alter table el_course_section_action_history drop constraint FK3d1agwcbs7ayhnw4eb9e0tfh4
+alter table el_course_section_file drop constraint FKpr7phqcmgx1vw4tpll4ggxx5v
+alter table el_course_survey drop constraint FKevblhe42cdduo8s8sdwh4wpyy
+alter table el_course_survey drop constraint FKgd6wk31ndjgq6ydk7hsi86abq
+alter table el_course_survey_action drop constraint FKj3y4acv9luwbwy5bfsckevhw1
+alter table el_course_survey_action drop constraint FK62hfx9i7bqh44sglkqp7p1y9u
+alter table el_course_survey_action_answer drop constraint FK6rk6wgjkwsp2rd3i3l5lp8h7j
+alter table el_course_survey_action_answer drop constraint FKgyxvrtewve15vtgx25aw87wxa
+alter table el_course_survey_question drop constraint FK51xwu5kxsnro0ugx14vs71imi
+alter table el_document drop constraint FKm8eli3gaag5yhulrsi0podxcl
+alter table el_document drop constraint FKhfbwa32sjnl86lpw7d6dtwb5r
+alter table el_document_account drop constraint FKsrdpctfwv15l9ep8s04k1p0e1
+alter table el_document_account drop constraint FKpb3m5b0sbmp7mb2jkfetpmfuw
+alter table el_document_account drop constraint FKohngh0k7n0haxd4e80kwv3e07
+alter table el_document_account drop constraint FKft9o4p9wtorwl74n80tl1gw2i
+alter table el_document_course_account drop constraint FKs9f5rq3no8wyelk7klf9gu4g6
+alter table el_document_course_account drop constraint FK2ydaw5fo5hj538sqjy9q2raj1
+alter table el_document_file drop constraint FK3295kci06c28yw1ggm8o8xcs
+alter table el_minor drop constraint major_cd
+alter table el_schedule_file drop constraint FK9dhfneksmem35xxth48gj7ayi
+alter table el_survey_file drop constraint FK7uwsaha8n6o4q7r3bcfol56f0
+alter table el_survey_question drop constraint FKcf31kt61himjwlb682yh8j108
+alter table job_description_version drop constraint FKiislbdjiimp3bawl481264a38
+alter table job_description_version_file drop constraint FKxvwobmj6dg4bdr57pmyjkur4
+alter table roles_privileges drop constraint FK5yjwxw2gvfyu76j3rgqwo685u
+alter table roles_privileges drop constraint FK9h2vewsqh8luhfq71xokh4who
+drop table account
+drop table account_roles
+drop table binder_cv
+drop table binder_cv_career_history
+drop table binder_cv_education
+drop table binder_cv_experience
+drop table binder_cv_licenses_certification
+drop table binder_cv_professional_affiliations
+drop table binder_cv_skills
+drop table binder_jd
+drop table el_border
+drop table el_border_file
+drop table el_border_master
+drop table el_course
+drop table el_course_account
+drop table el_course_file
+drop table el_course_manager
+drop table el_course_master
+drop table el_course_quiz
+drop table el_course_quiz_action
+drop table el_course_quiz_action_answer
+drop table el_course_quiz_action_history
+drop table el_course_quiz_file
+drop table el_course_quiz_question
+drop table el_course_section
+drop table el_course_section_action
+drop table el_course_section_action_history
+drop table el_course_section_file
+drop table el_course_survey
+drop table el_course_survey_action
+drop table el_course_survey_action_answer
+drop table el_course_survey_question
+drop table el_customer
+drop table el_document
+drop table el_document_account
+drop table el_document_course_account
+drop table el_document_file
+drop table el_document_template
+drop table el_file
+drop table el_major
+drop table el_minor
+drop table el_munje_bank
+drop table el_schedule
+drop table el_schedule_file
+drop table el_survey
+drop table el_survey_file
+drop table el_survey_question
+drop table job_description
+drop table job_description_version
+drop table job_description_version_file
+drop table privilege
+drop table role
+drop table roles_privileges
+drop sequence hibernate_sequence
+alter table account_roles drop constraint FKi84870gssnbi37wfqfifekghb
+alter table account_roles drop constraint FKg75jws9c251epgg4r5swxqkn3
+alter table binder_cv drop constraint FKt45e0m4jqbvm7uclr8rlldrus
+alter table binder_cv_career_history drop constraint FKpft9unqimf38fpoqt4xev5aoj
+alter table binder_cv_education drop constraint FK3q8qswqdgorw9fauc8cgfxwxu
+alter table binder_cv_experience drop constraint FKixktpnsa2agyifc9sc6rf6ylq
+alter table binder_cv_licenses_certification drop constraint FKbarbt46jlhmbd1byh8ip6ueil
+alter table binder_cv_professional_affiliations drop constraint FKi6aryri7vfppffhmye4ehmwan
+alter table binder_cv_skills drop constraint FKp7mb8s7i594ci8h66ictexyjj
+alter table binder_jd drop constraint FK1ak137i8to7tkghiq8iv8cg80
+alter table binder_jd drop constraint FKmw6wtl75xa4r1471usewn9a6q
+alter table el_border drop constraint FK21s2onht2fhjp8uyojj4mxwm5
+alter table el_border_file drop constraint FKcw89wetecuprrf6v902daj6lg
+alter table el_course drop constraint FK60syffjj0r1lwvgsb3ecwt7xp
+alter table el_course_account drop constraint FKq3pu8y0k2sbqcyqaqsrwdrfvg
+alter table el_course_account drop constraint FK55rtxqqxyj2rylvopljr4wgxa
+alter table el_course_account drop constraint FK23ejjw8rtpv6ycsoft35ia7fc
+alter table el_course_account drop constraint FK3jhgcihcqlkj2qybgukcp3q1d
+alter table el_course_file drop constraint FK10w3tpfw9xgwwtcgac0yyai6r
+alter table el_course_quiz drop constraint FK68gu1w947wfxms915lcbyardo
+alter table el_course_quiz_action drop constraint FK3v4uuqb57n2d2ln1vvqti33xc
+alter table el_course_quiz_action drop constraint FKkr7akh2wbeu4lpn7t5m1ty648
+alter table el_course_quiz_action_answer drop constraint FKdsvw10xikq1h7c3ae4hxf7j95
+alter table el_course_quiz_action_answer drop constraint FK5v87kssshbcwlxgc88i9sc8nr
+alter table el_course_quiz_action_history drop constraint FKqtb08y0lr8rd89h4dcl1qs4n6
+alter table el_course_quiz_file drop constraint FK9sl5f3tha9vawrgkddig09d4f
+alter table el_course_quiz_question drop constraint FK9siuo8yywgwi0vyg0fibgv203
+alter table el_course_section drop constraint FKq5b0qs3n2b8alit9u9ocvgobl
+alter table el_course_section drop constraint FK1gjwgd0ap6qie4we9niei56oq
+alter table el_course_section_action drop constraint FKf0s43o6k2xgaf1ng8p4wl64xr
+alter table el_course_section_action drop constraint FKnkv1oju5ob41ck6x4c9515qba
+alter table el_course_section_action_history drop constraint FK3d1agwcbs7ayhnw4eb9e0tfh4
+alter table el_course_section_file drop constraint FKpr7phqcmgx1vw4tpll4ggxx5v
+alter table el_course_survey drop constraint FKevblhe42cdduo8s8sdwh4wpyy
+alter table el_course_survey drop constraint FKgd6wk31ndjgq6ydk7hsi86abq
+alter table el_course_survey_action drop constraint FKj3y4acv9luwbwy5bfsckevhw1
+alter table el_course_survey_action drop constraint FK62hfx9i7bqh44sglkqp7p1y9u
+alter table el_course_survey_action_answer drop constraint FK6rk6wgjkwsp2rd3i3l5lp8h7j
+alter table el_course_survey_action_answer drop constraint FKgyxvrtewve15vtgx25aw87wxa
+alter table el_course_survey_question drop constraint FK51xwu5kxsnro0ugx14vs71imi
+alter table el_document drop constraint FKm8eli3gaag5yhulrsi0podxcl
+alter table el_document drop constraint FKhfbwa32sjnl86lpw7d6dtwb5r
+alter table el_document_account drop constraint FKsrdpctfwv15l9ep8s04k1p0e1
+alter table el_document_account drop constraint FKpb3m5b0sbmp7mb2jkfetpmfuw
+alter table el_document_account drop constraint FKohngh0k7n0haxd4e80kwv3e07
+alter table el_document_account drop constraint FKft9o4p9wtorwl74n80tl1gw2i
+alter table el_document_course_account drop constraint FKs9f5rq3no8wyelk7klf9gu4g6
+alter table el_document_course_account drop constraint FK2ydaw5fo5hj538sqjy9q2raj1
+alter table el_document_file drop constraint FK3295kci06c28yw1ggm8o8xcs
+alter table el_minor drop constraint major_cd
+alter table el_schedule_file drop constraint FK9dhfneksmem35xxth48gj7ayi
+alter table el_survey_file drop constraint FK7uwsaha8n6o4q7r3bcfol56f0
+alter table el_survey_question drop constraint FKcf31kt61himjwlb682yh8j108
+alter table job_description_version drop constraint FKiislbdjiimp3bawl481264a38
+alter table job_description_version_file drop constraint FKxvwobmj6dg4bdr57pmyjkur4
+alter table roles_privileges drop constraint FK5yjwxw2gvfyu76j3rgqwo685u
+alter table roles_privileges drop constraint FK9h2vewsqh8luhfq71xokh4who
+drop table account
+drop table account_roles
+drop table binder_cv
+drop table binder_cv_career_history
+drop table binder_cv_education
+drop table binder_cv_experience
+drop table binder_cv_licenses_certification
+drop table binder_cv_professional_affiliations
+drop table binder_cv_skills
+drop table binder_jd
+drop table el_border
+drop table el_border_file
+drop table el_border_master
+drop table el_course
+drop table el_course_account
+drop table el_course_file
+drop table el_course_manager
+drop table el_course_master
+drop table el_course_quiz
+drop table el_course_quiz_action
+drop table el_course_quiz_action_answer
+drop table el_course_quiz_action_history
+drop table el_course_quiz_file
+drop table el_course_quiz_question
+drop table el_course_section
+drop table el_course_section_action
+drop table el_course_section_action_history
+drop table el_course_section_file
+drop table el_course_survey
+drop table el_course_survey_action
+drop table el_course_survey_action_answer
+drop table el_course_survey_question
+drop table el_customer
+drop table el_document
+drop table el_document_account
+drop table el_document_course_account
+drop table el_document_file
+drop table el_document_template
+drop table el_file
+drop table el_major
+drop table el_minor
+drop table el_munje_bank
+drop table el_schedule
+drop table el_schedule_file
+drop table el_survey
+drop table el_survey_file
+drop table el_survey_question
+drop table job_description
+drop table job_description_version
+drop table job_description_version_file
+drop table privilege
+drop table role
+drop table roles_privileges
+drop sequence hibernate_sequence
+alter table account_roles drop constraint FKi84870gssnbi37wfqfifekghb
+alter table account_roles drop constraint FKg75jws9c251epgg4r5swxqkn3
+alter table binder_cv drop constraint FKt45e0m4jqbvm7uclr8rlldrus
+alter table binder_cv_career_history drop constraint FKpft9unqimf38fpoqt4xev5aoj
+alter table binder_cv_education drop constraint FK3q8qswqdgorw9fauc8cgfxwxu
+alter table binder_cv_experience drop constraint FKixktpnsa2agyifc9sc6rf6ylq
+alter table binder_cv_licenses_certification drop constraint FKbarbt46jlhmbd1byh8ip6ueil
+alter table binder_cv_professional_affiliations drop constraint FKi6aryri7vfppffhmye4ehmwan
+alter table binder_cv_skills drop constraint FKp7mb8s7i594ci8h66ictexyjj
+alter table el_border drop constraint FK21s2onht2fhjp8uyojj4mxwm5
+alter table el_border_file drop constraint FKcw89wetecuprrf6v902daj6lg
+alter table el_course drop constraint FK60syffjj0r1lwvgsb3ecwt7xp
+alter table el_course_account drop constraint FKq3pu8y0k2sbqcyqaqsrwdrfvg
+alter table el_course_account drop constraint FK55rtxqqxyj2rylvopljr4wgxa
+alter table el_course_account drop constraint FK23ejjw8rtpv6ycsoft35ia7fc
+alter table el_course_account drop constraint FK3jhgcihcqlkj2qybgukcp3q1d
+alter table el_course_file drop constraint FK10w3tpfw9xgwwtcgac0yyai6r
+alter table el_course_quiz drop constraint FK68gu1w947wfxms915lcbyardo
+alter table el_course_quiz_action drop constraint FK3v4uuqb57n2d2ln1vvqti33xc
+alter table el_course_quiz_action drop constraint FKkr7akh2wbeu4lpn7t5m1ty648
+alter table el_course_quiz_action_answer drop constraint FKdsvw10xikq1h7c3ae4hxf7j95
+alter table el_course_quiz_action_answer drop constraint FK5v87kssshbcwlxgc88i9sc8nr
+alter table el_course_quiz_action_history drop constraint FKqtb08y0lr8rd89h4dcl1qs4n6
+alter table el_course_quiz_file drop constraint FK9sl5f3tha9vawrgkddig09d4f
+alter table el_course_quiz_question drop constraint FK9siuo8yywgwi0vyg0fibgv203
+alter table el_course_section drop constraint FKq5b0qs3n2b8alit9u9ocvgobl
+alter table el_course_section drop constraint FK1gjwgd0ap6qie4we9niei56oq
+alter table el_course_section_action drop constraint FKf0s43o6k2xgaf1ng8p4wl64xr
+alter table el_course_section_action drop constraint FKnkv1oju5ob41ck6x4c9515qba
+alter table el_course_section_action_history drop constraint FK3d1agwcbs7ayhnw4eb9e0tfh4
+alter table el_course_section_file drop constraint FKpr7phqcmgx1vw4tpll4ggxx5v
+alter table el_course_survey drop constraint FKevblhe42cdduo8s8sdwh4wpyy
+alter table el_course_survey drop constraint FKgd6wk31ndjgq6ydk7hsi86abq
+alter table el_course_survey_action drop constraint FKj3y4acv9luwbwy5bfsckevhw1
+alter table el_course_survey_action drop constraint FK62hfx9i7bqh44sglkqp7p1y9u
+alter table el_course_survey_action_answer drop constraint FK6rk6wgjkwsp2rd3i3l5lp8h7j
+alter table el_course_survey_action_answer drop constraint FKgyxvrtewve15vtgx25aw87wxa
+alter table el_course_survey_question drop constraint FK51xwu5kxsnro0ugx14vs71imi
+alter table el_document drop constraint FKm8eli3gaag5yhulrsi0podxcl
+alter table el_document drop constraint FKhfbwa32sjnl86lpw7d6dtwb5r
+alter table el_document_account drop constraint FKsrdpctfwv15l9ep8s04k1p0e1
+alter table el_document_account drop constraint FKpb3m5b0sbmp7mb2jkfetpmfuw
+alter table el_document_account drop constraint FKohngh0k7n0haxd4e80kwv3e07
+alter table el_document_account drop constraint FKft9o4p9wtorwl74n80tl1gw2i
+alter table el_document_course_account drop constraint FKs9f5rq3no8wyelk7klf9gu4g6
+alter table el_document_course_account drop constraint FK2ydaw5fo5hj538sqjy9q2raj1
+alter table el_document_file drop constraint FK3295kci06c28yw1ggm8o8xcs
+alter table el_minor drop constraint major_cd
+alter table el_schedule_file drop constraint FK9dhfneksmem35xxth48gj7ayi
+alter table el_survey_file drop constraint FK7uwsaha8n6o4q7r3bcfol56f0
+alter table el_survey_question drop constraint FKcf31kt61himjwlb682yh8j108
+alter table job_description_version drop constraint FKiislbdjiimp3bawl481264a38
+alter table job_description_version drop constraint FKp7uunxfqe7ep48xwptgaoh7gq
+alter table job_description_version_file drop constraint FKjc9yctk3do6s713vfy1hd2jme
+alter table roles_privileges drop constraint FK5yjwxw2gvfyu76j3rgqwo685u
+alter table roles_privileges drop constraint FK9h2vewsqh8luhfq71xokh4who
+drop table account
+drop table account_roles
+drop table binder_cv
+drop table binder_cv_career_history
+drop table binder_cv_education
+drop table binder_cv_experience
+drop table binder_cv_licenses_certification
+drop table binder_cv_professional_affiliations
+drop table binder_cv_skills
+drop table el_border
+drop table el_border_file
+drop table el_border_master
+drop table el_course
+drop table el_course_account
+drop table el_course_file
+drop table el_course_manager
+drop table el_course_master
+drop table el_course_quiz
+drop table el_course_quiz_action
+drop table el_course_quiz_action_answer
+drop table el_course_quiz_action_history
+drop table el_course_quiz_file
+drop table el_course_quiz_question
+drop table el_course_section
+drop table el_course_section_action
+drop table el_course_section_action_history
+drop table el_course_section_file
+drop table el_course_survey
+drop table el_course_survey_action
+drop table el_course_survey_action_answer
+drop table el_course_survey_question
+drop table el_customer
+drop table el_document
+drop table el_document_account
+drop table el_document_course_account
+drop table el_document_file
+drop table el_document_template
+drop table el_file
+drop table el_major
+drop table el_minor
+drop table el_munje_bank
+drop table el_schedule
+drop table el_schedule_file
+drop table el_survey
+drop table el_survey_file
+drop table el_survey_question
+drop table job_description
+drop table job_description_version
+drop table job_description_version_file
+drop table privilege
+drop table role
+drop table roles_privileges
+drop sequence hibernate_sequence
+alter table account_roles drop constraint FKi84870gssnbi37wfqfifekghb
+alter table account_roles drop constraint FKg75jws9c251epgg4r5swxqkn3
+alter table binder_cv drop constraint FKt45e0m4jqbvm7uclr8rlldrus
+alter table binder_cv_career_history drop constraint FKpft9unqimf38fpoqt4xev5aoj
+alter table binder_cv_education drop constraint FK3q8qswqdgorw9fauc8cgfxwxu
+alter table binder_cv_experience drop constraint FKixktpnsa2agyifc9sc6rf6ylq
+alter table binder_cv_licenses_certification drop constraint FKbarbt46jlhmbd1byh8ip6ueil
+alter table binder_cv_professional_affiliations drop constraint FKi6aryri7vfppffhmye4ehmwan
+alter table binder_cv_skills drop constraint FKp7mb8s7i594ci8h66ictexyjj
+alter table el_border drop constraint FK21s2onht2fhjp8uyojj4mxwm5
+alter table el_border_file drop constraint FKcw89wetecuprrf6v902daj6lg
+alter table el_course drop constraint FK60syffjj0r1lwvgsb3ecwt7xp
+alter table el_course_account drop constraint FKq3pu8y0k2sbqcyqaqsrwdrfvg
+alter table el_course_account drop constraint FK55rtxqqxyj2rylvopljr4wgxa
+alter table el_course_account drop constraint FK23ejjw8rtpv6ycsoft35ia7fc
+alter table el_course_account drop constraint FK3jhgcihcqlkj2qybgukcp3q1d
+alter table el_course_file drop constraint FK10w3tpfw9xgwwtcgac0yyai6r
+alter table el_course_quiz drop constraint FK68gu1w947wfxms915lcbyardo
+alter table el_course_quiz_action drop constraint FK3v4uuqb57n2d2ln1vvqti33xc
+alter table el_course_quiz_action drop constraint FKkr7akh2wbeu4lpn7t5m1ty648
+alter table el_course_quiz_action_answer drop constraint FKdsvw10xikq1h7c3ae4hxf7j95
+alter table el_course_quiz_action_answer drop constraint FK5v87kssshbcwlxgc88i9sc8nr
+alter table el_course_quiz_action_history drop constraint FKqtb08y0lr8rd89h4dcl1qs4n6
+alter table el_course_quiz_file drop constraint FK9sl5f3tha9vawrgkddig09d4f
+alter table el_course_quiz_question drop constraint FK9siuo8yywgwi0vyg0fibgv203
+alter table el_course_section drop constraint FKq5b0qs3n2b8alit9u9ocvgobl
+alter table el_course_section drop constraint FK1gjwgd0ap6qie4we9niei56oq
+alter table el_course_section_action drop constraint FKf0s43o6k2xgaf1ng8p4wl64xr
+alter table el_course_section_action drop constraint FKnkv1oju5ob41ck6x4c9515qba
+alter table el_course_section_action_history drop constraint FK3d1agwcbs7ayhnw4eb9e0tfh4
+alter table el_course_section_file drop constraint FKpr7phqcmgx1vw4tpll4ggxx5v
+alter table el_course_survey drop constraint FKevblhe42cdduo8s8sdwh4wpyy
+alter table el_course_survey drop constraint FKgd6wk31ndjgq6ydk7hsi86abq
+alter table el_course_survey_action drop constraint FKj3y4acv9luwbwy5bfsckevhw1
+alter table el_course_survey_action drop constraint FK62hfx9i7bqh44sglkqp7p1y9u
+alter table el_course_survey_action_answer drop constraint FK6rk6wgjkwsp2rd3i3l5lp8h7j
+alter table el_course_survey_action_answer drop constraint FKgyxvrtewve15vtgx25aw87wxa
+alter table el_course_survey_question drop constraint FK51xwu5kxsnro0ugx14vs71imi
+alter table el_document drop constraint FKm8eli3gaag5yhulrsi0podxcl
+alter table el_document drop constraint FKhfbwa32sjnl86lpw7d6dtwb5r
+alter table el_document_account drop constraint FKsrdpctfwv15l9ep8s04k1p0e1
+alter table el_document_account drop constraint FKpb3m5b0sbmp7mb2jkfetpmfuw
+alter table el_document_account drop constraint FKohngh0k7n0haxd4e80kwv3e07
+alter table el_document_account drop constraint FKft9o4p9wtorwl74n80tl1gw2i
+alter table el_document_course_account drop constraint FKs9f5rq3no8wyelk7klf9gu4g6
+alter table el_document_course_account drop constraint FK2ydaw5fo5hj538sqjy9q2raj1
+alter table el_document_file drop constraint FK3295kci06c28yw1ggm8o8xcs
+alter table el_minor drop constraint major_cd
+alter table el_schedule_file drop constraint FK9dhfneksmem35xxth48gj7ayi
+alter table el_survey_file drop constraint FK7uwsaha8n6o4q7r3bcfol56f0
+alter table el_survey_question drop constraint FKcf31kt61himjwlb682yh8j108
+alter table job_description_version drop constraint FKiislbdjiimp3bawl481264a38
+alter table job_description_version drop constraint FKp7uunxfqe7ep48xwptgaoh7gq
+alter table job_description_version_file drop constraint FKjc9yctk3do6s713vfy1hd2jme
+alter table roles_privileges drop constraint FK5yjwxw2gvfyu76j3rgqwo685u
+alter table roles_privileges drop constraint FK9h2vewsqh8luhfq71xokh4who
+drop table account
+drop table account_roles
+drop table binder_cv
+drop table binder_cv_career_history
+drop table binder_cv_education
+drop table binder_cv_experience
+drop table binder_cv_licenses_certification
+drop table binder_cv_professional_affiliations
+drop table binder_cv_skills
+drop table el_border
+drop table el_border_file
+drop table el_border_master
+drop table el_course
+drop table el_course_account
+drop table el_course_file
+drop table el_course_manager
+drop table el_course_master
+drop table el_course_quiz
+drop table el_course_quiz_action
+drop table el_course_quiz_action_answer
+drop table el_course_quiz_action_history
+drop table el_course_quiz_file
+drop table el_course_quiz_question
+drop table el_course_section
+drop table el_course_section_action
+drop table el_course_section_action_history
+drop table el_course_section_file
+drop table el_course_survey
+drop table el_course_survey_action
+drop table el_course_survey_action_answer
+drop table el_course_survey_question
+drop table el_customer
+drop table el_document
+drop table el_document_account
+drop table el_document_course_account
+drop table el_document_file
+drop table el_document_template
+drop table el_file
+drop table el_major
+drop table el_minor
+drop table el_munje_bank
+drop table el_schedule
+drop table el_schedule_file
+drop table el_survey
+drop table el_survey_file
+drop table el_survey_question
+drop table job_description
+drop table job_description_version
+drop table job_description_version_file
+drop table privilege
+drop table role
+drop table roles_privileges
+drop sequence hibernate_sequence
+alter table account_roles drop constraint FKi84870gssnbi37wfqfifekghb
+alter table account_roles drop constraint FKg75jws9c251epgg4r5swxqkn3
+alter table binder_cv drop constraint FKt45e0m4jqbvm7uclr8rlldrus
+alter table binder_cv_career_history drop constraint FKpft9unqimf38fpoqt4xev5aoj
+alter table binder_cv_education drop constraint FK3q8qswqdgorw9fauc8cgfxwxu
+alter table binder_cv_experience drop constraint FKixktpnsa2agyifc9sc6rf6ylq
+alter table binder_cv_licenses_certification drop constraint FKbarbt46jlhmbd1byh8ip6ueil
+alter table binder_cv_professional_affiliations drop constraint FKi6aryri7vfppffhmye4ehmwan
+alter table binder_cv_skills drop constraint FKp7mb8s7i594ci8h66ictexyjj
+alter table el_border drop constraint FK21s2onht2fhjp8uyojj4mxwm5
+alter table el_border_file drop constraint FKcw89wetecuprrf6v902daj6lg
+alter table el_course drop constraint FK60syffjj0r1lwvgsb3ecwt7xp
+alter table el_course_account drop constraint FKq3pu8y0k2sbqcyqaqsrwdrfvg
+alter table el_course_account drop constraint FK55rtxqqxyj2rylvopljr4wgxa
+alter table el_course_account drop constraint FK23ejjw8rtpv6ycsoft35ia7fc
+alter table el_course_account drop constraint FK3jhgcihcqlkj2qybgukcp3q1d
+alter table el_course_file drop constraint FK10w3tpfw9xgwwtcgac0yyai6r
+alter table el_course_quiz drop constraint FK68gu1w947wfxms915lcbyardo
+alter table el_course_quiz_action drop constraint FK3v4uuqb57n2d2ln1vvqti33xc
+alter table el_course_quiz_action drop constraint FKkr7akh2wbeu4lpn7t5m1ty648
+alter table el_course_quiz_action_answer drop constraint FKdsvw10xikq1h7c3ae4hxf7j95
+alter table el_course_quiz_action_answer drop constraint FK5v87kssshbcwlxgc88i9sc8nr
+alter table el_course_quiz_action_history drop constraint FKqtb08y0lr8rd89h4dcl1qs4n6
+alter table el_course_quiz_file drop constraint FK9sl5f3tha9vawrgkddig09d4f
+alter table el_course_quiz_question drop constraint FK9siuo8yywgwi0vyg0fibgv203
+alter table el_course_section drop constraint FKq5b0qs3n2b8alit9u9ocvgobl
+alter table el_course_section drop constraint FK1gjwgd0ap6qie4we9niei56oq
+alter table el_course_section_action drop constraint FKf0s43o6k2xgaf1ng8p4wl64xr
+alter table el_course_section_action drop constraint FKnkv1oju5ob41ck6x4c9515qba
+alter table el_course_section_action_history drop constraint FK3d1agwcbs7ayhnw4eb9e0tfh4
+alter table el_course_section_file drop constraint FKpr7phqcmgx1vw4tpll4ggxx5v
+alter table el_course_survey drop constraint FKevblhe42cdduo8s8sdwh4wpyy
+alter table el_course_survey drop constraint FKgd6wk31ndjgq6ydk7hsi86abq
+alter table el_course_survey_action drop constraint FKj3y4acv9luwbwy5bfsckevhw1
+alter table el_course_survey_action drop constraint FK62hfx9i7bqh44sglkqp7p1y9u
+alter table el_course_survey_action_answer drop constraint FK6rk6wgjkwsp2rd3i3l5lp8h7j
+alter table el_course_survey_action_answer drop constraint FKgyxvrtewve15vtgx25aw87wxa
+alter table el_course_survey_question drop constraint FK51xwu5kxsnro0ugx14vs71imi
+alter table el_document drop constraint FKm8eli3gaag5yhulrsi0podxcl
+alter table el_document drop constraint FKhfbwa32sjnl86lpw7d6dtwb5r
+alter table el_document_account drop constraint FKsrdpctfwv15l9ep8s04k1p0e1
+alter table el_document_account drop constraint FKpb3m5b0sbmp7mb2jkfetpmfuw
+alter table el_document_account drop constraint FKohngh0k7n0haxd4e80kwv3e07
+alter table el_document_account drop constraint FKft9o4p9wtorwl74n80tl1gw2i
+alter table el_document_course_account drop constraint FKs9f5rq3no8wyelk7klf9gu4g6
+alter table el_document_course_account drop constraint FK2ydaw5fo5hj538sqjy9q2raj1
+alter table el_document_file drop constraint FK3295kci06c28yw1ggm8o8xcs
+alter table el_minor drop constraint major_cd
+alter table el_schedule_file drop constraint FK9dhfneksmem35xxth48gj7ayi
+alter table el_survey_file drop constraint FK7uwsaha8n6o4q7r3bcfol56f0
+alter table el_survey_question drop constraint FKcf31kt61himjwlb682yh8j108
+alter table job_description_version drop constraint FKiislbdjiimp3bawl481264a38
+alter table job_description_version drop constraint FKp7uunxfqe7ep48xwptgaoh7gq
+alter table job_description_version_file drop constraint FKjc9yctk3do6s713vfy1hd2jme
+alter table roles_privileges drop constraint FK5yjwxw2gvfyu76j3rgqwo685u
+alter table roles_privileges drop constraint FK9h2vewsqh8luhfq71xokh4who
+drop table account
+drop table account_roles
+drop table binder_cv
+drop table binder_cv_career_history
+drop table binder_cv_education
+drop table binder_cv_experience
+drop table binder_cv_licenses_certification
+drop table binder_cv_professional_affiliations
+drop table binder_cv_skills
+drop table el_border
+drop table el_border_file
+drop table el_border_master
+drop table el_course
+drop table el_course_account
+drop table el_course_file
+drop table el_course_manager
+drop table el_course_master
+drop table el_course_quiz
+drop table el_course_quiz_action
+drop table el_course_quiz_action_answer
+drop table el_course_quiz_action_history
+drop table el_course_quiz_file
+drop table el_course_quiz_question
+drop table el_course_section
+drop table el_course_section_action
+drop table el_course_section_action_history
+drop table el_course_section_file
+drop table el_course_survey
+drop table el_course_survey_action
+drop table el_course_survey_action_answer
+drop table el_course_survey_question
+drop table el_customer
+drop table el_document
+drop table el_document_account
+drop table el_document_course_account
+drop table el_document_file
+drop table el_document_template
+drop table el_file
+drop table el_major
+drop table el_minor
+drop table el_munje_bank
+drop table el_schedule
+drop table el_schedule_file
+drop table el_survey
+drop table el_survey_file
+drop table el_survey_question
+drop table job_description
+drop table job_description_version
+drop table job_description_version_file
+drop table privilege
+drop table role
+drop table roles_privileges
+drop sequence hibernate_sequence
+alter table account_roles drop constraint FKi84870gssnbi37wfqfifekghb
+alter table account_roles drop constraint FKg75jws9c251epgg4r5swxqkn3
+alter table binder_cv drop constraint FKt45e0m4jqbvm7uclr8rlldrus
+alter table binder_cv_career_history drop constraint FKpft9unqimf38fpoqt4xev5aoj
+alter table binder_cv_education drop constraint FK3q8qswqdgorw9fauc8cgfxwxu
+alter table binder_cv_experience drop constraint FKixktpnsa2agyifc9sc6rf6ylq
+alter table binder_cv_licenses_certification drop constraint FKbarbt46jlhmbd1byh8ip6ueil
+alter table binder_cv_professional_affiliations drop constraint FKi6aryri7vfppffhmye4ehmwan
+alter table binder_cv_skills drop constraint FKp7mb8s7i594ci8h66ictexyjj
+alter table el_border drop constraint FK21s2onht2fhjp8uyojj4mxwm5
+alter table el_border_file drop constraint FKcw89wetecuprrf6v902daj6lg
+alter table el_course drop constraint FK60syffjj0r1lwvgsb3ecwt7xp
+alter table el_course_account drop constraint FKq3pu8y0k2sbqcyqaqsrwdrfvg
+alter table el_course_account drop constraint FK55rtxqqxyj2rylvopljr4wgxa
+alter table el_course_account drop constraint FK23ejjw8rtpv6ycsoft35ia7fc
+alter table el_course_account drop constraint FK3jhgcihcqlkj2qybgukcp3q1d
+alter table el_course_file drop constraint FK10w3tpfw9xgwwtcgac0yyai6r
+alter table el_course_quiz drop constraint FK68gu1w947wfxms915lcbyardo
+alter table el_course_quiz_action drop constraint FK3v4uuqb57n2d2ln1vvqti33xc
+alter table el_course_quiz_action drop constraint FKkr7akh2wbeu4lpn7t5m1ty648
+alter table el_course_quiz_action_answer drop constraint FKdsvw10xikq1h7c3ae4hxf7j95
+alter table el_course_quiz_action_answer drop constraint FK5v87kssshbcwlxgc88i9sc8nr
+alter table el_course_quiz_action_history drop constraint FKqtb08y0lr8rd89h4dcl1qs4n6
+alter table el_course_quiz_file drop constraint FK9sl5f3tha9vawrgkddig09d4f
+alter table el_course_quiz_question drop constraint FK9siuo8yywgwi0vyg0fibgv203
+alter table el_course_section drop constraint FKq5b0qs3n2b8alit9u9ocvgobl
+alter table el_course_section drop constraint FK1gjwgd0ap6qie4we9niei56oq
+alter table el_course_section_action drop constraint FKf0s43o6k2xgaf1ng8p4wl64xr
+alter table el_course_section_action drop constraint FKnkv1oju5ob41ck6x4c9515qba
+alter table el_course_section_action_history drop constraint FK3d1agwcbs7ayhnw4eb9e0tfh4
+alter table el_course_section_file drop constraint FKpr7phqcmgx1vw4tpll4ggxx5v
+alter table el_course_survey drop constraint FKevblhe42cdduo8s8sdwh4wpyy
+alter table el_course_survey drop constraint FKgd6wk31ndjgq6ydk7hsi86abq
+alter table el_course_survey_action drop constraint FKj3y4acv9luwbwy5bfsckevhw1
+alter table el_course_survey_action drop constraint FK62hfx9i7bqh44sglkqp7p1y9u
+alter table el_course_survey_action_answer drop constraint FK6rk6wgjkwsp2rd3i3l5lp8h7j
+alter table el_course_survey_action_answer drop constraint FKgyxvrtewve15vtgx25aw87wxa
+alter table el_course_survey_question drop constraint FK51xwu5kxsnro0ugx14vs71imi
+alter table el_document drop constraint FKm8eli3gaag5yhulrsi0podxcl
+alter table el_document drop constraint FKhfbwa32sjnl86lpw7d6dtwb5r
+alter table el_document_account drop constraint FKsrdpctfwv15l9ep8s04k1p0e1
+alter table el_document_account drop constraint FKpb3m5b0sbmp7mb2jkfetpmfuw
+alter table el_document_account drop constraint FKohngh0k7n0haxd4e80kwv3e07
+alter table el_document_account drop constraint FKft9o4p9wtorwl74n80tl1gw2i
+alter table el_document_course_account drop constraint FKs9f5rq3no8wyelk7klf9gu4g6
+alter table el_document_course_account drop constraint FK2ydaw5fo5hj538sqjy9q2raj1
+alter table el_document_file drop constraint FK3295kci06c28yw1ggm8o8xcs
+alter table el_minor drop constraint major_cd
+alter table el_schedule_file drop constraint FK9dhfneksmem35xxth48gj7ayi
+alter table el_survey_file drop constraint FK7uwsaha8n6o4q7r3bcfol56f0
+alter table el_survey_question drop constraint FKcf31kt61himjwlb682yh8j108
+alter table job_description_version drop constraint FKiislbdjiimp3bawl481264a38
+alter table job_description_version drop constraint FKp7uunxfqe7ep48xwptgaoh7gq
+alter table job_description_version_file drop constraint FKjc9yctk3do6s713vfy1hd2jme
+alter table roles_privileges drop constraint FK5yjwxw2gvfyu76j3rgqwo685u
+alter table roles_privileges drop constraint FK9h2vewsqh8luhfq71xokh4who
+drop table account
+drop table account_roles
+drop table binder_cv
+drop table binder_cv_career_history
+drop table binder_cv_education
+drop table binder_cv_experience
+drop table binder_cv_licenses_certification
+drop table binder_cv_professional_affiliations
+drop table binder_cv_skills
+drop table el_border
+drop table el_border_file
+drop table el_border_master
+drop table el_course
+drop table el_course_account
+drop table el_course_file
+drop table el_course_manager
+drop table el_course_master
+drop table el_course_quiz
+drop table el_course_quiz_action
+drop table el_course_quiz_action_answer
+drop table el_course_quiz_action_history
+drop table el_course_quiz_file
+drop table el_course_quiz_question
+drop table el_course_section
+drop table el_course_section_action
+drop table el_course_section_action_history
+drop table el_course_section_file
+drop table el_course_survey
+drop table el_course_survey_action
+drop table el_course_survey_action_answer
+drop table el_course_survey_question
+drop table el_customer
+drop table el_document
+drop table el_document_account
+drop table el_document_course_account
+drop table el_document_file
+drop table el_document_template
+drop table el_file
+drop table el_major
+drop table el_minor
+drop table el_munje_bank
+drop table el_schedule
+drop table el_schedule_file
+drop table el_survey
+drop table el_survey_file
+drop table el_survey_question
+drop table job_description
+drop table job_description_version
+drop table job_description_version_file
+drop table privilege
+drop table role
+drop table roles_privileges
+drop sequence hibernate_sequence

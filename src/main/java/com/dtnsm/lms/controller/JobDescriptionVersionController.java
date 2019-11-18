@@ -2,13 +2,12 @@ package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.domain.JobDescriptionVersion;
 import com.dtnsm.lms.domain.JobDescriptionVersionFile;
-import com.dtnsm.lms.service.BinderJdService;
 import com.dtnsm.lms.service.JobDescriptionFileService;
 import com.dtnsm.lms.service.JobDescriptionService;
 import com.dtnsm.lms.service.JobDescriptionVersionService;
-import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -26,7 +25,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin/jd/version")
+@RequestMapping("/admin/jd/v")
+@Slf4j
 public class JobDescriptionVersionController {
 
 
@@ -35,9 +35,6 @@ public class JobDescriptionVersionController {
 
     @Autowired
     JobDescriptionService jobDescriptionService;
-
-    @Autowired
-    BinderJdService binderJdService;
 
     @Autowired
     JobDescriptionFileService fileService;
@@ -52,13 +49,13 @@ public class JobDescriptionVersionController {
         pageInfo.setParentTitle(pageTitle);
     }
 
-    @GetMapping("/list")
-    public String list(Model model) {
+    @GetMapping("/{id}")
+    public String list(@PathVariable("id") Long id, Model model) {
 
         pageInfo.setPageId("m-customer-list");
         pageInfo.setPageTitle(pageTitle + " List");
         model.addAttribute(pageInfo);
-        model.addAttribute("borders", versionService.getListByAcitveJd("1"));
+        model.addAttribute("borders", versionService.findAllVersions(id));
 
         return "admin/jd/version/list";
     }
@@ -75,29 +72,6 @@ public class JobDescriptionVersionController {
         return "admin/jd/version/add";
     }
 
-    @PostMapping("/add-post")
-    public String addPost(@Valid JobDescriptionVersion jdVersion
-            , @RequestParam("files") MultipartFile file
-            , BindingResult result) {
-        if(result.hasErrors()) {
-            return "admin/jd/version/add";
-        }
-
-        JobDescriptionVersion activeJd = versionService.getByJdIdAndActiveJd(jdVersion.getJd().getId());
-
-        if (activeJd == null) {
-            jdVersion.setRegDate(DateUtil.getTodayString());
-            jdVersion.setVer(1.0);
-            jdVersion.setIsActive("1");
-
-            JobDescriptionVersion version = versionService.save(jdVersion);
-            fileService.storeFile(file, version);
-        }
-
-        return "redirect:/admin/jd/version/list";
-    }
-
-
     // Job Description Version 이력 조회
     @GetMapping("/viewHistory/{id}")
     public String viewPage(@PathVariable("id") long id, Model model) {
@@ -106,7 +80,7 @@ public class JobDescriptionVersionController {
 
         JobDescriptionVersion version = versionService.getById(id);
 
-        List<JobDescriptionVersion> jobDescriptionVersions = versionService.getListByJdIdOrderByVerDesc(version.getJd().getId());
+        List<JobDescriptionVersion> jobDescriptionVersions = versionService.getListByJdIdOrderByVerDesc(version.getJobDescription().getId());
 
         model.addAttribute(pageInfo);
         model.addAttribute("borders", jobDescriptionVersions);
@@ -123,7 +97,7 @@ public class JobDescriptionVersionController {
         JobDescriptionVersion version = versionService.getById(id);
 
         model.addAttribute(pageInfo);
-        model.addAttribute("borders", version.getBinderJds());
+//        model.addAttribute("borders", version.getBinderJds());
 
         return "/admin/jd/version/viewUser";
     }
@@ -146,7 +120,7 @@ public class JobDescriptionVersionController {
         JobDescriptionVersion obj = versionService.getById(id);
 
         JobDescriptionVersion newVersion = new JobDescriptionVersion();
-        newVersion.setJd(obj.getJd());
+        newVersion.setJobDescription(obj.getJobDescription());
 
         pageInfo.setPageId("m-customer-edit");
         pageInfo.setPageTitle(pageTitle + " Edit");
@@ -168,16 +142,16 @@ public class JobDescriptionVersionController {
         }
 
 
-        JobDescriptionVersion activeJd = versionService.getByJdIdAndActiveJd(jdVersion.getJd().getId());
+        JobDescriptionVersion activeJd = versionService.getByJdIdAndActiveJd(jdVersion.getJobDescription().getId());
 
         if (activeJd != null) {
 
-            activeJd.setIsActive("0");
-            activeJd = versionService.save(activeJd);
-
-            jdVersion.setRegDate(DateUtil.getTodayString());
-            jdVersion.setVer(activeJd.getVer() + 0.1);
-            jdVersion.setIsActive("1");
+//            activeJd.setIsActive("0");
+//            activeJd = versionService.save(activeJd);
+//
+//            jdVersion.setRegDate(DateUtil.getTodayString());
+//            jdVersion.setVer(activeJd.getVer() + 0.1);
+//            jdVersion.setIsActive("1");
 
             JobDescriptionVersion version = versionService.save(jdVersion);
 

@@ -36,14 +36,12 @@
                     <h3 class="panel-title"></h3>
                 </div>
                 <div class="panel-body">
-                    <div>
-<!--                        <div class="col-sm-12" th:if="${borders.size()==0}">-->
-                            <div class="input-group mar-btm pull-right">
-                                <a th:href="@{/admin/jd/version/add}"
-                                   class="btn btn-success" th:text="#{label.add}">Add new</a>
-                            </div>
-<!--                        </div>-->
-                    </div>
+<!--                    <div>-->
+<!--                            <div class="input-group mar-btm pull-right">-->
+<!--                                <a th:href="@{/admin/jd/version/add}"-->
+<!--                                   class="btn btn-success" th:text="#{label.add}">Add new</a>-->
+<!--                            </div>-->
+<!--                    </div>-->
 
                     <h4>Job Description Current Version</h4>
                     <div th:switch="${borders}">
@@ -55,18 +53,18 @@
                                 <tr>
                                     <th class="text-center col-sm-2" th:text="#{label.title.jd}">이름</th>
                                     <th class="text-center col-sm-1" th:text="#{label.activeVersion}">Version</th>
-                                    <th class="text-center col-sm-1" th:text="#{label.updateDate}">등록일</th>
+                                    <th class="text-center col-sm-1" th:text="#{label.jd.releaseDate}">등록일</th>
                                     <th class="text-center col-sm-2" th:text="#{label.edit}"></th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="border, index : ${borders}">
-                                    <td th:text="${border.getJd().title + ' (' + border.getJd().shortName + ')'}" class="text-left"></td>
-                                    <td th:text="${#numbers.formatDecimal(border.getVer(), 1, 1)}" class="text-center"></td>
+                                    <td th:text="${border.jobDescription.title + ' (' + border.jobDescription.shortName + ')'}" class="text-left"></td>
+                                    <td th:text="${border.version_no}" class="text-center"></td>
                                     <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy-MMM-dd')} : ${border.getCreatedDate()}" class="text-center"></td>
                                     <td class="text-center">
-                                        <a th:if="${#strings.equalsIgnoreCase(border.getIsActive(), '1')}" class="btn btn-warning" th:href="@{/admin/jd/version/edit/{id}(id=${border.getId()})}" th:text="#{label.update}">Edit</a>
-                                        <a class="btn btn-success" th:href="@{/admin/jd/version/viewHistory/{id}(id=${border.getId()})}">Ver History</a>
+<!--                                        <a th:if="${#strings.equalsIgnoreCase(border.getIsActive(), '1')}" class="btn btn-warning" th:href="@{/admin/jd/version/edit/{id}(id=${border.getId()})}" th:text="#{label.update}">Edit</a>-->
+<!--                                        <a class="btn btn-success" th:href="@{/admin/jd/version/viewHistory/{id}(id=${border.getId()})}">Ver History</a>-->
                                         <a class="btn btn-mint" th:href="@{/admin/jd/version/viewUser/{id}(id=${border.getId()})}">User</a>
                                         <a class="btn btn-mint" th:href="@{/admin/jd/version/viewJdFile/{id}(id=${border.getId()})}">JD</a>
 <!--                                        <a href="#" class="btn btn-primary mar-ver" id="popupBtn2" th:onclick="|javascript:popupPdfView('${border.getId()}');return false;|" target="_blank">JD File</a>-->

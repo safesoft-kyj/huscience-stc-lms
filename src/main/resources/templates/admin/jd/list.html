@@ -63,8 +63,9 @@
                                     <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy/MMM/dd')} : ${border.getCreatedDate()}" class="text-center"></td>
                                     <td class="text-center">
                                         <div class="form-inline">
-                                            <a class="btn btn-warning" th:href="@{/admin/jd/edit/{id}(id=${border.getId()})}">Edit</a>
-                                            <a class="btn btn-danger" th:href="@{/admin/jd/delete/{id}(id=${border.getId()})}">Delete</a>
+                                            <a class="btn btn-info" th:href="@{/admin/jd/v/{id}(id=${border.getId()})}"><i class="fa fa-files-o"></i> Versions</a>
+<!--                                            <a class="btn btn-warning" th:href="@{/admin/jd/edit/{id}(id=${border.getId()})}">Edit</a>-->
+<!--                                            <a class="btn btn-danger" th:href="@{/admin/jd/delete/{id}(id=${border.getId()})}">Delete</a>-->
                                         </div>
                                     </td>
                                 </tr>

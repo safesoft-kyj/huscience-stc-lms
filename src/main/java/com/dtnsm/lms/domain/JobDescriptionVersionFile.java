@@ -33,9 +33,9 @@ public class JobDescriptionVersionFile extends AuditorCreateEntity<String> {
     private String mimeType;
 
     // Parent 필드 추가
-    @ManyToOne
-    @JoinColumn(name = "jd_id")
-    private JobDescriptionVersion jdVersion;
+    @OneToOne
+    @JoinColumn(name = "jobDescriptionVersionId", referencedColumnName = "id")
+    private JobDescriptionVersion jobDescriptionVersion;
 
     public JobDescriptionVersionFile() {
     }
@@ -47,12 +47,12 @@ public class JobDescriptionVersionFile extends AuditorCreateEntity<String> {
         this.mimeType = mimeType;
     }
 
-    public JobDescriptionVersionFile(String fileName, String saveName, long size, String mimeType, JobDescriptionVersion jdVersion) {
+    public JobDescriptionVersionFile(String fileName, String saveName, long size, String mimeType, JobDescriptionVersion jobDescriptionVersion) {
         this.fileName = fileName;
         this.saveName = saveName;
         this.size = size;
         this.mimeType = mimeType;
-        this.jdVersion = jdVersion;
+        this.jobDescriptionVersion = jobDescriptionVersion;
     }
 
     @Override

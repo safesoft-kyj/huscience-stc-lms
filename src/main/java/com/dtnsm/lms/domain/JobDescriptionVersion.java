@@ -2,10 +2,11 @@ package com.dtnsm.lms.domain;
 
 import com.dtnsm.lms.auth.AuditorEntity;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
 @Entity
 @Data
@@ -15,21 +16,23 @@ public class JobDescriptionVersion extends AuditorEntity<String> {
     @GeneratedValue
     private long id;
 
-    // 등록일
-    @Column(length = 10, nullable = false)
-    private String regDate;
+    @DateTimeFormat(pattern = "dd-MMM-yyyy")
+    @Column(name = "release_date")
+    private Date release_date;
 
-    private double ver = 1.0;
+    @Column(name = "version_no")
+    private String version_no;
 
-    private String isActive = "0";
+    private boolean active;
 
     @ManyToOne
-    @JoinColumn(name = "jd_id")
-    private JobDescription jd;
+    @JoinColumn(name = "jd_id", referencedColumnName = "id")
+    private JobDescription jobDescription;
 
-    @OneToMany(mappedBy = "jdVersion", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BinderJd>  binderJds = new ArrayList<>();
+//    @OneToMany(mappedBy = "jdVersion", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne
+    private JobDescriptionVersionFile jobDescriptionVersionFile;
 
-    @OneToMany(mappedBy = "jdVersion", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<JobDescriptionVersionFile> jdFiles = new ArrayList<>();
+    @Transient
+    private MultipartFile file;
 }

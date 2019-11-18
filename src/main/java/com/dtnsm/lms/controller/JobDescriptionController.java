@@ -1,24 +1,40 @@
 package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.domain.JobDescription;
+import com.dtnsm.lms.domain.JobDescriptionVersion;
 import com.dtnsm.lms.service.JobDescriptionService;
+import com.dtnsm.lms.service.JobDescriptionVersionService;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.PageInfo;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFTable;
+import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/jd")
+@Slf4j
+@SessionAttributes({"jobDescriptionVersion"})
 public class JobDescriptionController {
 
     @Autowired
     JobDescriptionService jobDescriptionService;
+
+    @Autowired
+    JobDescriptionVersionService jobDescriptionVersionService;
 
     private PageInfo pageInfo = new PageInfo();
     private String pageTitle = "Job Description";
@@ -40,26 +56,87 @@ public class JobDescriptionController {
     }
 
     @GetMapping("/add")
-    public String add(JobDescription jobDescription, Model model) {
+    public String add(Model model) {
+
 
         pageInfo.setPageId("m-customer-add");
         pageInfo.setPageTitle(pageTitle + " Insert");
         model.addAttribute(pageInfo);
-
         return "admin/jd/add";
     }
 
-    @PostMapping("/add-post")
-    public String addPost(@Valid JobDescription jobDescription
-            , BindingResult result) {
-        if(result.hasErrors()) {
-            return "admin/jd/add";
+    @PostMapping("/add")
+    public String uploadJobDescription(@RequestParam("file") MultipartFile file, Model model) throws Exception {
+        pageInfo.setPageId("m-customer-add");
+        pageInfo.setPageTitle(pageTitle + " Insert");
+        model.addAttribute(pageInfo);
+
+        if(!ObjectUtils.isEmpty(file) && file.isEmpty() == false) {
+            XWPFDocument document = new XWPFDocument(file.getInputStream());
+            List<XWPFTable> tables = document.getTables();
+            if (ObjectUtils.isEmpty(tables) == false && tables.size() == 4) {
+
+                String jobTitle = tables.get(0).getRow(0).getCell(1).getText();
+//                System.out.println("Job Title : " + jobTitle);
+                String fullName = jobTitle.substring(0, jobTitle.indexOf("(")).trim();
+                String shortName = jobTitle.substring(jobTitle.indexOf("(") + 1, jobTitle.indexOf(")")).trim();
+                log.debug("Job Title : {}, {}, {}", jobTitle, fullName, shortName);
+
+                XWPFTable versionHistory = tables.get(3);
+                int rowIndex = 0;
+                String versionNo = null;
+                String releaseDate = null;
+                for (XWPFTableRow row : versionHistory.getRows()) {
+                    if (row.getTableCells().size() == 2) {
+                        if (rowIndex > 1) {
+                            versionNo = row.getTableCells().get(0).getText().split(" ")[1];
+                            releaseDate = row.getTableCells().get(1).getText();
+
+                            log.debug("versionNo : {}, releaseDate : {}", releaseDate, versionNo);
+                        }
+                    }
+                    rowIndex++;
+                }
+
+                if (!StringUtils.isEmpty(versionNo) && !StringUtils.isEmpty(releaseDate)) {
+                    Optional<JobDescription> optionalJobDescription = jobDescriptionService.findByShortName(shortName);
+                    JobDescription jobDescription = optionalJobDescription.isPresent() ? optionalJobDescription.get() : new JobDescription();
+                    jobDescription.setShortName(shortName);
+                    jobDescription.setTitle(fullName);
+
+                    JobDescriptionVersion jobDescriptionVersion = new JobDescriptionVersion();
+                    jobDescriptionVersion.setJobDescription(jobDescription);
+                    jobDescriptionVersion.setVersion_no(versionNo);
+                    jobDescriptionVersion.setRelease_date(DateUtil.getStringToDate(releaseDate, "dd-MMM-yyyy"));
+                    jobDescriptionVersion.setActive(true);
+                    jobDescriptionVersion.setFile(file);
+
+                    if(ObjectUtils.isEmpty(jobDescription.getId()) == false) {
+                        Optional<JobDescriptionVersion> optionalJobDescriptionVersion = jobDescriptionVersionService.findByJobDescriptionVersion(jobDescriptionVersion);
+                        if (optionalJobDescriptionVersion.isPresent()) {
+                            return "redirect:/admin/jd/list";
+                        }
+                    }
+
+                    model.addAttribute("jobDescriptionVersion", jobDescriptionVersion);
+                    return "admin/jd/add-info";
+                } else {
+                    return "redirect:/admin/jd/add";
+                }
+            } else {
+                return "redirect:/admin/jd/add";
+            }
+        } else {
+            return "redirect:/admin/jd/add";
         }
+    }
 
-        jobDescription.setRegDate(DateUtil.getTodayString());
-        jobDescriptionService.save(jobDescription);
+    @PostMapping("/add-post")
+    public String addPost(@ModelAttribute("jobDescriptionVersion") JobDescriptionVersion jobDescriptionVersion, SessionStatus status) {
+        log.debug("@JobDescriptionVersion : {}", jobDescriptionVersion);
 
-
+        jobDescriptionVersionService.save(jobDescriptionVersion);
+        status.setComplete();
         return "redirect:/admin/jd/list";
     }
 
@@ -83,7 +160,6 @@ public class JobDescriptionController {
             return "admin/jd/edit";
         }
 
-        jobDescription.setRegDate(DateUtil.getTodayString());
         jobDescriptionService.save(jobDescription);
 
         return "redirect:/admin/jd/list";

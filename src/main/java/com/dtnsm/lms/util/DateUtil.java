@@ -2,10 +2,7 @@ package com.dtnsm.lms.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public  class DateUtil {
 
@@ -58,6 +55,16 @@ public  class DateUtil {
         Date date = null;
         try {
             date = new SimpleDateFormat("yyyy-MM-dd").parse(stringDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
+    public static Date getStringToDate(String stringDate, String format) {
+        Date date = null;
+        try {
+            date = new SimpleDateFormat(format, Locale.ENGLISH).parse(stringDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
