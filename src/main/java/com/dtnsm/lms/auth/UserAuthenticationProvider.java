@@ -58,6 +58,8 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         // 외부사용자 로그인 체크
         if (isLogin) {
             account = (CustomUserDetails) userService.loadUserByUsername(userId);
+            //query..........
+            account.setManager(true);
         } else {
             account = (CustomUserDetails) userService.loadUserByUsername(userId, password);
         }

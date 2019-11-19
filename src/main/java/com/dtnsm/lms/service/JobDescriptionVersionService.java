@@ -1,27 +1,29 @@
 package com.dtnsm.lms.service;
 
-import com.dtnsm.lms.domain.JobDescriptionVersionFile;
-import com.dtnsm.lms.domain.JobDescriptionVersion;
-import com.dtnsm.lms.repository.JobDescriptionVersionRepository;
+import com.dtnsm.common.entity.JobDescription;
+import com.dtnsm.common.entity.JobDescriptionVersion;
+import com.dtnsm.common.entity.QJobDescriptionVersion;
+import com.dtnsm.common.repository.JobDescriptionRepository;
+import com.dtnsm.common.repository.JobDescriptionVersionRepository;
+import com.querydsl.core.BooleanBuilder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class JobDescriptionVersionService {
-
-    JobDescriptionVersionRepository repository;
-
-    JobDescriptionFileService descriptionFileService;
-
-
-    public JobDescriptionVersionService(JobDescriptionVersionRepository repository) {
-        this.repository = repository;
-    }
+    private final JobDescriptionRepository jobDescriptionRepository;
+    private final JobDescriptionVersionRepository repository;
+    private final JobDescriptionFileService descriptionFileService;
 
     public List<JobDescriptionVersion> getList() {
         return repository.findAll();
@@ -29,15 +31,29 @@ public class JobDescriptionVersionService {
 
     public List<JobDescriptionVersion> getListByJdIdOrderByVerDesc(long jdId) {
 
-        return repository.findAllByJd_IdOrderByVerDesc(jdId);
+//        return repository.findAllByJd_IdOrderByVerDesc(jdId);
+        return null;
+    }
+
+    public Optional<JobDescriptionVersion> findByJobDescriptionVersion(JobDescriptionVersion jobDescriptionVersion) {
+        QJobDescriptionVersion qJobDescriptionVersion = QJobDescriptionVersion.jobDescriptionVersion;
+        BooleanBuilder builder = new BooleanBuilder();
+//        builder.and(qJobDescriptionVersion.jobDescription.id.eq(jobDescriptionVersion.getJobDescription().getId()));
+        builder.and(qJobDescriptionVersion.version_no.eq(jobDescriptionVersion.getVersion_no()));
+
+        return repository.findOne(builder);
     }
 
     public JobDescriptionVersion getByJdIdAndActiveJd(long jdId) {
-        return repository.findByJd_IdAndIsActive(jdId, "1");
+//        return repository.findByJd_IdAndIsActive(jdId, "1");
+        return null;
     }
 
-    public List<JobDescriptionVersion> getListByAcitveJd(String isActive) {
-        return repository.findAllByIsActive(isActive);
+    public Iterable<JobDescriptionVersion> findAllVersions(Integer id) {
+        QJobDescriptionVersion qJobDescriptionVersion = QJobDescriptionVersion.jobDescriptionVersion;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qJobDescriptionVersion.jobDescription.id.eq(id));
+        return repository.findAll(builder, qJobDescriptionVersion.release_date.desc());
     }
 
     public Page<JobDescriptionVersion> getPageList(Pageable pageable) {
@@ -53,16 +69,25 @@ public class JobDescriptionVersionService {
         return repository.findById(id).get();
     }
 
+    @Transactional
     public JobDescriptionVersion save(JobDescriptionVersion obj){
-        return repository.save(obj);
+        if(ObjectUtils.isEmpty(obj.getJobDescription().getId())) {
+            JobDescription savedJobDescription = jobDescriptionRepository.save(obj.getJobDescription());
+            obj.setJobDescription(savedJobDescription);
+        }
+        JobDescriptionVersion savedJobDescriptionVersion = repository.save(obj);
+
+        descriptionFileService.storeFile(obj.getFile(), savedJobDescriptionVersion);
+
+        return savedJobDescriptionVersion;
     }
 
     public void delete(JobDescriptionVersion obj) {
 
         // 첨부파일 삭제
-        for(JobDescriptionVersionFile jdFile : obj.getJdFiles()) {
-            descriptionFileService.deleteFile(jdFile);
-        }
+//        for(JobDescriptionVersionFile jdFile : obj.getJdFiles()) {
+//            descriptionFileService.deleteFile(jdFile);
+//        }
 
         repository.delete(obj);
     }

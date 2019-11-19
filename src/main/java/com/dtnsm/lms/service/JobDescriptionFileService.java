@@ -1,7 +1,7 @@
 package com.dtnsm.lms.service;
 
-import com.dtnsm.lms.domain.JobDescriptionVersionFile;
-import com.dtnsm.lms.domain.JobDescriptionVersion;
+import com.dtnsm.common.entity.JobDescriptionVersion;
+import com.dtnsm.common.entity.JobDescriptionVersionFile;
 import com.dtnsm.lms.exception.FileDownloadException;
 import com.dtnsm.lms.exception.FileUploadException;
 import com.dtnsm.lms.properties.FileUploadProperties;

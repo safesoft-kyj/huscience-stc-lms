@@ -17,6 +17,8 @@ public class CustomUserDetails implements UserDetails {
 
     Account user;
 
+    private boolean manager;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
@@ -59,5 +61,13 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public boolean isManager() {
+        return manager;
+    }
+
+    public void setManager(boolean manager) {
+        this.manager = manager;
     }
 }

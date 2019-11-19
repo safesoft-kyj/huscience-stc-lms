@@ -8,15 +8,19 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import javax.sql.DataSource;
 
 @SpringBootApplication
 @EnableConfigurationProperties({FileUploadProperties.class, ImageUploadProperties.class})
+@EntityScan({"com.dtnsm.lms", "com.dtnsm.common.entity"})
+@EnableJpaRepositories({"com.dtnsm.common.repository", "com.dtnsm.lms.repository"})
 @MapperScan(value={"com.dtnsm.lms.mybatis.mapper"})
 public class LmsApplication {
 

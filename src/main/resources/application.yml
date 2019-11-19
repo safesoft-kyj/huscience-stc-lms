@@ -3,5 +3,3 @@ spring:
     open-in-view: true
   profiles:
     active: prod
-
-

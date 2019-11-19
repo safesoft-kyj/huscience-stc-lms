@@ -16,10 +16,17 @@ spring:
     servlet:
       content-type: text/html
   datasource:
-    url: jdbc:sqlserver://localhost:1433;DatabaseName=elearning
+    url: jdbc:sqlserver://localhost:1433;DatabaseName=lms_test_20191118
     username: sa
-    password: Dtncro@123##
+    password: Test1234!
+#    url: jdbc:sqlserver://localhost:1433;DatabaseName=lms_20191115
+#    username: sa
+#    password: Test1234!
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    initialization-mode: always
+    data: classpath:/init-data/data.sql
+    sql-script-encoding: UTF-8
+    continue-on-error: true
   flyway:
 #      url: jdbc:sqlserver://localhost:1433;DatabaseName=elearning
 #      user: sa
@@ -30,9 +37,16 @@ spring:
     enabled: true
   jpa:
     hibernate:
-      ddl-auto: update
-    generate-ddl: true
+      ddl-auto: create
     show-sql: true
+    generate-ddl: true
+#    properties:
+##      javax.persistence.schema-generation.database.action: drop-and-create
+#      javax.persistence.schema-generation.scripts.action: drop-and-create
+#      javax.persistence.schema-generation.create-source: metadata
+#      javax.persistence.schema-generation.scripts.create-target: create.sql
+#      javax.persistence.schema-generation.drop-source: metadata
+#      javax.persistence.schema-generation.scripts.drop-target: drop.sql
   servlet:
     multipart:
       enabled: true
