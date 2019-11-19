@@ -1,9 +1,12 @@
 package com.dtnsm.lms.controller;
 
+import com.dtnsm.common.entity.Signature;
+import com.dtnsm.common.repository.SignatureRepository;
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.FileUtil;
+import com.dtnsm.lms.util.GlobalUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 import org.slf4j.LoggerFactory;
@@ -27,6 +30,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -66,6 +70,10 @@ public class DocumentController {
 
     @Autowired
     private DocumentFileService documentFileService;
+
+    @Autowired
+    SignatureRepository signatureRepository;
+
 
     private PageInfo pageInfo = new PageInfo();
 
@@ -318,6 +326,7 @@ public class DocumentController {
         model.addAttribute(pageInfo);
         model.addAttribute("document", documentAccount.getDocument());
         model.addAttribute("documentAccount", documentAccount);
+        model.addAttribute("signature", GlobalUtil.getSignature(signatureRepository, SessionUtil.getUserId()));
 
         return "content/document/approval";
     }

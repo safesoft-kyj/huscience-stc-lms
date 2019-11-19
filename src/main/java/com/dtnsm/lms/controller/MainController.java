@@ -102,11 +102,17 @@ public class MainController {
         List<DocumentAccount> documentAccountOrders2 = documentAccountService.getAllByStatus(userId, "0");
 
 
-        // 교육결재 1차 미결함
+        // 교육결재 미결함
         model.addAttribute("app1List", courseAccountOrders1);
 
-        // 교육결재 1차 완결함
+        // 교육결재 진행함
         model.addAttribute("app1CommitList", courseAccountOrders2);
+
+        // 교육결재 미결함
+        model.addAttribute("app2List", documentAccountOrders1);
+
+        // 교육결재 진행함
+        model.addAttribute("app2CommitList", documentAccountOrders2);
 
 
         // 교육결재 1차 미결건수
@@ -120,7 +126,7 @@ public class MainController {
         model.addAttribute("documentApprCount", documentAccountOrders1.size());
 
         // 전자결재 1차 진행건수
-        model.addAttribute("documentProcessCount", courseAccountOrders2.size());
+        model.addAttribute("documentProcessCount", documentAccountOrders2.size());
 
 
         // 과정그룹별 과정 수

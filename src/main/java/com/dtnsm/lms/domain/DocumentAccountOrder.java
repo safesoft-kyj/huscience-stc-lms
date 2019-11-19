@@ -36,10 +36,13 @@ public class DocumentAccountOrder extends AuditorEntity<String> {
     // 결재일
     private Date fDate;
 
+    @Lob
+    @Column
+    private String signature;
+
     @ManyToOne
     @JoinColumn(name = "f_user_id",columnDefinition="VARCHAR(30)")
     private Account  fUser;
-
 
     // 상태 : 0: 미결, 1: 승인, 2:기각
     @Column(length = 1)

@@ -65,6 +65,15 @@ public class CourseAccount extends AuditorEntity<String> {
     private String fStatus = "0";
 
     @OneToMany(mappedBy = "courseAccount", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CourseSectionAction> courseSectionActions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "courseAccount", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CourseQuizAction> courseQuizActions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "courseAccount", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CourseSurveyAction> courseSurveyActions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "courseAccount", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CourseAccountOrder> courseAccountOrders = new ArrayList<>();
 
     // 교육과정 종결

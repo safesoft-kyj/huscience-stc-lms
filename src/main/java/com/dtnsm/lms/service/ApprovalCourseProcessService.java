@@ -6,6 +6,7 @@ import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.*;
 import com.dtnsm.lms.repository.CourseAccountRepository;
 import com.dtnsm.lms.util.DateUtil;
+import com.dtnsm.lms.util.GlobalUtil;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,8 @@ public class ApprovalCourseProcessService {
     @Autowired
     CourseAccountOrderService courseAccountOrderService;
 
-
+    @Autowired
+    SignatureService signatureService;
 
 //    public void courseRequestProcess(Account account, Course course) {
 //        Account apprAccount = userService.getAccountByUserId(account.getParentUserId());
@@ -94,11 +96,12 @@ public class ApprovalCourseProcessService {
         CourseAccount saveCourseAccount = courseAccountService.save(courseAccount);
 
         // 전자결재가 있는 경우
-        if(courseAccount.getIsApproval().equals("1")) {
+        if(saveCourseAccount.getIsApproval().equals("1")) {
 
             // 내결재사항을 추가한다.
             CourseAccountOrder courseAccountOrder = new CourseAccountOrder();
             courseAccountOrder.setFUser(account);
+            courseAccountOrder.setSignature(signatureService.getSign(account.getUserId()));
             courseAccountOrder.setCourseAccount(saveCourseAccount);
 
             // fKind : 0:초기, 1:결재, 2. 합의, 3:확인
@@ -153,7 +156,8 @@ public class ApprovalCourseProcessService {
         // 과정 생성
         // TODO : 교육신청시 교육과정 생성 유무
 
-        //createUserCourse(courseAccount1);
+        // 사용자별 과정 생성
+        createUserCourse(saveCourseAccount);
     }
 
 
@@ -166,6 +170,7 @@ public class ApprovalCourseProcessService {
         if(course.getSections().size() > 0) {
             for (CourseSection courseSection : course.getSections()) {
                 CourseSectionAction courseSectionAction = new CourseSectionAction();
+                courseSectionAction.setCourseAccount(courseAccount);
                 courseSectionAction.setAccount(account);
                 courseSectionAction.setCourseSection(courseSection);
                 courseSectionAction.setTotalUseSecond(0);
@@ -179,6 +184,7 @@ public class ApprovalCourseProcessService {
         if(course.getIsQuiz().equals("Y") && course.getQuizzes().size() > 0) {
             for (CourseQuiz courseQuiz : course.getQuizzes()) {
                 CourseQuizAction courseQuizAction = new CourseQuizAction();
+                courseQuizAction.setCourseAccount(courseAccount);
                 courseQuizAction.setAccount(account);
                 courseQuizAction.setQuiz(courseQuiz);
                 courseQuizAction.setTotalUseSecond(0);
@@ -192,6 +198,7 @@ public class ApprovalCourseProcessService {
         if(course.getIsSurvey().equals("Y") && course.getSurveys().size() > 0) {
             for (CourseSurvey courseSurvey : course.getSurveys()) {
                 CourseSurveyAction courseSurveyAction = new CourseSurveyAction();
+                courseSurveyAction.setCourseAccount(courseAccount);
                 courseSurveyAction.setAccount(account);
                 courseSurveyAction.setCourseSurvey(courseSurvey);
                 courseSurveyAction.setStatus(SurveyStatusType.REQUEST);
@@ -208,6 +215,7 @@ public class ApprovalCourseProcessService {
 
         int finalCount = courseAccountOrder.getCourseAccount().getFFinalCount();
 
+        courseAccountOrder.setSignature(signatureService.getSign(courseAccountOrder.getFUser().getUserId()));
         courseAccountOrder.setFDate(DateUtil.getToday());
         courseAccountOrder.setFNext("0");
         courseAccountOrder.setFStatus("1");
@@ -246,6 +254,7 @@ public class ApprovalCourseProcessService {
 
         int finalCount = courseAccountOrder.getCourseAccount().getFFinalCount();
 
+        courseAccountOrder.setSignature(signatureService.getSign(courseAccountOrder.getFUser().getUserId()));
         courseAccountOrder.setFDate(DateUtil.getToday());
         courseAccountOrder.setFNext("0");
         courseAccountOrder.setFStatus("2");
@@ -282,6 +291,7 @@ public class ApprovalCourseProcessService {
 
         int finalCount = courseAccountOrder.getCourseAccount().getFFinalCount();
 
+        courseAccountOrder.setSignature(signatureService.getSign(courseAccountOrder.getFUser().getUserId()));
         courseAccountOrder.setFDate(DateUtil.getToday());
         courseAccountOrder.setFNext("0");
         courseAccountOrder.setFStatus("1");
@@ -320,6 +330,7 @@ public class ApprovalCourseProcessService {
 
         int finalCount = courseAccountOrder.getCourseAccount().getFFinalCount();
 
+        courseAccountOrder.setSignature(signatureService.getSign(courseAccountOrder.getFUser().getUserId()));
         courseAccountOrder.setFDate(DateUtil.getToday());
         courseAccountOrder.setFNext("0");
         courseAccountOrder.setFStatus("2");

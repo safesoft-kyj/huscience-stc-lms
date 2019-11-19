@@ -140,24 +140,31 @@
                                         <hr class="table-head">
                                         <div class="table-responsive">
                                             <table class="table" cellspacing="0" width="100%">
-                                            <colgroup><col width="5%" /><col width="10%" /><col width="35%" /><col width="35%" /><col width="15%" /></colgroup>
+                                            <colgroup><col width="5%" /><col width="10%" /><col width="35%" /><col width="10%" /><col width="25%" /><col width="15%" /></colgroup>
                                             <thead>
                                             <th class="text-center">No</th>
                                             <th class="text-center">구분</th>
                                             <th class="text-center">강의명</th>
                                             <th class="text-center">학습기간</th>
-                                            <th class="text-center">시간</th>
+                                            <th class="text-center">학습시간</th>
+                                            <th class="text-center">Date & Times</th>
                                             </thead>
                                             <tbody>
                                             <tr th:each="sections, index : ${course.getSections()}">
                                                 <td class="text-center" th:text="${index.count}"></td>
                                                 <td class="text-center" th:text="#{label.title.section}"></td>
-                                                <td class="text-center">
-                                                    <a th:href="@{/admin/course/section/edit/{id}(id=${sections.getId()})}">
-                                                        <span th:text="${sections.getName()}"></span>
-                                                    </a>
+                                                <td class="text-left">
+                                                    <div th:text="${sections.getName()}"></div>
+                                                    <div th:utext="${sections.getDescription().replaceAll('\r\n', '<br>')}"></div>
                                                 </td>
-                                                <td class="text-center" th:text="${sections.getFromDate() + ' ' + sections.getFromTime() + ' ~ ' + sections.getToDate() + ' ' + sections.getToTime()}"}></td>
+                                                <th:block th:if="${#strings.equalsIgnoreCase(sections.getFromDate(), sections.getToDate())}">
+                                                    <td th:text="${sections.getFromDate()}" class="text-center"></td>
+                                                </th:block>
+                                                <th:block th:unless="${#strings.equalsIgnoreCase(sections.getFromDate(), sections.getToDate())}">
+                                                    <td th:text="${sections.getFromDate() + '~' + sections.getToDate()}" class="text-center"></td>
+                                                </th:block>
+
+                                                <td th:text="${sections.getFromTime() + '~' + sections.getToTime()}" class="text-center"></td>
                                                 <td class="text-center" th:text="${sections.getMinute() + '분'}"></td>
                                             </tr>
 
@@ -169,7 +176,13 @@
                                                         <span th:text="${quiz.getName()}"></span>
                                                     </a>
                                                 </td>
-                                                <td class="text-center" th:text="${quiz.getFromDate() + ' ~ ' + quiz.getToDate()}"></td>
+                                                <th:block th:if="${#strings.equalsIgnoreCase(quiz.getFromDate(), quiz.getToDate())}">
+                                                    <td th:text="${quiz.getFromDate()}" class="text-center"></td>
+                                                </th:block>
+                                                <th:block th:unless="${#strings.equalsIgnoreCase(quiz.getFromDate(), quiz.getToDate())}">
+                                                    <td th:text="${quiz.getFromDate() + '~' + quiz.getToDate()}" class="text-center"></td>
+                                                </th:block>
+                                                <td class="text-center"></td>
                                                 <td class="text-center" th:text="${quiz.getMinute() + '분'}"></td>
                                             </tr>
                                             <tr th:each="survey, index : ${course.getSurveys()}">
@@ -180,7 +193,13 @@
                                                         <span th:text="${survey.getName()}"></span>
                                                     </a>
                                                 </td>
-                                                <td class="text-center" th:text="${survey.getFromDate() + ' ~ ' + survey.getToDate()}"}></td>
+                                                <th:block th:if="${#strings.equalsIgnoreCase(survey.getFromDate(), survey.getToDate())}">
+                                                    <td th:text="${survey.getFromDate()}" class="text-center"></td>
+                                                </th:block>
+                                                <th:block th:unless="${#strings.equalsIgnoreCase(survey.getFromDate(), survey.getToDate())}">
+                                                    <td th:text="${survey.getFromDate() + '~' + survey.getToDate()}" class="text-center"></td>
+                                                </th:block>
+                                                <td class="text-center"></td>
                                                 <td class="text-center"></td>
                                             </tr>
 

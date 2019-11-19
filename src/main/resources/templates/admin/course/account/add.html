@@ -41,7 +41,8 @@
                 <div class="panel-body">
                     <!--===================================================-->
                     <!--End Horizontal Form-->
-                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/account/add-post}" th:object="${course}" method="post" enctype="multipart/form-data" >
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/account/add-post}" method="post" enctype="multipart/form-data" >
+                        <input hidden name="courseId" th:value="${courseId}">
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="mailList">교육대상자</label>
                             <div class="col-sm-9">
@@ -58,9 +59,7 @@
                             <button class="btn btn-primary" type="submit" id="submit-all" th:text="#{label.save}">
                                 <i class="fa fa-upload-cloud"></i> 저장
                             </button>
-                            <a th:href="@{/admin/course/list/{typeId}(typeId=${course.getCourseMaster().getId()})}" class="btn btn-success" th:text="#{label.list}">
-                                <i class="fa fa-upload-cloud"></i> 목록
-                            </a>
+                            <a class="btn btn-primary" th:href="@{/admin/course/account/list/{courseId}(courseId=${courseId})}"><i class="demo-pli-back"></i> Back</a>
                         </div>
                     </form>
                 </div><!--panel-body End -->
@@ -75,8 +74,8 @@
 <!--    <script th:src="@{/default/plugins/dropzone/dropzone.js}"></script>-->
 
 
-    <script type="text/javascript" th:src="@{/editor/js/HuskyEZCreator.js}" charset="utf-8"></script>
-    <script type="text/javascript" th:src="@{/default/js/custom/course-editor.js}" charset="utf-8"></script>
+<!--    <script type="text/javascript" th:src="@{/editor/js/HuskyEZCreator.js}" charset="utf-8"></script>-->
+<!--    <script type="text/javascript" th:src="@{/default/js/custom/course-editor.js}" charset="utf-8"></script>-->
 
 <!--    <script type="text/javascript" th:src="@{/default/js/custom/course-file.js}" charset="utf-8"></script>-->
 
@@ -95,13 +94,13 @@
             todayHighlight: true
         });
 
-        $('#demo-dp-range2 .input-daterange').datepicker({
-            // format: "MM dd, yyyy",
-            format: "yyyy-mm-dd",
-            todayBtn: "linked",
-            autoclose: true,
-            todayHighlight: true
-        });
+        // $('#demo-dp-range2 .input-daterange').datepicker({
+        //     // format: "MM dd, yyyy",
+        //     format: "yyyy-mm-dd",
+        //     todayBtn: "linked",
+        //     autoclose: true,
+        //     todayHighlight: true
+        // });
 
         $('#mailList').chosen({width:'100%'});
 

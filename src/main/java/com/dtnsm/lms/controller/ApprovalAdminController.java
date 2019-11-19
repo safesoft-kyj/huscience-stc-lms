@@ -1,13 +1,7 @@
 package com.dtnsm.lms.controller;
 
-import com.dtnsm.common.entity.Signature;
-import com.dtnsm.common.repository.SignatureRepository;
-import com.dtnsm.common.utils.Base64Utils;
-import com.dtnsm.lms.auth.UserServiceImpl;
-import com.dtnsm.lms.domain.CourseAccountOrder;
-import com.dtnsm.lms.mybatis.service.UserMapperService;
-import com.dtnsm.lms.repository.UserRepository;
-import com.dtnsm.lms.service.*;
+import com.dtnsm.lms.service.CourseAccountOrderService;
+import com.dtnsm.lms.service.CourseAccountService;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +10,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.activation.MimetypesFileTypeMap;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/approval")

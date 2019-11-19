@@ -33,13 +33,16 @@ public class CourseAccountOrder extends AuditorEntity<String> {
     @ColumnDefault("'0'")
     private String fNext = "0";
 
+    @Lob
+    @Column
+    private String signature;
+
     // 결재일
     private Date fDate;
 
     @ManyToOne
     @JoinColumn(name = "f_user_id",columnDefinition="VARCHAR(30)")
     private Account  fUser;
-
 
     // 상태 : 0: 미결, 1: 승인, 2:기각
     @Column(length = 1)

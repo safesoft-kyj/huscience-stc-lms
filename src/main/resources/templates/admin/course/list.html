@@ -65,6 +65,7 @@
                                         <th class="text-center col-sm-1" th:text="#{label.title.section}">강의</th>
                                         <th class="text-center col-sm-1" th:text="#{label.title.quiz}">시험</th>
                                         <th class="text-center col-sm-1" th:text="#{label.title.survey}">설문</th>
+                                        <th class="text-center col-sm-1" th:text="#{label.course.accountlist}">교육대상자</th>
                                         <th class="text-center col-sm-3" th:text="#{label.actions}">Edit</th>
                                     </tr>
                                     </thead>
@@ -89,6 +90,10 @@
                                         <td class="text-center">
                                             <a th:if="${border.getIsSurvey().equals('Y')}" th:href="@{/admin/course/survey/list/{courseId}(courseId=${border.getId()})}"><span class="badge badge-warning" th:text="${border.getSurveys().size()}"></span></a>
 <!--                                            <a class="label label-mint" th:if="${border.getIsSurvey().equals('Y')}" th:href="@{/admin/course/survey/add/{id}(id=${border.getId()})}" th:text="#{label.course.add}">설문등록</a>-->
+                                        </td>
+                                        <td class="text-center">
+                                            <a th:href="@{/admin/course/account/list/{courseId}(courseId=${border.getId()})}"><span class="badge badge-warning" th:text="${border.getCourseAccountList().size()}"></span></a>
+                                            <!--                                            <a class="label label-mint" th:if="${border.getIsSurvey().equals('Y')}" th:href="@{/admin/course/survey/add/{id}(id=${border.getId()})}" th:text="#{label.course.add}">설문등록</a>-->
                                         </td>
                                         <td class="text-center">
                                             <th:block th:if="${border.getActive() == 1}">

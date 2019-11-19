@@ -86,9 +86,9 @@
                                 </tr>
                                 <tr>
                                     <th:block th:each="border, index : ${documentAccount.getDocumentAccountOrders()}">
-                                        <td th:switch="${border.getFStatus()}" class="text-center">
+                                        <td th:switch="${border.getFStatus()}" class="text-center" style="vertical-align: middle">
                                             <span th:case="${'0'}" class="text-info" th:text="${''}"></span>
-                                            <span th:case="${'1'}" class="text-success" th:text="${'승인'}"></span>
+                                            <img th:case="${'1'}" class="text-success sign" th:src="${border.getSignature()}"></img>
                                             <span th:case="${'2'}" class="text-danger" th:text="${'반려'}"></span>
                                         </td>
                                     </th:block>

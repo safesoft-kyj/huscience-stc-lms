@@ -45,6 +45,11 @@ public class CourseQuizAction extends AuditorCreateEntity<String> {
 
     // Parent 필드 추가
     @ManyToOne
+    @JoinColumn(name = "doc_id")
+    private CourseAccount courseAccount;
+
+    // Parent 필드 추가
+    @ManyToOne
     @JoinColumn(name = "quiz_id")
     private CourseQuiz quiz;
 

@@ -48,7 +48,7 @@
 <!--                                    <span th:text="#{label.list.title(${borders.getTotalElements()})}"></span>-->
 <!--                                </div>-->
                                 <div class="col-sm-12 text-right">
-                                    <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/section/add/{courseId}(courseId=__${courseId}__)}"><i class="demo-pli-add"></i> Add</a>
+                                    <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/account/add/{courseId}(courseId=__${courseId}__)}"><i class="demo-pli-add"></i> Add</a>
                                     <a class="btn btn-primary" th:href="@{/admin/course/list/{typeId}(typeId=${typeId})}"><i class="demo-pli-back"></i> Back</a>
                                 </div>
                             </div>
@@ -59,26 +59,33 @@
                                     <tr style="background: #FAFAFA;">
                                         <th class="text-center" th:text="#{label.no}">번호</th>
                                         <th class="text-center" th:text="#{label.subject}">제목</th>
-                                        <th class="text-center col-sm-2" th:text="#{label.course.section.period}">등록일</th>
-                                        <th class="text-center col-sm-2" th:text="#{label.actions}">Edit</th>
+                                        <th class="text-center" th:text="#{label.course.account.requestType}">신청유형</th>
+                                        <th class="text-center" th:text="#{label.course.account.apprStatus}">결재상태</th>
+                                        <th class="text-center" th:text="#{label.course.account.courseStep}">교육단계</th>
+                                        <th class="text-center" th:text="#{label.status}">상태</th>
+                                        <th class="text-center " th:text="#{label.view}">View</th>
+                                        <th class="text-center" th:text="#{label.actions}">Edit</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr th:each="border, index : ${borders}">
-                                        <td th:text="${index.count}" class="text-center"></td>
-                                        <td>
-                                            <div th:text="${border.getName()}"></div>
-                                            <div th:utext="${border.getDescription().replaceAll('\r\n', '<br>')}"></div>
-                                        </td>
-                                        <th:block th:if="${#strings.equalsIgnoreCase(border.fromDate, border.toDate)}">
-                                            <td th:text="${border.fromDate}" class="text-center"></td>
-                                        </th:block>
-                                        <th:block th:unless="${#strings.equalsIgnoreCase(border.fromDate, border.toDate)}">
-                                            <td th:text="${border.fromDate + '~' + border.toDate}" class="text-center"></td>
-                                        </th:block>
+                                        <td class="text-center" th:text="${index.count}"></td>
+                                        <td class="text-center" th:text="${border.getAccount().getName()}"></td>
                                         <td class="text-center">
-                                            <a th:text="#{label.edit}" th:href="@{/admin/course/section/edit/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
-                                            <a th:text="#{label.delete}" th:href="@{/admin/course/section/delete/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                            <span th:if="${#strings.equalsIgnoreCase(border.getRequestType(), '0')}">지정</span>
+                                            <span th:if="${#strings.equalsIgnoreCase(border.getRequestType(), '1')}">신청</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span th:if="${#strings.equalsIgnoreCase(border.getFStatus(), '0')}">진행중</span>
+                                            <span th:if="${#strings.equalsIgnoreCase(border.getFStatus(), '1')}">최종승인</span>
+                                        <td class="text-center" th:text="${border.getCourseStatus()}"></td>
+                                        <td class="text-center"></td>
+                                        <td class="text-center">
+                                            <a th:href="@{/admin/course/account/view/{id}(id=${border.getId()})}"><span class="badge badge-mint" th:text="#{label.view}"></span></a>
+                                        </td>
+                                        <td class="text-center">
+                                            <a th:text="#{label.edit}" th:href="@{/admin/course/account/edit/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                            <a th:text="#{label.delete}" th:href="@{/admin/course/account/delete/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
                                         </td>
                                     </tr>
                                     </tbody>

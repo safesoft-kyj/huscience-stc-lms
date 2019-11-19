@@ -150,7 +150,7 @@ public class CourseSurveyAdminController {
 
         CourseSurvey courseSurvey1 = courseSurveyService.saveSurvey(courseSurvey);
 
-        return "redirect:/admin/course/view/" + courseSurvey1.getCourse().getId();
+        return "redirect:/admin/course/survey/list/" + courseSurvey1.getCourse().getId();
     }
 
     @GetMapping("/delete/{id}")

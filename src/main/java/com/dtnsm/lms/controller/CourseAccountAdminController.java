@@ -4,6 +4,8 @@ import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.Account;
 import com.dtnsm.lms.domain.Course;
 import com.dtnsm.lms.domain.CourseAccount;
+import com.dtnsm.lms.service.ApprovalCourseProcessService;
+import com.dtnsm.lms.service.ApprovalDocumentProcessService;
 import com.dtnsm.lms.service.CourseAccountService;
 import com.dtnsm.lms.service.CourseService;
 import com.dtnsm.lms.util.DateUtil;
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Controller
@@ -29,40 +33,49 @@ public class CourseAccountAdminController {
     CourseAccountService courseAccountService;
 
     @Autowired
+    ApprovalCourseProcessService approvalCourseProcessService;
+
+    @Autowired
     CourseService courseService;
 
     private PageInfo pageInfo = new PageInfo();
 
     public CourseAccountAdminController() {
         pageInfo.setParentId("m-course");
-        pageInfo.setParentTitle("공지사항");
+        pageInfo.setParentTitle("교육대상자");
 
         //courseMaster = courseMasterService.getById("A01");
+    }
+
+    @GetMapping("/list/{courseId}")
+    public String list(@PathVariable("courseId") Long courseId, Model model) {
+
+        Course course = courseService.getCourseById(courseId);
+
+        pageInfo.setPageId("m-course-list-page");
+        pageInfo.setPageTitle("교육대상자 조회");
+        model.addAttribute(pageInfo);
+        model.addAttribute("borders", course.getCourseAccountList());
+        model.addAttribute("typeId", course.getCourseMaster().getId());
+
+        return "admin/course/account/list";
     }
 
     @GetMapping("/add/{courseId}")
     public String courseAccountAdd(@PathVariable("courseId") Long courseId, Model model) {
 
-        Course course = courseService.getCourseById(courseId);
-
-        //Course course = courseService.save(new Course("", "", this.courseMaster));
-
         pageInfo.setPageTitle("필수교육자 등록");
 
-
         model.addAttribute(pageInfo);
-        model.addAttribute("course", course);
-
+        model.addAttribute("courseId", courseId);
         model.addAttribute("mailList", userService.getAccountList());
 
-        return "admin/course/add";
+        return "admin/course/account/add";
     }
 
     @PostMapping("/add-post")
     public String courseAccountAddPost(@RequestParam(value = "") long courseId
-            , @RequestParam(value = "mailList", required = false, defaultValue = "0") String[] mails
-            , BindingResult result) {
-
+            , @RequestParam(value = "mailList", required = false, defaultValue = "0") String[] mails) {
 
         Course course = courseService.getCourseById(courseId);
 
@@ -70,18 +83,18 @@ public class CourseAccountAdminController {
         for(String userId : mails) {
 
             Account account = userService.findByUserId(userId);
-            CourseAccount courseAccount = new CourseAccount();
-            courseAccount.setCourse(course);
-            courseAccount.setAccount(account);
-            courseAccount.setRequestDate(DateUtil.getTodayString());
-            courseAccount.setFWdate(DateUtil.getToday());
 
+            List<CourseAccount> tmpCourseAccounts = courseAccountService.getCourseAccountByUserId(userId);
 
+            // 등록되지 않은 사용자만 등록한다.
+            if (tmpCourseAccounts.size() == 0) {
 
-            courseAccountService.save(courseAccount);
+                // 요청 프로세서를 실행(요청 결재 및 강의를 생성한다)
+                approvalCourseProcessService.courseRequestProcess(account, course);
+            }
         }
 
-        return "redirect:/admin/course/account/edit/" + course.getId();
+        return "redirect:/admin/course/account/list/" + courseId;
     }
 
 //

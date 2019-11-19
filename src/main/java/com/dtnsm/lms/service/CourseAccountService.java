@@ -1,7 +1,6 @@
 package com.dtnsm.lms.service;
 
-import com.dtnsm.lms.auth.UserServiceImpl;
-import com.dtnsm.lms.domain.*;
+import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.repository.CourseAccountOrderRepository;
 import com.dtnsm.lms.repository.CourseAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -43,8 +41,8 @@ public class CourseAccountService {
         courseAccountRepository.deleteCourseAccountByCourse_Id(courseId);
     }
 
-    public CourseAccount getOne(long id) {
-        return courseAccountRepository.getOne(id);
+    public CourseAccount getById(long id) {
+        return courseAccountRepository.findById(id).get();
     }
 
     public CourseAccount getByCourseIdAndUserId(long courseId, String userId) {

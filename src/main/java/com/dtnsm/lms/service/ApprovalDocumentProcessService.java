@@ -28,6 +28,9 @@ public class ApprovalDocumentProcessService {
     @Autowired
     private MailService mailService;
 
+    @Autowired
+    SignatureService signatureService;
+
     // 기안 처리
     public void documentRequestProcess(Account account, Document document) {
 
@@ -62,6 +65,7 @@ public class ApprovalDocumentProcessService {
         // 내결재사항을 추가한다.
         DocumentAccountOrder documentAccountOrder = new DocumentAccountOrder();
         documentAccountOrder.setFUser(account);
+        documentAccountOrder.setSignature(signatureService.getSign(account.getUserId()));
         documentAccountOrder.setDocumentAccount(saveDocumentAccount);
 
         // fKind : 0:초기, 1:결재, 2. 합의, 3:확인
@@ -114,6 +118,7 @@ public class ApprovalDocumentProcessService {
 
         int finalCount = documentAccountOrder.getDocumentAccount().getFFinalCount();
 
+        documentAccountOrder.setSignature(signatureService.getSign(documentAccountOrder.getFUser().getUserId()));
         documentAccountOrder.setFDate(DateUtil.getToday());
         documentAccountOrder.setFNext("0");
         documentAccountOrder.setFStatus("1");
@@ -153,6 +158,7 @@ public class ApprovalDocumentProcessService {
 
         int finalCount = documentAccountOrder.getDocumentAccount().getFFinalCount();
 
+        documentAccountOrder.setSignature(signatureService.getSign(documentAccountOrder.getFUser().getUserId()));
         documentAccountOrder.setFDate(DateUtil.getToday());
         documentAccountOrder.setFNext("0");
         documentAccountOrder.setFStatus("2");
@@ -174,6 +180,7 @@ public class ApprovalDocumentProcessService {
 
         int finalCount = documentAccountOrder.getDocumentAccount().getFFinalCount();
 
+        documentAccountOrder.setSignature(signatureService.getSign(documentAccountOrder.getFUser().getUserId()));
         documentAccountOrder.setFDate(DateUtil.getToday());
         documentAccountOrder.setFNext("0");
         documentAccountOrder.setFStatus("1");
@@ -213,6 +220,7 @@ public class ApprovalDocumentProcessService {
 
         int finalCount = documentAccountOrder.getDocumentAccount().getFFinalCount();
 
+        documentAccountOrder.setSignature(signatureService.getSign(documentAccountOrder.getFUser().getUserId()));
         documentAccountOrder.setFDate(DateUtil.getToday());
         documentAccountOrder.setFNext("0");
         documentAccountOrder.setFStatus("2");

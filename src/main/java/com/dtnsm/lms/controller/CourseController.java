@@ -116,18 +116,12 @@ public class CourseController {
     @GetMapping("/approval/{id}")
     public String approval(@PathVariable("id") long id, Model model) {
 
-        Course oldCourse = courseService.getCourseById(id);
+        CourseAccount courseAccount = courseAccountService.getById(id);
 
-        oldCourse.setViewCnt(oldCourse.getViewCnt() + 1);
-
-        Course course= courseService.save(oldCourse);
-
-        CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserId(id, SessionUtil.getUserId());
-
-        pageInfo.setPageTitle(course.getCourseMaster().getCourseName() + " 상세");
+        pageInfo.setPageTitle(courseAccount.getCourse().getCourseMaster().getCourseName() + " 상세");
 
         model.addAttribute(pageInfo);
-        model.addAttribute("course", course);
+        model.addAttribute("course", courseAccount.getCourse());
         model.addAttribute("courseAccount", courseAccount);
 
         return "content/course/approval";
@@ -157,7 +151,7 @@ public class CourseController {
     @GetMapping("/approvalAppr2/{id}")
     public String approvalAppr2(@PathVariable("id") long docId, Model model) {
 
-        CourseAccount courseAccount = courseAccountService.getOne(docId);
+        CourseAccount courseAccount = courseAccountService.getById(docId);
 
         pageInfo.setPageTitle(courseAccount.getCourse().getCourseMaster().getCourseName() + " 상세");
 

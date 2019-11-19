@@ -67,7 +67,7 @@ public class CourseSectionAdminController {
 
     public CourseSectionAdminController() {
         pageInfo.setParentId("m-course");
-        pageInfo.setParentTitle("공지사항");
+        pageInfo.setParentTitle("강의");
 
         //courseMaster = courseMasterService.getById("A01");
     }
@@ -169,6 +169,22 @@ public class CourseSectionAdminController {
 
         return "redirect:/admin/course/section/list/" + courseSection1.getCourse().getId();
     }
+
+    @GetMapping("/view/{id}")
+    public String viewPage(@PathVariable("id") long id, Model model) {
+
+        CourseSection courseSection = sectionService.getCourseSectionById(id);
+
+        pageInfo.setPageId("self");
+        pageInfo.setPageTitle(courseSection.getName());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("borders", courseSection.getSectionFiles());
+        model.addAttribute("courseId", courseSection.getCourse().getId());
+
+        return "admin/course/section/view";
+    }
+
 
     @GetMapping("/delete/{id}")
     public String noticeDelete(@PathVariable("id") long id) {

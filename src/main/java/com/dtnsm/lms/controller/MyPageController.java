@@ -191,26 +191,22 @@ public class MyPageController {
     }
 
     @GetMapping("/classroom/view/{id}")
-    public String myInfo(@PathVariable("id") Long courseId, Model model) {
+    public String myInfo(@PathVariable("id") Long docId, Model model) {
 
         pageInfo.setPageId("m-mypage-myinfo");
         pageInfo.setPageTitle("강의목차");
 
-        CustomUserDetails userDetails = SessionUtil.getUserDetail();
-        Account account = userService.getAccountByUserId(userDetails.getUserId());
-//        List<CourseAccount> courseAccountList = courseAccountService.getCourseAccountByUserId(userDetails.getUserId());
+        CourseAccount courseAccount = courseAccountService.getById(docId);
 
-        Course course = courseService.getCourseById(courseId);
-
-        List<CourseSectionAction> courseSectionActions = courseSectionActionService.getAllByUserId(SessionUtil.getUserId());
-        CourseQuizAction courseQuizAction = courseQuizActionService.getTop1ByUserId(SessionUtil.getUserId());
-        CourseSurveyAction courseSurveyAction = courseSurveyActionService.getTop1ByUserId(SessionUtil.getUserId());
+        List<CourseSectionAction> courseSectionActions = courseAccount.getCourseSectionActions();
+        List<CourseQuizAction> courseQuizActions = courseAccount.getCourseQuizActions();
+        List<CourseSurveyAction> courseSurveyActions = courseAccount.getCourseSurveyActions();
 
         model.addAttribute(pageInfo);
-        model.addAttribute("course", course);
+        model.addAttribute("course", courseAccount.getCourse());
         model.addAttribute("courseSectionActions", courseSectionActions);
-        model.addAttribute("quizAction", courseQuizAction);
-        model.addAttribute("surveyAction", courseSurveyAction);
+        model.addAttribute("quizActions", courseQuizActions);
+        model.addAttribute("surveyActions", courseSurveyActions);
 
         return "content/mypage/classroom/view";
     }
