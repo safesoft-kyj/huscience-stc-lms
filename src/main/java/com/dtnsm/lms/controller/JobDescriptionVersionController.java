@@ -1,7 +1,7 @@
 package com.dtnsm.lms.controller;
 
-import com.dtnsm.lms.domain.JobDescriptionVersion;
-import com.dtnsm.lms.domain.JobDescriptionVersionFile;
+import com.dtnsm.common.entity.JobDescriptionVersion;
+import com.dtnsm.common.entity.JobDescriptionVersionFile;
 import com.dtnsm.lms.service.JobDescriptionFileService;
 import com.dtnsm.lms.service.JobDescriptionService;
 import com.dtnsm.lms.service.JobDescriptionVersionService;
@@ -50,7 +50,7 @@ public class JobDescriptionVersionController {
     }
 
     @GetMapping("/{id}")
-    public String list(@PathVariable("id") Long id, Model model) {
+    public String list(@PathVariable("id") Integer id, Model model) {
 
         pageInfo.setPageId("m-customer-list");
         pageInfo.setPageTitle(pageTitle + " List");
@@ -132,7 +132,7 @@ public class JobDescriptionVersionController {
     }
 
     @PostMapping("/edit-post/{id}")
-    public String updateCustomer(@PathVariable("id") long id
+    public String updateCustomer(@PathVariable("id") Integer id
             , @Valid JobDescriptionVersion jdVersion
             , @RequestParam("files") MultipartFile file
             , BindingResult result) {

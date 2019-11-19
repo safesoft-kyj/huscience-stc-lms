@@ -1,10 +1,10 @@
 package com.dtnsm.lms.service;
 
-import com.dtnsm.lms.domain.JobDescription;
-import com.dtnsm.lms.domain.JobDescriptionVersion;
-import com.dtnsm.lms.domain.QJobDescriptionVersion;
-import com.dtnsm.lms.repository.JobDescriptionRepository;
-import com.dtnsm.lms.repository.JobDescriptionVersionRepository;
+import com.dtnsm.common.entity.JobDescription;
+import com.dtnsm.common.entity.JobDescriptionVersion;
+import com.dtnsm.common.entity.QJobDescriptionVersion;
+import com.dtnsm.common.repository.JobDescriptionRepository;
+import com.dtnsm.common.repository.JobDescriptionVersionRepository;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,7 +38,7 @@ public class JobDescriptionVersionService {
     public Optional<JobDescriptionVersion> findByJobDescriptionVersion(JobDescriptionVersion jobDescriptionVersion) {
         QJobDescriptionVersion qJobDescriptionVersion = QJobDescriptionVersion.jobDescriptionVersion;
         BooleanBuilder builder = new BooleanBuilder();
-        builder.and(qJobDescriptionVersion.jobDescription.id.eq(jobDescriptionVersion.getJobDescription().getId()));
+//        builder.and(qJobDescriptionVersion.jobDescription.id.eq(jobDescriptionVersion.getJobDescription().getId()));
         builder.and(qJobDescriptionVersion.version_no.eq(jobDescriptionVersion.getVersion_no()));
 
         return repository.findOne(builder);
@@ -49,7 +49,7 @@ public class JobDescriptionVersionService {
         return null;
     }
 
-    public Iterable<JobDescriptionVersion> findAllVersions(Long id) {
+    public Iterable<JobDescriptionVersion> findAllVersions(Integer id) {
         QJobDescriptionVersion qJobDescriptionVersion = QJobDescriptionVersion.jobDescriptionVersion;
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qJobDescriptionVersion.jobDescription.id.eq(id));

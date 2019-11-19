@@ -1,7 +1,7 @@
 package com.dtnsm.lms.controller;
 
-import com.dtnsm.lms.domain.JobDescription;
-import com.dtnsm.lms.domain.JobDescriptionVersion;
+import com.dtnsm.common.entity.JobDescription;
+import com.dtnsm.common.entity.JobDescriptionVersion;
 import com.dtnsm.lms.service.JobDescriptionService;
 import com.dtnsm.lms.service.JobDescriptionVersionService;
 import com.dtnsm.lms.util.DateUtil;
@@ -108,7 +108,6 @@ public class JobDescriptionController {
                     jobDescriptionVersion.setJobDescription(jobDescription);
                     jobDescriptionVersion.setVersion_no(versionNo);
                     jobDescriptionVersion.setRelease_date(DateUtil.getStringToDate(releaseDate, "dd-MMM-yyyy"));
-                    jobDescriptionVersion.setActive(true);
                     jobDescriptionVersion.setFile(file);
 
                     if(ObjectUtils.isEmpty(jobDescription.getId()) == false) {
@@ -142,7 +141,7 @@ public class JobDescriptionController {
 
 
     @GetMapping("/edit/{id}")
-    public String showUpdateForm(@PathVariable("id") long id, Model model) {
+    public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         JobDescription obj = jobDescriptionService.getById(id);
 
         pageInfo.setPageId("m-customer-edit");
@@ -154,7 +153,7 @@ public class JobDescriptionController {
     }
 
     @PostMapping("/edit-post/{id}")
-    public String updateCustomer(@PathVariable("id") long id, @Valid JobDescription jobDescription, BindingResult result) {
+    public String updateCustomer(@PathVariable("id") Integer id, @Valid JobDescription jobDescription, BindingResult result) {
         if(result.hasErrors()) {
             jobDescription.setId(id);
             return "admin/jd/edit";
@@ -166,7 +165,7 @@ public class JobDescriptionController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteCustomer(@PathVariable("id") long id) {
+    public String deleteCustomer(@PathVariable("id") Integer id) {
 
         JobDescription obj = jobDescriptionService.getById(id);
 

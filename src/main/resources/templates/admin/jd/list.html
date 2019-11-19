@@ -50,8 +50,8 @@
                                 <tr>
                                     <th th:text="#{label.jd.title}" class="text-center">Job Title</th>
                                     <th th:text="#{label.jd.shortName}" class="text-center">Short Name</th>
-                                    <th th:text="#{label.createby}" class="text-center">등록자</th>
-                                    <th th:text="#{label.createdate}" class="text-center">등록일</th>
+<!--                                    <th th:text="#{label.createby}" class="text-center">등록자</th>-->
+<!--                                    <th th:text="#{label.createdate}" class="text-center">등록일</th>-->
                                     <th th:text="#{label.edit}" class="text-center">Edit</th>
                                 </tr>
                                 </thead>
@@ -59,8 +59,8 @@
                                 <tr th:each="border : ${borders}">
                                     <td th:text="${border.getTitle()}" class="text-center"></td>
                                     <td th:text="${border.getShortName()}" class="text-center"></td>
-                                    <td th:text="${border.getCreatedBy()}" class="text-center"></td>
-                                    <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy/MMM/dd')} : ${border.getCreatedDate()}" class="text-center"></td>
+<!--                                    <td th:text="${border.getCreatedBy()}" class="text-center"></td>-->
+<!--                                    <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy/MMM/dd')} : ${border.getCreatedDate()}" class="text-center"></td>-->
                                     <td class="text-center">
                                         <div class="form-inline">
                                             <a class="btn btn-info" th:href="@{/admin/jd/v/{id}(id=${border.getId()})}"><i class="fa fa-files-o"></i> Versions</a>

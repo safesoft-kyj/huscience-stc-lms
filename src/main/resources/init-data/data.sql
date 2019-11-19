@@ -8,7 +8,6 @@ INSERT [dbo].[el_major] ([major_cd], [insert_user_id], [insert_dt], [update_user
 INSERT [dbo].[el_major] ([major_cd], [insert_user_id], [insert_dt], [update_user_id], [update_dt], [major_nm], [type]) VALUES (N'BC04', N'admin', CAST(N'2019-10-11T10:50:43.3370000' AS DateTime2), N'admin', CAST(N'2019-10-11T10:50:43.3370000' AS DateTime2), N'교육신청일자유형', N'S')
 
 
-
 INSERT [dbo].[el_minor] ([minor_cd], [insert_user_id], [insert_dt], [update_user_id], [update_dt], [minor_nm], [seq], [major_cd]) VALUES (N'0', N'pub147', CAST(N'2019-10-07T19:08:08.1760000' AS DateTime2), N'pub147', CAST(N'2019-10-07T19:08:08.1760000' AS DateTime2), N'No', 2, N'BA03')
 INSERT [dbo].[el_minor] ([minor_cd], [insert_user_id], [insert_dt], [update_user_id], [update_dt], [minor_nm], [seq], [major_cd]) VALUES (N'1', N'pub147', CAST(N'2019-10-07T19:08:21.5070000' AS DateTime2), N'admin', CAST(N'2019-10-11T10:51:42.2080000' AS DateTime2), N'상시', 1, N'BC04')
 INSERT [dbo].[el_minor] ([minor_cd], [insert_user_id], [insert_dt], [update_user_id], [update_dt], [minor_nm], [seq], [major_cd]) VALUES (N'2', N'admin', CAST(N'2019-10-11T10:51:53.0050000' AS DateTime2), N'admin', CAST(N'2019-10-11T10:51:53.0050000' AS DateTime2), N'기간', 2, N'BC04')

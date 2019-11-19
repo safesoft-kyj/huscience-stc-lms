@@ -61,7 +61,7 @@
                                 <tr th:each="border, index : ${borders}">
                                     <td th:text="${border.jobDescription.title + ' (' + border.jobDescription.shortName + ')'}" class="text-left"></td>
                                     <td th:text="${border.version_no}" class="text-center"></td>
-                                    <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy-MMM-dd')} : ${border.getCreatedDate()}" class="text-center"></td>
+                                    <td th:text="${#dates.format(border.release_date, 'yyyy-MMM-dd')}" class="text-center"></td>
                                     <td class="text-center">
 <!--                                        <a th:if="${#strings.equalsIgnoreCase(border.getIsActive(), '1')}" class="btn btn-warning" th:href="@{/admin/jd/version/edit/{id}(id=${border.getId()})}" th:text="#{label.update}">Edit</a>-->
 <!--                                        <a class="btn btn-success" th:href="@{/admin/jd/version/viewHistory/{id}(id=${border.getId()})}">Ver History</a>-->
