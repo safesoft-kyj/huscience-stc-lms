@@ -319,9 +319,10 @@
                             </div>
                             <div class="media-body">
                                 <p class="text-2x mar-no text-semibold">
+                                    <th:block th:if="${schedule != null}">
                                     <a href="#" id="popupBtn"
-                                       th:onclick="|javascript:popupPdfView('${schedule.getId()}');return false;|"
-                                       target="_blank" style="color:white">View</a>
+                                       th:onclick="|javascript:popupPdfView('${schedule.getId()}');return false;|" target="_blank" style="color:white">View</a>
+                                    </th:block>
                                 </p>
                                 <p class="mar-no">Employee training matrix</p>
                             </div>

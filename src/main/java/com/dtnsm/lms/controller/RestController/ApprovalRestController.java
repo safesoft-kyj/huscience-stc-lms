@@ -53,15 +53,14 @@ public class ApprovalRestController {
 
 
 
-        // 전자결재 1차 결재자 미결건
+        // 전자결재 미결건
         List<DocumentAccountOrder> documentAccountList = documentAccountOrderService.getAllByNext(userId, "1", "0");
 
-        // 전자결재 내가 결재라인에 있으면서 진행중인 건
-        List<DocumentAccount> documentAccountList2 = documentAccountService.getAllByStatus("0");
+        // 전자결재 미결건
+        List<DocumentAccount> documentAccountList3 = documentAccountService.getAllByStatus("0");
 
-        // 전자결재 2차 결재자 미결건
-        List<DocumentAccount> documentAccountList3 = documentAccountService.getAllByStatus(userId, "0");
-
+        // 전자결재 진행중인 건
+        List<DocumentAccount> documentAccountList2 = documentAccountService.getAllByStatus(userId, "0");
 
 
         // 사용자별 결재 미결건

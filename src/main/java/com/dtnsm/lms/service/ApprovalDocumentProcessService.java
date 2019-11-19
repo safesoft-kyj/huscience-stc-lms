@@ -125,7 +125,8 @@ public class ApprovalDocumentProcessService {
 
         if(finalCount == documentAccountOrder.getFSeq()) {   // 종결처리
             //  승인: 1, 기각 : 2
-            documentAccount.setFStatus("1");
+            documentAccount.setFStatus("1");    // 0 진행중, 1:승인, 2:기각
+            documentAccount.setIsCommit("1");   // 0 진행중 1:종결
 
             documentAccountService.save(documentAccount);
 
@@ -185,6 +186,7 @@ public class ApprovalDocumentProcessService {
         if(finalCount == documentAccountOrder.getFSeq()) {   // 종결처리
             //  승인: 1, 기각 : 2
             documentAccount.setFStatus("1");
+            documentAccount.setIsCommit("1");   // 0 진행중 1:종결
 
             documentAccountService.save(documentAccount);
 
@@ -235,6 +237,6 @@ public class ApprovalDocumentProcessService {
         mail.setEmail(account.getEmail());      // Email
         mail.setObject(document.getTitle());      // Subject
         mail.setMessage(document.getContent());   // Content
-        mailService.send(mail, MailSendType.REQUEST);
+        mailService.send(mail, mailSendType);
     }
 }

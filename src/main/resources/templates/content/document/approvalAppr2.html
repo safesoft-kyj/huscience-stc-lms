@@ -40,11 +40,11 @@
                     <h3 class="panel-title"></h3>
                 </div>
                 <div class="panel-body">
-                    <div class="row" th:if="${#strings.equalsIgnoreCase(documentAccount.getApprUserId2().userId, userId) and #strings.equalsIgnoreCase(documentAccount.getIsAppr2(), 'N') and #strings.equalsIgnoreCase(documentAccount.isCourseMangerApproval, 'Y')}">
+                    <div class="row" th:if="${#strings.equalsIgnoreCase(documentAccountOrder.getFUser().getUserId(), userId) and #strings.equalsIgnoreCase(documentAccountOrder.getFNext(), '1') and #strings.equalsIgnoreCase(documentAccountOrder.getFStatus(), '0')}">
                         <div class="col-sm-12 input-group pull-right">
                             <p class="pull-right">
-                                <a th:href="@{/approval/document/successAppr2/{documentId}/{userId}(documentId=${document.getId()}, userId=${documentAccount.getAccount().getUserId()})}" class="btn btn-success">승인</a>
-                                <a th:href="@{/approval/document/rejectAppr2/{documentId}/{userId}(documentId=${document.getId()}, userId=${documentAccount.getAccount().getUserId()})}" class="btn btn-danger">기각</a>
+                                <a th:href="@{/approval/document/successAppr1/{orderId}(orderId=${documentAccountOrder.getId()})}" class="btn btn-primary"><i class="demo-pli-check"></i> 승인</a>
+                                <a th:href="@{/approval/document/rejectAppr1/{orderId}(orderId=${documentAccountOrder.getId()})}" class="btn btn-danger"><i class="demo-pli-back"></i> 반려</a>
                             </p>
                         </div>
                     </div>
@@ -56,7 +56,7 @@
                                 <tbody>
                                 <tr>
                                     <td>신청일자</td>
-                                    <td th:text="${documentAccount.createdDate}"></td>
+                                    <td th:text="${documentAccount.getFWdate()} ? ${#dates.format(documentAccount.getFWdate(), 'yyyy-MMM-dd')} : ${documentAccount.getFWdate()}" class="text-center"></td>
                                 </tr>
                                 <tr>
                                     <td>신청부서</td>
@@ -83,19 +83,25 @@
                                     <td rowspan="3" style="vertical-align: middle" class="text-center" >
                                         <div>결<br/><br/>재</div>
                                     </td>
-                                    <td class="text-center" th:text="${documentAccount.getAccount().getName()}"></td>
-                                    <td class="text-center" th:text="${documentAccount.getApprUserId1().getName()}"></td>
-                                    <td class="text-center" th:text="${documentAccount.getApprUserId2().getName()}"></td>
+                                    <th:block th:each="border, index : ${documentAccount.getDocumentAccountOrders()}">
+                                        <td th:text="${border.getFUser().getName()}" class="text-center">
+                                        </td>
+                                    </th:block>
                                 </tr>
                                 <tr>
-                                    <td class="text-center"><img src="" style="width:100px; height:100px;"></td>
-                                    <td class="text-center" th:text="${documentAccount.getApprDateTime1()}"></td>
-                                    <td class="text-center" th:text="${documentAccount.getApprDateTime2()}"></td>
+                                    <th:block th:each="border, index : ${documentAccount.getDocumentAccountOrders()}">
+                                        <td th:switch="${border.getFStatus()}" class="text-center">
+                                            <span th:case="${'0'}" class="text-info" th:text="${''}"></span>
+                                            <span th:case="${'1'}" class="text-success" th:text="${'승인'}"></span>
+                                            <span th:case="${'2'}" class="text-danger" th:text="${'반려'}"></span>
+                                        </td>
+                                    </th:block>
                                 </tr>
                                 <tr>
-                                    <td class="text-center" th:text="${documentAccount.getRequestDate()}"></td>
-                                    <td class="text-center" th:text="${documentAccount.getApprDate1()}"></td>
-                                    <td class="text-center" th:text="${documentAccount.getApprDate2()}"></td>
+                                    <th:block th:each="border, index : ${documentAccount.getDocumentAccountOrders()}">
+                                        <td th:text="${border.getFDate()} ? ${#dates.format(border.getFDate(), 'yyyy/MMM/dd')} : ${border.getFDate()}" class="text-center"></td>
+                                        </td>
+                                    </th:block>
                                 </tr>
                                 </tbody>
                             </table>

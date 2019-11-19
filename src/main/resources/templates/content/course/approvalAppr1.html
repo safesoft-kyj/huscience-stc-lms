@@ -49,7 +49,7 @@
                                 <tbody>
                                 <tr>
                                     <td class="text-center" style="background: #FAFAFA;">신청일자</td>
-                                    <td th:text="${courseAccount.createdDate}"></td>
+                                    <td th:text="${documentAccount.getFWdate()} ? ${#dates.format(documentAccount.getFWdate(), 'yyyy-MMM-dd')} : ${documentAccount.getFWdate()}" class="text-center"></td>
                                 </tr>
                                 <tr>
                                     <td class="text-center" style="background: #FAFAFA;">신청부서</td>

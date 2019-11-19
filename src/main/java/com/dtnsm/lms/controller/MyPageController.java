@@ -142,7 +142,7 @@ public class MyPageController {
 
         userRepository.save(account);
 
-        return "redirect:/mypage/main";
+        return "redirect:/mypage/myInfo";
     }
 
     @GetMapping("/quiz")

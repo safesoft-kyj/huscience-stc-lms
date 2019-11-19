@@ -46,7 +46,7 @@ public class MailService {
         } else if (mailSendType.equals(MailSendType.APPROVAL1)) {
             templateUri = "email/course-appr1";
 
-        } else if (mailSendType.equals(MailSendType.REQUEST)) {
+        } else if (mailSendType.equals(MailSendType.APPROVAL2)) {
             templateUri = "email/course-appr2";
         }
 

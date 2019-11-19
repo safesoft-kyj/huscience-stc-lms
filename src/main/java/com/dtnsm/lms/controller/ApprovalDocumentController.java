@@ -54,7 +54,7 @@ public class ApprovalDocumentController {
         model.addAttribute(pageInfo);
         model.addAttribute("borders", documentAccountOrderService.getAllByNext(SessionUtil.getUserId(), "1", "0", pageable));
 
-        return "content/document/approval/listApprProcess";
+        return "content/approval/document/listApprProcess";
     }
 
 
@@ -70,7 +70,7 @@ public class ApprovalDocumentController {
         model.addAttribute(pageInfo);
         model.addAttribute("borders", documentAccountOrderService.getAllByUserApproval(SessionUtil.getUserId(), pageable));
 
-        return "content/document/approval/listApprProcess";
+        return "content/approval/document/listApprAll";
     }
 
     // 내전체함
@@ -83,7 +83,7 @@ public class ApprovalDocumentController {
         model.addAttribute(pageInfo);
         model.addAttribute("borders", documentAccountService.getListUserId(SessionUtil.getUserId(), pageable));
 
-        return "content/document/approval/listMyAll";
+        return "content/approval/document/listMyAll";
     }
 
     // 내완료함
@@ -96,10 +96,8 @@ public class ApprovalDocumentController {
         model.addAttribute(pageInfo);
         model.addAttribute("borders", documentAccountService.getAllByStatus(SessionUtil.getUserId(),"1", pageable));
 
-        return "content/document/approval/listMyComplete";
+        return "content/approval/document/listMyComplete";
     }
-
-
 
     // 교육결재 진행함 조회
     @GetMapping("/listMyProcess")
@@ -111,7 +109,7 @@ public class ApprovalDocumentController {
         model.addAttribute(pageInfo);
         model.addAttribute("borders", documentAccountService.getAllByStatus(SessionUtil.getUserId(), "0", pageable));
 
-        return "content/document/approval/listMyProcess";
+        return "content/approval/document/listMyProcess";
     }
 
     // 교육결재 반려함 조회
@@ -124,7 +122,7 @@ public class ApprovalDocumentController {
         model.addAttribute(pageInfo);
         model.addAttribute("borders", documentAccountService.getAllByStatus(SessionUtil.getUserId(),"2", pageable));
 
-        return "content/document/approval/listMyReject";
+        return "content/approval/document/listMyReject";
     }
 
 

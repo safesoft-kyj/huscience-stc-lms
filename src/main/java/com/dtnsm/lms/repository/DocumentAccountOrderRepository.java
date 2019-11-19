@@ -12,7 +12,7 @@ public interface DocumentAccountOrderRepository extends JpaRepository<DocumentAc
 
     DocumentAccountOrder findById(long id);
 
-    DocumentAccountOrder findByCourseAccount_IdAndFSeq(long fNo, int seq);
+    DocumentAccountOrder findByDocumentAccount_IdAndFSeq(long fNo, int seq);
 
     // 사용자가 결재한 모든 문서
     Page<DocumentAccountOrder> findAllByFUser_UserIdAndFSeqGreaterThan(String userId, int seq, Pageable pageable);

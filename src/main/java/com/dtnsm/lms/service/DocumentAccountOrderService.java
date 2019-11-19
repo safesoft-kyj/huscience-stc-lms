@@ -36,7 +36,7 @@ public class DocumentAccountOrderService {
 
     //  다음 결재 Order 가져오기
     public DocumentAccountOrder getByFnoAndSeq(long fNo, int seq) {
-        return documentAccountOrderRepository.findByCourseAccount_IdAndFSeq(fNo, seq);
+        return documentAccountOrderRepository.findByDocumentAccount_IdAndFSeq(fNo, seq);
     }
 
     // 사용자가 결재한 모든 문서(seq 0:기안자, 1:1차결재자, 2:2차결재자)

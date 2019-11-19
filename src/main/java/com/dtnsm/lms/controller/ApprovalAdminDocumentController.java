@@ -1,12 +1,7 @@
 package com.dtnsm.lms.controller;
 
-import com.dtnsm.lms.auth.UserServiceImpl;
-import com.dtnsm.lms.domain.DocumentAccount;
-import com.dtnsm.lms.domain.constant.ApprovalStatusType;
-import com.dtnsm.lms.mybatis.service.UserMapperService;
-import com.dtnsm.lms.repository.UserRepository;
-import com.dtnsm.lms.service.*;
-import com.dtnsm.lms.util.DateUtil;
+import com.dtnsm.lms.service.DocumentAccountOrderService;
+import com.dtnsm.lms.service.DocumentAccountService;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +10,10 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.activation.MimetypesFileTypeMap;
-import java.util.Date;
-
 @Controller
-@RequestMapping("/approval/document")
+@RequestMapping("/admin/approval/document")
 public class ApprovalAdminDocumentController {
 
     @Autowired
@@ -59,8 +50,6 @@ public class ApprovalAdminDocumentController {
 
         pageInfo.setPageId("m-mypage-approval");
         pageInfo.setPageTitle("완료함");
-
-        String userId = SessionUtil.getUserDetail().getUserId();
 
         model.addAttribute(pageInfo);
         model.addAttribute("borders", documentAccountService.getAllByStatus("1", pageable));

@@ -1,5 +1,8 @@
 package com.dtnsm.lms.controller;
 
+import com.dtnsm.common.entity.Signature;
+import com.dtnsm.common.repository.SignatureRepository;
+import com.dtnsm.common.utils.Base64Utils;
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.CourseAccountOrder;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.activation.MimetypesFileTypeMap;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/approval")
@@ -41,8 +45,6 @@ public class ApprovalAdminController {
 
         pageInfo.setPageId("m-mypage-approval");
         pageInfo.setPageTitle("진행함");
-
-        String userId = SessionUtil.getUserDetail().getUserId();
 
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courseAccountService.getAllByStatus("0", pageable));

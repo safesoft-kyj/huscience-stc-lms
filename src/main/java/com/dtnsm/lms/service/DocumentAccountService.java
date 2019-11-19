@@ -1,6 +1,5 @@
 package com.dtnsm.lms.service;
 
-import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.domain.DocumentAccount;
 import com.dtnsm.lms.repository.DocumentAccountOrderRepository;
 import com.dtnsm.lms.repository.DocumentAccountRepository;
@@ -42,8 +41,8 @@ public class DocumentAccountService {
         documentAccountRepository.deleteDocumentAccountByDocument_Id(courseId);
     }
 
-    public DocumentAccount getOne(long id) {
-        return documentAccountRepository.getOne(id);
+    public DocumentAccount getById(long id) {
+        return documentAccountRepository.findById(id).get();
     }
 
     public DocumentAccount getByDocumentIdAndUserId(long docId, String userId) {

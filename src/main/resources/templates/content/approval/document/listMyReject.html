@@ -65,24 +65,18 @@
                                     <tr th:each="border, index : ${borders}">
                                         <td th:text="${index.count}" class="text-center"></td>
                                         <td>
-                                            <a th:href="@{/course/approval/{id}(id=${border.getCourse().getId()})}">
-                                                <span th:text="${'['+border.getCourse().getCourseMaster().getCourseName()+']'}"></span>&nbsp;
-                                                <span th:text="${border.getCourse().getTitle()}"></span>
+                                            <a th:href="@{/document/approval/{id}(id=${border.getDocument().getId()})}">
+                                                <span th:text="${border.getDocument().getTitle()}"></span>
                                             </a>
                                         </td>
                                         <td th:text="${border.getRequestDate()}" class="text-center"></td>
                                         <td th:text="${border.getAccount().getName()}" class="text-center"></td>
                                         <td class="text-center">
-                                            <th:block th:if="${#strings.equalsIgnoreCase(border.getIsApproval(), '1')}">
-                                                <div th:switch="${border.getFStatus()}">
-                                                    <span th:case="${'0'}" class="text-info" th:text="${'진행중'}"></span>
-                                                    <span th:case="${'1'}" class="text-success" th:text="${'최종승인'}"></span>
-                                                    <span th:case="${'2'}" class="text-danger" th:text="${'기각'}"></span>
-                                                </div>
-                                            </th:block>
-                                            <th:block th:if="${#strings.equalsIgnoreCase(border.getIsApproval(), '0')}">
-                                                <span class="text-success" th:text="${'완료'}"></span>
-                                            </th:block>
+                                            <div th:switch="${border.getFStatus()}">
+                                                <span th:case="${'0'}" class="text-info" th:text="${'진행중'}"></span>
+                                                <span th:case="${'1'}" class="text-success" th:text="${'최종승인'}"></span>
+                                                <span th:case="${'2'}" class="text-danger" th:text="${'기각'}"></span>
+                                            </div>
                                         </td>
                                     </tr>
                                     </tbody>

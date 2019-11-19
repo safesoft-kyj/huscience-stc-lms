@@ -91,7 +91,7 @@ public class ApprovalController {
         // 완결
         model.addAttribute("borders", courseAccountOrderService.getAllByUserApproval(userId, pageable));
 
-        return "content/approval/listApprProcess";
+        return "content/approval/listApprAll";
     }
 
     // 내전체함

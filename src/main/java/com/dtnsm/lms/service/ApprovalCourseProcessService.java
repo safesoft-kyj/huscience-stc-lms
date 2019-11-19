@@ -361,7 +361,7 @@ public class ApprovalCourseProcessService {
         mail.setEmail(account.getEmail());      // Email
         mail.setObject(course.getTitle());      // Subject
         mail.setMessage(course.getContent());   // Content
-        mailService.send(mail, MailSendType.REQUEST);
+        mailService.send(mail, mailSendType);
 
     }
 }

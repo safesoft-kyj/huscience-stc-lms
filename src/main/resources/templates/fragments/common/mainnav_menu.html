@@ -98,12 +98,12 @@
             <!--Submenu-->
             <ul class="collapse">
                 <li><a href="#" data-th-href="@{/document/templateView}">기안작성</a></li>
-                <!--                <li><a href="#" data-th-href="@{/document/list}">내작성함</a></li>-->
-                <li><a href="#" data-th-href="@{/approval/document/listMyAppr}">내기안함</a></li>
-                <li><a href="#" data-th-href="@{/approval/document/listAppr1Process}">미결함 <span class="badge badge-purple" id="document-my-approval"></span></a></li>
-                <li><a href="#" data-th-href="@{/approval/document/listAppr1Commit}">진행함 <span class="badge badge-purple" id="document-my-process"></span></a></li>
-                <li><a href="#" data-th-href="@{/approval/document/listAppr1}">완료함</a></li>
-                <li><a href="#" data-th-href="@{/approval/document/listApprReject}">반려함</a></li>
+                <li><a href="#" data-th-href="@{/approval/document/listApprProcess}">미결함 <span class="badge badge-purple" id="document-my-approval"></span></a></li>
+                <li><a href="#" data-th-href="@{/approval/document/listMyProcess}">내진행함 <span class="badge badge-purple" id="document-my-process"></span></a></li>
+                <li><a href="#" data-th-href="@{/approval/document/listMyComplete}">내완료함</a></li>
+                <li><a href="#" data-th-href="@{/approval/document/listMyReject}">내반려함</a></li>
+                <li><a href="#" data-th-href="@{/approval/document/listMyAll}">내전체함</a></li>
+                <li><a href="#" data-th-href="@{/approval/document/listApprAll}">결재함</a></li>
             </ul>
         </li>
 
@@ -177,10 +177,10 @@
             <!--Submenu-->
             <ul class="collapse">
                 <li><a href="#" data-th-href="@{/admin/document/template/list}">결재양식등록</a></li>
-                <li><a href="#" data-th-href="@{/approval/document/listAppr1Process}">미결함 <span class="badge badge-purple" id="document-my-approval2"></span></a></li>
-                <li><a href="#" data-th-href="@{/approval/document/listAppr1Commit}">진행함 <span class="badge badge-purple" id="document-my-process2"></span></a></li>
-                <li><a href="#" data-th-href="@{/approval/document/listAppr1}">완결함</a></li>
-                <li><a href="#" data-th-href="@{/approval/document/listApprReject}">반려함</a></li>
+                <li><a href="#" data-th-href="@{/admin/approval/document/listApprProcess}">진행함 <span class="badge badge-purple" id="document-my-process2"></span></a></li>
+                <li><a href="#" data-th-href="@{/admin/approval/document/listApprComplete}">완료함</a></li>
+                <li><a href="#" data-th-href="@{/admin/approval/document/listApprReject}">반려함</a></li>
+
             </ul>
         </li>
 

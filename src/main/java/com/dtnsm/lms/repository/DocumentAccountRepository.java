@@ -1,13 +1,9 @@
 package com.dtnsm.lms.repository;
 
-import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.domain.DocumentAccount;
-import com.dtnsm.lms.domain.DocumentAccountId;
-import com.dtnsm.lms.domain.constant.ApprovalStatusType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -24,8 +20,6 @@ public interface DocumentAccountRepository extends JpaRepository<DocumentAccount
     List<DocumentAccount> findAllByAccount_UserIdAndIsCommit(String userId, String isCommit);
 
     List<DocumentAccount> findByDocument_Id(long docId);
-
-    DocumentAccount findByCourse_IdAndAccount_UserId(long courseId, String userId);
 
     void deleteDocumentAccountByAccount_UserId(String userId);
     void deleteDocumentAccountByDocument_Id(long docId);

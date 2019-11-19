@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Entity
 @Data
-@Table(name="el_course_account_order")
+@Table(name="el_document_account_order")
 public class DocumentAccountOrder extends AuditorEntity<String> {
 
     @Id

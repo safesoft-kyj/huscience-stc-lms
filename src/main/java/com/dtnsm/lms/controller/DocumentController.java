@@ -2,10 +2,7 @@ package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.*;
-import com.dtnsm.lms.domain.constant.ApprovalStatusType;
-import com.dtnsm.lms.domain.constant.CourseRequestType;
 import com.dtnsm.lms.service.*;
-import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
@@ -312,20 +309,14 @@ public class DocumentController {
 
     // 결재현황
     @GetMapping("/approval/{id}")
-    public String approval(@PathVariable("id") long id, Model model) {
+    public String approval(@PathVariable("id") long docId, Model model) {
 
-        Document oldDocument = documentService.getById(id);
+        DocumentAccount documentAccount = documentAccountService.getById(docId);
 
-        oldDocument.setViewCnt(oldDocument.getViewCnt() + 1);
-
-        Document document= documentService.save(oldDocument);
-
-        DocumentAccount documentAccount = documentAccountService .getByDocumentIdAndUserId(id, SessionUtil.getUserId());
-
-        pageInfo.setPageTitle(document.getTemplate().getTitle() + " 상세");
+        pageInfo.setPageTitle(documentAccount.getDocument().getTemplate().getTitle() + " 상세");
 
         model.addAttribute(pageInfo);
-        model.addAttribute("document", document);
+        model.addAttribute("document", documentAccount.getDocument());
         model.addAttribute("documentAccount", documentAccount);
 
         return "content/document/approval";
@@ -354,7 +345,7 @@ public class DocumentController {
     @GetMapping("/approvalAppr2/{id}")
     public String approvalAppr2(@PathVariable("id") long docId, Model model) {
 
-        DocumentAccount documentAccount = documentAccountService.getOne(docId);
+        DocumentAccount documentAccount = documentAccountService.getById(docId);
 
         pageInfo.setPageTitle(documentAccount.getDocument().getTemplate().getTitle() + " 상세");
 
@@ -367,42 +358,42 @@ public class DocumentController {
     }
 
     // 교육결재(1차 팀장/부서장) 기각
-    @GetMapping("/rejectAppr1/{id}")
-    public String rejectAppr1(@PathVariable("id") long id, Model model) {
-
-        pageInfo.setPageId("m-mypage-approval");
-        pageInfo.setPageTitle("교육결재조회");
-
-        // 과정ID와 사용자ID로 과정신청정보를 가지고 온다.
-        DocumentAccount documentAccount = documentAccountService.getByDocumentIdAndUserId(documentId, userId);
-
-        // 1차 기각 처리
-        approvalDocumentProcessService.documentReject1Proces(documentAccount);
-
-        model.addAttribute(pageInfo);
-
-        return "redirect:/content/document/listAppr1Process";
-    }
+//    @GetMapping("/rejectAppr1/{id}")
+//    public String rejectAppr1(@PathVariable("id") long id, Model model) {
+//
+//        pageInfo.setPageId("m-mypage-approval");
+//        pageInfo.setPageTitle("교육결재조회");
+//
+//        // 과정ID와 사용자ID로 과정신청정보를 가지고 온다.
+//        DocumentAccount documentAccount = documentAccountService.getByDocumentIdAndUserId(documentId, userId);
+//
+//        // 1차 기각 처리
+//        approvalDocumentProcessService.documentReject1Proces(documentAccount);
+//
+//        model.addAttribute(pageInfo);
+//
+//        return "redirect:/content/document/listAppr1Process";
+//    }
 
     // 교육결재(2차 과정관리자) 기각
-    @GetMapping("/rejectAppr2/{documentId}/{userId}")
-    public String rejectAppr2(@PathVariable("documentId") long documentId
-            , @PathVariable("userId") String userId
-            , Model model) {
-
-        pageInfo.setPageId("m-mypage-approval");
-        pageInfo.setPageTitle("교육결재조회");
-
-        // 과정ID와 사용자ID로 과정신청정보를 가지고 온다.
-        DocumentAccount documentAccount = documentAccountService.getByDocumentIdAndUserId(documentId, userId);
-
-        // 2차 기각 처리
-        approvalDocumentProcessService.documentReject2Proces(documentAccount);
-
-        model.addAttribute(pageInfo);
-
-        return "redirect:/content/document/listAppr2Process";
-    }
+//    @GetMapping("/rejectAppr2/{documentId}/{userId}")
+//    public String rejectAppr2(@PathVariable("documentId") long documentId
+//            , @PathVariable("userId") String userId
+//            , Model model) {
+//
+//        pageInfo.setPageId("m-mypage-approval");
+//        pageInfo.setPageTitle("교육결재조회");
+//
+//        // 과정ID와 사용자ID로 과정신청정보를 가지고 온다.
+//        DocumentAccount documentAccount = documentAccountService.getByDocumentIdAndUserId(documentId, userId);
+//
+//        // 2차 기각 처리
+//        approvalDocumentProcessService.documentReject2Proces(documentAccount);
+//
+//        model.addAttribute(pageInfo);
+//
+//        return "redirect:/content/document/listAppr2Process";
+//    }
 
 
 }
