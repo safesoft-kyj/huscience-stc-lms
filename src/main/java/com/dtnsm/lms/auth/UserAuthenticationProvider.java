@@ -13,14 +13,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import java.net.MalformedURLException;
 
 @Slf4j
 @Component
 public class UserAuthenticationProvider implements AuthenticationProvider {
-
-    Logger logger = LoggerFactory.getLogger(UserAuthenticationProvider.class);
 
 
 //    @Autowired
@@ -57,11 +56,18 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 
         // 외부사용자 로그인 체크
         if (isLogin) {
+            log.info("@userId : {}, isLogin : {}", userId, isLogin);
             account = (CustomUserDetails) userService.loadUserByUsername(userId);
-            //query..........
-            account.setManager(true);
+
         } else {
             account = (CustomUserDetails) userService.loadUserByUsername(userId, password);
+        }
+
+        if(!ObjectUtils.isEmpty(account)) {
+            log.info("==> 로그인한 사용자를 매니저로 선택한 사용자 리스트 조회 : {}", userId);
+            //로그인한 사용자를 매니저로 선택한 사용자 리스트 조회
+            account.setManager(userService.findByParentUserId(userId).isPresent());
+            log.info("==> 로그인한 사용자를 매니저로 선택한 사용자 리스트 조회 : {}, 결과 : {}", userId, account.isManager());
         }
 
         if (account == null) {

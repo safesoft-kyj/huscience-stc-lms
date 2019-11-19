@@ -6,7 +6,6 @@
 <ul id="mainnav-menu" class="list-group" th:fragment="menu">
 
     <th:block sec:authorize="hasRole('ROLE_USER')">
-
         <!--Category name-->
         <li class="list-header">User Menu</li>
 
@@ -124,7 +123,27 @@
 <!--                <li><a data-th-href="@{/mypage/myinfo}">사용자정보</a></li>-->
             </ul>
         </li>
+        <th:block th:with="isManager = ${#authorization.getAuthentication().getPrincipal().isManager()}">
+            <th:block th:if="${isManager == true}">
+                <li>
+                    <a href="#">
+                        <i class="demo-pli-home"></i>
+                        <span class="menu-title">Team/Dept</span>
+                        <i class="arrow"></i>
+                    </a>
 
+                    <!--Submenu-->
+                    <ul class="collapse">
+                        <li><a data-th-href="@{/employees}">Employees</a></li>
+                        <li><a data-th-href="@{/employees/cv}">Curriculum Vitae</a></li>
+                        <li><a data-th-href="@{/employees/jd}">Job Description</a></li>
+                        <li><a data-th-href="@{/employees/review}">Review</a></li>
+                        <!--                <li><a data-th-href="@{/mypage/quiz}">시험/시험결과/수료증발급</a></li>-->
+                        <!--                <li><a data-th-href="@{/mypage/myinfo}">사용자정보</a></li>-->
+                    </ul>
+                </li>
+            </th:block>
+        </th:block>
         <li class="list-divider"></li>
 
     </th:block>
@@ -221,6 +240,7 @@
                 <li><a href="#" data-th-href="@{/admin/survey/list}">설문등록</a></li>
             </ul>
         </li>
+
 
 <!--        <li>-->
 <!--            <a href="#">-->

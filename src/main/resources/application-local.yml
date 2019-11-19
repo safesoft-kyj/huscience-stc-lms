@@ -16,12 +16,12 @@ spring:
     servlet:
       content-type: text/html
   datasource:
-    url: jdbc:sqlserver://localhost:1433;DatabaseName=elearning
-    username: sa
-    password: Dtncro@123##
-#    url: jdbc:sqlserver://localhost:1433;DatabaseName=lms_20191115
+#    url: jdbc:sqlserver://localhost:1433;DatabaseName=elearning
 #    username: sa
-#    password: Test1234!
+#    password: Dtncro@123##
+    url: jdbc:sqlserver://localhost:1433;DatabaseName=lms_test_20191118
+    username: sa
+    password: Test1234!
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     initialization-mode: always
     data: classpath:/init-data/data.sql
@@ -40,7 +40,10 @@ spring:
       ddl-auto: update
     show-sql: true
     generate-ddl: true
-#    properties:
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
 ##      javax.persistence.schema-generation.database.action: drop-and-create
 #      javax.persistence.schema-generation.scripts.action: drop-and-create
 #      javax.persistence.schema-generation.create-source: metadata
@@ -70,6 +73,8 @@ spring:
 mybatis:
   type-aliases-package: com.dtnsm.lms.mybatis.dto
 
+logging.level.org.hibernate.SQL: TRACE
+logging.level.org.hibernate.type.descriptor.sql:  trace
 #logging:
 #  level:
 #    root: ERROR

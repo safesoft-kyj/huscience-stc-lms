@@ -1,20 +1,13 @@
 package com.dtnsm.lms.auth;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import com.dtnsm.lms.repository.RoleRepository;
-import com.dtnsm.lms.repository.UserRepository;
-import com.dtnsm.lms.domain.ElMinor;
 import com.dtnsm.lms.domain.Account;
+import com.dtnsm.lms.domain.ElMinor;
 import com.dtnsm.lms.domain.Role;
 import com.dtnsm.lms.mybatis.dto.UserVO;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
+import com.dtnsm.lms.repository.RoleRepository;
+import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.CodeService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,10 +15,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 public class UserServiceImpl implements UserService {
-
-    Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -167,6 +164,9 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    public Optional<List<Account>> findByParentUserId(String userId) {
+        return userRepository.findByParentUserId(userId);
+    }
 
     /*
         Account
