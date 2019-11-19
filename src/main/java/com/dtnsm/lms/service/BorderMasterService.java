@@ -43,7 +43,7 @@ public class BorderMasterService {
 
     public BorderMaster getById(String id) {
 
-        return borderMasterRepository.findById(id).get();
+        return borderMasterRepository.getOne(id);
     }
 
     public BorderMaster save(BorderMaster borderGroup){

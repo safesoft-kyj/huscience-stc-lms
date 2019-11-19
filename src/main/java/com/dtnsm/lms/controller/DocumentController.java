@@ -52,6 +52,10 @@ public class DocumentController {
     private DocumentAccountService documentAccountService;
 
     @Autowired
+    private DocumentAccountOrderService documentAccountOrderService;
+
+
+    @Autowired
     private DocumentCourseAccountService documentCourseAccountService;
 
     @Autowired
@@ -308,8 +312,7 @@ public class DocumentController {
 
     // 결재현황
     @GetMapping("/approval/{id}")
-    public String approval(@PathVariable("id") long id
-            , Model model) {
+    public String approval(@PathVariable("id") long id, Model model) {
 
         Document oldDocument = documentService.getById(id);
 
@@ -317,7 +320,7 @@ public class DocumentController {
 
         Document document= documentService.save(oldDocument);
 
-        DocumentAccount documentAccount = documentAccountService.getByDocumentIdAndUserId(id, SessionUtil.getUserId());
+        DocumentAccount documentAccount = documentAccountService .getByDocumentIdAndUserId(id, SessionUtil.getUserId());
 
         pageInfo.setPageTitle(document.getTemplate().getTitle() + " 상세");
 
@@ -329,61 +332,43 @@ public class DocumentController {
     }
 
     // 교육신청 1차 결재 승인
-    @GetMapping("/approvalAppr1/{documentId}/{userId}")
-    public String approvalAppr1(@PathVariable("documentId") long documentId
-            , @PathVariable("userId") String userId
-            , Model model) {
+    @GetMapping("/approvalAppr1/{id}")
+    public String approvalAppr1(@PathVariable("id") long orderId, Model model) {
 
-        Document oldDocument = documentService.getById(documentId);
+        DocumentAccountOrder documentAccountOrder = documentAccountOrderService.getById(orderId);
 
-        oldDocument.setViewCnt(oldDocument.getViewCnt() + 1);
+        DocumentAccount documentAccount = documentAccountOrder.getDocumentAccount();
 
-        Document document= documentService.save(oldDocument);
-
-        DocumentAccount documentAccount = documentAccountService.getByDocumentIdAndUserId(documentId, userId);
-
-        approvalDocumentProcessService.documentApproval1Proces(documentAccount);
-
-        pageInfo.setPageTitle(document.getTemplate().getTitle() + " 상세");
+        pageInfo.setPageTitle(documentAccount.getDocument().getTemplate().getTitle() + " 상세");
 
         model.addAttribute(pageInfo);
-        model.addAttribute("document", document);
+        model.addAttribute("document", documentAccount.getDocument());
         model.addAttribute("documentAccount", documentAccount);
+        model.addAttribute("documentAccountOrder", documentAccountOrder);
         model.addAttribute("userId", SessionUtil.getUserId());
 
         return "content/document/approvalAppr1";
     }
 
     // 교육신청 2차 결재 승인
-    @GetMapping("/approvalAppr2/{documentId}/{userId}")
-    public String approvalAppr2(@PathVariable("documentId") long documentId
-            , @PathVariable("userId") String userId
-            , Model model) {
+    @GetMapping("/approvalAppr2/{id}")
+    public String approvalAppr2(@PathVariable("id") long docId, Model model) {
 
-        Document oldDocument = documentService.getById(documentId);
+        DocumentAccount documentAccount = documentAccountService.getOne(docId);
 
-        oldDocument.setViewCnt(oldDocument.getViewCnt() + 1);
-
-        Document document= documentService.save(oldDocument);
-
-        DocumentAccount documentAccount = documentAccountService.getByDocumentIdAndUserId(documentId, userId);
-        approvalDocumentProcessService.documentApproval2Proces(documentAccount);
-
-        pageInfo.setPageTitle(document.getTemplate().getTitle() + " 상세");
+        pageInfo.setPageTitle(documentAccount.getDocument().getTemplate().getTitle() + " 상세");
 
         model.addAttribute(pageInfo);
-        model.addAttribute("document", document);
+        model.addAttribute("document",  documentAccount.getDocument());
         model.addAttribute("documentAccount", documentAccount);
+        model.addAttribute("documentAccountOrder", documentAccount.getDocumentAccountOrders());
         model.addAttribute("userId", SessionUtil.getUserId());
-
         return "content/document/approvalAppr2";
     }
 
     // 교육결재(1차 팀장/부서장) 기각
-    @GetMapping("/rejectAppr1/{documentId}/{userId}")
-    public String rejectAppr1(@PathVariable("documentId") long documentId
-            , @PathVariable("userId") String userId
-            , Model model) {
+    @GetMapping("/rejectAppr1/{id}")
+    public String rejectAppr1(@PathVariable("id") long id, Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
         pageInfo.setPageTitle("교육결재조회");

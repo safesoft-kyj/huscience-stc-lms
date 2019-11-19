@@ -1,50 +1,43 @@
-package com.dtnsm.lms.repository;
-
-import com.dtnsm.lms.domain.CourseAccount;
-import com.dtnsm.lms.domain.constant.ApprovalStatusType;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-
-import java.util.List;
-
-
-public interface CourseAccountRepository extends JpaRepository<CourseAccount, Long> {
-
-    //  status 0:진행중, 1:최종승인, 2:최종기각
-    List<CourseAccount> findByAccount_UserIdAndFStatus(String userId, String status);
-
-    Page<CourseAccount> findByAccount_UserIdAndFStatus(String userId, String status, Pageable pageable);
-
-    List<CourseAccount> findByAccount_UserId(String userId);
-
-    List<CourseAccount> findAllByAccount_UserIdAndIsCommit(String userId, String isCommit);
-
-    List<CourseAccount> findByCourse_Id(long courseId);
-
-    CourseAccount findByCourse_IdAndAccount_UserId(long courseId, String userId);
-
-    void deleteCourseAccountByAccount_UserId(String userId);
-    void deleteCourseAccountByCourse_Id(long courseId);
-
-    // 내신청함
-    Page<CourseAccount> findByAccount_UserId(String userId, Pageable pageable);
-
-
-    // 상태별 신청 조회
-    List<CourseAccount> findByFStatus(String status);
-
-    Page<CourseAccount> findByFStatus(String status, Pageable pageable);
-
-
-    //    CourseAccount findByCourse_IdAndApprUserId1_UserId(long courseId, String userId);
+//package com.dtnsm.lms.repository;
+//
+//import com.dtnsm.lms.domain.CourseAccount;
+//import com.dtnsm.lms.domain.constant.ApprovalStatusType;
+//import org.springframework.data.domain.Page;
+//import org.springframework.data.domain.Pageable;
+//import org.springframework.data.jpa.repository.JpaRepository;
+//import org.springframework.data.jpa.repository.Query;
+//
+//import java.util.List;
+//
+//
+//public interface CourseAccountRepositoryBak extends JpaRepository<CourseAccount, Long> {
+//
+//    //  status 0:진행중, 1:최종승인, 2:최종기각
+//    List<CourseAccount> findByAccount_UserIdAndCourseStatus(String userId, String status);
+//    Page<CourseAccount> findByAccount_UserIdAndCourseStatus(String userId, String status, Pageable pageable);
+//
+//    List<CourseAccount> findByAccount_UserId(String userId);
+//
+//    List<CourseAccount> findAllByAccount_UserIdAndIsCommit(String userId, String isCommit);
+//
+//    List<CourseAccount> findByCourse_Id(long courseId);
+//
+//    CourseAccount findByCourse_IdAndAccount_UserId(long courseId, String userId);
+//
+//    CourseAccount findByCourse_IdAndApprUserId1_UserId(long courseId, String userId);
 //
 //    CourseAccount findByCourse_IdAndApprUserId2_UserId(long courseId, String userId);
-
-    // 1차 결재자(팀장/부서장)
+//
+//
+//    void deleteCourseAccountByAccount_UserId(String userId);
+//    void deleteCourseAccountByCourse_Id(long courseId);
+//
+//    // 내신청함
+//    Page<CourseAccount> findByAccount_UserId(String userId, Pageable pageable);
+//
+//    // 1차 결재자(팀장/부서장)
 //    Page<CourseAccount> findByApprUserId1_UserId(String userId, Pageable pageable);
-
+//
 //    @Query("SELECT g FROM CourseAccount g where (g.account.userId = :userId or g.apprUserId1.userId = :userId or g.apprUserId2.userId = :userId) and g.isCommit = :isCommit")
 //    Page<CourseAccount> getCustomListByUserIdAndIsCommit(String userId, String isCommit, Pageable pageable);
 //
@@ -75,28 +68,28 @@ public interface CourseAccountRepository extends JpaRepository<CourseAccount, Lo
 //    // 승인 완료된 문서 조회(기각 제외)
 //    @Query("SELECT g FROM CourseAccount g where (g.account.userId = :userId or g.apprUserId1.userId = :userId or g.apprUserId2.userId = :userId) and g.isCommit = '1' and g.approvalStatus not in ('APPROVAL_TEAM_REJECT', 'APPROVAL_MANAGER_REJECT')")
 //    List<CourseAccount> getCustomListByUserCommit(String userId);
-
-
-    // 미결건중 내가 1차 결재자인 건
+//
+//
+//    // 미결건중 내가 1차 결재자인 건
 //    List<CourseAccount> findAllByIsTeamMangerApprovalAndApprUserId1_UserIdAndIsAppr1(String isTeamApproval, String userId, String isAppr1);
-
-    // 미결건중 내가 1차 결재자인 건(페이징)
+//
+//    // 미결건중 내가 1차 결재자인 건(페이징)
 //    Page<CourseAccount> findAllByIsTeamMangerApprovalAndApprUserId1_UserIdAndIsAppr1(String isTeamApproval, String userId, String isAppr1, Pageable pageable);
-
-    // 미결건중 내가 2차 결재자인 건
+//
+//    // 미결건중 내가 2차 결재자인 건
 //    List<CourseAccount> findAllByIsCourseMangerApprovalAndApprUserId2_UserIdAndIsAppr2AndIsAppr1(String isManagerApproval, String userId, String isAppr2, String isAppr1);
-
-    // 미결건중 내가 2차 결재자인 건(페이징)
+//
+//    // 미결건중 내가 2차 결재자인 건(페이징)
 //    Page<CourseAccount> findAllByIsCourseMangerApprovalAndApprUserId2_UserIdAndIsAppr2AndIsAppr1(String isManagerApproval, String userId, String isAppr2, String isAppr1, Pageable pageable);
-
-    // 내가 1차결재자이면서 승인을 하지않는건(미결건) 5개
+//
+//    // 내가 1차결재자이면서 승인을 하지않는건(미결건) 5개
 //    List<CourseAccount> findTOp5ByApprUserId1_UserIdAndIsAppr1(String userId, String isAppr1);
-
-
-
-    // 2차 결재자(과정 관리자)
+//
+//
+//
+//    // 2차 결재자(과정 관리자)
 //    Page<CourseAccount> findByApprUserId2_UserId(String userId, Pageable pageable);
 //
 //    Page<CourseAccount> findByApprUserId2_UserIdAndIsAppr2(String userId, String isAppr2, Pageable pageable);
-
-}
+//
+//}

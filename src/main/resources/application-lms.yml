@@ -1,4 +1,6 @@
 spring:
+  messages:
+    basename: messages
   devtools:
     livereload:
       enabled: true
@@ -18,13 +20,14 @@ spring:
     username: sa
     password: Dtncro@123##
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-  #  flyway:
-  #    url: jdbc:sqlserver://localhost:1433;DatabaseName=lms
-  #    user: sa
-  #    password: Dtncro@123##
-  #    locations: classpath:/db/migration/cro
-  #    baseline-on-migrate: true
-  #    encoding: UTF-8
+  flyway:
+    #      url: jdbc:sqlserver://localhost:1433;DatabaseName=elearning
+    #      user: sa
+    #      password: Dtncro@123##
+    locations: classpath:/db/migration/empty
+    baseline-on-migrate: true
+    encoding: UTF-8
+    enabled: false
   jpa:
     hibernate:
       ddl-auto: update
@@ -40,7 +43,7 @@ spring:
     port: 587
     protocol: smtp
     username: pub147@gmail.com
-#    password: cksdb0826
+    #    password: cksdb0826
     password: hllzmxukahrxghrm
     default-encoding: UTF-8
     properties:
@@ -62,16 +65,24 @@ mybatis:
 
 
 file:
-  default-base: D://elearning//
-  border-upload-dir: D://elearning//upload//border//
-  border-photo-upload-dir: D://elearning//upload//border//PhotoUpload//
-  course-upload-dir: D://elearning//upload//course//
-  course-section-upload-dir: D://elearning//upload//course//section//
-  course-photo-upload-dir: D://elearning//upload//course//PhotoUpload//
+  default-base: D://lms//
+  border-upload-dir: D://lms//upload//border//
+  border-photo-upload-dir: D://lms//upload//border//PhotoUpload//
+  course-upload-dir: D://lms//upload//course//
+  course-section-upload-dir: D://lms//upload//course//section//
+  course-photo-upload-dir: D://lms//upload//course//PhotoUpload//
+  schedule-upload-dir: D://lms//upload//schedule//
+  course-quiz-upload-dir: D://lms//upload//course//quiz//
+  document-upload-dir: D://lms//upload//document//
+  survey-upload-dir: D://lms//upload//survey//
+  binder-jd-upload-dir: D://lms//upload//binder//jd//
+  xdoc-upload-dir: D://lms//upload//xdoc//
+
+
 
 image-file:
-  matric: D://elearning//images//matrix//
-  course: D://elearning//images//course//
-  pdf: D://elearning//images//pdf//
+  matric: D://lms//images//matrix//
+  course: D://lms//images//course//
+  pdf: D://lms//images//pdf//
 
 

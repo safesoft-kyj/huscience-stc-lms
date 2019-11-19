@@ -38,7 +38,7 @@
             <div class="panel">
                 <div class="panel-body">
                     <div class="row">
-                        <div class="row" th:if="${#strings.equalsIgnoreCase(courseAccount.getApprUserId2().userId, userId) and #strings.equalsIgnoreCase(courseAccount.getIsAppr2(), 'N') and #strings.equalsIgnoreCase(courseAccount.isCourseMangerApproval, 'Y')}">
+                        <div class="row" th:if="${#strings.equalsIgnoreCase(courseAccountOrder.getFUser().getUserId(), userId) and #strings.equalsIgnoreCase(courseAccountOrder.getFNext(), '1') and #strings.equalsIgnoreCase(courseAccountOrder.getFStatus(), '0')}">
                             <div class="col-sm-12 input-group pull-right">
                                 <p class="pull-right">
                                     <a th:href="@{/approval/successAppr2/{courseId}/{userId}(courseId=${course.getId()}, userId=${courseAccount.getAccount().getUserId()})}" class="btn btn-primary"><i class="demo-pli-check"></i> 승인</a>
@@ -82,19 +82,25 @@
                                     <td rowspan="3" style="vertical-align: middle" class="text-center" >
                                         <div>결<br/><br/>재</div>
                                     </td>
-                                    <td class="text-center" th:text="${courseAccount.getAccount().getName()}"></td>
-                                    <td class="text-center" th:text="${courseAccount.getApprUserId1().getName()}"></td>
-                                    <td class="text-center" th:text="${courseAccount.getApprUserId2().getName()}"></td>
+                                    <th:block th:each="border, index : ${courseAccount.getCourseAccountOrders()}">
+                                        <td th:text="${border.getFUser().getName()}" class="text-center">
+                                        </td>
+                                    </th:block>
                                 </tr>
                                 <tr>
-                                    <td class="text-center"><img src="" style="width:100px; height:100px;"></td>
-                                    <td class="text-center" th:text="${courseAccount.getApprDateTime1()}"></td>
-                                    <td class="text-center" th:text="${courseAccount.getApprDateTime2()}"></td>
+                                    <th:block th:each="border, index : ${courseAccount.getCourseAccountOrders()}">
+                                        <td th:switch="${border.getFStatus()}" class="text-center">
+                                            <span th:case="${'0'}" class="text-info" th:text="${''}"></span>
+                                            <span th:case="${'1'}" class="text-success" th:text="${'승인'}"></span>
+                                            <span th:case="${'2'}" class="text-danger" th:text="${'반려'}"></span>
+                                        </td>
+                                    </th:block>
                                 </tr>
                                 <tr>
-                                    <td class="text-center" th:text="${courseAccount.getRequestDate()}"></td>
-                                    <td class="text-center" th:text="${courseAccount.getApprDate1()}"></td>
-                                    <td class="text-center" th:text="${courseAccount.getApprDate2()}"></td>
+                                    <th:block th:each="border, index : ${courseAccount.getCourseAccountOrders()}">
+                                        <td th:text="${border.getFDate()} ? ${#dates.format(border.getFDate(), 'yyyy/MMM/dd')} : ${border.getFDate()}" class="text-center"></td>
+                                        </td>
+                                    </th:block>
                                 </tr>
                                 </tbody>
                             </table>

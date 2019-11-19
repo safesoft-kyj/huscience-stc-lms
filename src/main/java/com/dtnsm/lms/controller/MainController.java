@@ -2,7 +2,9 @@ package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.CourseAccount;
+import com.dtnsm.lms.domain.CourseAccountOrder;
 import com.dtnsm.lms.domain.DocumentAccount;
+import com.dtnsm.lms.domain.DocumentAccountOrder;
 import com.dtnsm.lms.domain.constant.ScheduleType;
 import com.dtnsm.lms.mybatis.service.CourseMapperService;
 import com.dtnsm.lms.service.*;
@@ -30,6 +32,9 @@ public class MainController {
     CourseAccountService courseAccountService;
 
     @Autowired
+    CourseAccountOrderService courseAccountOrderService;
+
+    @Autowired
     ScheduleService scheduleService;
 
     @Autowired
@@ -46,6 +51,9 @@ public class MainController {
 
     @Autowired
     DocumentAccountService documentAccountService;
+
+    @Autowired
+    DocumentAccountOrderService documentAccountOrderService;
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseAdminController.class);
 
@@ -66,7 +74,7 @@ public class MainController {
         // What's New
         model.addAttribute("borders2", borderService.getListTop5ByBorderMasterId("BA0104"));
 
-
+        String userId = SessionUtil.getUserId();
 
         logger.info("startdate = " + DateUtil.getStringMonthStartDate());
         logger.info("enddate = " + DateUtil.getStringMonthEndDate());
@@ -80,39 +88,39 @@ public class MainController {
         // Employee training matrix
         model.addAttribute("schedule", scheduleService.getTop1BySctypeOrderByCreatedDateDesc(ScheduleType.MATRIX));
 
+
+        // 교육신청 미결건
+        List<CourseAccountOrder> courseAccountOrders1 = courseAccountOrderService.getAllByNext(userId, "1", "0");
+
+        // 교육신청 진행건
+        List<CourseAccount> courseAccountOrders2 = courseAccountService.getAllByStatus(userId, "0");
+
+        // 교육신청 미결건
+        List<DocumentAccountOrder> documentAccountOrders1 = documentAccountOrderService.getAllByNext(userId, "1", "0");
+
+        // 교육신청 진행건
+        List<DocumentAccount> documentAccountOrders2 = documentAccountService.getAllByStatus(userId, "0");
+
+
         // 교육결재 1차 미결함
-        model.addAttribute("app1List", courseAccountService.getListTop5ByApprUserId1AndIsAppr1(SessionUtil.getUserId(), "N"));
+        model.addAttribute("app1List", courseAccountOrders1);
 
         // 교육결재 1차 완결함
-        model.addAttribute("app1CommitList", courseAccountService.getCustomListTop5ByUserIdAndIsCommit(SessionUtil.getUserId(), "0"));
-
-
-
-        // 교육결재 1차 결재자 미결건
-        int courseApprCount = courseAccountService.getListByAppr1Process("Y",   SessionUtil.getUserId(), "N").size();
-
-        // 교육결재 내가 결재라인에 있으면서 진행중인 건
-        int courseProcessCount = courseAccountService.getCustomListByUserIdAndIsCommit(SessionUtil.getUserId(), "0").size();
-
-        // 전자결재 1차 결재자 미결건
-        int documentApprCount = documentAccountService.getListByAppr1Process(SessionUtil.getUserId(), "N", "0").size();
-
-        // 전자결재 내가 결재라인에 있으면서 진행중인 건
-        int documentProcessCount = documentAccountService.getCustomListByUserIdAndIsCommit(SessionUtil.getUserId(), "0").size();
+        model.addAttribute("app1CommitList", courseAccountOrders2);
 
 
         // 교육결재 1차 미결건수
-        model.addAttribute("courseApprCount", courseApprCount);
+        model.addAttribute("courseApprCount", courseAccountOrders1.size());
 
         // 교육결재 1차 진행건수
-        model.addAttribute("courseProcessCount", courseProcessCount);
+        model.addAttribute("courseProcessCount", courseAccountOrders2.size());
 
 
         // 전자결재 1차 미결건수
-        model.addAttribute("documentApprCount", documentApprCount);
+        model.addAttribute("documentApprCount", documentAccountOrders1.size());
 
         // 전자결재 1차 진행건수
-        model.addAttribute("documentProcessCount", documentProcessCount);
+        model.addAttribute("documentProcessCount", courseAccountOrders2.size());
 
 
         // 과정그룹별 과정 수

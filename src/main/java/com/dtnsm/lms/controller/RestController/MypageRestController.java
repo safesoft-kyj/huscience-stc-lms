@@ -3,6 +3,7 @@ package com.dtnsm.lms.controller.RestController;
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.ApprovalStatusType;
+import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import com.dtnsm.lms.domain.constant.QuizStatusType;
 import com.dtnsm.lms.domain.constant.SectionStatusType;
 import com.dtnsm.lms.service.*;
@@ -120,61 +121,12 @@ public class MypageRestController {
 
                 // CourseAccount 상태값 처리
                 for(CourseAccount courseAccount : course.getCourseAccountList()) {
-                    courseAccount.setApprovalStatus(ApprovalStatusType.APPROVAL_COMPLETE);
+                    courseAccount.setCourseStatus(CourseStepStatus.complete);
+                    courseAccount.setIsCommit("1");
 
                     courseAccountService.save(courseAccount);
                 }
 
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
-                //
                 //
                 //
                 //

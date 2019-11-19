@@ -251,57 +251,58 @@ public class CourseAdminController {
         course.setCourseFiles(courseFile);
 
         List<CourseAccount> courseAccountList = courseService.getCourseById(id).getCourseAccountList();
-        courseAccountList.clear();
-
-
-        //  교육 필수대상자 수정 처리
-
-        if(!mails[0].equals("0")) {
-
-            // 교육대상자 알림 메일 보내기
-            for (String userId : mails) {
-
-                Account account = userService.getAccountByUserId(userId);
-                if(account != null) {
-                    CourseAccount courseAccount = new CourseAccount();
-
-                    courseAccount.setCourse(course);
-                    courseAccount.setAccount(account);
-                    courseAccount.setRequestDate(DateUtil.getTodayString());
-                    courseAccount.setRequestType(CourseRequestType.SPECIFY);        // 교육신청유형(관리자지정, 사용자 신청)
-                    courseAccount.setApprovalStatus(ApprovalStatusType.REQUEST_DONE);    // 신청완료(팀장승인진행중)
-                    courseAccount.setApprUserId1(userService.getAccountByUserId(account.getParentUserId()));
-                    courseAccount.setApprUserId2(userService.getAccountByUserId(courseManagerService.getCourseManager().getUserId()));
-                    courseAccount.setIsTeamMangerApproval(course.getCourseMaster().getIsTeamMangerApproval());
-                    courseAccount.setIsCourseMangerApproval(course.getCourseMaster().getIsCourseMangerApproval());
-                    courseAccountList.add(courseAccount);
-                }
-            }
-        }
-
-        if(!mails2[0].equals("0")) {
-
-            // 교육대상자 알림 메일 보내기
-            for (String userId : mails2) {
-                Account account = userService.getAccountByUserId(userId);
-                if(account != null) {
-                    CourseAccount courseAccount = new CourseAccount();
-
-                    courseAccount.setCourse(course);
-                    courseAccount.setAccount(account);
-                    courseAccount.setRequestDate(DateUtil.getTodayString());
-                    courseAccount.setRequestType(CourseRequestType.SPECIFY);        // 교육신청유형(관리자지정, 사용자 신청)
-                    courseAccount.setApprovalStatus(ApprovalStatusType.REQUEST_DONE);    // 신청완료(팀장승인진행중)
-                    courseAccount.setApprUserId1(userService.getAccountByUserId(account.getParentUserId()));
-                    courseAccount.setApprUserId2(userService.getAccountByUserId(courseManagerService.getCourseManager().getUserId()));
-                    courseAccount.setIsTeamMangerApproval(course.getCourseMaster().getIsTeamMangerApproval());
-                    courseAccount.setIsCourseMangerApproval(course.getCourseMaster().getIsCourseMangerApproval());
-                    courseAccountList.add(courseAccount);
-                }
-            }
-        }
-
         course.setCourseAccountList(courseAccountList);
+
+        // 교육대상자 수정처리는 별도로 진행한다.(2019/11/17)
+
+//        //  교육 필수대상자 수정 처리
+//
+//        if(!mails[0].equals("0")) {
+//
+//            // 교육대상자 알림 메일 보내기
+//            for (String userId : mails) {
+//
+//                Account account = userService.getAccountByUserId(userId);
+//                if(account != null) {
+//                    CourseAccount courseAccount = new CourseAccount();
+//
+//                    courseAccount.setCourse(course);
+//                    courseAccount.setAccount(account);
+//                    courseAccount.setRequestDate(DateUtil.getTodayString());
+//                    courseAccount.setRequestType(CourseRequestType.SPECIFY);        // 교육신청유형(관리자지정, 사용자 신청)
+//                    courseAccount.setApprovalStatus(ApprovalStatusType.REQUEST_DONE);    // 신청완료(팀장승인진행중)
+//                    courseAccount.setApprUserId1(userService.getAccountByUserId(account.getParentUserId()));
+//                    courseAccount.setApprUserId2(userService.getAccountByUserId(courseManagerService.getCourseManager().getUserId()));
+//                    courseAccount.setIsTeamMangerApproval(course.getCourseMaster().getIsTeamMangerApproval());
+//                    courseAccount.setIsCourseMangerApproval(course.getCourseMaster().getIsCourseMangerApproval());
+//                    courseAccountList.add(courseAccount);
+//                }
+//            }
+//        }
+
+//        if(!mails2[0].equals("0")) {
+//
+//            // 교육대상자 알림 메일 보내기
+//            for (String userId : mails2) {
+//                Account account = userService.getAccountByUserId(userId);
+//                if(account != null) {
+//                    CourseAccount courseAccount = new CourseAccount();
+//
+//                    courseAccount.setCourse(course);
+//                    courseAccount.setAccount(account);
+//                    courseAccount.setRequestDate(DateUtil.getTodayString());
+//                    courseAccount.setRequestType(CourseRequestType.SPECIFY);        // 교육신청유형(관리자지정, 사용자 신청)
+//                    courseAccount.setApprovalStatus(ApprovalStatusType.REQUEST_DONE);    // 신청완료(팀장승인진행중)
+//                    courseAccount.setApprUserId1(userService.getAccountByUserId(account.getParentUserId()));
+//                    courseAccount.setApprUserId2(userService.getAccountByUserId(courseManagerService.getCourseManager().getUserId()));
+//                    courseAccount.setIsTeamMangerApproval(course.getCourseMaster().getIsTeamMangerApproval());
+//                    courseAccount.setIsCourseMangerApproval(course.getCourseMaster().getIsCourseMangerApproval());
+//                    courseAccountList.add(courseAccount);
+//                }
+//            }
+//        }
+//
+//        course.setCourseAccountList(courseAccountList);
 
         // self 교육인 경우 신청일자 및 교육일자가 별도로 없음으로 기본값으로 셋팅한다.
         // RequestType : 1:상시, 2:기간

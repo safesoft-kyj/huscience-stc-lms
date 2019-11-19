@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko"
-      xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/default_layout}">
 
@@ -42,7 +42,8 @@
                     <br>
                     <div th:switch="${borders}">
                         <h2 th:case="null">No customer yet!</h2>
-                        <div th:case="*"><!-- 미결문서 -->
+                        <div th:case="*">
+                            <!-- 미결문서 -->
                             <div class="row">
                                 <div class="col-sm-12">
                                     <span th:text="#{label.list.title(${borders.getTotalElements()})}"></span>
@@ -50,62 +51,81 @@
                             </div>
                             <hr class="table-head">
                             <div class="table-responsive">
-                                <table id="customer-list-page" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                                <table id="customer-list-page" class="table table-bordered" cellspacing="0" width="100%">
                                     <thead>
                                     <tr style="background: #FAFAFA;">
                                         <th class="text-center col-sm-1" th:text="#{label.no}">번호</th>
                                         <th class="text-center col-sm-5" th:text="#{label.subject}">과정명</th>
-                                        <th class="text-center col-sm-1" th:text="#{label.document.createDate}">기안일</th>
-                                        <th class="text-center col-sm-1" th:text="#{label.document.createBy}">기안자</th>
-                                        <th class="text-center col-sm-1" th:text="#{label.approval1by}">1차결재자</th>
-                                        <th class="text-center col-sm-1" th:text="#{label.approval2by}">관리자</th>
+                                        <th class="text-center col-sm-1" th:text="#{label.requestdate}">신청일</th>
+                                        <th class="text-center col-sm-1" th:text="#{label.requestby}">신청자</th>
+                                        <th class="text-center col-sm-1" >전자결재</th>
                                         <th class="text-center col-sm-3" th:text="#{label.status}">상태</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr th:each="border, index : ${borders}">
                                         <td th:text="${index.count}" class="text-center"></td>
-                                        <td><a th:href="@{/document/approvalAppr1/{id}/{userId}(id=${border.getDocument().getId()}, userId=${border.getAccount().getUserId()})}" th:text="${border.getDocument().getTitle()}"></a></td>
+                                        <td>
+                                            <th:block th:if="${#strings.equalsIgnoreCase(border.getIsApproval(), '1')}">
+                                                <a th:href="@{/course/approval/{id}(id=${border.getCourse().getId()})}">
+                                                    <span th:text="${'['+border.getCourse().getCourseMaster().getCourseName()+']'}"></span>&nbsp;
+                                                    <span th:text="${border.getCourse().getTitle()}"></span>
+                                                </a>
+                                            </th:block>
+                                            <th:block th:if="${#strings.equalsIgnoreCase(border.getIsApproval(), '0')}">
+                                                <span th:text="${'['+border.getCourse().getCourseMaster().getCourseName()+']'}"></span>&nbsp;
+                                                <span th:text="${border.getCourse().getTitle()}"></span>
+                                            </th:block>
+                                        </td>
                                         <td th:text="${border.getRequestDate()}" class="text-center"></td>
                                         <td th:text="${border.getAccount().getName()}" class="text-center"></td>
-                                        <td th:text="${border.getApprUserId1().getName()}" class="text-center"></td>
-                                        <td th:text="${border.getApprUserId2().getName()}" class="text-center"></td>
-                                        <td th:switch="${border.getStatus()}" class="text-center">
-                                            <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).REQUEST_DONE}"
-                                                  class="text-info"><span th:text="${border.getApprUserId1().getName()}"></span> 결재 진행중</span>
-                                            <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_TEAM_DONE}"
-                                                  class="text-warning"><span th:text="${border.getApprUserId2().getName()}"></span> 결재 진행중</span>
-                                            <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_MANAGER_DONE}"
-                                                  class="text-success">결재 완료</span>
+                                        <td th:switch="${border.getIsApproval()}" class="text-center">
+                                            <span th:case="${'0'}" class="text-danger" th:text="${'N'}"></span>
+                                            <span th:case="${'1'}" class="text-success" th:text="${'Y'}"></span>
                                         </td>
+
+                                        <td class="text-center">
+                                            <th:block th:if="${#strings.equalsIgnoreCase(border.getIsApproval(), '1')}">
+                                                <div th:switch="${border.getFStatus()}">
+                                                    <span th:case="${'0'}" class="text-info" th:text="${'진행중'}"></span>
+                                                    <span th:case="${'1'}" class="text-success" th:text="${'최종승인'}"></span>
+                                                    <span th:case="${'2'}" class="text-danger" th:text="${'기각'}"></span>
+                                                </div>
+                                            </th:block>
+                                            <th:block th:if="${#strings.equalsIgnoreCase(border.getIsApproval(), '0')}">
+                                                <span class="text-success" th:text="${'완료'}"></span>
+                                            </th:block>
+                                        </td>
+
                                     </tr>
                                     </tbody>
                                 </table>
                                 <nav style="text-align: center;">
-                                    <ul class="pagination"
-                                        th:with="start=${T(Math).floor(borders.number/10)*10 + 1}, last=(${start + 9 < borders.totalPages ? start + 9 : borders.totalPages})">
+                                    <ul class="pagination" th:with="start=${T(Math).floor(borders.number/10)*10 + 1}, last=(${start + 9 < borders.totalPages ? start + 9 : borders.totalPages})">
                                         <li>
-                                            <a th:href="@{/approval/document/listAppr1Process(page=1)}" aria-label="First">
+                                            <a th:href="@{/approval/document/listMyAll(page=1)}" aria-label="First">
                                                 <span aria-hidden="true">First</span>
                                             </a>
                                         </li>
 
                                         <li th:class="${borders.first} ? 'disabled'">
-                                            <a th:href="${borders.first} ? '#' :@{/approval/document/listAppr1Process(page=${borders.number})}" aria-label="Previous">
+                                            <a th:href="${borders.first} ? '#' :@{/approval/document/listMyAll(page=${borders.number})}" aria-label="Previous">
                                                 <span aria-hidden="true">&lt;</span>
                                             </a>
                                         </li>
+
                                         <li th:each="page: ${#numbers.sequence(start, last)}" th:class="${page == borders.number + 1} ? 'active'">
-                                            <a th:text="${page}" th:href="@{/approval/document/listAppr1Process(page=${page})}"></a>
+                                            <a th:text="${page}" th:href="@{/approval/document/listMyAll(page=${page})}"></a>
                                         </li>
+
                                         <li th:class="${borders.last} ? 'disabled'">
-                                            <a th:href="${borders.last} ? '#' : @{/approval/document/listAppr1Process(page=${borders.number + 2})}" aria-label="Next">
+                                            <a th:href="${borders.last} ? '#' : @{/approval/document/listMyAll(page=${borders.number + 2})}" aria-label="Next">
                                                 <span aria-hidden="true">&gt;</span>
                                             </a>
                                         </li>
 
                                         <li>
-                                            <a th:href="@{/approval/document/listAppr1Process(page=${borders.totalPages})}" aria-label="Last">
+                                            <a th:href="@{/approval/document/listMyAll(page=${borders.totalPages})}" aria-label="Last">
                                                 <span aria-hidden="true">Last</span>
                                             </a>
                                         </li>

@@ -1,13 +1,15 @@
 package com.dtnsm.lms.domain.constant;
 
-public enum CourseStepStatus {
-    none("none"),
-    request("신청중"),
-    process("교육중"),
-    complete("종료");
+/*
+    결재유형 :  결재, 확인
+ */
+public enum DocType {
+    none("미진행"),
+    appr("결재"),
+    check("확인");
 
     private String label;
-    CourseStepStatus(String label) {
+    DocType(String label) {
         this.label = label;
     }
 

@@ -4,6 +4,7 @@ import com.dtnsm.lms.auth.CustomUserDetails;
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.ApprovalStatusType;
+import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import com.dtnsm.lms.domain.constant.QuizStatusType;
 import com.dtnsm.lms.domain.constant.SurveyStatusType;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
@@ -90,6 +91,9 @@ public class MyPageController {
 
         CustomUserDetails userDetails = SessionUtil.getUserDetail();
         Account account = userService.getAccountByUserId(userDetails.getUserId());
+
+
+
         List<CourseAccount> courseAccountList = courseAccountService.getCourseAccountByUserId(userDetails.getUserId());
 
         Account parentAccount = userService.getAccountByUserId(account.getParentUserId());
@@ -359,7 +363,8 @@ public class MyPageController {
 
                     // CourseAccount 상태값 처리
                     for(CourseAccount courseAccount : course.getCourseAccountList()) {
-                        courseAccount.setApprovalStatus(ApprovalStatusType.APPROVAL_COMPLETE);
+                        courseAccount.setCourseStatus(CourseStepStatus.complete);
+                        courseAccount.setIsCommit("1");
 
                         courseAccountService.save(courseAccount);
                     }
@@ -456,7 +461,8 @@ public class MyPageController {
 
             // CourseAccount 상태값 처리
             for(CourseAccount courseAccount : course.getCourseAccountList()) {
-                courseAccount.setApprovalStatus(ApprovalStatusType.APPROVAL_COMPLETE);
+                courseAccount.setCourseStatus(CourseStepStatus.complete);
+                courseAccount.setIsCommit("1");
 
                 courseAccountService.save(courseAccount);
             }

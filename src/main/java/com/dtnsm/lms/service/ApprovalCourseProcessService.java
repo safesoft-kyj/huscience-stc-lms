@@ -1,17 +1,19 @@
 package com.dtnsm.lms.service;
 
 import com.dtnsm.lms.auth.UserServiceImpl;
+import com.dtnsm.lms.controller.CourseAdminController;
 import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.*;
 import com.dtnsm.lms.repository.CourseAccountRepository;
 import com.dtnsm.lms.util.DateUtil;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-
 @Service
 public class ApprovalCourseProcessService {
+
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseAdminController.class);
 
     @Autowired
     CourseAccountRepository courseAccountRepository;
@@ -36,39 +38,129 @@ public class ApprovalCourseProcessService {
 
     @Autowired CourseAccountService courseAccountService;
 
+    @Autowired
+    CourseAccountOrderService courseAccountOrderService;
+
+
+
+//    public void courseRequestProcess(Account account, Course course) {
+//        Account apprAccount = userService.getAccountByUserId(account.getParentUserId());
+//        CourseAccountOrder courseAccountOrder2 = new CourseAccountOrder();
+//        courseAccountOrder2.setFUser(userService.getAccountByUserId(account.getParentUserId()));
+//        courseAccountOrder2.setFCourseAccount(null);
+//        // fKind : 0:초기, 1:결재, 2. 합의, 3:확인
+//        courseAccountOrder2.setFKind("1");
+//        courseAccountOrder2.setFStatus("0");
+//        courseAccountOrder2.setFSeq(1);
+//        courseAccountOrder2.setFNext("1");
+//
+//        courseAccountOrderService.save(courseAccountOrder2);
+//    }
+
     // 교육 신청 처리
     public void courseRequestProcess(Account account, Course course) {
+
+        // 팀장/부서장 승인여부
+        String isAppr1 = course.getCourseMaster().getIsTeamMangerApproval();
+        // 관리자 승인여부
+        String isAppr2 = course.getCourseMaster().getIsCourseMangerApproval();
 
         // 교육신청
         CourseAccount courseAccount = new CourseAccount();
         courseAccount.setCourse(course);
         courseAccount.setAccount(account);
         courseAccount.setRequestDate(DateUtil.getTodayString());
-        courseAccount.setRequestType(CourseRequestType.SPECIFY);        // 교육신청유형(관리자지정, 사용자 신청)
+        courseAccount.setFWdate(DateUtil.getToday());
+        courseAccount.setRequestType("1");        // 교육신청(0:관리자지정, 1:사용자 신청)
+        courseAccount.setCourseStatus(CourseStepStatus.request);
+        courseAccount.setFStatus("0");
+        courseAccount.setFCurrSeq(1);
 
-        courseAccount.setApprUserId1(userService.getAccountByUserId(account.getParentUserId()));
-        courseAccount.setApprUserId2(userService.getAccountByUserId(courseManagerService.getCourseManager().getUserId()));
-        courseAccount.setIsTeamMangerApproval(course.getCourseMaster().getIsTeamMangerApproval());
-        courseAccount.setIsCourseMangerApproval(course.getCourseMaster().getIsCourseMangerApproval());
 
-        // 기본상태 지정
-        courseAccount.setApprovalStatus(ApprovalStatusType.REQUEST_DONE);   // 결재상태
-        courseAccount.setIsCommit("0"); // 결재 승인 프로세스 완료 상태
-        courseAccount.setIsAppr1("N");  // 1차 결재 완료 여부
-        courseAccount.setIsAppr2("N");  // 2차 결재 완료 여부
-
-        // 1차 팀장 결재 유무
-        if (course.getCourseMaster().getIsTeamMangerApproval().equals("N") && course.getCourseMaster().getIsCourseMangerApproval().equals("N")) {
-            courseAccount.setApprovalStatus(ApprovalStatusType.APPROVAL_MANAGER_DONE);    // 최종승인완료
-            courseAccount.setIsAppr1("Y");
-            courseAccount.setIsAppr2("Y");
-            courseAccount.setIsCommit("1");
+        // 결재자수 Max 설정
+        if(isAppr1.equals("Y") && isAppr2.equals("Y")) {
+            courseAccount.setFFinalCount(2);
+            courseAccount.setIsApproval("1");   // 전자결재유무 0:없음, 1:있음
+        } else if(isAppr1.equals("Y")) {
+            courseAccount.setFFinalCount(1);
+            courseAccount.setIsApproval("1");   // 전자결재유무 0:없음, 1:있음
+        } else {
+            courseAccount.setFFinalCount(0);
+            courseAccount.setIsApproval("0");   // 전자결재유무 0:없음, 1:있음
+            courseAccount.setFStatus("1");      // 전자결재가 없으면 완료한것으로 처리한다.
+            courseAccount.setCourseStatus(CourseStepStatus.process);
         }
 
-        // 과정 결재 정보 생성
-        CourseAccount courseAccount1 = courseAccountService.save(courseAccount);
+        CourseAccount saveCourseAccount = courseAccountService.save(courseAccount);
 
-        course = courseAccount1.getCourse();
+        // 전자결재가 있는 경우
+        if(courseAccount.getIsApproval().equals("1")) {
+
+            // 내결재사항을 추가한다.
+            CourseAccountOrder courseAccountOrder = new CourseAccountOrder();
+            courseAccountOrder.setFUser(account);
+            courseAccountOrder.setCourseAccount(saveCourseAccount);
+
+            // fKind : 0:초기, 1:결재, 2. 합의, 3:확인
+            courseAccountOrder.setFKind("1");
+            courseAccountOrder.setFStatus("1");
+            courseAccountOrder.setFSeq(0);
+            courseAccountOrder.setFNext("0");
+            courseAccountOrder.setFDate(DateUtil.getToday());
+            courseAccountOrder.setFComment("");
+            courseAccountOrderService.save(courseAccountOrder);
+
+            //courseAccount.addCourseAccountOrder(courseAccountOrderService.save(courseAccountOrder1));
+
+            Account apprAccount;
+            if (isAppr1.equals("Y")) {
+                Account apprAccount2 = userService.getAccountByUserId(account.getParentUserId());
+                CourseAccountOrder courseAccountOrder2 = new CourseAccountOrder();
+                courseAccountOrder2.setFUser(apprAccount2);
+                courseAccountOrder2.setCourseAccount(saveCourseAccount);
+                // fKind : 0:초기, 1:결재, 2. 합의, 3:확인
+                courseAccountOrder2.setFKind("1");
+                courseAccountOrder2.setFStatus("0");
+                courseAccountOrder2.setFSeq(1);
+                courseAccountOrder2.setFNext("1");
+
+                courseAccountOrderService.save(courseAccountOrder2);
+
+                //courseAccount.addCourseAccountOrder(courseAccountOrderService.save(courseAccountOrder1));
+
+                // 1차 결재자 메일 전송
+                sendMail(apprAccount2, course, MailSendType.REQUEST);
+            }
+
+            if (isAppr2.equals("Y")) {
+                Account apprAccount3 = userService.getAccountByUserId(courseManagerService.getCourseManager().getUserId());
+                CourseAccountOrder courseAccountOrder3 = new CourseAccountOrder();
+                courseAccountOrder3.setFUser(apprAccount3);
+                courseAccountOrder3.setCourseAccount(saveCourseAccount);
+                courseAccountOrder3.setFKind("1");
+                courseAccountOrder3.setFStatus("0");
+                courseAccountOrder3.setFSeq(2);
+
+               courseAccountOrderService.save(courseAccountOrder3);
+
+                //courseAccount.addCourseAccountOrder(courseAccountOrderService.save(courseAccountOrder1));
+            }
+        }
+
+       // 과정 결재 정보 생성
+        //CourseAccount courseAccount1 = courseAccountService.save(courseAccount);
+
+        // 과정 생성
+        // TODO : 교육신청시 교육과정 생성 유무
+
+        //createUserCourse(courseAccount1);
+    }
+
+
+    // 교육과정 생성
+    public void createUserCourse(CourseAccount courseAccount) {
+        Account account = courseAccount.getAccount();
+        Course course = courseAccount.getCourse();
 
         // 강의 생성
         if(course.getSections().size() > 0) {
@@ -107,117 +199,160 @@ public class ApprovalCourseProcessService {
             }
         }
 
-        // 1차 결재자 메일 전송
-        if(courseAccount1.getIsTeamMangerApproval().equals("Y") && courseAccount1.getApprUserId1() != null) {
-            sendMail(courseAccount1.getApprUserId1(), courseAccount1.getCourse(), MailSendType.REQUEST);
-        }
-
-        // 2차 결재자 메일 전송
-        if(courseAccount1.getIsCourseMangerApproval().equals("Y") && courseAccount1.getApprUserId2() != null) {
-            sendMail(courseAccount1.getApprUserId2(), courseAccount1.getCourse(), MailSendType.REQUEST);
-        }
-
         // 알림 등록
     }
 
+
     // 교육 1차 승인 처리
-    public void courseApproval1Proces(CourseAccount courseAccount) {
+    public void courseApproval1Proces(CourseAccountOrder courseAccountOrder) {
 
-        // 팀장 결재 승인 설정이 Y이고 아직승인되지 않고 완료되지 않은 건
-        if(courseAccount.getIsTeamMangerApproval().equals("Y") && courseAccount.getIsAppr1().equals("N") && courseAccount.getIsCommit().equals("0")) {
+        int finalCount = courseAccountOrder.getCourseAccount().getFFinalCount();
 
-            courseAccount.setIsAppr1("Y");
-            courseAccount.setApprStatus1(ApprovalStatus.approval);
-            courseAccount.setApprDate1(DateUtil.getTodayString());
-            courseAccount.setApprDateTime1(new Date());
+        courseAccountOrder.setFDate(DateUtil.getToday());
+        courseAccountOrder.setFNext("0");
+        courseAccountOrder.setFStatus("1");
+        courseAccountOrder.setFComment("");
 
-            // 최종승인이 팀장인 경우 상태를 종결한다.
-            if (courseAccount.getIsTeamMangerApproval().equals("Y") && courseAccount.getIsCourseMangerApproval().equals("N")) {
-                courseAccount.setApprovalStatus(ApprovalStatusType.APPROVAL_COMPLETE);
+        courseAccountOrder = courseAccountOrderService.save(courseAccountOrder);
 
-                // 최종 승인이면 기안자에게 메일 전송
-                if(courseAccount.getIsCommit().equals("Y") && courseAccount.getAccount() != null) {
-                    sendMail(courseAccount.getAccount(), courseAccount.getCourse(), MailSendType.REQUEST);
-                }
-            } else {
+        CourseAccount courseAccount = courseAccountOrder.getCourseAccount();
 
-                courseAccount.setApprovalStatus(ApprovalStatusType.APPROVAL_TEAM_DONE);
-                // 2차 결재가 있으면 2차 결재자 메일 전송
-                if(courseAccount.getIsCourseMangerApproval().equals("Y") && courseAccount.getApprUserId2() != null) {
-                    sendMail(courseAccount.getApprUserId2(), courseAccount.getCourse(), MailSendType.REQUEST);
-                }
+        if(finalCount == courseAccountOrder.getFSeq()) {   // 종결처리
+            //  승인: 1, 기각 : 2
+            courseAccount.setFStatus("1");
+
+            courseAccountService.save(courseAccount);
+
+            // 최종 승인이면 기안자에게 메일 전송
+            sendMail(courseAccount.getAccount(), courseAccount.getCourse(), MailSendType.APPROVAL1);
+        } else {
+            CourseAccountOrder nextOrder = courseAccountOrderService.getByFnoAndSeq(courseAccountOrder.getCourseAccount().getId(), courseAccountOrder.getFSeq()+1);
+            if (nextOrder != null) {
+
+                nextOrder.setFNext("1");
+                nextOrder = courseAccountOrderService.save(nextOrder);
+
+                // 마스터에 다음 결재자 순번을 업데이트 한다.
+                courseAccount.setFCurrSeq(nextOrder.getFSeq());
+                courseAccountService.save(courseAccount);
+
+                sendMail(nextOrder.getFUser(), courseAccount.getCourse(), MailSendType.APPROVAL1);
             }
-
-            courseAccount = courseAccountService.save(courseAccount);
         }
     }
 
     // 교육 1차 기각 처리
-    public void courseReject1Proces(CourseAccount courseAccount) {
+    public void courseReject1Proces(CourseAccountOrder courseAccountOrder) {
 
-        if(courseAccount.getIsTeamMangerApproval().equals("Y") && courseAccount.getIsAppr1().equals("N") && courseAccount.getIsCommit().equals("0")) {
+        int finalCount = courseAccountOrder.getCourseAccount().getFFinalCount();
 
-            courseAccount.setIsAppr1("Y");
-            courseAccount.setApprStatus1(ApprovalStatus.reject);
-            courseAccount.setApprDate1(DateUtil.getTodayString());
-            courseAccount.setApprDateTime1(new Date());
-            courseAccount.setApprovalStatus(ApprovalStatusType.APPROVAL_TEAM_REJECT);
-            courseAccount.setIsCommit("1"); // 2차 승인이 진행되지 않게 완료 처리한다.
+        courseAccountOrder.setFDate(DateUtil.getToday());
+        courseAccountOrder.setFNext("0");
+        courseAccountOrder.setFStatus("2");
 
-            courseAccountService.save(courseAccount);
-        }
+        courseAccountOrder = courseAccountOrderService.save(courseAccountOrder);
 
-        // 2차 결재가 있으면 2차 결재자 메일 전송
-        if(courseAccount.getIsCourseMangerApproval().equals("Y") && courseAccount.getApprUserId2() != null) {
-            sendMail(courseAccount.getApprUserId2(), courseAccount.getCourse(), MailSendType.REQUEST);
-        }
+        CourseAccount courseAccount = courseAccountOrder.getCourseAccount();
 
-        // 최종 승인이면 기안자에게 메일 전송
-        if(courseAccount.getIsCommit().equals("Y") && courseAccount.getAccount() != null) {
-            sendMail(courseAccount.getAccount(), courseAccount.getCourse(), MailSendType.REQUEST);
-        }
+        courseAccount.setFStatus("2");
+
+        courseAccountService.save(courseAccount);
+
+        // 기안자에게 메일 전송
+        sendMail(courseAccount.getAccount(), courseAccount.getCourse(), MailSendType.REJECT);
+
+
+//        if(finalCount == 1) {   // 종결처리
+//            //  승인: 1, 기각 : 2
+//
+//        } else {
+//
+//            CourseAccountOrder nextOrder = courseAccountOrderService.getByFnoAndSeq(courseAccountOrder.getCourseAccount().getId(), courseAccountOrder.getFSeq()+1);
+//            if (nextOrder != null) {
+//                nextOrder.setFNext("1");
+//                nextOrder = courseAccountOrderService.save(nextOrder);
+//
+//                sendMail(nextOrder.getFUser(), courseAccount.getCourse(), MailSendType.REJECT);
+//            }
+//        }
     }
 
     // 교육 2차 승인 처리
-    public void courseApproval2Proces(CourseAccount courseAccount) {
+    public void courseApproval2Proces(CourseAccountOrder courseAccountOrder) {
 
-        // 2차승인여부가 Y이고 아직 미승인된 경우만 처리
-        if(courseAccount.getIsCourseMangerApproval().equals("Y") && courseAccount.getIsAppr2().equals("N")) {
-            courseAccount.setIsAppr2("Y");
-            courseAccount.setApprStatus2(ApprovalStatus.approval);
-            courseAccount.setApprDate2(DateUtil.getTodayString());
-            courseAccount.setApprDateTime2(new Date());
-            courseAccount.setApprovalStatus(ApprovalStatusType.APPROVAL_TEAM_DONE);
-            courseAccount.setIsCommit("1");
+        int finalCount = courseAccountOrder.getCourseAccount().getFFinalCount();
+
+        courseAccountOrder.setFDate(DateUtil.getToday());
+        courseAccountOrder.setFNext("0");
+        courseAccountOrder.setFStatus("1");
+        courseAccountOrder.setFComment("");
+
+        courseAccountOrder = courseAccountOrderService.save(courseAccountOrder);
+
+        CourseAccount courseAccount = courseAccountOrder.getCourseAccount();
+
+        if(finalCount == courseAccountOrder.getFSeq()) {   // 종결처리
+            //  승인: 1, 기각 : 2
+            courseAccount.setFStatus("1");
 
             courseAccountService.save(courseAccount);
-        }
 
-        // 최종 승인이면 기안자에게 메일 전송
-        if(courseAccount.getIsCommit().equals("Y") && courseAccount.getAccount() != null) {
-            sendMail(courseAccount.getAccount(), courseAccount.getCourse(), MailSendType.REQUEST);
+            // 최종 승인이면 기안자에게 메일 전송
+            sendMail(courseAccount.getAccount(), courseAccount.getCourse(), MailSendType.APPROVAL2);
+        } else {
+
+            CourseAccountOrder nextOrder = courseAccountOrderService.getByFnoAndSeq(courseAccountOrder.getCourseAccount().getId(), courseAccountOrder.getFSeq()+1);
+            if (nextOrder != null) {
+                nextOrder.setFNext("1");
+                nextOrder = courseAccountOrderService.save(nextOrder);
+
+                // 마스터에 다음 결재자 순번을 업데이트 한다.
+                courseAccount.setFCurrSeq(nextOrder.getFSeq());
+                courseAccountService.save(courseAccount);
+
+                sendMail(nextOrder.getFUser(), courseAccount.getCourse(), MailSendType.APPROVAL2);
+            }
         }
     }
 
     // 교육 2차 기각 처리
-    public void courseReject2Proces(CourseAccount courseAccount) {
+    public void courseReject2Proces(CourseAccountOrder courseAccountOrder) {
 
-        // 2차승인여부가 Y이고 아직 미승인된 경우만 처리
-        if(courseAccount.getIsCourseMangerApproval().equals("Y") && courseAccount.getIsAppr2().equals("N")) {
-            courseAccount.setIsAppr2("Y");
-            courseAccount.setApprStatus2(ApprovalStatus.reject);
-            courseAccount.setApprDate2(DateUtil.getTodayString());
-            courseAccount.setApprDateTime2(new Date());
-            courseAccount.setApprovalStatus(ApprovalStatusType.APPROVAL_MANAGER_REJECT);
-            courseAccount.setIsCommit("1");
+        int finalCount = courseAccountOrder.getCourseAccount().getFFinalCount();
 
-            courseAccountService.save(courseAccount);
-        }
+        courseAccountOrder.setFDate(DateUtil.getToday());
+        courseAccountOrder.setFNext("0");
+        courseAccountOrder.setFStatus("2");
 
-        // 최종 승인이면 기안자에게 메일 전송
-        if(courseAccount.getIsCommit().equals("Y") && courseAccount.getAccount() != null) {
-            sendMail(courseAccount.getAccount(), courseAccount.getCourse(), MailSendType.REQUEST);
-        }
+        courseAccountOrder = courseAccountOrderService.save(courseAccountOrder);
+
+        CourseAccount courseAccount = courseAccountOrder.getCourseAccount();
+
+        courseAccount.setFStatus("2");
+
+        courseAccountService.save(courseAccount);
+
+        // 기안자에게 메일 전송
+        sendMail(courseAccount.getAccount(), courseAccount.getCourse(), MailSendType.REJECT);
+
+//        if(finalCount == 2) {   // 종결처리
+//            //  승인: 1, 기각 : 2
+//            courseAccount.setFStatus("2");
+//
+//            courseAccountService.save(courseAccount);
+//
+//            // 최종 승인이면 기안자에게 메일 전송
+//            sendMail(courseAccount.getAccount(), courseAccount.getCourse(), MailSendType.REJECT);
+//        } else {
+//
+//            CourseAccountOrder nextOrder = courseAccountOrderService.getByFnoAndSeq(courseAccountOrder.getCourseAccount().getId(), courseAccountOrder.getFSeq()+1);
+//            if (nextOrder != null) {
+//                nextOrder.setFNext("1");
+//                nextOrder = courseAccountOrderService.save(nextOrder);
+//
+//                sendMail(nextOrder.getFUser(), courseAccount.getCourse(), MailSendType.REJECT);
+//            }
+//        }
     }
 
     // 교육과정 메일 전송

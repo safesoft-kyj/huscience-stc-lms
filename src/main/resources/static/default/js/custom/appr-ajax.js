@@ -12,7 +12,7 @@ $(function() {
     var userId = $('#sec-user-name').text();
     var url = "/api/approval";
 
-    // 학습시간 저장
+    // 결재 건수
     $.ajax({
         type: "GET",
         url: url,
@@ -24,13 +24,13 @@ $(function() {
         success: function (data) {
             $('#course-my-approval').text(data['courseMyApproval']);
             $('#course-my-process').text(data['courseMyProcess']);
-            $('#course-my-approval2').text(data['courseMyApproval2']);
-            $('#course-my-process2').text(data['courseMyProcess']);
+            // $('#course-my-approval2').text(data['courseMyApproval2']);
+            $('#course-my-process2').text(data['courseMyProcess2']);
 
             $('#document-my-approval').text(data['documentMyApproval']);
             $('#document-my-process').text(data['documentMyProcess']);
-            $('#document-my-approval2').text(data['documentMyApproval2']);
-            $('#document-my-process2').text(data['documentMyProcess']);
+            // $('#document-my-approval2').text(data['documentMyApproval2']);
+            $('#document-my-process2').text(data['documentMyProcess2']);
         },
         error: function (e) {
             alert('ajax error');

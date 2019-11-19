@@ -1,18 +1,14 @@
 package com.dtnsm.lms.service;
 
 import com.dtnsm.lms.auth.UserServiceImpl;
-import com.dtnsm.lms.domain.*;
-import com.dtnsm.lms.domain.constant.ApprovalStatusType;
-import com.dtnsm.lms.domain.constant.CourseRequestType;
+import com.dtnsm.lms.domain.Account;
+import com.dtnsm.lms.domain.Document;
+import com.dtnsm.lms.domain.DocumentAccount;
+import com.dtnsm.lms.domain.DocumentAccountOrder;
 import com.dtnsm.lms.domain.constant.MailSendType;
-import com.dtnsm.lms.domain.constant.SurveyStatusType;
-import com.dtnsm.lms.repository.CourseAccountRepository;
 import com.dtnsm.lms.util.DateUtil;
-import com.dtnsm.lms.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 @Service
 public class ApprovalDocumentProcessService {
@@ -21,7 +17,7 @@ public class ApprovalDocumentProcessService {
     DocumentAccountService documentAccountService;
 
     @Autowired
-    CourseAccountRepository courseAccountRepository;
+    DocumentAccountOrderService documentAccountOrderService;
 
     @Autowired
     UserServiceImpl userService;
@@ -32,138 +28,203 @@ public class ApprovalDocumentProcessService {
     @Autowired
     private MailService mailService;
 
-    @Autowired CourseAccountService courseAccountService;
-
     // 기안 처리
     public void documentRequestProcess(Account account, Document document) {
 
+        // 팀장/부서장 승인여부
+        String isAppr1 = document.getTemplate().getIsTeamMangerApproval();
+        // 관리자 승인여부
+        String isAppr2 = document.getTemplate().getIsCourseMangerApproval();
+
+
+        // 기안
         DocumentAccount documentAccount = new DocumentAccount();
         documentAccount.setDocument(document);
         documentAccount.setAccount(account);
         documentAccount.setRequestDate(DateUtil.getTodayString());
-        documentAccount.setRequestType(CourseRequestType.SPECIFY);
-        documentAccount.setApprUserId1(userService.getAccountByUserId(account.getParentUserId()));
-        documentAccount.setApprUserId2(userService.getAccountByUserId(courseManagerService.getCourseManager().getUserId()));
-        documentAccount.setIsTeamMangerApproval(document.getTemplate().getIsTeamMangerApproval());
-        documentAccount.setIsCourseMangerApproval(document.getTemplate().getIsCourseMangerApproval());
+        documentAccount.setFWdate(DateUtil.getToday());
+        documentAccount.setFStatus("0");
+        documentAccount.setFCurrSeq(1);
 
-        // 기본상태 지정
-        documentAccount.setStatus(ApprovalStatusType.REQUEST_DONE);   // 결재상태
-        documentAccount.setIsCommit("0"); // 결재 승인 프로세스 완료 상태
-        documentAccount.setIsAppr1("N");  // 1차 결재 완료 여부
-        documentAccount.setIsAppr2("N");  // 2차 결재 완료 여부
-
-        // 1차 팀장 결재 유무
-        if (document.getTemplate().getIsTeamMangerApproval().equals("N") && document.getTemplate().getIsCourseMangerApproval().equals("N")) {
-            documentAccount.setStatus(ApprovalStatusType.APPROVAL_MANAGER_DONE);    // 팀장승인완료
-            documentAccount.setIsAppr1("Y");
-            documentAccount.setIsAppr2("Y");
-            documentAccount.setIsCommit("1");
+        // 결재자수 Max 설정
+        if(isAppr1.equals("Y") && isAppr2.equals("Y")) {
+            documentAccount.setFFinalCount(2);
+        } else if(isAppr1.equals("Y")) {
+            documentAccount.setFFinalCount(1);
+        } else {
+            documentAccount.setFFinalCount(0);
+            documentAccount.setFStatus("1");      // 전자결재가 없으면 완료한것으로 처리한다.
         }
 
-        // 과정 결재 정보 생성
-        DocumentAccount documentAccount1 = documentAccountService.save(documentAccount);
+        DocumentAccount saveDocumentAccount = documentAccountService.save(documentAccount);
 
 
-        // 1차 결재자 메일 전송
-        if(documentAccount1.getIsTeamMangerApproval().equals("Y") && documentAccount1.getApprUserId1() != null) {
-            sendMail(documentAccount1.getApprUserId1(), documentAccount1.getDocument(), MailSendType.REQUEST);
+        // 내결재사항을 추가한다.
+        DocumentAccountOrder documentAccountOrder = new DocumentAccountOrder();
+        documentAccountOrder.setFUser(account);
+        documentAccountOrder.setDocumentAccount(saveDocumentAccount);
+
+        // fKind : 0:초기, 1:결재, 2. 합의, 3:확인
+        documentAccountOrder.setFKind("1");
+        documentAccountOrder.setFStatus("1");
+        documentAccountOrder.setFSeq(0);
+        documentAccountOrder.setFNext("0");
+        documentAccountOrder.setFDate(DateUtil.getToday());
+        documentAccountOrder.setFComment("");
+        documentAccountOrderService.save(documentAccountOrder);
+
+
+        if (isAppr1.equals("Y")) {
+            Account apprAccount2 = userService.getAccountByUserId(account.getParentUserId());
+            DocumentAccountOrder documentAccountOrder2 = new DocumentAccountOrder();
+            documentAccountOrder2.setFUser(apprAccount2);
+            documentAccountOrder2.setDocumentAccount(saveDocumentAccount);
+            // fKind : 0:초기, 1:결재, 2. 합의, 3:확인
+            documentAccountOrder2.setFKind("1");
+            documentAccountOrder2.setFStatus("0");
+            documentAccountOrder2.setFSeq(1);
+            documentAccountOrder2.setFNext("1");
+
+            documentAccountOrderService.save(documentAccountOrder2);
+
+            // 1차 결재자 메일 전송
+            sendMail(apprAccount2, document, MailSendType.REQUEST);
+        }
+
+        if (isAppr2.equals("Y")) {
+            Account apprAccount3 = userService.getAccountByUserId(courseManagerService.getCourseManager().getUserId());
+            DocumentAccountOrder documentAccountOrder3 = new DocumentAccountOrder();
+            documentAccountOrder3.setFUser(apprAccount3);
+            documentAccountOrder3.setDocumentAccount(saveDocumentAccount);
+            documentAccountOrder3.setFKind("1");
+            documentAccountOrder3.setFStatus("0");
+            documentAccountOrder3.setFSeq(2);
+
+            documentAccountOrderService.save(documentAccountOrder3);
+
+
+            // TODO : 전자결재 생성시 추가로 해야할 사항
         }
 
         // 알림 등록
     }
 
-    // 전자결재 1차 승인 처리
-    public void documentApproval1Proces(DocumentAccount documentAccount) {
+    // 1차 승인 처리
+    public void documentApproval1Proces(DocumentAccountOrder documentAccountOrder) {
 
-        if(documentAccount.getIsTeamMangerApproval().equals("Y") && documentAccount.getIsAppr1().equals("N") && documentAccount.getIsCommit().equals("0")) {
+        int finalCount = documentAccountOrder.getDocumentAccount().getFFinalCount();
 
-            documentAccount.setIsAppr1("Y");
-            documentAccount.setApprDate1(DateUtil.getTodayString());
-            documentAccount.setApprDateTime1(new Date());
-            documentAccount.setStatus(ApprovalStatusType.APPROVAL_TEAM_DONE);
+        documentAccountOrder.setFDate(DateUtil.getToday());
+        documentAccountOrder.setFNext("0");
+        documentAccountOrder.setFStatus("1");
+        documentAccountOrder.setFComment("");
 
-            // 최종승인이 팀장인 경우 상태를 종결한다.
-            if (documentAccount.getIsTeamMangerApproval().equals("Y") && documentAccount.getIsCourseMangerApproval().equals("N"))
-                documentAccount.setIsCommit("1");
+        documentAccountOrder = documentAccountOrderService.save(documentAccountOrder);
 
-            documentAccount = documentAccountService.save(documentAccount);
-        }
+        DocumentAccount documentAccount = documentAccountOrder.getDocumentAccount();
 
-        // 2차 결재자 메일 전송
-        if(documentAccount.getIsTeamMangerApproval().equals("Y") && documentAccount.getApprUserId2() != null) {
-            sendMail(documentAccount.getApprUserId2(), documentAccount.getDocument(), MailSendType.REQUEST);
-        }
+        if(finalCount == documentAccountOrder.getFSeq()) {   // 종결처리
+            //  승인: 1, 기각 : 2
+            documentAccount.setFStatus("1");
 
-        // 최종 승인이면 기안자에게 메일 전송
-        if(documentAccount.getIsCommit().equals("Y") && documentAccount.getAccount() != null) {
-            sendMail(documentAccount.getAccount(), documentAccount.getDocument(), MailSendType.REQUEST);
+            documentAccountService.save(documentAccount);
+
+            // 최종 승인이면 기안자에게 메일 전송
+            sendMail(documentAccount.getAccount(), documentAccount.getDocument(), MailSendType.APPROVAL1);
+        } else {
+            DocumentAccountOrder nextOrder = documentAccountOrderService.getByFnoAndSeq(documentAccountOrder.getDocumentAccount().getId(), documentAccountOrder.getFSeq()+1);
+            if (nextOrder != null) {
+
+                nextOrder.setFNext("1");
+                nextOrder = documentAccountOrderService.save(nextOrder);
+
+                // 마스터에 다음 결재자 순번을 업데이트 한다.
+                documentAccount.setFCurrSeq(nextOrder.getFSeq());
+                documentAccountService.save(documentAccount);
+
+                sendMail(nextOrder.getFUser(), documentAccount.getDocument(), MailSendType.APPROVAL1);
+            }
         }
     }
 
     // 전자결재 1차 기각 처리
-    public void documentReject1Proces(DocumentAccount documentAccount) {
+    public void documentReject1Proces(DocumentAccountOrder documentAccountOrder) {
 
-        if(documentAccount.getIsTeamMangerApproval().equals("Y") && documentAccount.getIsAppr1().equals("N") && documentAccount.getIsCommit().equals("0")) {
+        int finalCount = documentAccountOrder.getDocumentAccount().getFFinalCount();
 
-            documentAccount.setIsAppr1("Y");
-            documentAccount.setApprDate1(DateUtil.getTodayString());
-            documentAccount.setApprDateTime1(new Date());
-            documentAccount.setStatus(ApprovalStatusType.APPROVAL_TEAM_REJECT);
-            documentAccount.setIsCommit("1"); // 2차 승인이 진행되지 않게 완료 처리한다.
+        documentAccountOrder.setFDate(DateUtil.getToday());
+        documentAccountOrder.setFNext("0");
+        documentAccountOrder.setFStatus("2");
 
-            documentAccountService.save(documentAccount);
-        }
+        documentAccountOrder = documentAccountOrderService.save(documentAccountOrder);
 
-        // 2차 결재자 메일 전송
-        if(documentAccount.getIsTeamMangerApproval().equals("Y") && documentAccount.getApprUserId2() != null) {
-            sendMail(documentAccount.getApprUserId2(), documentAccount.getDocument(), MailSendType.REQUEST);
-        }
+        DocumentAccount documentAccount = documentAccountOrder.getDocumentAccount();
 
-        // 최종 승인이면 기안자에게 메일 전송
-        if(documentAccount.getIsCommit().equals("Y") && documentAccount.getAccount() != null) {
-            sendMail(documentAccount.getAccount(), documentAccount.getDocument(), MailSendType.REQUEST);
-        }
+        documentAccount.setFStatus("2");
+
+        documentAccountService.save(documentAccount);
+
+        // 기안자에게 메일 전송
+        sendMail(documentAccount.getAccount(), documentAccount.getDocument(), MailSendType.REJECT);
     }
 
     // 전자결재 2차 승인 처리
-    public void documentApproval2Proces(DocumentAccount documentAccount) {
+    public void documentApproval2Proces(DocumentAccountOrder documentAccountOrder) {
 
-        // 2차승인여부가 Y이고 아직 미승인된 경우만 처리
-        if(documentAccount.getIsCourseMangerApproval().equals("Y") && documentAccount.getIsAppr2().equals("N")) {
-            documentAccount.setIsAppr2("Y");
-            documentAccount.setApprDate2(DateUtil.getTodayString());
-            documentAccount.setApprDateTime2(new Date());
-            documentAccount.setStatus(ApprovalStatusType.APPROVAL_TEAM_DONE);
-            documentAccount.setIsCommit("1");
+        int finalCount = documentAccountOrder.getDocumentAccount().getFFinalCount();
+
+        documentAccountOrder.setFDate(DateUtil.getToday());
+        documentAccountOrder.setFNext("0");
+        documentAccountOrder.setFStatus("1");
+        documentAccountOrder.setFComment("");
+
+        documentAccountOrder = documentAccountOrderService.save(documentAccountOrder);
+
+        DocumentAccount documentAccount = documentAccountOrder.getDocumentAccount();
+
+        if(finalCount == documentAccountOrder.getFSeq()) {   // 종결처리
+            //  승인: 1, 기각 : 2
+            documentAccount.setFStatus("1");
 
             documentAccountService.save(documentAccount);
-        }
 
-        // 최종 승인이면 기안자에게 메일 전송
-        if(documentAccount.getIsCommit().equals("Y") && documentAccount.getAccount() != null) {
-            sendMail(documentAccount.getAccount(), documentAccount.getDocument(), MailSendType.REQUEST);
+            // 최종 승인이면 기안자에게 메일 전송
+            sendMail(documentAccount.getAccount(), documentAccount.getDocument(), MailSendType.APPROVAL2);
+        } else {
+            DocumentAccountOrder nextOrder = documentAccountOrderService.getByFnoAndSeq(documentAccountOrder.getDocumentAccount().getId(), documentAccountOrder.getFSeq()+1);
+            if (nextOrder != null) {
+
+                nextOrder.setFNext("1");
+                nextOrder = documentAccountOrderService.save(nextOrder);
+
+                // 마스터에 다음 결재자 순번을 업데이트 한다.
+                documentAccount.setFCurrSeq(nextOrder.getFSeq());
+                documentAccountService.save(documentAccount);
+
+                sendMail(nextOrder.getFUser(), documentAccount.getDocument(), MailSendType.APPROVAL2);
+            }
         }
     }
 
     // 전자결재 2차 기각 처리
-    public void documentReject2Proces(DocumentAccount documentAccount) {
+    public void documentReject2Proces(DocumentAccountOrder documentAccountOrder) {
 
-        // 2차승인여부가 Y이고 아직 미승인된 경우만 처리
-        if(documentAccount.getIsCourseMangerApproval().equals("Y") && documentAccount.getIsAppr2().equals("N")) {
-            documentAccount.setIsAppr2("Y");
-            documentAccount.setApprDate2(DateUtil.getTodayString());
-            documentAccount.setApprDateTime2(new Date());
-            documentAccount.setStatus(ApprovalStatusType.APPROVAL_MANAGER_REJECT);
-            documentAccount.setIsCommit("1");
+        int finalCount = documentAccountOrder.getDocumentAccount().getFFinalCount();
 
-            documentAccountService.save(documentAccount);
-        }
+        documentAccountOrder.setFDate(DateUtil.getToday());
+        documentAccountOrder.setFNext("0");
+        documentAccountOrder.setFStatus("2");
 
-        // 최종 승인이면 기안자에게 메일 전송
-        if(documentAccount.getIsCommit().equals("Y") && documentAccount.getAccount() != null) {
-            sendMail(documentAccount.getAccount(), documentAccount.getDocument(), MailSendType.REQUEST);
-        }
+        documentAccountOrder = documentAccountOrderService.save(documentAccountOrder);
+
+        DocumentAccount documentAccount = documentAccountOrder.getDocumentAccount();
+
+        documentAccount.setFStatus("2");
+
+        documentAccountService.save(documentAccount);
+
+        // 기안자에게 메일 전송
+        sendMail(documentAccount.getAccount(), documentAccount.getDocument(), MailSendType.REJECT);
     }
 
 

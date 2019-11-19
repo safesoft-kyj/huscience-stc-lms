@@ -56,9 +56,7 @@
                             </thead>
                             <tbody>
                             <th:block th:each="courseAccount, index : ${courseAccountList}">
-                            <tr th:if="${courseAccount.getApprovalStatus() == T(com.dtnsm.lms.domain.constant.ApprovalStatusType).REQUEST_DONE
-                            || courseAccount.getApprovalStatus() == T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_TEAM_DONE
-                            }">
+                            <tr th:if="${courseAccount.getCourseStatus() == T(com.dtnsm.lms.domain.constant.CourseStepStatus).request}">
                                 <td class="text-left">
                                     <span th:text="${'['+courseAccount.getCourse().getCourseMaster().getCourseName()+']'}"></span>
                                     <span th:text="${courseAccount.getCourse().getTitle()}"}></span>
@@ -74,17 +72,10 @@
                                     <span class="badge badge-warning" th:text="${courseAccount.getCourse().getSurveys().size()}"></span>
                                 </td>
                                 <td class="text-center">
-                                    <div th:switch="${courseAccount.getApprovalStatus()}">
-                                        <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).REQUEST_DONE}"
-                                              class="text-warning"><span th:text="${courseAccount.getApprUserId1().getName()}"></span> 결재 진행중</span>
-                                        <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_TEAM_DONE}"
-                                              class="text-mint"><span th:text="${courseAccount.getApprUserId2().getName()}"></span> 결재 진행중</span>
-                                        <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_MANAGER_DONE}"
-                                              class="text-info">교육 진행중</span>
-                                        <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_MANAGER_REJECT}"
-                                              class="text-warning"><span th:text="${border.getApprUserId2().getName()}"></span> 기각</span>
-                                        <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_TEAM_REJECT}"
-                                              class="text-warning"><span th:text="${border.getApprUserId1().getName()}"></span> 기각</span>
+                                    <div th:switch="${courseAccount.getFStatus()}">
+                                        <span th:case="${'0'}" class="text-warning" th:text="${'결재 진행중'}"></span>
+                                        <span th:case="${'1'}" class="text-mint" th:text="${'승인'}"></span>
+                                        <span th:case="${'2'}" class="text-info" th:text="${'기각'}"></span>
                                     </div>
                                 </td>
                                 <td>&nbsp;</td>
@@ -112,7 +103,7 @@
                             </thead>
                             <tbody>
                             <th:block th:each="courseAccount, index : ${courseAccountList}">
-                                <tr th:if="${courseAccount.getApprovalStatus() == T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_COMPLETE }" style="vertical-align: middle">
+                                <tr th:if="${courseAccount.getCourseStatus() == T(com.dtnsm.lms.domain.constant.CourseStepStatus).process}">
                                     <td class="text-left">
                                         <span th:text="${'['+courseAccount.getCourse().getCourseMaster().getCourseName()+']'}"></span>
                                         <span th:text="${courseAccount.getCourse().getTitle()}"}></span>
@@ -128,17 +119,9 @@
                                         <span class="badge badge-warning" th:text="${courseAccount.getCourse().getSurveys().size()}"></span>
                                     </td>
                                     <td class="text-center">
-                                        <div th:switch="${courseAccount.getApprovalStatus()}">
-                                            <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).REQUEST_DONE}"
-                                              class="text-warning"><span th:text="${courseAccount.getApprUserId1().getName()}"></span> 결재 진행중</span>
-                                            <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_TEAM_DONE}"
-                                                  class="text-mint"><span th:text="${courseAccount.getApprUserId2().getName()}"></span> 결재 진행중</span>
-                                            <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_MANAGER_DONE}"
-                                                  class="text-info">교육 진행중</span>
-                                            <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_MANAGER_REJECT}"
-                                                  class="text-warning"><span th:text="${border.getApprUserId2().getName()}"></span> 기각</span>
-                                            <span th:case="${T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_TEAM_REJECT}"
-                                                  class="text-warning"><span th:text="${border.getApprUserId1().getName()}"></span> 기각</span>
+                                        <div th:switch="${courseAccount.getCourseStatus()}">
+                                            <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).process}"
+                                              class="text-warning" th:text="${'교육진행중'}"></span>
                                         </div>
                                     </td>
                                     <td class="text-center">
@@ -150,50 +133,50 @@
                         </table>
                     </div>
 
-<!--                    <br>-->
-<!--                    <div class="row">-->
-<!--                        <h5><strong class="text-success"><i class="demo-pli-dot-vertical"></i> 교육완료 과정</strong></h5>-->
-<!--                        <hr class="table-head">-->
-<!--                        <table class="table" cellspacing="0" width="100%">-->
-<!--                            <thead>-->
-<!--                            <tr style="background: #FAFAFA;">-->
-<!--                                <th class="text-center col-md-3" th:text="#{label.course.name}">과정명</th>-->
-<!--                                <th class="text-center col-md-3" th:text="#{label.course.period}">기간</th>-->
-<!--                                <th class="text-center col-md-1" th:text="#{label.title.section}">강의</th>-->
-<!--                                <th class="text-center col-md-1" th:text="#{label.title.quiz}">시험</th>-->
-<!--                                <th class="text-center col-md-1" th:text="#{label.title.survey}">설문</th>-->
-<!--                                <th class="text-center col-md-2" th:text="#{label.status}">상태</th>-->
-<!--                                <th class="text-center" th:text="#{label.bigo}">비고</th>-->
-<!--                            </tr>-->
-<!--                            </thead>-->
-<!--                            <tbody>-->
-<!--                            <th:block th:each="courseAccount, index : ${courseAccountList}">-->
-<!--                                <tr th:if="${courseAccount.getStatus() == T(com.dtnsm.lms.domain.constant.ApprovalStatusType).APPROVAL_COMPLETE }">-->
-<!--                                    <td class="text-left">-->
-<!--                                        <span th:text="${'['+courseAccount.getCourse().getCourseMaster().getCourseName()+']'}"></span>-->
-<!--                                        <span th:text="${courseAccount.getCourse().getTitle()}"}></span>-->
-<!--                                    </td>-->
-<!--                                    <td class="text-center" th:text="${courseAccount.getCourse().getFromDate() + '~' + courseAccount.getCourse().getToDate()}"></td>-->
-<!--                                    <td class="text-center">-->
-<!--                                        <span class="badge badge-mint" th:text="${courseAccount.getCourse().getSections().size()}"></span>-->
-<!--                                    </td>-->
-<!--                                    <td class="text-center">-->
-<!--                                        <span class="badge badge-success" th:text="${courseAccount.getCourse().getQuizzes().size()}"></span>-->
-<!--                                    </td>-->
-<!--                                    <td class="text-center">-->
-<!--                                        <span class="badge badge-warning" th:text="${courseAccount.getCourse().getSurveys().size()}"></span>-->
-<!--                                    </td>-->
-<!--                                    <td class="text-center">-->
-<!--                                        <div th:switch="${courseAccount.getStatus()}">-->
-<!--                                            <span class="text-info">교육 완료</span>-->
-<!--                                        </div>-->
-<!--                                    </td>-->
-<!--                                    <td>&nbsp;</td>-->
-<!--                                </tr>-->
-<!--                            </th:block>-->
-<!--                            </tbody>-->
-<!--                        </table>-->
-<!--                    </div>-->
+                    <br>
+                    <div class="row">
+                        <h5><strong class="text-success"><i class="demo-pli-dot-vertical"></i> 교육완료 과정</strong></h5>
+                        <hr class="table-head">
+                        <table class="table" cellspacing="0" width="100%">
+                            <thead>
+                            <tr style="background: #FAFAFA;">
+                                <th class="text-center col-md-3" th:text="#{label.course.name}">과정명</th>
+                                <th class="text-center col-md-3" th:text="#{label.course.period}">기간</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.section}">강의</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.quiz}">시험</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.survey}">설문</th>
+                                <th class="text-center col-md-2" th:text="#{label.status}">상태</th>
+                                <th class="text-center" th:text="#{label.bigo}">비고</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <th:block th:each="courseAccount, index : ${courseAccountList}">
+                                <tr th:if="${courseAccount.getCourseStatus() == T(com.dtnsm.lms.domain.constant.CourseStepStatus).complete}">
+                                    <td class="text-left">
+                                        <span th:text="${'['+courseAccount.getCourse().getCourseMaster().getCourseName()+']'}"></span>
+                                        <span th:text="${courseAccount.getCourse().getTitle()}"}></span>
+                                    </td>
+                                    <td class="text-center" th:text="${courseAccount.getCourse().getFromDate() + '~' + courseAccount.getCourse().getToDate()}"></td>
+                                    <td class="text-center">
+                                        <span class="badge badge-mint" th:text="${courseAccount.getCourse().getSections().size()}"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge badge-success" th:text="${courseAccount.getCourse().getQuizzes().size()}"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge badge-warning" th:text="${courseAccount.getCourse().getSurveys().size()}"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div th:switch="${courseAccount.getCourseStatus()}">
+                                            <span class="text-info">교육 완료</span>
+                                        </div>
+                                    </td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                            </th:block>
+                            </tbody>
+                        </table>
+                    </div>
 
                 </div><!--panel-body End -->
             </div><!-- panel End -->

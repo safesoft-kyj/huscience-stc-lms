@@ -75,11 +75,13 @@
 
             <!--Submenu-->
             <ul class="collapse">
-                <li><a href="#" data-th-href="@{/approval/listMyAppr}">내신청함</a></li>
-                <li><a href="#" data-th-href="@{/approval/listAppr1Process}">미결함 <span class="badge badge-purple" id="course-my-approval"></span></a></li>
-                <li><a href="#" data-th-href="@{/approval/listAppr1Commit}">진행함 <span class="badge badge-purple" id="course-my-process"></span></a></li>
-                <li><a href="#" data-th-href="@{/approval/listAppr1}">완료함</a></li>
-                <li><a href="#" data-th-href="@{/approval/listApprReject}">반려함</a></li>
+
+                <li><a href="#" data-th-href="@{/approval/listApprProcess}">미결함 <span class="badge badge-purple" id="course-my-approval"></span></a></li>
+                <li><a href="#" data-th-href="@{/approval/listMyProcess}">내진행함 <span class="badge badge-purple" id="course-my-process"></span></a></li>
+                <li><a href="#" data-th-href="@{/approval/listMyComplete}">내완료함</a></li>
+                <li><a href="#" data-th-href="@{/approval/listMyReject}">내반려함</a></li>
+                <li><a href="#" data-th-href="@{/approval/listMyAll}">내전체함</a></li>
+                <li><a href="#" data-th-href="@{/approval/listApprAll}">결재함</a></li>
 <!--                <li th:text="${T(com.dtnsm.lms.util.GlobalUtil).apprProcessCount()}"></li>-->
 <!--                <li><a href="#app-process" data-toggle="tab">결재요청 <span class="badge badge-purple" th:text="${app1List.size()}"></span></a></li>-->
             </ul>
@@ -159,10 +161,9 @@
 
             <!--Submenu-->
             <ul class="collapse">
-                <li><a href="#" data-th-href="@{/approval/listAppr2Process}">미결함 <span class="badge badge-purple" id="course-my-approval2"></span></a></li>
-                <li><a href="#" data-th-href="@{/approval/listAppr2Commit}">진행함 <span class="badge badge-purple" id="course-my-process2"></span></a></li>
-                <li><a href="#" data-th-href="@{/approval/listAppr2}">완결함</a></li>
-                <li><a href="#" data-th-href="@{/approval/listApprReject}">반려함</a></li>
+                <li><a href="#" data-th-href="@{/admin/approval/listApprProcess}">진행함 <span class="badge badge-purple" id="course-my-process2"></span></a></li>
+                <li><a href="#" data-th-href="@{/admin/approval/listApprComplete}">완료함</a></li>
+                <li><a href="#" data-th-href="@{/admin/approval/listApprReject}">반려함</a></li>
             </ul>
         </li>
 

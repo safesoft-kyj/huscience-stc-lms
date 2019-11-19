@@ -71,21 +71,25 @@
                                     <td rowspan="3" style="vertical-align: middle" class="text-center" >
                                         <div>결<br/><br/>재</div>
                                     </td>
-                                    <td class="text-center" th:text="${courseAccount.getAccount().getName()}"></td>
-                                    <td class="text-center" th:text="${courseAccount.getApprUserId1().getName()}"></td>
-                                    <td class="text-center" th:text="${courseAccount.getApprUserId2().getName()}"></td>
+                                    <th:block th:each="border, index : ${courseAccount.getCourseAccountOrders()}">
+                                        <td th:text="${border.getFUser().getName()}" class="text-center">
+                                        </td>
+                                    </th:block>
                                 </tr>
                                 <tr>
-                                    <td class="text-center">
-                                        <img src="http://gw.dtnsm.com/common/download.aspx?DownType=approsign2&sUserID=safesoft&file=safesoft_2019-10-02.png" style="width:40px; height:40px;">
-                                    </td>
-                                    <td class="text-center" th:text="${courseAccount.getApprDateTime1()}"></td>
-                                    <td class="text-center" th:text="${courseAccount.getApprDateTime2()}"></td>
+                                    <th:block th:each="border, index : ${courseAccount.getCourseAccountOrders()}">
+                                        <td th:switch="${border.getFStatus()}" class="text-center">
+                                            <span th:case="${'0'}" class="text-info" th:text="${''}"></span>
+                                            <span th:case="${'1'}" class="text-success" th:text="${'승인'}"></span>
+                                            <span th:case="${'2'}" class="text-danger" th:text="${'반려'}"></span>
+                                        </td>
+                                    </th:block>
                                 </tr>
                                 <tr>
-                                    <td class="text-center" th:text="${courseAccount.getRequestDate()}"></td>
-                                    <td class="text-center" th:text="${courseAccount.getApprDate1()}"></td>
-                                    <td class="text-center" th:text="${courseAccount.getApprDate2()}"></td>
+                                    <th:block th:each="border, index : ${courseAccount.getCourseAccountOrders()}">
+                                        <td th:text="${border.getFDate()} ? ${#dates.format(border.getFDate(), 'yyyy/MMM/dd')} : ${border.getFDate()}" class="text-center"></td>
+                                        </td>
+                                    </th:block>
                                 </tr>
                                 </tbody>
                             </table>

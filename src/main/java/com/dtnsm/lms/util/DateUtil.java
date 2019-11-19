@@ -74,12 +74,22 @@ public  class DateUtil {
         return getStringToDate(getTodayString());
     }
 
+    public static Date getTodayDate() {
+        Calendar c1 = Calendar.getInstance();
+        return c1.getTime();
+    }
+
     public static String getTodayString() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Calendar c1 = Calendar.getInstance();
         return sdf.format(c1.getTime());
     }
 
+    public static String getTodayDisplayString() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd");
+        Calendar c1 = Calendar.getInstance();
+        return sdf.format(c1.getTime());
+    }
 
     public static List<String> getYearList() {
         int year, yearMin, yearMax;

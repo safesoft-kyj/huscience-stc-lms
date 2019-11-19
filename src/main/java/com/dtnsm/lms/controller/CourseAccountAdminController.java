@@ -74,6 +74,10 @@ public class CourseAccountAdminController {
             courseAccount.setCourse(course);
             courseAccount.setAccount(account);
             courseAccount.setRequestDate(DateUtil.getTodayString());
+            courseAccount.setFWdate(DateUtil.getToday());
+
+
+
             courseAccountService.save(courseAccount);
         }
 

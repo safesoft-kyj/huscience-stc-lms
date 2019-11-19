@@ -1,6 +1,5 @@
 package com.dtnsm.lms.controller;
 
-import com.dtnsm.lms.auth.CustomUserDetails;
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.service.*;
@@ -15,7 +14,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +31,9 @@ public class CourseController {
 
     @Autowired
     CourseMasterService courseMasterService;
+
+    @Autowired
+    CourseAccountOrderService courseAccountOrderService;
 
     @Autowired
     UserServiceImpl userService;
@@ -132,61 +133,48 @@ public class CourseController {
         return "content/course/approval";
     }
 
-    // 교육신청 1차 결재 승인
-    @GetMapping("/approvalAppr1/{id}/{userId}")
-    public String approvalAppr1(@PathVariable("id") long id
-            , @PathVariable("userId") String userId
-            , Model model) {
+    // 결재 승인
+    @GetMapping("/approvalAppr1/{id}")
+    public String approvalAppr1(@PathVariable("id") long orderId, Model model) {
 
-        Course oldCourse = courseService.getCourseById(id);
+        CourseAccountOrder courseAccountOrder = courseAccountOrderService.getById(orderId);
 
-        oldCourse.setViewCnt(oldCourse.getViewCnt() + 1);
+        CourseAccount courseAccount = courseAccountOrder.getCourseAccount();
 
-        Course course= courseService.save(oldCourse);
-
-        CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserId(id, userId);
-
-        pageInfo.setPageTitle(course.getCourseMaster().getCourseName() + " 상세");
+        pageInfo.setPageTitle(courseAccount.getCourse().getCourseMaster().getCourseName() + " 상세");
 
         model.addAttribute(pageInfo);
-        model.addAttribute("course", course);
+        model.addAttribute("course", courseAccount.getCourse());
         model.addAttribute("courseAccount", courseAccount);
+        model.addAttribute("courseAccountOrder", courseAccountOrder);
         model.addAttribute("userId", SessionUtil.getUserId());
 
         return "content/course/approvalAppr1";
     }
 
-    // 교육신청 2차 결재 승인
-    @GetMapping("/approvalAppr2/{id}/{userId}")
-    public String approvalAppr2(@PathVariable("id") long id
-            , @PathVariable("userId") String userId
-            , Model model) {
 
-        Course oldCourse = courseService.getCourseById(id);
+    // 결재 승인
+    @GetMapping("/approvalAppr2/{id}")
+    public String approvalAppr2(@PathVariable("id") long docId, Model model) {
 
-        oldCourse.setViewCnt(oldCourse.getViewCnt() + 1);
+        CourseAccount courseAccount = courseAccountService.getOne(docId);
 
-        Course course= courseService.save(oldCourse);
-
-        CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserId(id, userId);
-
-        pageInfo.setPageTitle(course.getCourseMaster().getCourseName() + " 상세");
+        pageInfo.setPageTitle(courseAccount.getCourse().getCourseMaster().getCourseName() + " 상세");
 
         model.addAttribute(pageInfo);
-        model.addAttribute("course", course);
+        model.addAttribute("course", courseAccount.getCourse());
         model.addAttribute("courseAccount", courseAccount);
+        model.addAttribute("courseAccountOrder", courseAccount.getCourseAccountOrders());
         model.addAttribute("userId", SessionUtil.getUserId());
 
-        return "content/course/approvalAppr2";
+        return "content/course/approvalAppr1";
     }
 
     @GetMapping("/request/{id}")
     public String request(@PathVariable("id") long id, Model model) {
 
-        CustomUserDetails userDetails = (CustomUserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
         Course course = courseService.getCourseById(id);
-        Account account = userService.getAccountByUserId(userDetails.getUserId());
+        Account account = userService.getAccountByUserId(SessionUtil.getUserId());
 
         List<CourseAccount> courseAccountList = courseService.getCourseById(id).getCourseAccountList();
 
