@@ -44,7 +44,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         return queryFactory.select(
                 Projections.constructor(UserJobDescriptionDTO.class, qAccount, qUserJobDescription)
         )
-        .from(qAccount).leftJoin(qUserJobDescription)
+        .from(qAccount).join(qUserJobDescription)
         .on(qAccount.userId.eq(qUserJobDescription.username))
         .where(qAccount.parentUserId.eq(userId))
         .orderBy(qAccount.engName.asc())

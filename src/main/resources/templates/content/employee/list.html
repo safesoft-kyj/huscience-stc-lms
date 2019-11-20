@@ -54,7 +54,8 @@
                                             <th class="text-center col-sm-1">아이디</th>
                                             <th class="text-center col-sm-1">부서</th>
                                             <th class="text-center col-sm-2">이름</th>
-                                            <th class="text-center col-sm-2">입사일</th>
+                                            <th class="text-center col-sm-2">CV</th>
+                                            <th class="text-center col-sm-2">JD</th>
                                             <th class="text-center col-sm-1">Actions</th>
                                         </tr>
                                         </thead>
@@ -64,7 +65,9 @@
                                             <td th:text="${account.userId}" class="text-center"></td>
                                             <td th:text="${account.orgDepart}" class="text-center"></td>
                                             <td th:text="${account.engName}" class="text-center"></td>
-                                            <td th:text="${account.indate}" class="text-center"></td>
+                                            <td class="text-center"><a href="/employees/cv"><i class="fa fa-external-link"></i></a> </td>
+                                            <td class="text-center"><a th:href="@{/employees/jd(id=${account.userId})}"><i class="fa fa-external-link"></i></a> </td>
+                                            <td class="text-center"></td>
                                         </tr>
                                         </tbody>
                                     </table>

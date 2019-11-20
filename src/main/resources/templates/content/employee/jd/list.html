@@ -42,6 +42,11 @@
             <!--===================================================-->
             <div class="panel">
                 <div class="panel-body">
+                    <div class="row">
+                    <div class="col-sm-12 table-toolbar-right">
+                        <button class="btn btn-primary btn-sm" data-target="#assign-modal" data-toggle="modal">Assign</button>
+                    </div>
+                    </div>
                     <div th:switch="${userJobDescriptions}">
                         <div th:case="null">No customer yet!</div>
                         <div th:case="*">
@@ -50,21 +55,46 @@
                                 <table id="customer-list-page" class="table" cellspacing="0" width="100%">
                                     <thead>
                                     <tr style="background: #FAFAFA;">
-                                        <th class="text-center col-sm-1">번호</th>
-                                        <th class="text-center col-sm-1">아이디</th>
-                                        <th class="text-center col-sm-1">부서</th>
-                                        <th class="text-center col-sm-2">이름</th>
-                                        <th class="text-center col-sm-2">입사일</th>
-                                        <th class="text-center col-sm-1">Actions</th>
+                                        <th class="text-center">번호</th>
+                                        <th class="text-center">아이디</th>
+                                        <th class="text-center">이름</th>
+                                        <th class="text-center">Job Title</th>
+                                        <th class="text-center">배정일</th>
+                                        <th class="text-center">동의일</th>
+                                        <th class="text-center">승인일</th>
+                                        <th class="text-center">상태</th>
+                                        <th class="text-center">Actions</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr th:each="user, index : ${userJobDescriptions}">
                                         <td th:text="${index.count}" class="text-center"></td>
                                         <td th:text="${user.account.userId}" class="text-center"></td>
-                                        <td th:text="${user.account.orgDepart}" class="text-center"></td>
                                         <td th:text="${user.account.engName}" class="text-center"></td>
-                                        <td th:text="${user.account.indate}" class="text-center"></td>
+                                        <td class="text-center">
+                                            <span th:if="${user.userJobDescription != null}" th:text="|${user.userJobDescription.jobDescriptionVersion.jobDescription.title} v${user.userJobDescription.jobDescriptionVersion.version_no}|">-</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span th:if="${user.userJobDescription != null &&  user.userJobDescription.assignDate != null}" th:text="${#dates.format(user.userJobDescription.assignDate, 'yyyy-MM-dd')}">-</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span th:if="${user.userJobDescription != null && user.userJobDescription.agreeDate != null}" th:text="${#dates.format(user.userJobDescription.agreeDate, 'yyyy-MM-dd')}">-</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span th:if="${user.userJobDescription != null && user.userJobDescription.approvedDate != null}" th:text="${#dates.format(user.userJobDescription.approvedDate, 'yyyy-MM-dd')}">-</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="label label-info" th:text="(${user.userJobDescription != null} ? ${user.userJobDescription.status.label} : '-')"></span>
+                                        </td>
+                                        <td class="text-center">
+
+                                            <th:block th:if="${user.userJobDescription != null && user.userJobDescription.status.name() eq 'AGREE'}">
+                                                <button class="btn btn-info btn-sm" data-target="#approval-modal" th:attr="data-id=${user.userJobDescription.id}, data-assign-date=${#dates.format(user.userJobDescription.assignDate, 'dd-MMM-yyyy')}" data-toggle="modal">Approval</button>
+                                            </th:block>
+                                            <th:block th:if="${user.userJobDescription != null && user.userJobDescription.status.name() eq 'APPROVED'}">
+                                                <button class="btn btn-info btn-sm" data-target="#revoke-modal" th:attr="data-id=${user.userJobDescription.id}" data-toggle="modal">Revoke</button>
+                                            </th:block>
+                                        </td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -77,11 +107,145 @@
             </div><!-- panel End -->
         </div><!-- Page content End -->
     </div><!-- Content container End -->
+
+    <!--Default Bootstrap Modal-->
+    <!--===================================================-->
+    <div class="modal fade" id="assign-modal" role="dialog" tabindex="-1" aria-labelledby="assign-modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form name="f" id="assignForm" method="post">
+                <!--Modal header-->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                    <h4 class="modal-title">Job Description</h4>
+                </div>
+
+                <!--Modal body-->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                Employee Name
+                            </div>
+                            <div class="col-xs-8">
+                                <select id="username" name="username" class="form-control">
+                                    <option th:each="user : ${users}" th:value="${user.userId}" th:text="|${user.engName}(${user.userId})|"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                Assign Date
+                            </div>
+                            <div class="col-xs-8">
+
+                                <input type="text" id="assignDate" name="assignDate" class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                Job Title
+                            </div>
+                            <div class="col-xs-8">
+                                <select id="jdVerId" name="jobDescriptionVersion.id" class="form-control">
+                                    <option th:each="jd : ${jdVersions}" th:value="${jd.id}" th:text="|${jd.jobDescription.title}(${jd.jobDescription.shortName}) v${jd.version_no}|"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Modal footer-->
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+                    <button class="btn btn-primary">Save changes</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--===================================================-->
+    <!--End Default Bootstrap Modal-->
+
+    <!--Default Bootstrap Modal-->
+    <!--===================================================-->
+    <div class="modal fade" id="approval-modal" role="dialog" tabindex="-1" aria-labelledby="assign-modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form name="f" id="approvalForm" method="post" th:action="@{/employees/jd/approval}">
+                    <input type="hidden" id="id" name="id"/>
+                    <!--Modal header-->
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                        <h4 class="modal-title">Job Description</h4>
+                    </div>
+
+                    <!--Modal body-->
+                    <div class="modal-body">
+                        <p>
+                            I acknowledge that an overview of this job description has been given to the
+                            employee above.
+                            The date assigned in position is <span id="assignDateTxt">-</span> (Date: DD-MMM-YYYY).
+                        </p>
+                    </div>
+
+                    <!--Modal footer-->
+                    <div class="modal-footer">
+                        <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+                        <button class="btn btn-primary">Approval</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--===================================================-->
+    <!--End Default Bootstrap Modal-->
 </th:block>
 
 <th:block layout:fragment="custom_js">
     <script>
         // $('#selectOption').chosen({width:'100%'});
+        $(document).ready(function() {
+
+            $("#assign-modal").on('show.bs.modal', function(e) {
+                var userId = $(e.relatedTarget).data('id');
+                if(userId) {
+                    $("#username").val(userId);
+                }
+            });
+
+            $('#assignDate').datepicker({
+                // format: "MM dd, yyyy",
+                format: "yyyy-mm-dd",
+                todayBtn: "linked",
+                autoclose: true,
+                todayHighlight: true
+            });
+
+            $("#assignForm").submit(function(e) {
+               if(!$("#assignDate").val()) {
+                   e.preventDefault();
+                   alert('배정일을 입력해 주세요.');
+                   return false;
+               }
+
+               if(!confirm('JD를 등록 하시겠습니까?')) {
+                   e.preventDefault();
+                   return false;
+               }
+            });
+
+            $("#approval-modal").on('show.bs.modal', function(e) {
+                var id = $(e.relatedTarget).data('id');
+                var assignDate = $(e.relatedTarget).data('assign-date');
+                $("#id").val(id);
+                $("#assignDateTxt").text(assignDate);
+            });
+        });
     </script>
 </th:block>
 
