@@ -1,5 +1,11 @@
 package com.dtnsm.lms.controller;
 
+import com.dtnsm.common.entity.QUserJobDescription;
+import com.dtnsm.common.entity.Signature;
+import com.dtnsm.common.entity.UserJobDescription;
+import com.dtnsm.common.entity.constant.JobDescriptionStatus;
+import com.dtnsm.common.repository.SignatureRepository;
+import com.dtnsm.common.repository.UserJobDescriptionRepository;
 import com.dtnsm.lms.auth.CustomUserDetails;
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.*;
@@ -14,6 +20,7 @@ import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
+import com.querydsl.core.BooleanBuilder;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -25,9 +32,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.activation.MimetypesFileTypeMap;
+import javax.mail.Session;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/mypage")
@@ -70,6 +80,11 @@ public class MyPageController {
     @Autowired
     private CourseSectionFileService courseSectionFileService;
 
+    @Autowired
+    private UserJobDescriptionRepository userJobDescriptionRepository;
+
+    @Autowired
+    private SignatureRepository signatureRepository;
 
     private MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
 
@@ -501,6 +516,48 @@ public class MyPageController {
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + newFileName + "\"")
                 .body(resource);
+    }
+
+    @GetMapping("/cv")
+    public String cv(Model model) {
+        pageInfo.setPageId("m-mypage-cv");
+        pageInfo.setPageTitle("Curriculum Vitae");
+
+        model.addAttribute(pageInfo);
+        return "content/mypage/cv";
+    }
+
+    @GetMapping("/jd")
+    public String jd(Model model) {
+        pageInfo.setPageId("m-mypage-jd");
+        pageInfo.setPageTitle("Job Description");
+
+        QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qUserJobDescription.username.eq(SessionUtil.getUserId()));
+        Iterable<UserJobDescription> userJobDescriptions = userJobDescriptionRepository.findAll(builder, qUserJobDescription.createdDate.desc());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("userJobDescriptions", userJobDescriptions);
+        return "content/mypage/jd/list";
+    }
+
+    @PostMapping("/jd")
+    public String agreeJd(@RequestParam("id") Integer id) {
+        Optional<UserJobDescription> optionalUserJobDescription = userJobDescriptionRepository.findById(id);
+        Optional<Signature> optionalSignature = signatureRepository.findById(SessionUtil.getUserId());
+        if(optionalUserJobDescription.isPresent()) {
+            UserJobDescription userJobDescription = optionalUserJobDescription.get();
+            userJobDescription.setAgreeDate(new Date());
+            userJobDescription.setStatus(JobDescriptionStatus.AGREE);
+            userJobDescription.setAgreeSign(optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "");
+
+            userJobDescriptionRepository.save(userJobDescription);
+
+            //TODO Job Description (동의 알림)
+        }
+
+        return "redirect:/mypage/jd";
     }
 }
 

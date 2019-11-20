@@ -8,7 +8,6 @@ import lombok.Data;
 public class UserJobDescriptionDTO {
     private Account account;
     private UserJobDescription userJobDescription;
-
     @QueryProjection
     public UserJobDescriptionDTO(Account account, UserJobDescription userJobDescription) {
         this.account = account;
