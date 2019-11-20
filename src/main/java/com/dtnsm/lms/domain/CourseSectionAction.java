@@ -9,6 +9,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -22,9 +23,19 @@ public class CourseSectionAction extends AuditorCreateEntity<String> {
     @Column(name="id")
     private long id;
 
-    // 시험응시일
+    // 실행일
     @Column(name="exam_date", length = 10)
-    private String examDate;
+    private String executeDate;
+
+    // 시작일
+    @Column(length = 10)
+    @ColumnDefault("'1900-01-01'")
+    private String fromDate;
+
+    // 종료일
+    @Column(length = 10)
+    @ColumnDefault("'1900-01-01'")
+    private String toDate;
 
     // 총시험시간(초) => 진도율 계산시 필요
     @Column(name="total_use_second")
@@ -38,6 +49,15 @@ public class CourseSectionAction extends AuditorCreateEntity<String> {
     // 맞은 갯수
     @Column(name="run_count")
     private int runCount;
+
+    // Employee Training Log 적용 여부(0:미적용, 1:적용)
+    @Column(name="is_log_apply")
+    @ColumnDefault("'0'")
+    private String isLogApply = "0";
+
+    // Employee Training Log 적용 일자
+    @Column(name="log_apply_date")
+    private Date logApplyDate;
 
     @Column(name="status", length=10)
     @ColumnDefault(value = "0")

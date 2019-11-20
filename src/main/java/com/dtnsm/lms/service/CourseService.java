@@ -227,7 +227,17 @@ public class CourseService {
         return courseRepository.findTop5ByRequestFromDateBetweenAndActiveGreaterThan(fromDate, toDate, status);
     }
 
+    // 신입사원 필수교육(페이징)
+    public Page<Course> getAllByIsNewEmpCourse(String isNewEmpCourse, Pageable pageable) {
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
 
+        return courseRepository.findAllByIsNewEmpCourse(isNewEmpCourse, pageable);
+    }
 
+    // 신입사원 필수교육
+    public List<Course> getAllByIsNewEmpCourse(String isNewEmpCourse) {
+        return courseRepository.findAllByIsNewEmpCourse(isNewEmpCourse);
+    }
 }

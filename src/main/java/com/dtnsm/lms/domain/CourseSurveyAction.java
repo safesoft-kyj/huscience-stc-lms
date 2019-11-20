@@ -22,9 +22,19 @@ public class CourseSurveyAction extends AuditorCreateEntity<String> {
     @Column(name="id")
     private long id;
 
-    // 시험응시일
+    // 실행일
     @Column(name="exam_date", length = 10)
-    private String examDate;
+    private String executeDate;
+
+    // 시작일
+    @Column(length = 10)
+    @ColumnDefault("'1900-01-01'")
+    private String fromDate;
+
+    // 종료일
+    @Column(length = 10)
+    @ColumnDefault("'1900-01-01'")
+    private String toDate;
 
     // 점수
     @Column(name="score")

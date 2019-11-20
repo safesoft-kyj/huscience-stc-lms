@@ -253,7 +253,7 @@ public class MyPageController {
 
             quizAction = new CourseQuizAction();
             quizAction.setAccount(account);
-            quizAction.setExamDate(DateUtil.getTodayString());
+            quizAction.setExecuteDate(DateUtil.getTodayString());
             quizAction.setRunCount(0);
             quizAction.setScore(0);
             quizAction.setTotalUseSecond(0);
@@ -313,6 +313,7 @@ public class MyPageController {
             }
 
             courseQuizAction.setScore(answer_count);
+            courseQuizAction.setExecuteDate(DateUtil.getTodayString());
 
             if(courseQuizAction.getQuiz().getPassCount() > answer_count) {
                 courseQuizAction.setStatus(QuizStatusType.FAIL);
@@ -449,6 +450,8 @@ public class MyPageController {
             }
 
             courseSurveyAction.setScore(answer_count);
+            courseSurveyAction.setExecuteDate(DateUtil.getTodayString());
+
             courseSurveyAction.setStatus(SurveyStatusType.COMPLETE);
 
             CourseSurveyAction courseQuizAction1 = courseSurveyActionService.saveSurveyAction(courseSurveyAction);

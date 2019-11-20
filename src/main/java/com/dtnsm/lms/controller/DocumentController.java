@@ -211,7 +211,7 @@ public class DocumentController {
             }
         }
 
-        return "redirect:/document/list";
+        return "redirect:/approval/document/listMyProcess";
     }
 
     @GetMapping("/edit/{id}")
@@ -240,27 +240,38 @@ public class DocumentController {
             return "/content/document/list";
         }
 
-
-        List<DocumentFile> documentFiles = documentService.getById(id).getDocumentFiles();
-        document.setDocumentFiles(documentFiles);
-
-        List<DocumentAccount> documentAccountList = documentService.getById(id).getDocumentAccountList();
-        documentAccountList.clear();
-
-        Account account = userService.getAccountByUserId(SessionUtil.getUserId());
-        approvalDocumentProcessService.documentRequestProcess(account, document);
-
-        document.setDocumentAccountList(documentAccountList);
-
-        Document document1 = documentService.save(document);
-
-        Arrays.asList(files)
-                .stream()
-                .map(file -> documentFileService.storeFile(file, document1))
-                .collect(Collectors.toList());
+        Document oldDocument = documentService.getById(id);
 
 
-        return "redirect:/document/list";
+//        List<DocumentAccount> documentAccountList = documentService.getById(id).getDocumentAccountList();
+//        documentAccountList.clear();
+//
+//        Account account = userService.getAccountByUserId(SessionUtil.getUserId());
+//        approvalDocumentProcessService.documentRequestProcess(account, document);
+//
+//        document.setDocumentAccountList(documentAccountList);
+
+
+        if (oldDocument.getDocumentAccountList().size() > 0) {
+
+            document.setDocumentFiles(oldDocument.getDocumentFiles());
+            document.setDocumentCourseAccountList(oldDocument.getDocumentCourseAccountList());
+            document.setDocumentAccountList(oldDocument.getDocumentAccountList());
+
+            // 다음결재자가 결재를 하지 않은 경우는 수정한다.
+            if (oldDocument.getDocumentAccountList().get(0).getFCurrSeq() <= 1) {
+
+                Document document1 = documentService.save(document);
+
+                Arrays.asList(files)
+                        .stream()
+                        .map(file -> documentFileService.storeFile(file, document1))
+                        .collect(Collectors.toList());
+
+            }
+        }
+
+        return "redirect:/approval/document/listMyProcess";
     }
 
     @GetMapping("/delete/{id}")
@@ -268,9 +279,17 @@ public class DocumentController {
 
         Document document = documentService.getById(id);
 
-        documentService.delete(document);
+        // 다음결재자가 결재를 하지 않은 경우는 삭제한다.
+        if (document.getDocumentAccountList().size() > 0) {
 
-        return "redirect:/document/list";
+            if (document.getDocumentAccountList().get(0).getFCurrSeq() <= 1) {
+
+                documentService.delete(document);
+
+            }
+        }
+
+        return "redirect:/approval/document/listMyProcess";
     }
 
 

@@ -14,10 +14,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.sql.DataSource;
 
 @SpringBootApplication
+@EnableScheduling
 @EnableConfigurationProperties({FileUploadProperties.class, ImageUploadProperties.class})
 @EntityScan({"com.dtnsm.lms", "com.dtnsm.common.entity"})
 @EnableJpaRepositories({"com.dtnsm.common.repository", "com.dtnsm.lms.repository"})

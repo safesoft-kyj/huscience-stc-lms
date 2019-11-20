@@ -74,7 +74,7 @@ public class CourseAdminController {
 
     public CourseAdminController() {
         pageInfo.setParentId("m-course");
-        pageInfo.setParentTitle("공지사항");
+        pageInfo.setParentTitle("교육과정");
 
         //courseMaster = courseMasterService.getById("A01");
     }
@@ -144,15 +144,24 @@ public class CourseAdminController {
         model.addAttribute("course", course);
         model.addAttribute("id", typeId);
 
-        model.addAttribute("mailList", userService.getAccountList());
+        String formName = "add";
 
-        return "admin/course/add";
+        if(typeId.equals("BC0101")) {   // Self training
+            formName = "add_self";
+        } else if(typeId.equals("BC0102")) {    // class Training
+            formName = "add_class";
+        } else if (typeId.equals("BC0103")) {   // 부서별 교육
+            formName = "add_class";
+        } else if (typeId.equals("BC0104")) {   // 외부 교육
+            formName = "add_class";
+        }
+
+        return "admin/course/" + formName;
     }
 
     @PostMapping("/add-post")
     public String noticeAddPost(@Valid Course course
             , @RequestParam("files") MultipartFile[] files
-            , @RequestParam(value = "mailList", required = false, defaultValue = "0") String[] mails
             , BindingResult result) {
         if(result.hasErrors()) {
             return "admin/course/add";
@@ -160,37 +169,21 @@ public class CourseAdminController {
 
         course.setCourseMaster(courseMasterService.getById(course.getCourseMaster().getId()));
 
-        boolean isMail = mails[0].equals("0") ? false : true;
-
         // self 교육인 경우 신청일자 및 교육일자가 별도로 없음으로 기본값으로 셋팅한다.
         // RequestType : 1:상시, 2:기간
 //        if(course.getCourseMaster().getRequestType().equals("1")) {
 //            course.setRequestFromDate("1900-01-01");
-//            course.setRequestToDate("1900-01-01");
+//            course.setRequestToDate("2999-12-31");
 //            course.setFromDate("1900-01-01");
-//            course.setToDate("1900-01-01");
+//            course.setToDate("2999-12-31");
 //        }
 
-        if (isMail) {
-            course.setMailSender(Arrays.toString(mails));
-        }
         Course course1 = courseService.save(course);
 
         Arrays.asList(files)
                 .stream()
                 .map(file -> courseFileService.storeFile(file, course1))
                 .collect(Collectors.toList());
-
-        if(isMail) {
-
-            // 교육대상자 등록
-            for(String userId : mails) {
-                Account account = userService.findByUserId(userId);
-
-                // 교육 신청 처리
-                approvalCourseProcessService.courseRequestProcess(account, course);
-            }
-        }
 
         return "redirect:/admin/course/list/" + course1.getCourseMaster().getId();
     }
@@ -210,30 +203,32 @@ public class CourseAdminController {
     public String noticeEdit(@PathVariable("id") long id, Model model) {
 
         Course course = courseService.getCourseById(id);
-
-        List<Account> accountList = new ArrayList<>();
-        for(CourseAccount courseAccount : course.getCourseAccountList()) {
-            accountList.add(courseAccount.getAccount());
-        }
-
         pageInfo.setPageTitle(course.getCourseMaster().getCourseName() + " 수정");
 
         model.addAttribute(pageInfo);
         model.addAttribute("course", course);
         model.addAttribute("id", course.getId());
-        model.addAttribute("accounts", accountList);
-//        model.addAttribute("mailList", userMapperService.getUserAll());
-        model.addAttribute("mailList", userService.getAccountList());
 
-        return "admin/course/edit";
+        String typeId = course.getCourseMaster().getId();
+        String formName = "edit";
+
+        if(typeId.equals("BC0101")) {   // Self training
+            formName = "edit_self";
+        } else if(typeId.equals("BC0102")) {    // class Training
+            formName = "edit_class";
+        } else if (typeId.equals("BC0103")) {   // 부서별 교육
+            formName = "edit_class";
+        } else if (typeId.equals("BC0104")) {   // 외부 교육
+            formName = "edit_class";
+        }
+
+        return "admin/course/" + formName;
     }
 
     @PostMapping("/edit-post/{id}")
     public String noticeEditPost(@PathVariable("id") long id
             , @Valid Course course
             , @RequestParam("files") MultipartFile[] files
-            , @RequestParam(value = "mailList", required = false, defaultValue = "0") String[] mails
-            , @RequestParam(value = "mailList2", required = false, defaultValue = "0") String[] mails2
             , BindingResult result) {
         if(result.hasErrors()) {
             course.setId(id);
@@ -246,12 +241,15 @@ public class CourseAdminController {
         course.setSurveys(oldCourse.getSurveys());
         course.setQuizzes(oldCourse.getQuizzes());
         course.setSections(oldCourse.getSections());
+        course.setCourseAccountList(oldCourse.getCourseAccountList());
+        course.setCourseMaster(oldCourse.getCourseMaster());
+        course.setCourseFiles(oldCourse.getCourseFiles());
 
-        List<CourseFile> courseFile= oldCourse.getCourseFiles();
-        course.setCourseFiles(courseFile);
-
-        List<CourseAccount> courseAccountList = courseService.getCourseById(id).getCourseAccountList();
-        course.setCourseAccountList(courseAccountList);
+//        List<CourseFile> courseFile= oldCourse.getCourseFiles();
+//        course.setCourseFiles(courseFile);
+//
+//        List<CourseAccount> courseAccountList = courseService.getCourseById(id).getCourseAccountList();
+//        course.setCourseAccountList(courseAccountList);
 
         // 교육대상자 수정처리는 별도로 진행한다.(2019/11/17)
 
@@ -339,9 +337,11 @@ public class CourseAdminController {
         } else if (course.getActive() == 1) {
 
             // 직원이 신청한 내역이 있으면 Active를 변경할 수 없다.
-            if(course.getCourseAccountList().size() <= 0) {
-                course.setActive(0);
-            }
+//            if(course.getCourseAccountList().size() <= 0) {
+//                course.setActive(0);
+//            }
+
+            course.setActive(0);
         }
 
         course = courseService.save(course);

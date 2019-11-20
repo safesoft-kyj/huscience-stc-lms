@@ -59,7 +59,8 @@
                                         <th class="text-center col-sm-5" th:text="#{label.subject}">과정명</th>
                                         <th class="text-center col-sm-1" th:text="#{label.requestdate}">신청일</th>
                                         <th class="text-center col-sm-1" th:text="#{label.requestby}">신청자</th>
-                                        <th class="text-center col-sm-3" th:text="#{label.status}">상태</th>
+                                        <th class="text-center col-sm-2" th:text="#{label.status}">상태</th>
+                                        <th class="text-center col-sm-3" th:text="#{label.edit}">상태</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -78,6 +79,10 @@
                                                 <span th:case="${'1'}" class="text-success" th:text="${'최종승인'}"></span>
                                                 <span th:case="${'2'}" class="text-danger" th:text="${'반려'}"></span>
                                             </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <a th:text="#{label.edit}" th:href="@{/document/edit/{id}(id=${border.getDocument().getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                            <a th:text="#{label.delete}" th:href="@{/document/delete/{id}(id=${border.getDocument().getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
                                         </td>
                                     </tr>
                                     </tbody>

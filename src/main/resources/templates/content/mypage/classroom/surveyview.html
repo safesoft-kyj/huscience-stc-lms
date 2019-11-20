@@ -190,31 +190,7 @@
 
     var tmp_int = 0;
 
-    function radioEvent(name, val) {
-        tmp_int += 1;
-        $('#' + name).html("<span class='text-success answer'>" + val + "</span>");
-        return false;
-    }
-
-    $(document).ready(function () {
-
-        $('input[type="radio"]').change(function () {
-
-            radioEvent($(this).prop('name'), $(this).val());
-        });
-    });
-
-    // 윈도우 종료 이벤트 추가
-    $(window).bind("beforeunload", function (e) {
-
-        opener.location.reload();
-
-        return;
-    });
-
-
     function form_submit() {
-
 
         var q_size = [[${surveyAction.getCourseSurvey().getQuestions().size()}]];
 
@@ -239,7 +215,6 @@
         if(q_size == (in_size + textarea_size)) {
             $('#boardFrm').submit();
             closeWindow();
-            opener.location.reload();
             alert('설문처리가 완료 되었습니다.');
         } else {
             alert('설문항목중 미입력 항목이 있습니다.');
@@ -248,6 +223,42 @@
         //     alert($('#ans' + i).val());
         // }
     }
+
+    function radioEvent(name, val) {
+        tmp_int += 1;
+        $('#' + name).html("<span class='text-success answer'>" + val + "</span>");
+        return false;
+    }
+
+    $(document).ready(function () {
+
+        $('input[type="radio"]').change(function () {
+
+            radioEvent($(this).prop('name'), $(this).val());
+        });
+    });
+
+    // 윈도우 종료 이벤트 추가
+    $(window).bind("beforeunload", function (e) {
+
+        // alert('윈도우가 종료됩니다.')
+        opener.location.reload();
+
+        return;
+    });
+
+    // // 윈도우 종료 이벤트 추가
+    // $(window).bind("beforeunload", function (e) {
+    //
+    //     // 학습을 전체시간만큼 보지 않고 종료시 에만 데이터를 업데이트 한다.
+    //     if(update_flag == '0') saveSectionSecond();
+    //     else clearInterval(tid);
+    //
+    //     opener.location.reload();
+    //
+    //     return;
+    // });
+
 
     function closeWindow() {
         this.close();

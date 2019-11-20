@@ -60,7 +60,7 @@ public class ApprovalCourseProcessService {
 //    }
 
     // 교육 신청 처리
-    public void courseRequestProcess(Account account, Course course) {
+    public void courseRequestProcess(Account account, Course course, String requestType, String fromDate, String toDate) {
 
         // 팀장/부서장 승인여부
         String isAppr1 = course.getCourseMaster().getIsTeamMangerApproval();
@@ -73,11 +73,10 @@ public class ApprovalCourseProcessService {
         courseAccount.setAccount(account);
         courseAccount.setRequestDate(DateUtil.getTodayString());
         courseAccount.setFWdate(DateUtil.getToday());
-        courseAccount.setRequestType("1");        // 교육신청(0:관리자지정, 1:사용자 신청)
+        courseAccount.setRequestType(requestType);        // 교육신청(0:관리자지정, 1:사용자 신청)
         courseAccount.setCourseStatus(CourseStepStatus.request);
         courseAccount.setFStatus("0");
         courseAccount.setFCurrSeq(1);
-
 
         // 결재자수 Max 설정
         if(isAppr1.equals("Y") && isAppr2.equals("Y")) {
@@ -157,12 +156,12 @@ public class ApprovalCourseProcessService {
         // TODO : 교육신청시 교육과정 생성 유무
 
         // 사용자별 과정 생성
-        createUserCourse(saveCourseAccount);
+        createUserCourse(saveCourseAccount, course.getFromDate(), course.getToDate());
     }
 
 
     // 교육과정 생성
-    public void createUserCourse(CourseAccount courseAccount) {
+    public void createUserCourse(CourseAccount courseAccount, String fromDate, String toDate) {
         Account account = courseAccount.getAccount();
         Course course = courseAccount.getCourse();
 
@@ -176,6 +175,8 @@ public class ApprovalCourseProcessService {
                 courseSectionAction.setTotalUseSecond(0);
                 courseSectionAction.setRunCount(0);
                 courseSectionAction.setStatus(SectionStatusType.REQUEST);
+                courseSectionAction.setFromDate(fromDate);  // 개인별 교육기간 설정
+                courseSectionAction.setToDate(toDate);      // 개인별 교육기간 설정
                 sectionActionService.save(courseSectionAction);
             }
         }
@@ -190,6 +191,8 @@ public class ApprovalCourseProcessService {
                 courseQuizAction.setTotalUseSecond(0);
                 courseQuizAction.setRunCount(0);
                 courseQuizAction.setStatus(QuizStatusType.REQUEST);
+                courseQuizAction.setFromDate(fromDate);  // 개인별 교육기간 설정
+                courseQuizAction.setToDate(toDate);      // 개인별 교육기간 설정
                 quizActionService.saveQuizAction(courseQuizAction);
             }
         }
@@ -202,6 +205,8 @@ public class ApprovalCourseProcessService {
                 courseSurveyAction.setAccount(account);
                 courseSurveyAction.setCourseSurvey(courseSurvey);
                 courseSurveyAction.setStatus(SurveyStatusType.REQUEST);
+                courseSurveyAction.setFromDate(fromDate);  // 개인별 교육기간 설정
+                courseSurveyAction.setToDate(toDate);      // 개인별 교육기간 설정
                 surveyActionService.saveSurveyAction(courseSurveyAction);
             }
         }
@@ -228,6 +233,7 @@ public class ApprovalCourseProcessService {
         if(finalCount == courseAccountOrder.getFSeq()) {   // 종결처리
             //  승인: 1, 기각 : 2
             courseAccount.setFStatus("1");
+            courseAccount.setCourseStatus(CourseStepStatus.process);
 
             courseAccountService.save(courseAccount);
 
@@ -264,6 +270,8 @@ public class ApprovalCourseProcessService {
         CourseAccount courseAccount = courseAccountOrder.getCourseAccount();
 
         courseAccount.setFStatus("2");
+        courseAccount.setCourseStatus(CourseStepStatus.reject);
+        courseAccount.setIsCommit("1");
 
         courseAccountService.save(courseAccount);
 
@@ -304,6 +312,7 @@ public class ApprovalCourseProcessService {
         if(finalCount == courseAccountOrder.getFSeq()) {   // 종결처리
             //  승인: 1, 기각 : 2
             courseAccount.setFStatus("1");
+            courseAccount.setCourseStatus(CourseStepStatus.process);
 
             courseAccountService.save(courseAccount);
 
@@ -340,6 +349,8 @@ public class ApprovalCourseProcessService {
         CourseAccount courseAccount = courseAccountOrder.getCourseAccount();
 
         courseAccount.setFStatus("2");
+        courseAccount.setCourseStatus(CourseStepStatus.reject);
+        courseAccount.setIsCommit("1");
 
         courseAccountService.save(courseAccount);
 

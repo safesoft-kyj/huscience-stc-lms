@@ -4,6 +4,7 @@ public enum CourseStepStatus {
     none("none"),
     request("신청중"),
     process("교육중"),
+    reject("중지"),
     complete("종료");
 
     private String label;

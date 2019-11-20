@@ -116,8 +116,8 @@ public class CourseSectionAdminController {
 
         Course course = courseService.getCourseById(id);
         courseSection.setCourse(course);
-        courseSection.setSecond(courseSection.getMinute()*60);
-
+        courseSection.setMinute(Math.round(courseSection.getHour()*60));
+        courseSection.setSecond(Math.round(courseSection.getMinute()*60));
         CourseSection courseSection1 = sectionService.saveSection(courseSection);
 
         // Section 저장
@@ -158,7 +158,8 @@ public class CourseSectionAdminController {
         courseSection.setCourseSectionActions(oldCourseSection.getCourseSectionActions());
         courseSection.setSectionFiles(oldCourseSection.getSectionFiles());
         courseSection.setCourse(oldCourseSection.getCourse());
-        courseSection.setSecond(courseSection.getMinute()*60);
+        courseSection.setMinute(Math.round(courseSection.getHour()*60));
+        courseSection.setSecond(Math.round(courseSection.getMinute()*60));
 
         CourseSection courseSection1 = sectionService.saveSection(courseSection);
 

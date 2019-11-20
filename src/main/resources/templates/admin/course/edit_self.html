@@ -3,21 +3,13 @@
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/default_layout}">
+      layout:decorator="layout/default_layout">
 
 <th:block layout:fragment="html_head">
     <title>TachyonTech Info</title>
 </th:block>
 
-<th:block layout:fragment="custom_css">
-    <!--Dropzone [ OPTIONAL ]-->
-    <link th:href="@{/default/plugins/dropzone/dropzone.min.css}" rel="stylesheet">
-
-    <style>
-
-    </style>
-
-</th:block>
+<th:block layout:fragment="custom_css"></th:block>
 
 <th:block layout:fragment="content_body">
     <!--
@@ -37,14 +29,13 @@
             <!-- Basic Data Tables -->
             <!--===================================================-->
             <div class="panel">
-<!--                <div class="panel-heading">-->
-<!--                    <h3 class="panel-title">교육 등록</h3>-->
-<!--                </div>-->
+                <div class="panel-heading">
+                    <h3 class="panel-title">공지사항 수정</h3>
+                </div>
                 <div class="panel-body">
-                    <br>
                     <!--===================================================-->
                     <!--End Horizontal Form-->
-                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/add-post}" th:object="${course}" method="post" enctype="multipart/form-data" >
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/edit-post/{id}(id=${course.getId()})}" th:object="${course}" method="post" enctype="multipart/form-data">
                         <input type="hidden" th:field="*{id}" id="id" name="id">
                         <input type="hidden" th:field="*{courseMaster.id}" id="type-id" name="type-id">
                         <div class="form-group">
@@ -53,7 +44,13 @@
                                 <input type="text" th:value="${course.courseMaster.getCourseName()}"  placeholder="제목" class="form-control" readonly="readonly">
                             </div>
                         </div>
-
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"></label>
+                            <div class="checkbox">
+                                &nbsp;&nbsp;<input id="isNewEmpCourse" name="isNewEmpCourse" class="magic-checkbox" type="checkbox" value="1" th:checked="${#strings.equalsIgnoreCase(border.isNewEmpCourse, '1')}">
+                                <label for="isNewEmpCourse">신입사원 필수교육</label>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="title" th:text="#{label.course.name}">과정명</label>
                             <div class="col-sm-10">
@@ -87,33 +84,6 @@
                                         <span th:if="${#fields.hasErrors('toDate')}" th:errors="*{toDate}"></span>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="team" th:text="#{label.course.team}">참석대상 부서/팀</label>
-                            <div class="col-sm-4">
-                                <input type="text" th:field="*{team}" id="team" placeholder="depart/team" class="form-control" required="required">
-                            </div>
-                            <span th:if="${#fields.hasErrors('team')}" th:errors="*{team}"></span>
-                            <label class="col-sm-2 control-label" for="day" th:text="#{label.course.place}">교육장소</label>
-                            <div class="col-sm-4">
-                                <input type="text" th:field="*{place}" id="place" placeholder="place" class="form-control" required="required">
-                            </div>
-                            <span th:if="${#fields.hasErrors('place')}" th:errors="*{place}"></span>
-<!--                        </th:block>-->
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="day" th:text="#{label.course.daycountandtime}">학습일수/시간</label>
-                            <div class="col-sm-2">
-                                <input type="number" th:field="*{day}" id="day" placeholder="day" class="form-control" required="required">
-                            </div>
-                            <span th:if="${#fields.hasErrors('day')}" th:errors="*{day}"></span>
-                            <div class="col-sm-2">
-                                <input type="number" th:field="*{hour}" id="hour" placeholder="hour" class="form-control" required="required">
-                            </div>
-                            <label class="col-sm-2 control-label" for="cnt" th:text="#{label.course.peoplecount}">교육정원</label>
-                            <div class="col-sm-4">
-                                <input type="number" th:field="*{cnt}" id="cnt" placeholder="교육정원" class="form-control" required="required">
                             </div>
                         </div>
                         <div class="form-group">
@@ -161,7 +131,6 @@
                             </div>
                             <span th:if="${#fields.hasErrors('certiHead')}" th:errors="*{certiHead}"></span>
                         </div>
-
                         <div id="editSection"></div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="editor" th:text="#{label.course.introduce}">소개</label>
@@ -170,14 +139,125 @@
                             </div>
                             <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
                         </div>
-                        <div class="form-group" th:each="num: ${#numbers.sequence(1,5)}">
-                            <label class="col-sm-2 control-label" for="editor" th:text="#{label.file} + ${num}">첨부파일</label>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" th:text="#{label.file}">첨부파일</label>
                             <div class="col-sm-10">
-                                <input type="file" name="files">
+                                <div th:switch="${course.getCourseFiles().isEmpty()}">
+                                    <div th:case="true"></div>
+                                    <div th:case="*">
+                                        <table id="customer-list-page" class="table table-striped table-courseed" cellspacing="0" width="100%">
+                                            <thead>
+                                            <tr>
+                                                <th class="text-center col-sm-8" th:text="#{label.filename}">File Name</th>
+                                                <th class="text-center col-sm-2" th:text="#{label.filesize}">Size</th>
+                                                <th class="text-center col-sm-2" th:text="#{label.delete}">삭제</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="uploadFile : ${course.getCourseFiles()}">
+                                                <td>
+                                                    <a th:href="@{/admin/course/download-file/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>
+                                                </td>
+                                                <td th:text="${uploadFile.getSize()}" class="text-center"></td>
+                                                <td class="text-center col-sm-2">
+                                                   <a class="btn btn-xs btn-danger" th:href="@{/admin/course/delete-file/{course_id}/{file_id}(course_id=${course.getId()}, file_id=${uploadFile.getId()})}"><i class="demo-psi-trash"></i></a>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
+
+                        <div class="form-group" th:each="num: ${#numbers.sequence(1,1)}">
+                            <label class="col-sm-2 control-label" for="editor" th:text="#{label.file} + ${num}">첨부파일</label>
+                            <div class="col-sm-10">
+                                <input type="file" name="files" multiple = "multiple">
+                            </div>
+                        </div>
+
+<!--                        <div class="form-group">-->
+<!--                            <label class="col-sm-2 control-label">첨부파일</label>-->
+<!--                            <div class="col-sm-10">-->
+<!--                                <div>-->
+<!--                                    <div class="bord-top pad-ver">-->
+<!--                                        &lt;!&ndash; The fileinput-button span is used to style the file input field as button &ndash;&gt;-->
+<!--                                        <span class="btn btn-success fileinput-button dz-clickable">-->
+<!--                                            <i class="fa fa-plus"></i>-->
+<!--                                            <span>Add files...</span>-->
+<!--                                        </span>-->
+
+<!--                                        <div class="btn-group pull-right">-->
+<!--                                            <button id="dz-remove-btn" class="btn btn-danger cancel" type="reset" disabled>-->
+<!--                                                <i class="demo-psi-trash"></i>-->
+<!--                                            </button>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+
+<!--                                    <div id="dz-previews">-->
+<!--                                        <div id="dz-template" class="pad-top bord-top">-->
+<!--                                            <div class="media">-->
+<!--                                                <div class="media-body">-->
+<!--                                                    &lt;!&ndash;This is used as the file preview template&ndash;&gt;-->
+<!--                                                    <div class="media-block">-->
+<!--                                                        <div class="media-left">-->
+<!--                                                            <img class="dz-img" data-dz-thumbnail>-->
+<!--                                                        </div>-->
+<!--                                                        <div class="media-body">-->
+<!--                                                            <p class="text-main text-bold mar-no text-overflow" data-dz-name></p>-->
+<!--                                                            <span class="dz-error text-danger text-sm" data-dz-errormessage></span>-->
+<!--                                                            <p class="text-sm" data-dz-size></p>-->
+<!--                                                            <div id="dz-total-progress" style="opacity:0">-->
+<!--                                                                <div class="progress progress-xs active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">-->
+<!--                                                                    <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                                <div class="media-right">-->
+<!--                                                    <button data-dz-remove class="btn btn-xs btn-danger dz-cancel"><i class="demo-psi-trash"></i></button>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+
+<!--                                </div>-->
+
+<!--                                <div th:switch="${course.getBorderFiles().isEmpty()}">-->
+<!--                                    <div th:case="true"></div>-->
+<!--                                    <div th:case="*">-->
+<!--                                        <table id="customer-list-page" class="table table-striped table-courseed" cellspacing="0" width="100%">-->
+<!--                                            <thead>-->
+<!--                                            <tr>-->
+<!--                                                <th class="text-center col-sm-8">파일명</th>-->
+<!--                                                <th class="text-center col-sm-2">사이즈</th>-->
+<!--                                                <th class="text-center col-sm-2">삭제</th>-->
+<!--                                            </tr>-->
+<!--                                            </thead>-->
+<!--                                            <tbody>-->
+<!--                                            <tr th:each="uploadFile : ${course.getBorderFiles()}">-->
+<!--                                                <td>-->
+<!--                                                    <a th:href="@{/admin/course/download-file/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>-->
+<!--                                                </td>-->
+<!--                                                <td th:text="${uploadFile.getSize()}" class="text-center"></td>-->
+<!--                                                <td class="text-center col-sm-2">-->
+<!--                                                   <a class="btn btn-xs btn-danger" th:href="@{/admin/course/delete-file/{course_id}/{file_id}(course_id=${course.getId()}, file_id=${uploadFile.getId()})}"><i class="demo-psi-trash"></i></a>-->
+<!--                                                </td>-->
+<!--                                            </tr>-->
+<!--                                            </tbody>-->
+<!--                                        </table>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
                         <div class="panel-footer text-right">
-                            <button class="btn btn-primary" type="submit" id="submit-all"  th:text="#{label.save}">
+<!--                            <button id="dz-upload-btn" class="btn btn-primary" type="submit">-->
+<!--                                <i class="fa fa-upload-cloud"></i> 저장-->
+<!--                            </button>-->
+                            <button class="btn btn-primary" type="submit" id="submit-all" th:text="#{label.save}">
                                 <i class="fa fa-upload-cloud"></i> 저장
                             </button>
                             <a th:href="@{/admin/course/list/{typeId}(typeId=${course.getCourseMaster().getId()})}" class="btn btn-success" th:text="#{label.list}">
@@ -189,13 +269,12 @@
             </div><!-- panel End -->
         </div><!-- Page content End -->
     </div><!-- Content container End -->
-
 </th:block>
 
 <th:block layout:fragment="custom_js">
-    <!--Dropzone [ OPTIONAL ]-->
-<!--    <script th:src="@{/default/plugins/dropzone/dropzone.js}"></script>-->
 
+    <!--Dropzone [ OPTIONAL ]-->
+<!--    <script th:src="@{/default/plugins/dropzone/dropzone.min.js}"></script>-->
 
     <script type="text/javascript" th:src="@{/editor/js/HuskyEZCreator.js}" charset="utf-8"></script>
     <script type="text/javascript" th:src="@{/default/js/custom/course-editor.js}" charset="utf-8"></script>
@@ -203,10 +282,6 @@
 <!--    <script type="text/javascript" th:src="@{/default/js/custom/course-file.js}" charset="utf-8"></script>-->
 
 <!--    <script type="text/javascript" th:src="@{/default/js/custom/course-add.js}" charset="utf-8"></script>-->
-
-
-
-<!--    <script th:src="@{/default/js/demo/form-component.js}"></script>-->
 
     <script>
         $('#demo-dp-range .input-daterange').datepicker({
@@ -225,7 +300,7 @@
             todayHighlight: true
         });
 
-        // $('#mailList').chosen({width:'100%'});
+        // $('#mailList, #mailList2').chosen({width:'100%'});
         //
         // $("#btnOrg").on("click", function() {
         //     var url = "/admin/depart/treeView";
@@ -239,9 +314,8 @@
         //     option += ", left=" + popupX + ", top=" + popupY;
         //     window.open(url, name, option);
         // });
-
-
-        // 조직도에서 사용자 ID를 받아 온다(배열로 받아옴)
+        //
+        // // 조직도에서 사용자 ID를 받아 온다(배열로 받아옴)
         // function selectMailList(selectOptionArray) {
         //
         //     // 싱글값 변경
@@ -252,7 +326,8 @@
 
     </script>
 
-
+    <!--Form File Upload [ SAMPLE ]-->
+<!--    <script th:src="@{/default/js/demo/form-file-upload.js}"></script>-->
 </th:block>
 
 </html>

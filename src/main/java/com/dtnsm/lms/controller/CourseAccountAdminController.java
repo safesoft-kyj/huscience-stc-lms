@@ -75,6 +75,8 @@ public class CourseAccountAdminController {
 
     @PostMapping("/add-post")
     public String courseAccountAddPost(@RequestParam(value = "") long courseId
+            , @RequestParam(value = "fromDate", required = false, defaultValue = "") String fromDate
+            , @RequestParam(value = "toDate", required = false, defaultValue = "") String toDate
             , @RequestParam(value = "mailList", required = false, defaultValue = "0") String[] mails) {
 
         Course course = courseService.getCourseById(courseId);
@@ -82,15 +84,16 @@ public class CourseAccountAdminController {
         // 교육대상자 등록
         for(String userId : mails) {
 
-            Account account = userService.findByUserId(userId);
-
-            List<CourseAccount> tmpCourseAccounts = courseAccountService.getCourseAccountByUserId(userId);
+            CourseAccount tmpCourseAccount = courseAccountService.getByCourseIdAndUserId(courseId, userId);
 
             // 등록되지 않은 사용자만 등록한다.
-            if (tmpCourseAccounts.size() == 0) {
+            if (tmpCourseAccount == null) {
+
+                Account account = userService.findByUserId(userId);
 
                 // 요청 프로세서를 실행(요청 결재 및 강의를 생성한다)
-                approvalCourseProcessService.courseRequestProcess(account, course);
+                // 교육 신청 처리(requestType 0:관리자 지정, 1:신청)
+                approvalCourseProcessService.courseRequestProcess(account, course, "0", fromDate, toDate);
             }
         }
 

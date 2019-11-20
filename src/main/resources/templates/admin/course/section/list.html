@@ -59,7 +59,10 @@
                                     <tr style="background: #FAFAFA;">
                                         <th class="text-center" th:text="#{label.no}">번호</th>
                                         <th class="text-center" th:text="#{label.subject}">제목</th>
-                                        <th class="text-center col-sm-2" th:text="#{label.course.section.period}">등록일</th>
+                                        <th class="text-center col-sm-2" th:text="#{label.course.section.studyDate}">학습일</th>
+                                        <th class="text-center col-sm-1" th:text="#{label.course.section.file}"></th>
+                                        <th class="text-center col-sm-1" th:text="#{label.hour}">시간</th>
+                                        <th class="text-center col-sm-1" th:text="#{label.minute}">분</th>
                                         <th class="text-center col-sm-2" th:text="#{label.actions}">Edit</th>
                                     </tr>
                                     </thead>
@@ -70,12 +73,14 @@
                                             <div th:text="${border.getName()}"></div>
                                             <div th:utext="${border.getDescription().replaceAll('\r\n', '<br>')}"></div>
                                         </td>
-                                        <th:block th:if="${#strings.equalsIgnoreCase(border.fromDate, border.toDate)}">
-                                            <td th:text="${border.fromDate}" class="text-center"></td>
-                                        </th:block>
-                                        <th:block th:unless="${#strings.equalsIgnoreCase(border.fromDate, border.toDate)}">
-                                            <td th:text="${border.fromDate + '~' + border.toDate}" class="text-center"></td>
-                                        </th:block>
+                                        <td th:text="${border.getStudyDate()}" class="text-center"></td>
+                                        <td class="text-center">
+                                            <div th:each="uploadFile : ${border.getSectionFiles()}">
+                                                <a th:href="@{/admin/course/section/download-file/{id}(id=${uploadFile.getId()})}"><span class="badge badge-mint" th:text="#{label.download}"></span></a>
+                                            </div>
+                                        </td>
+                                        <td th:text="${border.getHour()}" class="text-center"></td>
+                                        <td th:text="${border.getMinute()}" class="text-center"></td>
                                         <td class="text-center">
                                             <a th:text="#{label.edit}" th:href="@{/admin/course/section/edit/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
                                             <a th:text="#{label.delete}" th:href="@{/admin/course/section/delete/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>

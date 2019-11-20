@@ -33,4 +33,10 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     List<Course> findTop5ByRequestFromDateBetweenAndActiveGreaterThan(String fromDate, String toDate, int active);
 
+    // 신입사원 필수교육(페이징)
+    Page<Course> findAllByIsNewEmpCourse(String isNewEmpCourse, Pageable pageable);
+
+    // 신입사원 필수교육
+    List<Course> findAllByIsNewEmpCourse(String isNewEmpCourse);
+
 }

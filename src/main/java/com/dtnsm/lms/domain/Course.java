@@ -101,6 +101,10 @@ public class Course extends AuditorCreateEntity<String> {
     @ColumnDefault("0")
     private int viewCnt;
 
+    @Column(length = 1)
+    @ColumnDefault("0")
+    private String isNewEmpCourse = "0";  // 0:일반 Self 교육, 1:신입사원필수 Self 교육
+
     // 0:서비스전, 1: 신청대기, 2:교육신청, 3:교육대기, 4:교육중, 5:교육종료
     @ColumnDefault("0")
     private int status = 0;

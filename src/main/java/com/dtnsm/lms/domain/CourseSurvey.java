@@ -26,14 +26,6 @@ public class CourseSurvey extends AuditorCreateEntity<String> {
     @Column(name="name")
     private String name;
 
-    // 설문시작일
-    @Column(name="from_date", length = 10)
-    private String fromDate;
-
-    // 설문종료일
-    @Column(name="to_date", length = 10)
-    private String toDate;
-
     // Parent 필드 추가
     @ManyToOne
     @JoinColumn(name = "course_id")

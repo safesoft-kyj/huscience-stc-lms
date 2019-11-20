@@ -30,25 +30,15 @@ public class CourseSection extends AuditorCreateEntity<String> {
     // 강사명
     private String teacher ;
 
-    // 학습시작일
-    @Column(name="from_date", length = 10)
+    // 학습일
+    @Column(name="study_date", length = 10)
     @ColumnDefault("1900-01-01")
-    private String fromDate;
+    private String studyDate;
 
-    // 학습시작시간
-    @Column(name="from_time", length = 8)
-//    @ColumnDefault("00:00")
-    private String fromTime;
-
-    // 학습종료일
-    @Column(name="to_date", length = 10)
-    @ColumnDefault("1900-01-01")
-    private String toDate;
-
-    // 학습종료시간
-    @Column(name="to_time", length = 8)
-//    @ColumnDefault("00:00")
-    private String toTime;
+    // 총학습시간(시)
+    @Column(name="section_hour", columnDefinition="numeric(5,2)")
+    @ColumnDefault("0")
+    private float hour;
 
     // 총학습시간(분)
     @Column(name="section_minute")
@@ -59,8 +49,6 @@ public class CourseSection extends AuditorCreateEntity<String> {
     @Column(name="section_second")
     @ColumnDefault("0")
     private int second;
-
-
 
     // 문제 유형(BC0201:객관식, BC0202:주관식) => Major Code : BC02
     // Parent 필드 추가
@@ -79,12 +67,8 @@ public class CourseSection extends AuditorCreateEntity<String> {
     @OneToMany(mappedBy = "courseSection", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CourseSectionAction> courseSectionActions = new ArrayList<>();
 
-
-
     public CourseSection() {
     }
-
-
 
     public boolean addCourseSectionAction(CourseSectionAction sectionAction) {
         if(courseSectionActions == null)

@@ -44,7 +44,7 @@
                                 <tbody>
                                 <tr>
                                     <td>신청일자</td>
-                                    <td th:text="${courseAccount.getFWdate()} ? ${#dates.format(courseAccount.getFWdate(), 'yyyy-MMM-dd')} : ${courseAccount.getFWdate()}" class="text-center"></td>
+                                    <td th:text="${courseAccount.getFWdate()} ? ${#dates.format(courseAccount.getFWdate(), 'yyyy-MMM-dd')} : ${courseAccount.getFWdate()}"></td>
                                 </tr>
                                 <tr>
                                     <td>신청부서</td>
@@ -168,8 +168,7 @@
                                     <th class="text-center">No</th>
                                     <th class="text-center">구분</th>
                                     <th class="text-center">강의명</th>
-                                    <th class="text-center">학습기간</th>
-                                    <th class="text-center">학습시간</th>
+<!--                                    <th class="text-center">학습기간</th>-->
                                     <th class="text-center">Date & Times</th>
                                     </thead>
                                     <tbody>
@@ -180,14 +179,12 @@
                                             <div th:text="${sections.getName()}"></div>
                                             <div th:utext="${sections.getDescription().replaceAll('\r\n', '<br>')}"></div>
                                         </td>
-                                        <th:block th:if="${#strings.equalsIgnoreCase(sections.getFromDate(), sections.getToDate())}">
-                                            <td th:text="${sections.getFromDate()}" class="text-center"></td>
-                                        </th:block>
-                                        <th:block th:unless="${#strings.equalsIgnoreCase(sections.getFromDate(), sections.getToDate())}">
-                                            <td th:text="${sections.getFromDate() + '~' + sections.getToDate()}" class="text-center"></td>
-                                        </th:block>
-
-                                        <td th:text="${sections.getFromTime() + '~' + sections.getToTime()}" class="text-center"></td>
+<!--                                        <th:block th:if="${#strings.equalsIgnoreCase(course.getFromDate(), course.getToDate())}">-->
+<!--                                            <td th:text="${course.getFromDate()}" class="text-center"></td>-->
+<!--                                        </th:block>-->
+<!--                                        <th:block th:unless="${#strings.equalsIgnoreCase(course.getFromDate(), course.getToDate())}">-->
+<!--                                            <td th:text="${course.getFromDate() + '~' + course.getToDate()}" class="text-center"></td>-->
+<!--                                        </th:block>-->
                                         <td class="text-center" th:text="${sections.getMinute() + '분'}"></td>
                                     </tr>
 
@@ -199,13 +196,12 @@
                                                 <span th:text="${quiz.getName()}"></span>
                                             </a>
                                         </td>
-                                        <th:block th:if="${#strings.equalsIgnoreCase(quiz.getFromDate(), quiz.getToDate())}">
-                                            <td th:text="${quiz.getFromDate()}" class="text-center"></td>
-                                        </th:block>
-                                        <th:block th:unless="${#strings.equalsIgnoreCase(quiz.getFromDate(), quiz.getToDate())}">
-                                            <td th:text="${quiz.getFromDate() + '~' + quiz.getToDate()}" class="text-center"></td>
-                                        </th:block>
-                                        <td class="text-center"></td>
+<!--                                        <th:block th:if="${#strings.equalsIgnoreCase(quiz.getFromDate(), quiz.getToDate())}">-->
+<!--                                            <td th:text="${quiz.getFromDate()}" class="text-center"></td>-->
+<!--                                        </th:block>-->
+<!--                                        <th:block th:unless="${#strings.equalsIgnoreCase(quiz.getFromDate(), quiz.getToDate())}">-->
+<!--                                            <td th:text="${quiz.getFromDate() + '~' + quiz.getToDate()}" class="text-center"></td>-->
+<!--                                        </th:block>-->
                                         <td class="text-center" th:text="${quiz.getMinute() + '분'}"></td>
                                     </tr>
                                     <tr th:each="survey, index : ${course.getSurveys()}">
@@ -216,13 +212,12 @@
                                                 <span th:text="${survey.getName()}"></span>
                                             </a>
                                         </td>
-                                        <th:block th:if="${#strings.equalsIgnoreCase(survey.getFromDate(), survey.getToDate())}">
-                                            <td th:text="${survey.getFromDate()}" class="text-center"></td>
-                                        </th:block>
-                                        <th:block th:unless="${#strings.equalsIgnoreCase(survey.getFromDate(), survey.getToDate())}">
-                                            <td th:text="${survey.getFromDate() + '~' + survey.getToDate()}" class="text-center"></td>
-                                        </th:block>
-                                        <td class="text-center"></td>
+<!--                                        <th:block th:if="${#strings.equalsIgnoreCase(survey.getFromDate(), survey.getToDate())}">-->
+<!--                                            <td th:text="${survey.getFromDate()}" class="text-center"></td>-->
+<!--                                        </th:block>-->
+<!--                                        <th:block th:unless="${#strings.equalsIgnoreCase(survey.getFromDate(), survey.getToDate())}">-->
+<!--                                            <td th:text="${survey.getFromDate() + '~' + survey.getToDate()}" class="text-center"></td>-->
+<!--                                        </th:block>-->
                                         <td class="text-center"></td>
                                     </tr>
 

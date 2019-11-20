@@ -52,9 +52,9 @@
                     <div class="table-responsive">
                         <table class="table table-bordered" cellspacing="0" width="100%">
                             <tbody>
-                            <colgroup><col width="10%" /><col width="40%" /><col width="10%" /><col width="40%" /></colgroup>
+                            <colgroup><col width="15%" /><col width="35%" /><col width="15%" /><col width="35%" /></colgroup>
                             <tr>
-                                <th><span th:text="#{label.gubun}">구분</span></th>
+                                <th><span th:text="#{label.gubun}">* 구분</span></th>
                                 <td th:text="${course.courseMaster.getCourseName()}" colspan="3"></td>
                             </tr>
                             <tr>
@@ -67,17 +67,39 @@
                                 <th><span th:text="#{label.course.period}">교육기간</span></th>
                                 <td th:text="${course.getFromDate() + ' ~ ' + course.getToDate()} "></td>
                             </tr>
+                            <th:block th:unless="${#strings.equalsIgnoreCase(course.getCourseMaster().getId(), 'BC0101')}">
+                                <tr>
+                                    <th><span th:text="#{label.course.daycountandtime}">학습일수/시간</span></th>
+                                    <td><span th:text="${course.getDay()}"></span> / <span th:text="${course.getHour()}"></span></td>
+                                    <th><span th:text="#{label.course.place}">교육장소</span></th>
+                                    <td th:text="${course.getPlace()}"></td>
+                                </tr>
+                                <tr>
+                                    <th><span th:text="#{label.course.team}">참석대상부서</span></th>
+                                    <td th:text="${course.getTeam()}"></td>
+                                    <th><span th:text="#{label.course.peoplecount}">교육정원</span></th>
+                                    <td th:text="${course.getCnt()}+'명'"></td>
+                                </tr>
+                                <tr>
+                                    <th><span th:text="#{label.course.isbook}">교재 재공 여부</span></th>
+                                    <td th:text="${course.getIsBook()}"></td>
+                                    <th><span th:text="#{label.course.iscerti}">수료증 발급 여부</span></th>
+                                    <td th:text="${course.getIsCerti()}"></td>
+                                </tr>
+                            </th:block>
                             <tr>
-                                <th><span th:text="#{label.course.daycountandtime}">학습일수/시간</span></th>
-                                <td th:text="${course.getDay()}"></td>
-                                <th><span th:text="#{label.course.place}">교육장소</span></th>
-                                <td th:text="${course.getPlace()}"></td>
+                                <th><span th:text="#{label.course.isquiz}">시험 진행 여부</span></th>
+                                <td th:text="${course.getIsQuiz()}"></td>
+                                <th><span th:text="#{label.course.issurvey}">설문 진행 여부</span></th>
+                                <td th:text="${course.getIsSurvey()}"></td>
                             </tr>
+                            <!--                            <tr>-->
+                            <!--                                <th><span th:text="#{label.course.accountlist}">교육필수대상자</span></th>-->
+                            <!--                                <td colspan="3"><span th:each="account : ${course.getCourseAccountList()}" th:text="${account.getAccount().getName() + ' '}"></span></td>-->
+                            <!--                            </tr>-->
                             <tr>
-                                <th><span th:text="#{label.course.peoplecount}">교육정원</span></th>
-                                <td th:text="${course.getCnt()}+'명'"></td>
                                 <th><span th:text="#{label.file}">첨부파일</span></th>
-                                <td>
+                                <td colspan="3">
                                     <div th:each="sections : ${course.getCourseFiles()}">
                                         <a th:href="@{/admin/course/download-file/{id}(id=${sections.getId()})}" th:text="${sections.getFileName()}"></a>
                                     </div>
@@ -133,80 +155,74 @@
                             <div class="panel-body">
                                 <!--Tabs content-->
                                 <div class="tab-content">
-                                    <div id="demo-tabs-box-1" class="tab-pane fade in active">
+                                    <div id="demo-tabs-box-1" class="tab-pane fade active in" style="height:100%; vertical-align:top">
                                         <div th:utext="${course.getContent()}" colspan="4"></div>
                                     </div>
                                     <div id="demo-tabs-box-2" class="tab-pane fade">
-                                        <hr class="table-head">
-                                        <div class="table-responsive">
-                                            <table class="table" cellspacing="0" width="100%">
-                                            <colgroup><col width="5%" /><col width="10%" /><col width="35%" /><col width="10%" /><col width="25%" /><col width="15%" /></colgroup>
-                                            <thead>
-                                            <th class="text-center">No</th>
-                                            <th class="text-center">구분</th>
-                                            <th class="text-center">강의명</th>
-                                            <th class="text-center">학습기간</th>
-                                            <th class="text-center">학습시간</th>
-                                            <th class="text-center">Date & Times</th>
-                                            </thead>
-                                            <tbody>
-                                            <tr th:each="sections, index : ${course.getSections()}">
-                                                <td class="text-center" th:text="${index.count}"></td>
-                                                <td class="text-center" th:text="#{label.title.section}"></td>
-                                                <td class="text-left">
-                                                    <div th:text="${sections.getName()}"></div>
-                                                    <div th:utext="${sections.getDescription().replaceAll('\r\n', '<br>')}"></div>
-                                                </td>
-                                                <th:block th:if="${#strings.equalsIgnoreCase(sections.getFromDate(), sections.getToDate())}">
-                                                    <td th:text="${sections.getFromDate()}" class="text-center"></td>
-                                                </th:block>
-                                                <th:block th:unless="${#strings.equalsIgnoreCase(sections.getFromDate(), sections.getToDate())}">
-                                                    <td th:text="${sections.getFromDate() + '~' + sections.getToDate()}" class="text-center"></td>
-                                                </th:block>
+                                        <br>
+                                        <div th:switch="${course.getSections()}">
+                                            <div th:case="null">등록된 강의가 없습니다.</div>
+                                            <div th:case="*">
+                                                <hr class="table-head">
+                                                <table class="table table-bordered" cellspacing="0" width="100%">
+                                                    <colgroup><col width="5%" /><col width="10%" /><col width="40%" /><col width="25%" /><col width="20%" /></colgroup>
+                                                    <thead>
+                                                    <th class="text-center" th:text="#{label.no}">No</th>
+                                                    <th class="text-center" th:text="#{label.gubun}">구분</th>
+                                                    <th class="text-center" th:text="#{label.course.section.name}">강의명</th>
+<!--                                                    <th class="text-center" th:text="#{label.period}">학습기간</th>-->
+                                                    <th class="text-center" th:text="#{label.minute}">Date & Times</th>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr th:each="sections, index : ${course.getSections()}">
+                                                        <td class="text-center" th:text="${index.count}"></td>
+                                                        <td class="text-center" th:text="#{label.title.section}"></td>
+                                                        <td class="text-left">
+                                                            <div th:text="${sections.getName()}"></div>
+                                                            <div th:text="${sections.getDescription()}"></div>
+                                                        </td>
+<!--                                                        <td th:text="${sections.getStudyDate()}" class="text-center"></td>-->
+                                                        <td class="text-center" th:text="#{label.course.minute(${sections.getMinute()})}"></td>
+                                                    </tr>
 
-                                                <td th:text="${sections.getFromTime() + '~' + sections.getToTime()}" class="text-center"></td>
-                                                <td class="text-center" th:text="${sections.getMinute() + '분'}"></td>
-                                            </tr>
+                                                    <tr th:each="quiz, index : ${course.getQuizzes()}">
+                                                        <td class="text-center" th:text="${index.count}"></td>
+                                                        <td class="text-center" th:text="#{label.title.quiz}"></td>
+                                                        <td class="text-left">
+                                                            <span th:text="${quiz.getName()}"></span>
+                                                        </td>
+<!--                                                        <th:block th:if="${#strings.equalsIgnoreCase(course.getFromDate(), course.getToDate())}">-->
+<!--                                                            <td th:text="${course.getFromDate()}" class="text-center"></td>-->
+<!--                                                        </th:block>-->
+<!--                                                        <th:block th:unless="${#strings.equalsIgnoreCase(course.getFromDate(), course.getToDate())}">-->
+<!--                                                            <td th:text="${course.getFromDate() + '~' + course.getToDate()}" class="text-center"></td>-->
+<!--                                                        </th:block>-->
+                                                        <td class="text-center" th:text="#{label.course.minute(${quiz.getMinute()})}"></td>
+                                                    </tr>
+                                                    <tr th:each="survey, index : ${course.getSurveys()}">
+                                                        <td class="text-center" th:text="${index.count}"></td>
+                                                        <td class="text-center" th:text="#{label.title.survey}"></td>
+                                                        <td class="text-left">
+                                                            <span th:text="${survey.getName()}"></span>
+                                                        </td>
+<!--                                                        <th:block th:if="${#strings.equalsIgnoreCase(course.getFromDate(), course.getToDate())}">-->
+<!--                                                            <td th:text="${course.getFromDate()}" class="text-center"></td>-->
+<!--                                                        </th:block>-->
+<!--                                                        <th:block th:unless="${#strings.equalsIgnoreCase(course.getFromDate(), course.getToDate())}">-->
+<!--                                                            <td th:text="${course.getFromDate() + '~' + course.getToDate()}" class="text-center"></td>-->
+<!--                                                        </th:block>-->
+                                                        <td class="text-center"></td>
+                                                        <!--                                                            <td class="text-center"></td>-->
+                                                    </tr>
 
-                                            <tr th:each="quiz, index : ${course.getQuizzes()}">
-                                                <td class="text-center" th:text="${index.count}"></td>
-                                                <td class="text-center" th:text="#{label.title.quiz}"></td>
-                                                <td class="text-center">
-                                                    <a th:href="@{/admin/course/quiz/edit/{id}(id=${quiz.getId()})}">
-                                                        <span th:text="${quiz.getName()}"></span>
-                                                    </a>
-                                                </td>
-                                                <th:block th:if="${#strings.equalsIgnoreCase(quiz.getFromDate(), quiz.getToDate())}">
-                                                    <td th:text="${quiz.getFromDate()}" class="text-center"></td>
-                                                </th:block>
-                                                <th:block th:unless="${#strings.equalsIgnoreCase(quiz.getFromDate(), quiz.getToDate())}">
-                                                    <td th:text="${quiz.getFromDate() + '~' + quiz.getToDate()}" class="text-center"></td>
-                                                </th:block>
-                                                <td class="text-center"></td>
-                                                <td class="text-center" th:text="${quiz.getMinute() + '분'}"></td>
-                                            </tr>
-                                            <tr th:each="survey, index : ${course.getSurveys()}">
-                                                <td class="text-center" th:text="${index.count}"></td>
-                                                <td class="text-center" th:text="#{label.title.survey}"></td>
-                                                <td class="text-center">
-                                                    <a th:href="@{/admin/course/survey/edit/{id}(id=${survey.getId()})}">
-                                                        <span th:text="${survey.getName()}"></span>
-                                                    </a>
-                                                </td>
-                                                <th:block th:if="${#strings.equalsIgnoreCase(survey.getFromDate(), survey.getToDate())}">
-                                                    <td th:text="${survey.getFromDate()}" class="text-center"></td>
-                                                </th:block>
-                                                <th:block th:unless="${#strings.equalsIgnoreCase(survey.getFromDate(), survey.getToDate())}">
-                                                    <td th:text="${survey.getFromDate() + '~' + survey.getToDate()}" class="text-center"></td>
-                                                </th:block>
-                                                <td class="text-center"></td>
-                                                <td class="text-center"></td>
-                                            </tr>
-
-                                            </tbody>
-                                            </table>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
+                                    <!--                            <div id="demo-lft-tab-3" class="tab-pane fade" style="height:100%; vertical-align:top">-->
+                                    <!--                                <div th:utext="${course.getAgenda()}" colspan="4"></div>-->
+                                    <!--                            </div>-->
                                 </div>
                             </div>
                         </div>

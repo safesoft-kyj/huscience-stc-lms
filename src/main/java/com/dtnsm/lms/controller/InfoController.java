@@ -119,8 +119,6 @@ public class InfoController {
             courses = courseService.getPageLisByTypeIdAndTitleLike(typeId, title, 0, pageable);
         }
 
-
-
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courses);
         model.addAttribute("courseMasterList", courseMasterService.getList());

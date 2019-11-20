@@ -51,6 +51,7 @@
 <!--                                    <span th:text="#{label.list.title(${borders.getTotalElements()})}"></span>-->
 <!--                                </div>-->
                                 <div class="col-sm-12 text-right">
+                                    <span class="text-danger">(강의,시험, 설문을 등록후 대상자를 추가하세요)</span>&nbsp;&nbsp;
                                     <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/add/{typeId}(typeId=${typeId})}"><i class="demo-pli-add"></i> Add</a>
                                 </div>
                             </div>
@@ -61,7 +62,7 @@
                                     <tr style="background: #FAFAFA;">
                                         <th class="text-center" th:text="#{label.no}">번호</th>
                                         <th class="text-center" th:text="#{label.subject}">제목</th>
-                                        <th class="text-center col-sm-2" th:text="#{label.createdate}">등록일</th>
+                                        <th class="text-center col-sm-2">신청기간/교육기간</th>
                                         <th class="text-center col-sm-1" th:text="#{label.title.section}">강의</th>
                                         <th class="text-center col-sm-1" th:text="#{label.title.quiz}">시험</th>
                                         <th class="text-center col-sm-1" th:text="#{label.title.survey}">설문</th>
@@ -78,7 +79,26 @@
                                             </th:block>
                                             <a th:href="@{/admin/course/view/{id}(id=${border.getId()})}" th:text="${border.getTitle()}"></a>
                                         </td>
-                                        <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy-MMM-dd')} : ${border.getCreatedDate()}" class="text-center"></td>
+
+                                        <td class="text-left">
+
+                                            <th:block th:unless="${#strings.equalsIgnoreCase(border.getCourseMaster().getId(), 'BC0101')}">
+                                                <th:block th:if="${#strings.equalsIgnoreCase(border.getRequestFromDate(), border.getRequestToDate())}">
+                                                    <div th:text="${border.getRequestFromDate()}"></div>
+                                                </th:block>
+                                                <th:block th:unless="${#strings.equalsIgnoreCase(border.getRequestFromDate(), border.getRequestToDate())}">
+                                                    <div th:text="${border.getRequestFromDate() + '~' + border.getRequestToDate()}"></div>
+                                                </th:block>
+
+                                                <th:block th:if="${#strings.equalsIgnoreCase(border.getFromDate(), border.getToDate())}">
+                                                    <div th:text="${border.getFromDate()}"></div>
+                                                </th:block>
+                                                <th:block th:unless="${#strings.equalsIgnoreCase(border.getFromDate(), border.getToDate())}">
+                                                    <div th:text="${border.getFromDate() + '~' + border.getToDate()}"></div>
+                                                </th:block>
+                                            </th:block>
+                                        </td>
+
                                         <td class="text-center">
                                             <a th:href="@{/admin/course/section/list/{courseId}(courseId=${border.getId()})}"><span class="badge badge-mint" th:text="${border.getSections().size()}"></span></a>
 <!--                                            <a class="label label-warning" th:href="@{/admin/course/section/add/{id}(id=${border.getId()})}" th:text="#{label.course.add}">강의등록</a>-->
