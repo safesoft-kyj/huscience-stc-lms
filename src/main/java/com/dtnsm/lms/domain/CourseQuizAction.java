@@ -40,13 +40,21 @@ public class CourseQuizAction extends AuditorCreateEntity<String> {
     @ColumnDefault("0")
     private int totalUseSecond;
 
+    // 문항수
+    @Column(name="question_count")
+    private int questionCount;
+
     // 점수
     @Column(name="score")
     private int score;
 
-    // 맞은 갯수
+    // 한개의 액션을 몇번 실행했는지
     @Column(name="run_count")
     private int runCount;
+
+    // 시험을 여러번 친경우 최종 상태를 가진다 0:이전시험, 1:마지막 시험
+    @ColumnDefault("'1'")
+    private String isActive = "1";
 
     @Column(name="status", length=10)
     @ColumnDefault(value = "0")

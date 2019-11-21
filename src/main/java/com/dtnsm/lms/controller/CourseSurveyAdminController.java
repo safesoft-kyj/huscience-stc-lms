@@ -1,6 +1,8 @@
 package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.domain.*;
+import com.dtnsm.lms.mybatis.dto.ReportForm1;
+import com.dtnsm.lms.mybatis.service.ReportMapperService;
 import com.dtnsm.lms.service.CodeService;
 import com.dtnsm.lms.service.CourseService;
 import com.dtnsm.lms.service.CourseSurveyService;
@@ -13,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/course/survey")
@@ -28,6 +31,9 @@ public class CourseSurveyAdminController {
 
     @Autowired
     private SurveyService surveyService;
+
+    @Autowired
+    ReportMapperService reportMapperService;
 
     private PageInfo pageInfo = new PageInfo();
 
@@ -181,6 +187,24 @@ public class CourseSurveyAdminController {
         model.addAttribute("courseId", courseSurvey.getCourse().getId());
 
         return "admin/course/survey/view";
+    }
+
+    // Report
+    @GetMapping("/report/{id}")
+    public String reportPage(@PathVariable("id") long id, Model model) {
+
+        CourseSurvey courseSurvey = courseSurveyService.getCourseSurveyById(id);
+
+        List<ReportForm1> borders = reportMapperService.getSurveyReport(courseSurvey.getCourse().getId());
+
+        pageInfo.setPageId("self");
+        pageInfo.setPageTitle(courseSurvey.getName());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("borders", borders);
+        model.addAttribute("courseId", courseSurvey.getCourse().getId());
+
+        return "admin/course/survey/report";
     }
 
 }

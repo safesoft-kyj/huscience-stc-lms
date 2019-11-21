@@ -36,6 +36,10 @@ public class CourseSurveyAction extends AuditorCreateEntity<String> {
     @ColumnDefault("'1900-01-01'")
     private String toDate;
 
+    // 문항수
+    @Column(name="question_count")
+    private int questionCount;
+
     // 점수
     @Column(name="score")
     private int score;

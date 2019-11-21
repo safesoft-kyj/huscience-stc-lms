@@ -83,49 +83,39 @@ public class MypageRestController {
 
         courseSectionAction.setTotalUseSecond(totalSecond);
         courseSectionAction.setRunCount(courseSectionAction.getRunCount() + 1);
-        courseSectionAction = courseSectionActionService.save(courseSectionAction);
+        CourseSectionAction courseSectionAction1 = courseSectionActionService.save(courseSectionAction);
 
 
         // 교육수강이 완료되면 이후 전체 강의 수강이 완료되었는지 확인후
         // 완료 되었다면 시험의 상태를 ONGOING 으로 변경하여 시험에 응시할 수 있도록 한다.
-        if (courseSectionAction.getStatus().equals(SectionStatusType.COMPLETE)) {
+        if (courseSectionAction1.getStatus().equals(SectionStatusType.COMPLETE)) {
 
             int completeCount = 0;
 
             // 1. 다른 미이수 강의가 있는지 확인
-            Course course = courseSectionAction.getCourseSection().getCourse();
+            CourseAccount courseAccount = courseSectionAction1.getCourseAccount();
 
             // 교육과정의 퀴즈 여부가 Y인 경우만 실행
-            if (course.getIsQuiz().equals("Y")) {
+            if (courseAccount.getCourse().getIsQuiz().equals("Y")) {
 
-                for (CourseSection courseSection : course.getSections()) {
-
-                    for (CourseSectionAction courseSectionAction1 : courseSection.getCourseSectionActions()) {
-
-                        if (courseSectionAction1.getStatus().equals(SectionStatusType.COMPLETE)) {
-                            completeCount++;
-                        }
+                for (CourseSectionAction courseSectionAction2 : courseAccount.getCourseSectionActions()) {
+                    if (courseSectionAction2.getStatus().equals(SectionStatusType.COMPLETE)) {
+                        completeCount++;
                     }
                 }
 
                 // 2.  강의수와  COMPLETE 수가 같으면 다음 퀴즈를 ONGOING 상태로 변경한다.
-                if (course.getSections().size() == completeCount) {
-                    for (CourseQuiz courseQuiz : course.getQuizzes()) {
-                        for (CourseQuizAction courseQuizAction : courseQuiz.getQuizActions()) {
-                            courseQuizAction.setStatus(QuizStatusType.ONGOING);
-                            courseQuizActionService.saveQuizAction(courseQuizAction);
-                        }
+                if (courseAccount.getCourseSectionActions().size() == completeCount) {
+                    for (CourseQuizAction courseQuizAction : courseAccount.getCourseQuizActions()) {
+                        courseQuizAction.setStatus(QuizStatusType.ONGOING);
+                        courseQuizActionService.saveQuizAction(courseQuizAction);
                     }
                 }
             } else {  // 시험여부가 N인 경우 CourseAccount 의 상태값을 완료로 변경하고 디지털 바인더 로그를 발생시킨다.
 
-                // CourseAccount 상태값 처리
-                for(CourseAccount courseAccount : course.getCourseAccountList()) {
-                    courseAccount.setCourseStatus(CourseStepStatus.complete);
-                    courseAccount.setIsCommit("1");
-
-                    courseAccountService.save(courseAccount);
-                }
+                courseAccount.setCourseStatus(CourseStepStatus.complete);
+                courseAccount.setIsCommit("1");
+                courseAccountService.save(courseAccount);
 
                 //
                 //
@@ -138,7 +128,7 @@ public class MypageRestController {
         courseSectionActionHistory.setStartDate(startDate);
         courseSectionActionHistory.setEndDate(endDate);
         courseSectionActionHistory.setUseSecond(useSecond);
-        courseSectionActionHistory.setSectionAction(courseSectionAction);
+        courseSectionActionHistory.setSectionAction(courseSectionAction1);
 
         courseSectionActionHistoryService.save(courseSectionActionHistory);
 
@@ -167,7 +157,7 @@ public class MypageRestController {
         courseQuizAction.setRunCount(courseQuizAction.getRunCount() + 1);
         courseQuizAction = courseQuizActionService.saveQuizAction(courseQuizAction);
 
-
+        history.setRunCount(courseQuizAction.getRunCount());
         history.setStartDate(startDate);
         history.setEndDate(endDate);
         history.setUseSecond(useSecond);

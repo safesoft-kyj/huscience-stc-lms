@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+
+    <!--Morris.js [ OPTIONAL ]-->
+    <link th:href="@{/default/plugins/morris-js/morris.min.css}" rel="stylesheet">
+
+    <style>
+        .table-head {
+            background: #3A444E;
+            margin: 0;
+            padding: 0;
+        }
+
+        td {
+            text-align: center;
+        }
+    </style>
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content" style="margin-bottom:0">
+
+
+            <div class="panel">
+                <div class="panel-body">
+                    <br>
+                    <div th:switch="${borders}">
+                        <div th:case="null">No customer yet!</div>
+                        <div th:case="*">
+<!--                            <div class="table-responsive">-->
+                                <hr class="table-head">
+                                <table id="demo-dt-basic1" class="table" cellspacing="0" width="100%" style="margin-top:0">
+                                    <th:block th:each="border, index : ${borders}">
+                                        <tr>
+                                            <td class="text-left" colspan="7">
+                                                <div th:text="${border.getId()}" th:id="${'question-' + index.index}"></div>
+                                                <h4 th:text="${'Q' + index.count + '. ' + border.getTitle()}"></h4>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-center" colspan="7">
+                                                <!-- Bar Chart -->
+                                                <!---------------------------------->
+                                                <div class="panel">
+                                                    <div class="panel-heading">
+                                                        <h3 class="panel-title">Bar Chart</h3>
+                                                    </div>
+                                                    <div class="panel-body">
+                                                        <div th:id="${'demo-morris-bar' + index.index}" style="height: 250px"></div>
+                                                    </div>
+                                                </div>
+                                                <!---------------------------------->
+                                            </td>
+                                        </tr>
+                                        <tr style="background: #FAFAFA;">
+                                            <th class="text-center col-sm-1">구분</th>
+                                            <th class="text-center col-sm-1">매우만족</th>
+                                            <th class="text-center col-sm-1">만족</th>
+                                            <th class="text-center col-sm-1">보통</th>
+                                            <th class="text-center col-sm-1">불만족</th>
+                                            <th class="text-center col-sm-1">매우불만족</th>
+                                            <th class="text-center col-sm-1">총계</th>
+                                        </tr>
+                                        <tr>
+                                            <td rowspan="2" style="vertical-align: middle">만족도</td>
+                                            <td th:text="${border.getEx1() + '%'}"></td>
+                                            <td th:text="${border.getEx2() + '%'}"></td>
+                                            <td th:text="${border.getEx3() + '%'}"></td>
+                                            <td th:text="${border.getEx4() + '%'}"></td>
+                                            <td th:text="${border.getEx5() + '%'}"></td>
+                                            <td th:text="${border.getTotal()}" rowspan="2" style="vertical-align: middle"></td>
+                                        </tr>
+                                        <tr>
+                                            <td th:text="${border.getEx6()}"></td>
+                                            <td th:text="${border.getEx7()}"></td>
+                                            <td th:text="${border.getEx8()}"></td>
+                                            <td th:text="${border.getEx9()}"></td>
+                                            <td th:text="${border.getEx10()}"></td>
+                                        </tr>
+                                    </th:block>
+                                </table>
+<!--                            </div>-->
+                        </div>
+                    </div><!--switch End -->
+
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div>
+    </div>
+</th:block>
+
+
+<th:block layout:fragment="custom_js">
+
+    <!--Morris.js [ OPTIONAL ]-->
+    <script th:src="@{/default/plugins/morris-js/morris.min.js}"></script>
+    <script th:src="@{/default/plugins/morris-js/raphael-js/raphael.min.js}"></script>
+
+
+    <script th:inline="javascript">
+        var row_cnt = [[${borders.size()}]];
+        var course_id = [[${courseId}]];
+
+        $( document ).ready(function() {
+
+            for(var i=0; i<row_cnt; i++ ) {
+
+
+                var question_id = $('#question-' + i).text();
+
+                // 거래처별 수주 현황
+                var json = (function () {
+                    var json2 = null;
+
+                    var allData = {"courseId": course_id, "questionId": question_id};
+
+                    $.ajax({
+                        'async': false,
+                        'global': false,
+                        'type': 'POST',
+                        'url': '/report/surveyChartData',
+                        'data': allData,
+                        'dataType': "json",
+                        'success': function (data) {
+                            json2 = data;
+                        }
+                    });
+                    return json2;
+                })
+                ();
+
+                // MORRIS BAR CHART
+                // =================================================================
+                // Require MorrisJS Chart
+                // -----------------------------------------------------------------
+                // http://morrisjs.github.io/morris.js/
+                // =================================================================
+                Morris.Bar({
+                    element: 'demo-morris-bar' + i,
+                    data: json,
+                    xkey: 'title',
+                    ykeys: ['ex2'],
+                    labels: ['만족도'],
+                    gridEnabled: true,
+                    gridLineColor: 'rgba(0,0,0,.1)',
+                    gridTextColor: '#8f9ea6',
+                    gridTextSize: '11px',
+                    barColors: ['#1abc9c'],
+                    resize: true,
+                    hideHover: 'auto'
+                });
+            }
+        });
+
+    </script>
+</th:block>
+
+</html>
+
+

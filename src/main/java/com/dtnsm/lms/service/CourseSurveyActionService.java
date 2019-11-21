@@ -18,7 +18,7 @@ public class CourseSurveyActionService {
     CourseSurveyQuestionRepository surveyQuestionRepository;
 
     @Autowired
-    CourseSurveyQuestionAnswerRepository surveyQuestionAnswerRepository;
+    CourseSurveyActionAnswerRepository surveyActionAnswerRepository;
 
      /*
         Survey
@@ -54,20 +54,20 @@ public class CourseSurveyActionService {
         Question Answer
      */
 
-    public CourseSurveyActionAnswer saveSurveyQuestionAnswer(CourseSurveyActionAnswer surveyAnswer){
-        return surveyQuestionAnswerRepository.save(surveyAnswer);
+    public CourseSurveyActionAnswer saveSurveyActionAnswer(CourseSurveyActionAnswer surveyAnswer){
+        return surveyActionAnswerRepository.save(surveyAnswer);
     }
 
-    public void deleteSurveyQuestionAnswer(CourseSurveyActionAnswer surveyAnswer) {
-        surveyQuestionAnswerRepository.delete(surveyAnswer);
+    public void deleteSurveyActionAnswer(CourseSurveyActionAnswer surveyAnswer) {
+        surveyActionAnswerRepository.delete(surveyAnswer);
     }
 
-    public void deleteSurveyQuestionAnswer(Long id) {
-        surveyQuestionAnswerRepository.delete(getCourseSurveyQuestionAnswerById(id));
+    public void deleteSurveyActionAnswer(Long id) {
+        surveyActionAnswerRepository.delete(getCourseSurveyActionAnswerById(id));
     }
 
-    public CourseSurveyActionAnswer getCourseSurveyQuestionAnswerById(Long id) {
-        return surveyQuestionAnswerRepository.findById(id).get();
+    public CourseSurveyActionAnswer getCourseSurveyActionAnswerById(Long id) {
+        return surveyActionAnswerRepository.findById(id).get();
     }
 
 }

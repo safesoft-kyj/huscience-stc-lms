@@ -193,6 +193,7 @@ public class ApprovalCourseProcessService {
                 courseQuizAction.setStatus(QuizStatusType.REQUEST);
                 courseQuizAction.setFromDate(fromDate);  // 개인별 교육기간 설정
                 courseQuizAction.setToDate(toDate);      // 개인별 교육기간 설정
+                courseQuizAction.setQuestionCount(courseQuiz.getQuizQuestions().size());
                 quizActionService.saveQuizAction(courseQuizAction);
             }
         }
@@ -207,6 +208,7 @@ public class ApprovalCourseProcessService {
                 courseSurveyAction.setStatus(SurveyStatusType.REQUEST);
                 courseSurveyAction.setFromDate(fromDate);  // 개인별 교육기간 설정
                 courseSurveyAction.setToDate(toDate);      // 개인별 교육기간 설정
+                courseSurveyAction.setQuestionCount(courseSurvey.getQuestions().size());
                 surveyActionService.saveSurveyAction(courseSurveyAction);
             }
         }

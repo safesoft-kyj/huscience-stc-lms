@@ -33,6 +33,10 @@ public class CourseQuizActionAnswer extends AuditorCreateEntity<String> {
     // 정답유무 (1:정답, 0:오답)
     private int answerCount = 0;
 
+//    // 시험을 여러번 친경우 최종 상태를 가진다 0:이전시험, 1:마지막 시험
+//    @ColumnDefault("'1'")
+//    private String isActive = "1";
+
     // Parent 필드 추가
     @ManyToOne
     @JoinColumn(name = "quiz_action_id")

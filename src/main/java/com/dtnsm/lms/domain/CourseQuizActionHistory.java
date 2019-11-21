@@ -3,6 +3,7 @@ package com.dtnsm.lms.domain;
 import com.dtnsm.lms.auth.AuditorCreateEntity;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -17,6 +18,9 @@ public class CourseQuizActionHistory extends AuditorCreateEntity<String> {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id")
     private long id;
+
+    @ColumnDefault("0")
+    private int runCount;
 
     @Column(name="start_date")
     private Date startDate;

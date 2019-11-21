@@ -47,7 +47,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label"></label>
                             <div class="checkbox">
-                                &nbsp;&nbsp;<input id="isNewEmpCourse" name="isNewEmpCourse" class="magic-checkbox" type="checkbox" value="1" th:checked="${#strings.equalsIgnoreCase(border.isNewEmpCourse, '1')}">
+                                &nbsp;<input id="isNewEmpCourse" name="isNewEmpCourse" class="magic-checkbox" type="checkbox" value="1" th:checked="${#strings.equalsIgnoreCase(course.getIsNewEmpCourse(), '1')}">
                                 <label for="isNewEmpCourse">신입사원 필수교육</label>
                             </div>
                         </div>
