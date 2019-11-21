@@ -48,9 +48,9 @@ public class JobDescriptionService {
         return repository.save(obj);
     }
 
-    public void delete(JobDescription obj) {
-        repository.delete(obj);
-    }
+//    public void delete(JobDescription obj) {
+//        repository.delete(obj);
+//    }
 
 
 
