@@ -57,8 +57,6 @@ public class JobDescriptionController {
 
     @GetMapping("/add")
     public String add(Model model) {
-
-
         pageInfo.setPageId("m-customer-add");
         pageInfo.setPageTitle(pageTitle + " Insert");
         model.addAttribute(pageInfo);
@@ -140,37 +138,37 @@ public class JobDescriptionController {
     }
 
 
-    @GetMapping("/edit/{id}")
-    public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        JobDescription obj = jobDescriptionService.getById(id);
-
-        pageInfo.setPageId("m-customer-edit");
-        pageInfo.setPageTitle(pageTitle + " Edit");
-        model.addAttribute(pageInfo);
-        model.addAttribute("jobDescription", obj);
-
-        return "admin/jd/edit";
-    }
-
-    @PostMapping("/edit-post/{id}")
-    public String updateCustomer(@PathVariable("id") Integer id, @Valid JobDescription jobDescription, BindingResult result) {
-        if(result.hasErrors()) {
-            jobDescription.setId(id);
-            return "admin/jd/edit";
-        }
-
-        jobDescriptionService.save(jobDescription);
-
-        return "redirect:/admin/jd/list";
-    }
-
-    @GetMapping("/delete/{id}")
-    public String deleteCustomer(@PathVariable("id") Integer id) {
-
-        JobDescription obj = jobDescriptionService.getById(id);
-
-        jobDescriptionService.delete(obj);
-
-        return "redirect:/admin/jd/list";
-    }
+//    @GetMapping("/edit/{id}")
+//    public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
+//        JobDescription obj = jobDescriptionService.getById(id);
+//
+//        pageInfo.setPageId("m-customer-edit");
+//        pageInfo.setPageTitle(pageTitle + " Edit");
+//        model.addAttribute(pageInfo);
+//        model.addAttribute("jobDescription", obj);
+//
+//        return "admin/jd/edit";
+//    }
+//
+//    @PostMapping("/edit-post/{id}")
+//    public String updateCustomer(@PathVariable("id") Integer id, @Valid JobDescription jobDescription, BindingResult result) {
+//        if(result.hasErrors()) {
+//            jobDescription.setId(id);
+//            return "admin/jd/edit";
+//        }
+//
+//        jobDescriptionService.save(jobDescription);
+//
+//        return "redirect:/admin/jd/list";
+//    }
+//
+//    @GetMapping("/delete/{id}")
+//    public String deleteCustomer(@PathVariable("id") Integer id) {
+//
+//        JobDescription obj = jobDescriptionService.getById(id);
+//
+//        jobDescriptionService.delete(obj);
+//
+//        return "redirect:/admin/jd/list";
+//    }
 }
