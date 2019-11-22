@@ -16,12 +16,12 @@ spring:
     servlet:
       content-type: text/html
   datasource:
-    url: jdbc:sqlserver://localhost:1433;DatabaseName=elearning
-    username: sa
-    password: Dtncro@123##
-#    url: jdbc:sqlserver://localhost:1433;DatabaseName=lms_test_20191118
+#    url: jdbc:sqlserver://localhost:1433;DatabaseName=elearning
 #    username: sa
-#    password: Test1234!
+#    password: Dtncro@123##
+    url: jdbc:sqlserver://localhost:1433;DatabaseName=lms_test_20191118
+    username: sa
+    password: Test1234!
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     initialization-mode: always
     data: classpath:/init-data/data.sql

@@ -77,6 +77,12 @@ public  class DateUtil {
         return stringDate;
     }
 
+    public static String getDateToString(Date date, String format) {
+        String stringDate = new SimpleDateFormat(format, Locale.ENGLISH).format(date);
+
+        return stringDate;
+    }
+
     public static Date getToday() {
         return getStringToDate(getTodayString());
     }

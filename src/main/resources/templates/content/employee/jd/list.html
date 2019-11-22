@@ -73,6 +73,9 @@
                                         <td th:text="${user.account.engName}" class="text-center"></td>
                                         <td class="text-center">
                                             <span th:if="${user.userJobDescription != null}" th:text="|${user.userJobDescription.jobDescriptionVersion.jobDescription.title} v${user.userJobDescription.jobDescriptionVersion.version_no}|">-</span>
+                                            <th:block th:if="${user.userJobDescription != null && (user.userJobDescription.status.name() eq 'APPROVED' or user.userJobDescription.status.name() eq 'REVOKED')}">
+                                                <a class="btn btn-purple btn-xs" th:href="@{/employees/jd/{id}/print(id=${user.userJobDescription.id})}"><i class="fa fa-file-pdf-o"></i> Job Description</a>
+                                            </th:block>
                                         </td>
                                         <td class="text-center">
                                             <span th:if="${user.userJobDescription != null &&  user.userJobDescription.assignDate != null}" th:text="${#dates.format(user.userJobDescription.assignDate, 'yyyy-MM-dd')}">-</span>
@@ -91,8 +94,9 @@
                                             <th:block th:if="${user.userJobDescription != null && user.userJobDescription.status.name() eq 'AGREE'}">
                                                 <button class="btn btn-info btn-sm" data-target="#approval-modal" th:attr="data-id=${user.userJobDescription.id}, data-assign-date=${#dates.format(user.userJobDescription.assignDate, 'dd-MMM-yyyy')}" data-toggle="modal">Approval</button>
                                             </th:block>
+
                                             <th:block th:if="${user.userJobDescription != null && user.userJobDescription.status.name() eq 'APPROVED'}">
-                                                <button class="btn btn-info btn-sm" data-target="#revoke-modal" th:attr="data-id=${user.userJobDescription.id}" data-toggle="modal">Revoke</button>
+                                                <button class="btn btn-warning btn-xs" data-target="#revoke-modal" th:attr="data-id=${user.userJobDescription.id}" data-toggle="modal">Revoke</button>
                                             </th:block>
                                         </td>
                                     </tr>

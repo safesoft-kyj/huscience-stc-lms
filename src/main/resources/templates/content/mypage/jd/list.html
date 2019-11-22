@@ -64,7 +64,7 @@
                                         <td class="text-center">
                                             <span th:text="|${user.jobDescriptionVersion.jobDescription.title} v${user.jobDescriptionVersion.version_no}|">-</span>
                                             <th:block th:if="${user.jobDescriptionVersion.jobDescriptionVersionFile != null}">
-                                                <button class="btn btn-link" type="button" th:attr="data-id=${user.jobDescriptionVersion.jobDescriptionVersionFile.id}"><i class="fa fa-file-pdf-o"></i></button>
+                                                <a class="btn btn-purple btn-xs" th:href="@{/employees/jd/{id}/print(id=${user.id})}"><i class="fa fa-file-pdf-o"></i> Job Description</a>
                                             </th:block>
                                         </td>
                                         <td th:text="${#dates.format(user.assignDate, 'yyyy-MM-dd')}" class="text-center"></td>
