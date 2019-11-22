@@ -190,6 +190,21 @@
 
     var tmp_int = 0;
 
+
+    $(document).ready(function () {
+
+        $('input[type="radio"]').change(function () {
+
+            radioEvent($(this).prop('name'), $(this).val());
+        });
+    });
+
+    // 윈도우 종료 이벤트 추가
+    $(window).bind("beforeunload", function (e) {
+
+        return;
+    });
+
     function form_submit() {
 
         var q_size = [[${surveyAction.getCourseSurvey().getQuestions().size()}]];
@@ -212,16 +227,18 @@
         });
 
 
-        if(q_size == (in_size + textarea_size)) {
-            $('#boardFrm').submit();
-            closeWindow();
-            alert('설문처리가 완료 되었습니다.');
-        } else {
+        if(q_size != (in_size + textarea_size)) {
             alert('설문항목중 미입력 항목이 있습니다.');
+
+            return;
         }
         // for(var i=1; i<=q_size; i++) {
         //     alert($('#ans' + i).val());
         // }
+
+        $('#boardFrm').submit();
+
+        return;
     }
 
     function radioEvent(name, val) {
@@ -230,51 +247,22 @@
         return false;
     }
 
-    $(document).ready(function () {
-
-        $('input[type="radio"]').change(function () {
-
-            radioEvent($(this).prop('name'), $(this).val());
-        });
-    });
-
-    // 윈도우 종료 이벤트 추가
-    $(window).bind("beforeunload", function (e) {
-
-        // alert('윈도우가 종료됩니다.')
-        opener.location.reload();
-
-        return;
-    });
-
-    // // 윈도우 종료 이벤트 추가
-    // $(window).bind("beforeunload", function (e) {
-    //
-    //     // 학습을 전체시간만큼 보지 않고 종료시 에만 데이터를 업데이트 한다.
-    //     if(update_flag == '0') saveSectionSecond();
-    //     else clearInterval(tid);
-    //
-    //     opener.location.reload();
-    //
-    //     return;
-    // });
-
 
     function closeWindow() {
         this.close();
     }
 
-    // 새로고침 방지
-    function doNotReload(){
-        //ctrl+N , ctrl+R, function F5
-        if( (event.ctrlKey == true && (event.keyCode == 78 || event.keyCode == 82)) || (event.keyCode == 116))
-        {
-            event.keyCode = 0;
-            event.cancelBubble = true;
-            event.returnValue = false;
-        }
-    }
-    document.onkeydown = doNotReload;
+    // // 새로고침 방지
+    // function doNotReload(){
+    //     //ctrl+N , ctrl+R, function F5
+    //     if( (event.ctrlKey == true && (event.keyCode == 78 || event.keyCode == 82)) || (event.keyCode == 116))
+    //     {
+    //         event.keyCode = 0;
+    //         event.cancelBubble = true;
+    //         event.returnValue = false;
+    //     }
+    // }
+    // document.onkeydown = doNotReload;
 
 </SCRIPT>
 </body>

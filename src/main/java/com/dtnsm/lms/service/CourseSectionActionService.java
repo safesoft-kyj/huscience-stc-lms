@@ -1,10 +1,6 @@
 package com.dtnsm.lms.service;
 
-import com.dtnsm.lms.domain.CourseQuizAction;
-import com.dtnsm.lms.domain.CourseQuizActionAnswer;
 import com.dtnsm.lms.domain.CourseSectionAction;
-import com.dtnsm.lms.repository.CourseQuizQuestionAnswerRepository;
-import com.dtnsm.lms.repository.CourseQuizQuestionRepository;
 import com.dtnsm.lms.repository.CourseSectionActionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

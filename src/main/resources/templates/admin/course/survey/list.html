@@ -62,7 +62,7 @@
                                         <th class="text-center" th:text="#{label.no}">번호</th>
                                         <th class="text-center" th:text="#{label.subject}">제목</th>
                                         <th class="text-center col-sm-2" th:text="#{label.createdate}">등록일</th>
-                                        <th class="text-center col-sm-2" th:text="#{label.view}">View</th>
+                                        <th class="text-center col-sm-4" th:text="#{label.view}">View</th>
                                         <th class="text-center col-sm-2" th:text="#{label.actions}">Edit</th>
                                     </tr>
                                     </thead>
@@ -72,7 +72,8 @@
                                         <td th:text="${border.getName()}"></a></td>
                                         <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy-MMM-dd')} : ${border.getCreatedDate()}" class="text-center"></td>
                                         <td class="text-center">
-                                            <a th:href="@{/admin/course/survey/view/{id}(id=${border.getId()})}"><span class="badge badge-mint" th:text="#{label.view}"></span></a>
+                                            <a th:href="@{/admin/course/survey/view/{id}(id=${border.getId()})}"><span class="badge badge-mint" th:text="#{label.title.quiz}"></span></a>
+                                            <a th:href="@{/admin/course/survey/report/{id}(id=${border.getId()})}"><span class="badge badge-info" th:text="#{label.title.report}"></span></a>
                                             <!--                                            <a class="label label-warning" th:href="@{/admin/course/section/add/{id}(id=${border.getId()})}" th:text="#{label.course.add}">강의등록</a>-->
                                         </td>
                                         <td class="text-center">

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dtnsm.lms.mybatis.mapper.ReportMapper">
+
+    <select id="selectSurveyReport" parameterType="Long" resultType="com.dtnsm.lms.mybatis.dto.ReportForm1">
+        select a.id as id
+            , a.question as title
+            , convert(int, b.ex1) as ex1
+            , convert(int, b.ex2) as ex2
+            , convert(int, b.ex3) as ex3
+            , convert(int, b.ex4) as ex4
+            , convert(int, b.ex5) as ex5
+            , b.ex6, b.ex7, b.ex8, b.ex9, b.ex10
+            , b.total
+        from (
+            select y.id, y.question
+            from el_course_survey x
+                inner join el_course_survey_question y
+                    on x.id = y.course_survey_id
+            where x.course_id = #{courseId}
+        ) a
+            inner join (
+                    select question_id
+                        , count(*) as total
+                        , round((sum(case when user_answer = '5' then 1.0 else 0 end) / count(*) * 100),0) ex1
+                        , round((sum(case when user_answer = '4' then 1.0 else 0 end) / count(*) * 100),0) ex2
+                        , round((sum(case when user_answer = '3' then 1.0 else 0 end) / count(*) * 100),0) ex3
+                        , round((sum(case when user_answer = '2' then 1.0 else 0 end) / count(*) * 100),0) ex4
+                        , round((sum(case when user_answer = '1' then 1.0 else 0 end) / count(*) * 100),0) ex5
+                        , sum(case when user_answer = '5' then 1 else 0 end) as ex6
+                        , sum(case when user_answer = '4' then 1 else 0 end) as ex7
+                        , sum(case when user_answer = '3' then 1 else 0 end) as ex8
+                        , sum(case when user_answer = '2' then 1 else 0 end) as ex9
+                        , sum(case when user_answer = '1' then 1 else 0 end) as ex10
+                    from el_course_account a
+                        inner join el_course_survey_action b
+                            on a.id = b.doc_id
+                        inner join el_course_survey_action_answer c
+                            on b.id = c.survey_action_id
+                    where a.course_id = #{courseId}
+                    and c.survey_gubun = 'M'
+                    group by question_id
+                ) b
+                on a.id = b.question_id
+    </select>
+
+    <select id="selectSurveyChart" parameterType="Long" resultType="com.dtnsm.lms.mybatis.dto.ReportForm2">
+        select a.title, a.ex1, convert(int, isnull(round(convert(decimal, count(b.user_answer))  / max(TOTALCOUNT) * 100, 0),0)) as ex2
+        from (  select 5 as ex1, '매우만족' as title union all
+                 select 4, '만족' union all
+                 select 3, '보통' union all
+                 select 2, '불만족' union all
+                 select 1, '매우불만족') a
+        left outer join (
+                select user_answer, count(*) over() as totalcount
+                from el_course_account a
+                    inner join el_course_survey_action b
+                    on a.id = b.doc_id
+                    inner join el_course_survey_action_answer c
+                    on b.id = c.survey_action_id
+                where a.course_id = #{courseId}
+                and c.survey_gubun = 'M'
+                and question_id = #{questionId}
+        ) b on a.ex1 = b.user_answer
+        group by a.ex1, a.title
+    </select>
+
+</mapper>

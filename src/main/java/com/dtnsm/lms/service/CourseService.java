@@ -29,47 +29,48 @@ public class CourseService {
     @Autowired
     CodeService codeService;
 
-    private Course updateStatus(Course course) {
-        Date requestFromDate = DateUtil.getStringToDate(course.getRequestFromDate());
-        Date requestToDate = DateUtil.getStringToDate(course.getRequestToDate());
-        Date fromDate = DateUtil.getStringToDate(course.getFromDate());
-        Date toDate = DateUtil.getStringToDate(course.getToDate());
-        Date toDay = DateUtil.getToday();
-
-
-        int todayReqFromCompare = toDay.compareTo(requestFromDate);  // 1 : 현재일이 크다, -1 : 요청시작일이 크다
-        int todayReqToCompare = toDay.compareTo(requestToDate);      // 1 : 현재일이 크다ㅣ
-        int todayFromCompare = toDay.compareTo(fromDate);
-        int todayToCompare = toDay.compareTo(toDate);
-
-        int status = 0;
-
-        if(todayReqFromCompare < 0)
-            status = 1; // 신청기간이전 : 신청대기
-        else if (todayReqFromCompare >= 0 && todayReqToCompare <= 0) {
-            status = 2; // 요청기간중 : 교육신청
-        } else if(todayReqToCompare > 0 && todayFromCompare<0) {
-            status = 3; // 신청이후 교육 대기 : 교육대기
-        } else if (todayFromCompare >= 0 && todayToCompare <= 0) {
-            status = 4; // 교육기간중 : 교육중
-        } else if(todayToCompare > 0){
-            status = 5; // 교육종료
-        }
-
-        // 요청시작일자 이전이면 신청대기
-        // 요청일자 사이이면 교육신청
-        // 요청종료일 이후 이면서 교육시작일자 이전이면 교육대기
-        // 교육일자 사이이면 교육중
-        // 교육일자 이후이면 교육종료
-
-        if (course.getStatus() != status) {
-
-            course.setStatus(status);
-            course = courseService.save(course);
-        }
-
-        return course;
-    }
+    // 과정 상태 변경은 크론에서 한다. /component/CourseScheduler
+//    private Course updateStatus(Course course) {
+//        Date requestFromDate = DateUtil.getStringToDate(course.getRequestFromDate());
+//        Date requestToDate = DateUtil.getStringToDate(course.getRequestToDate());
+//        Date fromDate = DateUtil.getStringToDate(course.getFromDate());
+//        Date toDate = DateUtil.getStringToDate(course.getToDate());
+//        Date toDay = DateUtil.getToday();
+//
+//
+//        int todayReqFromCompare = toDay.compareTo(requestFromDate);  // 1 : 현재일이 크다, -1 : 요청시작일이 크다
+//        int todayReqToCompare = toDay.compareTo(requestToDate);      // 1 : 현재일이 크다ㅣ
+//        int todayFromCompare = toDay.compareTo(fromDate);
+//        int todayToCompare = toDay.compareTo(toDate);
+//
+//        int status = 0;
+//
+//        if(todayReqFromCompare < 0)
+//            status = 1; // 신청기간이전 : 신청대기
+//        else if (todayReqFromCompare >= 0 && todayReqToCompare <= 0) {
+//            status = 2; // 요청기간중 : 교육신청
+//        } else if(todayReqToCompare > 0 && todayFromCompare<0) {
+//            status = 3; // 신청이후 교육 대기 : 교육대기
+//        } else if (todayFromCompare >= 0 && todayToCompare <= 0) {
+//            status = 4; // 교육기간중 : 교육중
+//        } else if(todayToCompare > 0){
+//            status = 5; // 교육종료
+//        }
+//
+//        // 요청시작일자 이전이면 신청대기
+//        // 요청일자 사이이면 교육신청
+//        // 요청종료일 이후 이면서 교육시작일자 이전이면 교육대기
+//        // 교육일자 사이이면 교육중
+//        // 교육일자 이후이면 교육종료
+//
+//        if (course.getStatus() != status) {
+//
+//            course.setStatus(status);
+//            course = courseService.save(course);
+//        }
+//
+//        return course;
+//    }
 
     public CourseService(CourseRepository elcCourseRepository) {
         this.courseRepository = elcCourseRepository;
@@ -85,10 +86,10 @@ public class CourseService {
         pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
 
         Page<Course> courses = courseRepository.findAllByActiveGreaterThan(active, pageable);
-
-        for(Course course: courses ) {
-            updateStatus(course);
-        }
+//
+//        for(Course course: courses ) {
+//            updateStatus(course);
+//        }
 
         return courses;
     }
@@ -100,9 +101,9 @@ public class CourseService {
 
         Page<Course> courses = courseRepository.findAllByCourseMaster_IdAndActiveGreaterThan(typeId, active, pageable);
 
-        for(Course course: courses ) {
-            updateStatus(course);
-        }
+//        for(Course course: courses ) {
+//            updateStatus(course);
+//        }
 
         return courses;
     }
@@ -114,9 +115,9 @@ public class CourseService {
 
         Page<Course> courses = courseRepository.findAllByCourseMaster_IdAndTitleLikeAndActiveGreaterThan(typeId, '%' + title + '%', active, pageable);
 
-        for(Course course: courses ) {
-            updateStatus(course);
-        }
+//        for(Course course: courses ) {
+//            updateStatus(course);
+//        }
 
         return courses;
     }
@@ -128,9 +129,9 @@ public class CourseService {
 
         Page<Course> courses = courseRepository.findAllByTitleLikeAndActiveGreaterThan('%' + title + '%', active, pageable);
 
-        for(Course course: courses ) {
-            updateStatus(course);
-        }
+//        for(Course course: courses ) {
+//            updateStatus(course);
+//        }
 
         return courses;
     }

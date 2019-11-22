@@ -75,7 +75,7 @@
                                     </td>
                                     <td class="text-center" >
                                         <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'REQUEST')}">
-                                            <span th:text="${sectionAction.getStatus()}" class="label label-info"></span>
+                                            <span th:text="${sectionAction.getStatus()}" class="label label-mint"></span>
                                         </th:block>
                                         <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'ONGOING')}">
                                             <span th:text="${sectionAction.getStatus()}" class="label label-danger"></span>
@@ -96,7 +96,7 @@
 
                                         <th:block th:unless="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE') or #strings.isEmpty(sectionAction.getStatus())}">
                                             <th:block th:inline="text" th:each="sectionFile : ${sectionAction.getCourseSection().getSectionFiles()}">
-                                                <a href="#" class="label label-table label-success" id="popupBtn"
+                                                <a href="#" class="label label-table label-info" id="popupBtn"
                                                    th:onclick="|javascript:popupPdfView('${sectionFile.getId()}', '${sectionAction.getId()}');return false;|" target="_blank" th:text="#{label.course.section.request}">학습하기</a>
                                             </th:block>
                                         </th:block>
@@ -128,10 +128,10 @@
                                     </td>
                                     <td class="text-center">
                                         <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'REQUEST')}">
-                                            <span th:text="${quizAction.getStatus()}" class="label label-info"></span>
+                                            <span th:text="${quizAction.getStatus()}" class="label label-mint"></span>
                                         </th:block>
                                         <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'ONGOING')}">
-                                            <span th:text="${quizAction.getStatus()}" class="label label-info"></span>
+                                            <span th:text="${quizAction.getStatus()}" class="label label-danger"></span>
                                         </th:block>
                                         <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'FAIL')}">
                                             <span th:text="${quizAction.getStatus()}" class="label label-danger"></span>
@@ -152,11 +152,9 @@
                                             <span class="label label-table label-success" th:text="#{label.course.quiz.commit}">시험완료</span>
                                         </th:block>
                                         <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'ONGOING')}">
-                                            <a href="#" class="label label-table label-success" id="popupQuiz2"
+                                            <a href="#" class="label label-table label-info" id="popupQuiz2"
                                                th:onclick="|javascript:popupQuizView('${quizAction.getId()}', 'N');return false;|" target="_blank" th:text="#{label.course.quiz.request}">시험응시</a>
                                         </th:block>
-                                        <a href="#" class="label label-table label-success" id="popupQuiz2"
-                                           th:onclick="|javascript:popupQuizView('${quizAction.getId()}', 'N');return false;|" target="_blank" th:text="#{label.course.quiz.request}">시험응시</a>
                                     </td>
                                 </tr>
                                 </th:block>
@@ -171,7 +169,7 @@
                                     <td class="text-center"></td>
                                     <td class="text-center">
                                         <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'REQUEST')}">
-                                            <span th:text="${surveyAction.getStatus()}" class="label label-info"></span>
+                                            <span th:text="${surveyAction.getStatus()}" class="label label-mint"></span>
                                         </th:block>
                                         <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'COMPLETE')}">
                                             <span th:text="${surveyAction.getStatus()}" class="label label-success"></span>
@@ -182,17 +180,15 @@
                                     </td>
                                     <td class="text-center">
                                         <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'REQUEST')}">
-                                            <span class="label label-table label-info" th:text="#{label.course.survey.request}">미진행</span>
+                                            <span class="label label-table label-warning" th:text="#{label.course.survey.request}">미진행</span>
                                         </th:block>
                                         <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'COMPLETE')}">
                                             <span class="label label-table label-success" th:text="#{label.course.survey.commit}">설문완료</span>
                                         </th:block>
                                         <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'ONGOING')}">
-                                            <a href="#" class="label label-table label-danger" id="popupSurvey2"
+                                            <a href="#" class="label label-table label-info" id="popupSurvey2"
                                                th:onclick="|javascript:popupSurveyView('${surveyAction.getId()}');return false;|" target="_blank" th:text="#{label.course.survey.request}">참여</a>
                                         </th:block>
-                                        <a href="#" class="label label-table label-danger" id="popupSurvey2"
-                                           th:onclick="|javascript:popupSurveyView('${surveyAction.getId()}');return false;|" target="_blank" th:text="#{label.course.survey.request}">참여</a>
                                     </td>
                                 </tr>
                                 </th:block>

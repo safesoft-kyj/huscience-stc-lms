@@ -2,9 +2,8 @@ package com.dtnsm.lms.service;
 
 import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.repository.CourseQuizActionRepository;
-import com.dtnsm.lms.repository.CourseQuizQuestionAnswerRepository;
+import com.dtnsm.lms.repository.CourseQuizActionAnswerRepository;
 import com.dtnsm.lms.repository.CourseQuizQuestionRepository;
-import com.dtnsm.lms.repository.CourseQuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,7 @@ public class CourseQuizActionService {
     CourseQuizQuestionRepository questionRepository;
 
     @Autowired
-    CourseQuizQuestionAnswerRepository questionAnswerRepository;
+    CourseQuizActionAnswerRepository questionAnswerRepository;
 
      /*
         Quiz
@@ -41,6 +40,10 @@ public class CourseQuizActionService {
 
     public CourseQuizAction getCourseQuizActionById(Long id) {
         return quizActionRepository.findById(id).get();
+    }
+
+    public CourseQuizAction getByCourseAccountIdAndIsActive(Long id, String isActive) {
+        return quizActionRepository.findByCourseAccount_idAndIsActive(id, isActive);
     }
 
     public List<CourseQuizAction> getAllByUserId(String userId) {

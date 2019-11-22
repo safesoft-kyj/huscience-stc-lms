@@ -11,4 +11,6 @@ public interface CourseQuizActionRepository extends JpaRepository<CourseQuizActi
 
     CourseQuizAction findTop1ByAccount_UserIdOrderByCreatedDateDesc(String userId);
 
+    CourseQuizAction findByCourseAccount_idAndIsActive(long docId, String isActive);
+
 }
