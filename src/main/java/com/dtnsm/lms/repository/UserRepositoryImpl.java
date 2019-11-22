@@ -1,6 +1,7 @@
 package com.dtnsm.lms.repository;
 
 import com.dtnsm.common.entity.QUserJobDescription;
+import com.dtnsm.common.entity.constant.JobDescriptionStatus;
 import com.dtnsm.lms.domain.Account;
 import com.dtnsm.lms.domain.QAccount;
 import com.dtnsm.lms.domain.UserJobDescriptionDTO;
@@ -11,6 +12,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.ObjectUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +48,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         )
         .from(qAccount).join(qUserJobDescription)
         .on(qAccount.userId.eq(qUserJobDescription.username))
-        .where(qAccount.parentUserId.eq(userId))
+        .where(qAccount.parentUserId.eq(userId).and(qUserJobDescription.status.ne(JobDescriptionStatus.SUPERSEDED)))
         .orderBy(qAccount.engName.asc())
         .fetch();
     }

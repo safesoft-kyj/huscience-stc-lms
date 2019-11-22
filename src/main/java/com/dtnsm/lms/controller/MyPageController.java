@@ -577,6 +577,7 @@ public class MyPageController {
         QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qUserJobDescription.username.eq(SessionUtil.getUserId()));
+        builder.and(qUserJobDescription.status.ne(JobDescriptionStatus.SUPERSEDED));
         Iterable<UserJobDescription> userJobDescriptions = userJobDescriptionRepository.findAll(builder, qUserJobDescription.createdDate.desc());
 
         model.addAttribute(pageInfo);

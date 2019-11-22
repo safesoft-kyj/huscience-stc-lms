@@ -96,6 +96,7 @@ public class JobDescriptionController {
                     rowIndex++;
                 }
 
+                //TODO 이전 버전이 존재 하는 경우 SUPERSEDED 상태로 변경 한다.
                 if (!StringUtils.isEmpty(versionNo) && !StringUtils.isEmpty(releaseDate)) {
                     Optional<JobDescription> optionalJobDescription = jobDescriptionService.findByShortName(shortName);
                     JobDescription jobDescription = optionalJobDescription.isPresent() ? optionalJobDescription.get() : new JobDescription();

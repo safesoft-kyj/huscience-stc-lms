@@ -1,9 +1,6 @@
 package com.dtnsm.lms.controller;
 
-import com.dtnsm.common.entity.JobDescriptionVersion;
-import com.dtnsm.common.entity.JobDescriptionVersionFile;
-import com.dtnsm.common.entity.Signature;
-import com.dtnsm.common.entity.UserJobDescription;
+import com.dtnsm.common.entity.*;
 import com.dtnsm.common.entity.constant.JobDescriptionStatus;
 import com.dtnsm.common.repository.JobDescriptionVersionRepository;
 import com.dtnsm.common.repository.SignatureRepository;
@@ -18,6 +15,7 @@ import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 import com.dtnsm.lms.xdocreport.JobDescriptionReportService;
 import com.dtnsm.lms.xdocreport.dto.JobDescriptionSign;
+import com.querydsl.core.BooleanBuilder;
 import fr.opensagres.xdocreport.document.images.ByteArrayImageProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -106,12 +104,32 @@ public class EmployeeController {
             userJobDescription.setApprovedSign(optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "");
             userJobDescription.setManagerName(SessionUtil.getUserDetail().getUser().getEngName());
             userJobDescription.setManagerTitle(SessionUtil.getUserDetail().getUser().getComPosition());//TODO Job Title 확인 필요
+
+            /**
+             *  같은 JD의 이전 버전을 Superseded 상태로 변경한다.
+             */
+            superseded(userJobDescription.getUsername(), userJobDescription.getJobDescriptionVersion().getJobDescription().getId());
+
             userJobDescriptionRepository.save(userJobDescription);
 
             //TODO Job Description (승인 알림)
         }
 
         return "redirect:/employees/jd";
+    }
+
+    private void superseded(String username, Integer jobDescriptionId) {
+        QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qUserJobDescription.username.eq(username));
+        builder.and(qUserJobDescription.jobDescriptionVersion.jobDescription.id.eq(jobDescriptionId));
+        Optional<UserJobDescription> optionalUserJobDescription = userJobDescriptionRepository.findOne(builder);
+        if(optionalUserJobDescription.isPresent()) {
+            UserJobDescription userJobDescription = optionalUserJobDescription.get();
+            userJobDescription.setStatus(JobDescriptionStatus.SUPERSEDED);
+
+            userJobDescriptionRepository.save(userJobDescription);
+        }
     }
 
     @GetMapping("/employees/jd/{id}/print")
@@ -136,4 +154,6 @@ public class EmployeeController {
         response.setContentType("application/pdf");
         jobDescriptionReportService.generateReport(jobDescriptionSign, resource.getInputStream(), response);
     }
+
+
 }
