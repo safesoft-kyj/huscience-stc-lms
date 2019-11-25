@@ -10,15 +10,18 @@ import com.dtnsm.lms.auth.CustomUserDetails;
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.CourseStepStatus;
+import com.dtnsm.lms.domain.constant.CurriculumVitaeStatus;
 import com.dtnsm.lms.domain.constant.QuizStatusType;
 import com.dtnsm.lms.domain.constant.SurveyStatusType;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
+import com.dtnsm.lms.repository.CurriculumVitaeRepository;
 import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
+import com.dtnsm.lms.validator.CurriculumVitaeValidator;
 import com.querydsl.core.BooleanBuilder;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +31,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.util.WebUtils;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
@@ -39,51 +48,42 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/mypage")
+@SessionAttributes({"pageInfo", "draftCV"})
 public class MyPageController {
-
     @Autowired
     CourseService courseService;
-
     @Autowired
     CourseAccountService courseAccountService;
-
     @Autowired
     CourseSectionService courseSectionService;
-
     @Autowired
     CourseSectionActionService courseSectionActionService;
-
-
     @Autowired
     CourseQuizService courseQuizService;
-
     @Autowired
     CourseQuizActionService courseQuizActionService;
-
-
     @Autowired
     CourseSurveyService courseSurveyService;
-
     @Autowired
     CourseSurveyActionService courseSurveyActionService;
-
     @Autowired
     CourseQuizActionAnswerService courseQuizActionAnswerService;
-
     @Autowired
     UserServiceImpl userService;
-
     @Autowired
     UserRepository userRepository;
-
     @Autowired
     UserMapperService userMapperService;
-
     @Autowired
     private CourseSectionFileService courseSectionFileService;
-
     @Autowired
     private UserJobDescriptionRepository userJobDescriptionRepository;
+    @Autowired
+    private CurriculumVitaeRepository curriculumVitaeRepository;
+    @Autowired
+    private CurriculumVitaeValidator curriculumVitaeValidator;
+    @Autowired
+    private CurriculumVitaeService curriculumVitaeService;
 
     @Autowired
     private SignatureRepository signatureRepository;
@@ -560,13 +560,117 @@ public class MyPageController {
                 .body(resource);
     }
 
-    @GetMapping("/cv")
-    public String cv(Model model) {
+    @GetMapping({"/cv", "/cv/{status}"})
+    public String cv(@PathVariable(value = "status", required = false) String status, Model model) {
         pageInfo.setPageId("m-mypage-cv");
         pageInfo.setPageTitle("Curriculum Vitae");
 
         model.addAttribute(pageInfo);
-        return "content/mypage/cv";
+
+        String userId = SessionUtil.getUserId();
+
+        if(StringUtils.isEmpty(status)) {
+            Optional<CurriculumVitae> optionalDraftCurriculumVitae = getCV(userId, CurriculumVitaeStatus.DRAFT);
+            if (optionalDraftCurriculumVitae.isPresent()) {
+                //작성중인 CV가 존재함.
+                model.addAttribute("draftCV", optionalDraftCurriculumVitae.get());
+            } else {
+                Optional<CurriculumVitae> optionalCurrentCurriculumVitae = getCV(userId, CurriculumVitaeStatus.CURRENT);
+                if(optionalCurrentCurriculumVitae.isPresent()) {
+                    model.addAttribute("currentCV", optionalCurrentCurriculumVitae.get());
+                }
+            }
+        } else {
+            CurriculumVitaeStatus curriculumVitaeStatus = CurriculumVitaeStatus.valueOf(status.toUpperCase());
+            Optional<CurriculumVitae> optionalCurriculumVitae = getCV(userId, curriculumVitaeStatus);
+            if(curriculumVitaeStatus == CurriculumVitaeStatus.DRAFT) {
+                CurriculumVitae cv;
+                if(optionalCurriculumVitae.isPresent()) {
+                    cv = optionalCurriculumVitae.get();
+                } else {
+                    cv = new CurriculumVitae();
+                    cv.getEducations().add(new CVEducation());
+                    cv.getCareerHistories().add(new CVCareerHistory());
+                }
+                model.addAttribute("draftCV", cv);
+            }
+        }
+
+        return "content/mypage/cv/list";
+    }
+
+    @PostMapping({"/cv", "/cv/{status}"})
+    public String cv(@ModelAttribute("draftCV") CurriculumVitae draftCV, BindingResult result, SessionStatus status, HttpServletRequest request) throws Exception {
+        boolean isAdd = WebUtils.hasSubmitParameter(request, "add");
+        boolean isRemove = WebUtils.hasSubmitParameter(request, "remove");
+        if(isAdd) {
+            String target = ServletRequestUtils.getStringParameter(request,"add");
+
+            switch (target) {
+                case "education":
+                    draftCV.getEducations().add(new CVEducation());
+                    break;
+                case "careerHistory":
+                    draftCV.getCareerHistories().add(new CVCareerHistory());
+                    break;
+            }
+
+            return "content/mypage/cv/list";
+        } else if(isRemove) {
+            String target = ServletRequestUtils.getStringParameter(request,"remove");
+            String[] s = target.split(":");
+            switch(s[0]) {
+                case "education":
+                    draftCV.getEducations().remove(Integer.parseInt(s[1]));
+                    break;
+                case "careerHistory":
+                    draftCV.getCareerHistories().remove(Integer.parseInt(s[1]));
+                    break;
+            }
+
+            return "content/mypage/cv/list";
+        }
+
+        boolean isDraft = WebUtils.hasSubmitParameter(request, "_draft");
+
+
+
+        curriculumVitaeValidator.validate(draftCV, result);
+        if(result.hasErrors()) {
+            return "content/mypage/cv/list";
+        }
+
+        draftCV.setStatus(isDraft ? CurriculumVitaeStatus.DRAFT : CurriculumVitaeStatus.CURRENT);
+        draftCV.setAccount(SessionUtil.getUserDetail().getUser());
+        if(ObjectUtils.isEmpty(draftCV.getId())) {
+            draftCV.setInitial(countCV(SessionUtil.getUserId()) == 0 ? true : false);
+        }
+
+        if(!isDraft) {
+            Optional<Signature> optionalSignature = signatureRepository.findById(SessionUtil.getUserId());
+            draftCV.setBase64sign(optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "");
+            draftCV.setSignDate(new Date());
+        }
+
+        curriculumVitaeService.save(draftCV);
+
+        status.setComplete();
+        return "redirect:/mypage/cv";
+    }
+
+    protected Optional<CurriculumVitae> getCV(String userId, CurriculumVitaeStatus status) {
+        QCurriculumVitae qCurriculumVitae = QCurriculumVitae.curriculumVitae;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qCurriculumVitae.account.userId.eq(userId));
+        builder.and(qCurriculumVitae.status.eq(status));
+        return curriculumVitaeRepository.findOne(builder);
+    }
+
+    protected long countCV(String userId) {
+        QCurriculumVitae qCurriculumVitae = QCurriculumVitae.curriculumVitae;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qCurriculumVitae.account.userId.eq(userId));
+        return curriculumVitaeRepository.count(builder);
     }
 
     @GetMapping("/jd")

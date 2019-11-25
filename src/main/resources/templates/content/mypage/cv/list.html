@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/mypage/cv}" th:object="${draftCV}" method="post">
+                <div class="panel">
+                    <div class="panel-body">
+
+                        <!-- EDUCATION -->
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">EDUCATION</h3>
+                            </div>
+                            <div class="panel-body">
+                                <!--===================================================-->
+                                <!--End Horizontal Form-->
+                                <div th:each="edu, stat : *{educations}">
+                                    <h5>
+                                       <span th:text="|No. ${stat.index + 1}|"></span>
+                                        <div class="pull-right" th:if="${stat.size gt 1}">
+                                            <button class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|education:${stat.index}|"><i class="fa fa-trash-o"></i></button>
+                                        </div>
+                                    </h5>
+
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                        <tr>
+                                            <td class="col-xs-2 text-bold bg-gray-light">Period</td>
+                                            <td class="col-xs-10" colspan="2">
+
+                                                <div class="row">
+                                                    <div class="col-xs-8">
+                                                        <div class="input-daterange input-group" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].startDate') or #fields.hasErrors('educations[__${stat.index}__].endDate')} ? 'has-error' : ''">
+                                                            <input class="form-control" type="text" th:field="*{educations[__${stat.index}__].startDate}"/>
+                                                            <span class="input-group-addon">~</span>
+                                                            <input type="text" class="form-control" th:field="*{educations[__${stat.index}__].endDate}" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-4">
+
+                                                        <div class="checkbox" th:if="${stat.last}">
+                                                            <label><input type="checkbox" th:field="*{educations[__${stat.index}__].present}"> Present</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-xs-2 text-bold bg-gray-light">Institute</td>
+                                            <td class="col-xs-6 form-group" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].nameOfUniversity')} ? 'has-error' : ''">
+                                                <input type="text" placeholder="Name of University" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].nameOfUniversity}">
+                                            </td>
+                                            <td class="col-xs-4 form-group" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].cityCountry')} ? 'has-error' : ''"><input type="text" placeholder="City, Country" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].cityCountry}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-bold bg-gray-light">Degree</td>
+                                            <td colspan="2" class="form-group" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].degree')} ? 'has-error' : ''"><input type="text" placeholder="Degree description, concentration listing" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].degree}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-bold bg-gray-light">Thesis Title<br/>(if applicable)</td>
+                                            <td colspan="2">
+                                                <div class="row">
+                                                    <div class="col-xs-6">
+                                                        <input type="text" placeholder="Thesis Title" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].thesisTitle}">
+                                                    </div>
+                                                    <div class="col-xs-6">
+                                                        <input type="text" placeholder="Name of Supervisor" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].nameOfSupervisor}">
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 text-right">
+                                        <button class="btn btn-info" name="add" value="education">
+                                            <i class="fa fa-plus"></i> Education
+                                        </button>
+                                    </div>
+                                </div>
+                            </div><!--panel-body End -->
+
+                        </div><!-- panel End -->
+
+
+                        <!-- Career History -->
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">CAREER HISTORY</h3>
+                            </div>
+                            <div class="panel-body">
+                                <!--===================================================-->
+                                <!--End Horizontal Form-->
+                                <div th:each="edu, stat : *{careerHistories}">
+                                    <h5>
+                                        <span th:text="|No. ${stat.index + 1}|"></span>
+                                        <div class="pull-right" th:if="${stat.size gt 1}">
+                                            <button class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|careerHistory:${stat.index}|"><i class="fa fa-trash-o"></i></button>
+                                        </div>
+                                    </h5>
+
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                        <tr>
+                                            <td class="col-xs-2 text-bold bg-gray-light">Company Name</td>
+                                            <td class="col-xs-6 form-group" th:classappend="${#fields.hasErrors('careerHistories[__${stat.index}__].companyName')} ? 'has-error' : ''">
+                                                <input type="text" placeholder="Company Name" class="form-control col-sm-10" th:field="*{careerHistories[__${stat.index}__].companyName}"></td>
+                                            <td class="col-xs-4 form-group" th:classappend="${#fields.hasErrors('careerHistories[__${stat.index}__].cityCountry')} ? 'has-error' : ''">
+                                                <input type="text" placeholder="City, Country" class="form-control col-sm-10" th:field="*{careerHistories[__${stat.index}__].cityCountry}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-xs-2 text-bold bg-gray-light">Period</td>
+                                            <td class="col-xs-10" colspan="2">
+
+                                                <div class="row">
+                                                    <div class="col-xs-8">
+
+                                                        <div class="input-daterange input-group" th:classappend="${#fields.hasErrors('careerHistories[__${stat.index}__].startDate') or #fields.hasErrors('careerHistories[__${stat.index}__].endDate')} ? 'has-error' : ''">
+                                                            <input class="form-control" type="text" th:field="*{careerHistories[__${stat.index}__].startDate}"/>
+                                                            <span class="input-group-addon">~</span>
+                                                            <input type="text" class="form-control" th:field="*{careerHistories[__${stat.index}__].endDate}" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-4">
+
+                                                        <div class="checkbox" th:if="${stat.last}">
+                                                            <label><input type="checkbox" th:field="*{careerHistories[__${stat.index}__].present}"> Present</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="text-bold bg-gray-light">Position</td>
+                                            <td colspan="2" class="form-group" th:classappend="${#fields.hasErrors('careerHistories[__${stat.index}__].position')} ? 'has-error' : ''">
+                                                <input type="text" placeholder="Position" class="form-control col-sm-10" th:field="*{careerHistories[__${stat.index}__].position}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-bold bg-gray-light">Team/Department</td>
+                                            <td colspan="2" class="from-group" th:classappend="${#fields.hasErrors('careerHistories[__${stat.index}__].teamDepartment')} ? 'has-error' : ''">
+                                                <input type="text" placeholder="Thesis Title" class="form-control col-sm-10" th:field="*{careerHistories[__${stat.index}__].teamDepartment}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-bold bg-gray-light">Clinical Trial Experience</td>
+                                            <td colspan="2">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" th:field="*{careerHistories[__${stat.index}__].clinicalTrialExperience}">
+                                                        Clinical Trial Experience
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 text-right">
+                                        <button class="btn btn-info" name="add" value="careerHistory">
+                                            <i class="fa fa-plus"></i> Career History
+                                        </button>
+                                    </div>
+                                </div>
+                            </div><!--panel-body End -->
+
+                        </div><!-- panel End -->
+
+
+                        <!-- Licenses & Certification -->
+<!--                        <div class="panel">-->
+<!--                            <div class="panel-heading">-->
+<!--                                <h3 class="panel-title">LICENSES & CERTIFICATION</h3>-->
+<!--                            </div>-->
+<!--                            <div class="panel-body">-->
+<!--                                &lt;!&ndash;===================================================&ndash;&gt;-->
+<!--                                &lt;!&ndash;End Horizontal Form&ndash;&gt;-->
+<!--                                <div class="form-group">-->
+<!--                                    <label class="col-sm-2 control-label">Licenses</label>-->
+<!--                                    <div class="col-sm-10">-->
+<!--                                        <textarea placeholder="Name of License&#13;&#10;	License No.:          /License in Country: "  class="form-control col-sm-10" rows="2"></textarea>-->
+<!--                                    </div>-->
+<!--&lt;!&ndash;                                    <span th:if="${#fields.hasErrors('license.licenses')}" th:errors="*{license.licenses}"></span>&ndash;&gt;-->
+<!--                                </div>-->
+<!--                                <div class="form-group">-->
+<!--                                    <label class="col-sm-2 control-label">Certifications</label>-->
+<!--                                    <div class="col-sm-10">-->
+<!--                                        <textarea placeholder="Certified completion of GCP Training, Organizers, MMM YYYY&#13;&#10;Certificate programs listed"  class="form-control col-sm-10" rows="6"></textarea>-->
+<!--                                    </div>-->
+<!--&lt;!&ndash;                                    <span th:if="${#fields.hasErrors('license.certifications')}" th:errors="*{license.certifications}"></span>&ndash;&gt;-->
+<!--                                </div>-->
+<!--                            </div>&lt;!&ndash;panel-body End &ndash;&gt;-->
+<!--                        </div>&lt;!&ndash; panel End &ndash;&gt;-->
+
+<!--                        &lt;!&ndash; Professional Affiliations &ndash;&gt;-->
+<!--                        <div class="panel">-->
+<!--                            <div class="panel-heading">-->
+<!--                                <h3 class="panel-title">PROFESSIONAL AFFILIATIONS</h3>-->
+<!--                            </div>-->
+<!--                            <div class="panel-body">-->
+<!--                                &lt;!&ndash;===================================================&ndash;&gt;-->
+<!--                                &lt;!&ndash;End Horizontal Form&ndash;&gt;-->
+
+<!--                                <div class="form-group">-->
+<!--                                    <label class="col-sm-2 control-label">Membership</label>-->
+<!--                                    <div class="col-sm-10">-->
+<!--                                        <input type="text" placeholder="Name of Association (YYYY~YYYY)" class="form-control col-sm-10" >-->
+<!--                                    </div>-->
+<!--&lt;!&ndash;                                    <span th:if="${#fields.hasErrors('professional.membership')}" th:errors="*{professional.membership}"></span>&ndash;&gt;-->
+<!--                                </div>-->
+<!--                            </div>&lt;!&ndash;panel-body End &ndash;&gt;-->
+<!--                        </div>&lt;!&ndash; panel End &ndash;&gt;-->
+
+<!--                        &lt;!&ndash; Skils &ndash;&gt;-->
+<!--                        <div class="panel">-->
+<!--                            <div class="panel-heading">-->
+<!--                                <h3 class="panel-title">SKILLS</h3>-->
+<!--                            </div>-->
+<!--                            <div class="panel-body">-->
+<!--                                &lt;!&ndash;===================================================&ndash;&gt;-->
+<!--                                &lt;!&ndash;End Horizontal Form&ndash;&gt;-->
+<!--                                <div class="form-group">-->
+<!--                                    <label class="col-sm-2 control-label">Languages</label>-->
+<!--                                    <div class="col-sm-6">-->
+<!--                                        <input type="text"  placeholder="Language (Business)" class="form-control col-sm-10" >-->
+<!--                                    </div>-->
+<!--&lt;!&ndash;                                    <span th:if="${#fields.hasErrors('skills.languages')}" th:errors="*{skills.languages}"></span>&ndash;&gt;-->
+<!--                                    <div class="col-sm-4">-->
+<!--                                        <input type="text" placeholder="Beginner, intermediate, Advanced" class="form-control col-sm-10" >-->
+<!--                                    </div>-->
+<!--&lt;!&ndash;                                    <span th:if="${#fields.hasErrors('skills.languagesLevel')}" th:errors="*{skills.languagesLevel}"></span>&ndash;&gt;-->
+<!--                                </div>-->
+<!--                                <div class="form-group">-->
+<!--                                    <label class="col-sm-2 control-label">Computer Knowledge</label>-->
+<!--                                    <div class="col-sm-6">-->
+<!--                                        <input type="text" placeholder="MS Word, MS Excel, PowerPoint" class="form-control col-sm-10" >-->
+<!--                                    </div>-->
+<!--&lt;!&ndash;                                    <span th:if="${#fields.hasErrors('skills.computerKnowledge')}" th:errors="*{skills.computerKnowledge}"></span>&ndash;&gt;-->
+<!--                                    <div class="col-sm-4">-->
+<!--                                        <input type="text" placeholder="Level" class="form-control col-sm-10" >-->
+<!--                                    </div>-->
+<!--&lt;!&ndash;                                    <span th:if="${#fields.hasErrors('skills.computerKnowledgeLevel')}" th:errors="*{skills.computerKnowledgeLevel}"></span>&ndash;&gt;-->
+<!--                                </div>-->
+<!--                            </div>&lt;!&ndash;panel-body End &ndash;&gt;-->
+<!--                        </div>&lt;!&ndash; panel End &ndash;&gt;-->
+
+<!--                        &lt;!&ndash; Experience &ndash;&gt;-->
+<!--                        <div class="panel">-->
+<!--                            <div class="panel-heading">-->
+<!--                                <h3 class="panel-title col-md-11">EXPERIENCE</h3>-->
+<!--                                <a class="btn btn-primary col-md-1" type="submit" onclick="experienceRowAdd(5)">ROW 추가</a>-->
+<!--                            </div>-->
+<!--                            <div class="panel-body">-->
+<!--                                &lt;!&ndash;===================================================&ndash;&gt;-->
+<!--                                &lt;!&ndash;End Horizontal Form&ndash;&gt;-->
+<!--                                <div class="row">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label class="col-sm-2 control-label">Agent for Indication</label>-->
+<!--                                        <div class="col-sm-4">-->
+<!--                                            <input type="text" name="experience_name" placeholder="Agent for Indication" class="form-control col-sm-10" >-->
+<!--                                        </div>-->
+<!--                                        <div class="col-sm-6">-->
+<!--                                            <textarea name="experience_content" placeholder="Phase, Global or Local Study&#13;&#10;Role&#13;&#10;Working Details (Responsibilities)"  class="form-control col-sm-10" rows="8"></textarea>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+<!--                            </div>-->
+<!--                        </div>-->
+                    </div>
+                    <div class="panel-footer text-right">
+                        <button class="btn btn-info" type="submit" name="_draft">
+                            Draft
+                        </button>
+                        <button class="btn btn-primary" type="submit">
+                            Publish
+                        </button>
+                        <a th:href="@{/mypage/cv}" class="btn btn-success">
+                            <i class="fa fa-upload-cloud"></i> <span th:text="#{label.list}"></span>
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+
+</th:block>
+
+<th:block layout:fragment="custom_js">
+    <!--Bootstrap Datepicker [ OPTIONAL ]-->
+<!--    <script th:src="@{/static/default/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js}"></script>-->
+    <script>
+        $(document).ready(function() {
+            $('.input-daterange').datepicker({
+                format: "M yyyy",
+                startView: 1,
+                minViewMode: 1,
+                autoclose: true,
+                orientation: "bottom auto"
+            });
+        });
+    </script>
+
+
+</th:block>
+
+</html>
