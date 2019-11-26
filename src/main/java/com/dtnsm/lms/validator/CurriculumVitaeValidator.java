@@ -20,11 +20,15 @@ public class CurriculumVitaeValidator implements Validator {
     public void validate(Object o, Errors errors) {
         CurriculumVitae cv = (CurriculumVitae)o;
 
+        if(StringUtils.isEmpty(cv.getInitialName())) {
+            errors.rejectValue("initialName", "message.required", "required field.");
+        }
+
         int eduIndex = 0;
-        int eduSize = cv.getEducations().size();
+//        int eduSize = cv.getEducations().size();
         for(CVEducation edu : cv.getEducations()) {
-            //마지막 row만 present 선택 가능
-            if(edu.isPresent() && (eduIndex + 1 < eduSize)) {
+            //첫번째 row만 present 선택 가능
+            if(edu.isPresent() && eduIndex > 0) {
                 edu.setPresent(false);
             }
             if(ObjectUtils.isEmpty(edu.getStartDate())) {
@@ -52,10 +56,10 @@ public class CurriculumVitaeValidator implements Validator {
         }
 
         int historyIndex = 0;
-        int historySize = cv.getCareerHistories().size();
+//        int historySize = cv.getCareerHistories().size();
         for(CVCareerHistory history : cv.getCareerHistories()) {
-            //마지막 row만 present 선택 가능
-            if(history.isPresent() && (historyIndex + 1 < historySize)) {
+            //첫번째 row만 present 선택 가능
+            if(history.isPresent() && historyIndex > 0) {
                 history.setPresent(false);
             }
             if(ObjectUtils.isEmpty(history.getStartDate())) {

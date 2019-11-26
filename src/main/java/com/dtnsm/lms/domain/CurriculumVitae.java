@@ -29,20 +29,41 @@ public class CurriculumVitae extends AuditorEntity<String> implements Serializab
     @Column(name = "sign_date")
     private Date signDate;
 
+    @Column(name = "initial_name")
+    private String initialName;
+
     //최초 버전
     @Column(name = "initial")
     private boolean initial;
 
+    @Column(name = "base64sign", columnDefinition = "varchar(max)")
+    private String base64sign;
+
     @Column(name = "status", length = 20)
     @Enumerated(EnumType.STRING)
     private CurriculumVitaeStatus status;
-
-    @Column(name = "base64sign", columnDefinition = "varchar(max)")
-    private String base64sign;
 
     @OneToMany(mappedBy = "curriculumVitae")
     private List<CVEducation> educations = new ArrayList<>();
 
     @OneToMany(mappedBy = "curriculumVitae")
     private List<CVCareerHistory> careerHistories = new ArrayList<>();
+
+    @OneToMany(mappedBy = "curriculumVitae")
+    private List<CVLicense> licenses = new ArrayList<>();
+
+    @OneToMany(mappedBy = "curriculumVitae")
+    private List<CVCertification> certifications = new ArrayList<>();
+
+    @OneToMany(mappedBy = "curriculumVitae")
+    private List<CVMembership> memberships = new ArrayList<>();
+
+    @OneToMany(mappedBy = "curriculumVitae")
+    private List<CVLanguage> languages = new ArrayList<>();
+
+    @OneToMany(mappedBy = "curriculumVitae")
+    private List<CVComputerKnowledge> computerKnowledges = new ArrayList<>();
+
+    @OneToMany(mappedBy = "curriculumVitae")
+    private List<CVExperience> experiences = new ArrayList<>();
 }

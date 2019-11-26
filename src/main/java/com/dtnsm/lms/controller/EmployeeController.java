@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -103,7 +104,7 @@ public class EmployeeController {
             userJobDescription.setStatus(JobDescriptionStatus.APPROVED);
             userJobDescription.setApprovedSign(optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "");
             userJobDescription.setManagerName(SessionUtil.getUserDetail().getUser().getEngName());
-            userJobDescription.setManagerTitle(SessionUtil.getUserDetail().getUser().getComPosition());//TODO Job Title 확인 필요
+            userJobDescription.setManagerTitle(StringUtils.isEmpty(SessionUtil.getUserDetail().getUser().getComPosition()) ? "N/A" : SessionUtil.getUserDetail().getUser().getComPosition());//TODO Job Title 확인 필요
 
             /**
              *  같은 JD의 이전 버전을 Superseded 상태로 변경한다.
@@ -123,6 +124,7 @@ public class EmployeeController {
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qUserJobDescription.username.eq(username));
         builder.and(qUserJobDescription.jobDescriptionVersion.jobDescription.id.eq(jobDescriptionId));
+        builder.and(qUserJobDescription.status.eq(JobDescriptionStatus.APPROVED));
         Optional<UserJobDescription> optionalUserJobDescription = userJobDescriptionRepository.findOne(builder);
         if(optionalUserJobDescription.isPresent()) {
             UserJobDescription userJobDescription = optionalUserJobDescription.get();
@@ -140,9 +142,9 @@ public class EmployeeController {
         String format = "dd-MMM-yyyy";
         JobDescriptionSign jobDescriptionSign = JobDescriptionSign.builder()
                 .assignDate(DateUtil.getDateToString(userJobDescription.getAssignDate(), format).toUpperCase())
-                .agreeDate(DateUtil.getDateToString(userJobDescription.getAgreeDate(), format).toUpperCase())
+                .agreeDate(ObjectUtils.isEmpty(userJobDescription.getAgreeDate()) ? "" : DateUtil.getDateToString(userJobDescription.getAgreeDate(), format).toUpperCase())
                 .employeeName(userJobDescription.getEmployeeName())
-                .approvedDate(DateUtil.getDateToString(userJobDescription.getApprovedDate(), format).toUpperCase())
+                .approvedDate(ObjectUtils.isEmpty(userJobDescription.getApprovedDate()) ? "" : DateUtil.getDateToString(userJobDescription.getApprovedDate(), format).toUpperCase())
                 .managerName(userJobDescription.getManagerName())
                 .managerTitle(userJobDescription.getManagerTitle())
                 .empSignStr(userJobDescription.getAgreeSign())

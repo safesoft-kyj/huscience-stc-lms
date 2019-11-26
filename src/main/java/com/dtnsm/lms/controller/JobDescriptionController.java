@@ -121,6 +121,7 @@ public class JobDescriptionController {
                     JobDescriptionVersion jobDescriptionVersion = new JobDescriptionVersion();
                     jobDescriptionVersion.setJobDescription(jobDescription);
                     jobDescriptionVersion.setVersion_no(versionNo);
+                    jobDescriptionVersion.setStatus(JobDescriptionVersionStatus.CURRENT);
                     jobDescriptionVersion.setRelease_date(DateUtil.getStringToDate(releaseDate, "dd-MMM-yyyy"));
                     jobDescriptionVersion.setFile(file);
 

@@ -14,6 +14,8 @@ import com.dtnsm.lms.domain.constant.CurriculumVitaeStatus;
 import com.dtnsm.lms.domain.constant.QuizStatusType;
 import com.dtnsm.lms.domain.constant.SurveyStatusType;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
+import com.dtnsm.lms.repository.CVIndicationRepository;
+import com.dtnsm.lms.repository.CVPhaseRepository;
 import com.dtnsm.lms.repository.CurriculumVitaeRepository;
 import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.*;
@@ -48,7 +50,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/mypage")
-@SessionAttributes({"pageInfo", "draftCV"})
+@SessionAttributes({"pageInfo", "draftCV", "phaseList", "indicationList"})
 public class MyPageController {
     @Autowired
     CourseService courseService;
@@ -84,6 +86,10 @@ public class MyPageController {
     private CurriculumVitaeValidator curriculumVitaeValidator;
     @Autowired
     private CurriculumVitaeService curriculumVitaeService;
+    @Autowired
+    private CVIndicationRepository indicationRepository;
+    @Autowired
+    private CVPhaseRepository phaseRepository;
 
     @Autowired
     private SignatureRepository signatureRepository;
@@ -567,18 +573,22 @@ public class MyPageController {
 
         model.addAttribute(pageInfo);
 
+        status = "draft";//TODO 테스트 코드 차후 제거
+
         String userId = SessionUtil.getUserId();
+
+        model.addAttribute("indicationList", indicationRepository.findAll(QCVIndication.cVIndication.indication.asc()));
+        model.addAttribute("phaseList", phaseRepository.findAll(QCVPhase.cVPhase.phase.asc()));
 
         if(StringUtils.isEmpty(status)) {
             Optional<CurriculumVitae> optionalDraftCurriculumVitae = getCV(userId, CurriculumVitaeStatus.DRAFT);
             if (optionalDraftCurriculumVitae.isPresent()) {
                 //작성중인 CV가 존재함.
                 model.addAttribute("draftCV", optionalDraftCurriculumVitae.get());
-            } else {
-                Optional<CurriculumVitae> optionalCurrentCurriculumVitae = getCV(userId, CurriculumVitaeStatus.CURRENT);
-                if(optionalCurrentCurriculumVitae.isPresent()) {
-                    model.addAttribute("currentCV", optionalCurrentCurriculumVitae.get());
-                }
+            }
+            Optional<CurriculumVitae> optionalCurrentCurriculumVitae = getCV(userId, CurriculumVitaeStatus.CURRENT);
+            if(optionalCurrentCurriculumVitae.isPresent()) {
+                model.addAttribute("currentCV", optionalCurrentCurriculumVitae.get());
             }
         } else {
             CurriculumVitaeStatus curriculumVitaeStatus = CurriculumVitaeStatus.valueOf(status.toUpperCase());
@@ -591,6 +601,12 @@ public class MyPageController {
                     cv = new CurriculumVitae();
                     cv.getEducations().add(new CVEducation());
                     cv.getCareerHistories().add(new CVCareerHistory());
+                    cv.getLicenses().add(new CVLicense());
+                    cv.getCertifications().add(new CVCertification());
+                    cv.getMemberships().add(new CVMembership());
+                    cv.getLanguages().add(new CVLanguage());
+                    cv.getComputerKnowledges().add(new CVComputerKnowledge());
+                    cv.getExperiences().add(new CVExperience());
                 }
                 model.addAttribute("draftCV", cv);
             }
@@ -600,18 +616,49 @@ public class MyPageController {
     }
 
     @PostMapping({"/cv", "/cv/{status}"})
-    public String cv(@ModelAttribute("draftCV") CurriculumVitae draftCV, BindingResult result, SessionStatus status, HttpServletRequest request) throws Exception {
+    public String cv(@ModelAttribute("draftCV") CurriculumVitae draftCV, BindingResult result, SessionStatus status, HttpServletRequest request, Model model) throws Exception {
         boolean isAdd = WebUtils.hasSubmitParameter(request, "add");
         boolean isRemove = WebUtils.hasSubmitParameter(request, "remove");
         if(isAdd) {
             String target = ServletRequestUtils.getStringParameter(request,"add");
+            int index = -1;
+            if(target.indexOf(":") != -1) {
+                String[] s = target.split(":");
+                target = s[0];
+                index = Integer.parseInt(s[1]);
+            }
 
+            model.addAttribute("target", target);
             switch (target) {
                 case "education":
                     draftCV.getEducations().add(new CVEducation());
                     break;
                 case "careerHistory":
                     draftCV.getCareerHistories().add(new CVCareerHistory());
+                    break;
+                case "license":
+                    draftCV.getLicenses().add(new CVLicense());
+                    break;
+                case "certification":
+                    draftCV.getCertifications().add(new CVCertification());
+                    break;
+                case "membership":
+                    draftCV.getMemberships().add(new CVMembership());
+                    break;
+                case "language":
+                    draftCV.getLanguages().add(new CVLanguage());
+                    break;
+                case "languageCertification":
+                    draftCV.getLanguages().get(index).getLanguageCertifications().add(new CVLanguageCertification());
+                    break;
+                case "computerKnowledge":
+                    draftCV.getComputerKnowledges().add(new CVComputerKnowledge());
+                    break;
+                case "computerCertification":
+                    draftCV.getComputerKnowledges().get(index).getComputerCertifications().add(new CVComputerCertification());
+                    break;
+                case "experience":
+                    draftCV.getExperiences().add(new CVExperience());
                     break;
             }
 
@@ -626,7 +673,35 @@ public class MyPageController {
                 case "careerHistory":
                     draftCV.getCareerHistories().remove(Integer.parseInt(s[1]));
                     break;
+                case "license":
+                    draftCV.getLicenses().remove(Integer.parseInt(s[1]));
+                    break;
+                case "certification":
+                    draftCV.getCertifications().remove(Integer.parseInt(s[1]));
+                    break;
+                case "membership":
+                    draftCV.getMemberships().remove(Integer.parseInt(s[1]));
+                    break;
+                case "language":
+                    draftCV.getLanguages().remove(Integer.parseInt(s[1]));
+                    break;
+                case "languageCertification":
+                    String[] index = s[1].split("\\.");
+                    draftCV.getLanguages().get(Integer.parseInt(index[0])).getLanguageCertifications().remove(Integer.parseInt(index[1]));
+                    break;
+                case "computerKnowledge":
+                    draftCV.getComputerKnowledges().remove(Integer.parseInt(s[1]));
+                    break;
+                case "computerCertification":
+                    String[] cindex = s[1].split("\\.");
+                    draftCV.getComputerKnowledges().get(Integer.parseInt(cindex[0])).getComputerCertifications().remove(Integer.parseInt(cindex[1]));
+                    break;
+                case "experience":
+                    draftCV.getExperiences().remove(Integer.parseInt(s[1]));
+                    break;
             }
+
+            model.addAttribute("target", s[0]);
 
             return "content/mypage/cv/list";
         }

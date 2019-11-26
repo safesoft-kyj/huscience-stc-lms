@@ -48,7 +48,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         )
         .from(qAccount).join(qUserJobDescription)
         .on(qAccount.userId.eq(qUserJobDescription.username))
-        .where(qAccount.parentUserId.eq(userId).and(qUserJobDescription.status.ne(JobDescriptionStatus.SUPERSEDED)))
+        .where(qAccount.parentUserId.eq(userId))
         .orderBy(qAccount.engName.asc())
         .fetch();
     }

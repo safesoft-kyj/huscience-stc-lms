@@ -37,58 +37,70 @@
         <!--Page content-->
         <!--===================================================-->
         <div id="page-content">
+            <div class="tab-base">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a data-toggle="tab" href="#demo-lft-tab-1">Current</a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#demo-lft-tab-2">Old Version</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <!-- Basic Data Tables -->
+                    <!--===================================================-->
+                    <div class="panel">
+                        <div class="panel-body">
+                            <div th:switch="${userJobDescriptions}">
+                                <div th:case="null">Job Title 정보가 존재하지 않습니다.</div>
+                                <div th:case="*">
+                                    <hr class="table-head">
+                                    <div class="table-responsive">
+                                        <table id="customer-list-page" class="table" cellspacing="0" width="100%">
+                                            <thead>
+                                            <tr style="background: #FAFAFA;">
+                                                <th class="text-center">번호</th>
+                                                <th class="text-center">Job Title</th>
+                                                <th class="text-center">배정일</th>
+                                                <th class="text-center">동의일</th>
+                                                <th class="text-center">승인일</th>
+        <!--                                        <th class="text-center">상태</th>-->
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="user, index : ${userJobDescriptions}">
+                                                <td th:text="${index.count}" class="text-center"></td>
+                                                <td>
+                                                    <span th:text="|${user.jobDescriptionVersion.jobDescription.title} v${user.jobDescriptionVersion.version_no}|">-</span>
+                                                    <th:block th:if="${user.status.name() eq 'APPROVED' or user.status.name() eq 'REVOKE'}">
+                                                        <a class="btn btn-purple btn-xs" th:href="@{/employees/jd/{id}/print(id=${user.id})}"><i class="fa fa-file-pdf-o"></i> Job Description</a>
+                                                    </th:block>
+                                                </td>
+                                                <td th:text="${#dates.format(user.assignDate, 'yyyy-MM-dd')}" class="text-center"></td>
+                                                <td class="text-center">
+                                                    <th:block th:if="${user.agreeDate == null}">
+                                                        <button class="btn btn-info btn-xs" data-target="#agree-modal" th:attr="data-id=${user.id}" data-toggle="modal"><i class="fa fa-file-pdf-o"></i> View</button>
+        <!--                                                <a class="btn btn-info btn-xs" th:href="@{/mypage/jd/viewFile/{id}(id=${user.jobDescriptionVersion.jobDescriptionVersionFile.id})}"><i class="fa fa-file-pdf-o"></i> View</a>-->
+                                                    </th:block>
+                                                    <span th:if="${user.agreeDate != null}" th:text="${#dates.format(user.assignDate, 'yyyy-MM-dd')}"></span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span th:if="${user.approvedDate != null}" th:text="${#dates.format(user.approvedDate, 'yyyy-MM-dd')}"></span>
+                                                </td>
+                                                </td>
+        <!--                                        <td th:text="${user.status.label}" class="text-center"></td>-->
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
 
-            <!-- Basic Data Tables -->
-            <!--===================================================-->
-            <div class="panel">
-                <div class="panel-body">
-                    <div th:switch="${userJobDescriptions}">
-                        <div th:case="null">Job Title 정보가 존재하지 않습니다.</div>
-                        <div th:case="*">
-                            <hr class="table-head">
-                            <div class="table-responsive">
-                                <table id="customer-list-page" class="table" cellspacing="0" width="100%">
-                                    <thead>
-                                    <tr style="background: #FAFAFA;">
-                                        <th class="text-center">번호</th>
-                                        <th class="text-center">Job Title</th>
-                                        <th class="text-center">배정일</th>
-                                        <th class="text-center">동의일</th>
-                                        <th class="text-center">승인일</th>
-<!--                                        <th class="text-center">상태</th>-->
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="user, index : ${userJobDescriptions}">
-                                        <td th:text="${index.count}" class="text-center"></td>
-                                        <td class="text-center">
-                                            <span th:text="|${user.jobDescriptionVersion.jobDescription.title} v${user.jobDescriptionVersion.version_no}|">-</span>
-                                            <th:block th:if="${user.jobDescriptionVersion.jobDescriptionVersionFile != null}">
-                                                <a class="btn btn-purple btn-xs" th:href="@{/employees/jd/{id}/print(id=${user.id})}"><i class="fa fa-file-pdf-o"></i> Job Description</a>
-                                            </th:block>
-                                        </td>
-                                        <td th:text="${#dates.format(user.assignDate, 'yyyy-MM-dd')}" class="text-center"></td>
-                                        <td class="text-center">
-                                            <th:block th:if="${user.agreeDate == null}">
-                                                <button class="btn btn-info btn-xs" data-target="#agree-modal" th:attr="data-id=${user.id}" data-toggle="modal"><i class="fa fa-file-pdf-o"></i> View</button>
-                                            </th:block>
-                                            <span th:if="${user.agreeDate != null}" th:text="${#dates.format(user.assignDate, 'yyyy-MM-dd')}"></span>
-                                        </td>
-                                        <td class="text-center">
-                                            <span th:if="${user.approvedDate != null}" th:text="${#dates.format(user.approvedDate, 'yyyy-MM-dd')}"></span>
-                                        </td>
-                                        </td>
-<!--                                        <td th:text="${user.status.label}" class="text-center"></td>-->
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
 
-
-                    </div><!--switch End -->
-                </div><!--panel-body End -->
-            </div><!-- panel End -->
+                            </div><!--switch End -->
+                        </div><!--panel-body End -->
+                    </div><!-- panel End -->
+                </div>
+            </div>
         </div><!-- Page content End -->
     </div><!-- Content container End -->
 
