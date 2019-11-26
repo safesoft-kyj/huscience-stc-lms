@@ -3,7 +3,7 @@ package com.dtnsm.lms.controller;
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.domain.CourseAccountOrder;
-import com.dtnsm.lms.domain.DocumentAccount;
+import com.dtnsm.lms.domain.Document;
 import com.dtnsm.lms.domain.DocumentAccountOrder;
 import com.dtnsm.lms.domain.constant.ScheduleType;
 import com.dtnsm.lms.mybatis.service.CourseMapperService;
@@ -50,7 +50,7 @@ public class MainController {
     CourseMapperService courseMapperService;
 
     @Autowired
-    DocumentAccountService documentAccountService;
+    DocumentService documentService;
 
     @Autowired
     DocumentAccountOrderService documentAccountOrderService;
@@ -99,7 +99,7 @@ public class MainController {
         List<DocumentAccountOrder> documentAccountOrders1 = documentAccountOrderService.getAllByNext(userId, "1", "0");
 
         // 교육신청 진행건
-        List<DocumentAccount> documentAccountOrders2 = documentAccountService.getAllByStatus(userId, "0");
+        List<Document> documentAccountOrders2 = documentService.getAllByStatus(userId, "0");
 
 
         // 교육결재 미결함

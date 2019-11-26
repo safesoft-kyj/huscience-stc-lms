@@ -1,7 +1,7 @@
 package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.service.DocumentAccountOrderService;
-import com.dtnsm.lms.service.DocumentAccountService;
+import com.dtnsm.lms.service.DocumentService;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ApprovalAdminDocumentController {
 
     @Autowired
-    DocumentAccountService documentAccountService;
+    DocumentService documentAccountService;
 
     @Autowired
     DocumentAccountOrderService documentAccountOrderService;

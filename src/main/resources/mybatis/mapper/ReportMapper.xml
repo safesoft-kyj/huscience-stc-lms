@@ -68,4 +68,44 @@
         group by a.ex1, a.title
     </select>
 
+    <select id="selectSurveyReport2" parameterType="Long" resultType="com.dtnsm.lms.mybatis.dto.ReportForm3">
+        select question_id, question, user_answer
+        from el_course_account a
+            inner join el_course_survey_action b
+                on a.id = b.doc_id
+            inner join (
+                select a.id as question_id, a.question, b.survey_action_id, b.user_answer
+                from el_course_survey_question a
+                left outer join el_course_survey_action_answer b
+                on a.id = b.question_id
+                where a.survey_gubun = 'S'
+            ) c
+                on b.id = c.survey_action_id
+        where a.course_id = #{courseId}
+        order by question_id, survey_action_id
+    </select>
+
+    <select id="selectQuizReport" parameterType="Long" resultType="com.dtnsm.lms.mybatis.dto.QuizReportForm1">
+        select course_id, question_id, b.question
+        , count(*) as cnt
+        , sum(fail_count) as fail_count
+        , convert(int, round((convert(numeric(5,2), sum(fail_count)) / count(*)) * 100, 0)) as fail_rate
+        from (
+            select a.course_id
+            , a.user_id
+            , c.question_id
+            , case when answer_count = 0 then 1 else 0 end as fail_count
+            from el_course_account a
+                inner join el_course_quiz_action b
+                on a.id = b.doc_id
+                inner join el_course_quiz_action_answer c
+                on b.id = c.quiz_action_id
+            where course_id = #{courseId}
+            and b.quiz_id = #{questionId}
+        ) a
+        inner join el_course_quiz_question b
+            on a.question_id = b.id
+        group by course_id, question_id, b.question
+    </select>
+
 </mapper>

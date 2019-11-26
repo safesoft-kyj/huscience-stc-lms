@@ -46,17 +46,30 @@
 
             <div class="panel">
                 <div class="panel-body">
-                    <br>
+                    <div class="row text-left">
+                        <div class="col-sm-12">
+                            <p class="text-right">
+<!--                                <button class="btn btn-primary" id="pdfsave">PDF저장</button>-->
+                                <button class="btn btn-primary" onclick="saveAsPdf();">PDF저장</button>
+                                <a class="btn btn-primary" th:href="@{/admin/course/survey/list/{courseId}(courseId=${courseId})}"><i class="demo-pli-back"></i> Back</a>
+                            </p>
+                        </div>
+                    </div>
                     <div th:switch="${borders}">
                         <div th:case="null">No customer yet!</div>
                         <div th:case="*">
 <!--                            <div class="table-responsive">-->
-                                <hr class="table-head">
+<!--                                <hr class="table-head">-->
                                 <table id="demo-dt-basic1" class="table" cellspacing="0" width="100%" style="margin-top:0">
+                                    <tr>
+                                        <td class="text-left" colspan="7">
+                                            <h3 class="title text-info"><span th:text="${pageInfo.getPageTitle() + ' 설문'}"></span></h3>
+                                        </td>
+                                    </tr>
                                     <th:block th:each="border, index : ${borders}">
                                         <tr>
                                             <td class="text-left" colspan="7">
-                                                <div th:text="${border.getId()}" th:id="${'question-' + index.index}"></div>
+                                                <div th:text="${border.getId()}" th:id="${'question-' + index.index}" style="color:white"></div>
                                                 <h4 th:text="${'Q' + index.count + '. ' + border.getTitle()}"></h4>
                                             </td>
                                         </tr>
@@ -65,9 +78,9 @@
                                                 <!-- Bar Chart -->
                                                 <!---------------------------------->
                                                 <div class="panel">
-                                                    <div class="panel-heading">
-                                                        <h3 class="panel-title">Bar Chart</h3>
-                                                    </div>
+<!--                                                    <div class="panel-heading">-->
+<!--                                                        <h3 class="panel-title">Bar Chart</h3>-->
+<!--                                                    </div>-->
                                                     <div class="panel-body">
                                                         <div th:id="${'demo-morris-bar' + index.index}" style="height: 250px"></div>
                                                     </div>
@@ -101,6 +114,22 @@
                                             <td th:text="${border.getEx10()}"></td>
                                         </tr>
                                     </th:block>
+                                    <th:block th:each="shoutQuestion, index : ${shoutQuestions}">
+                                        <tr>
+                                            <td class="text-left" colspan="7">
+                                                <div th:text="${shoutQuestion.getId()}" th:id="${'question-' + index.index}" style="color:white"></div>
+                                                <h4 th:text="${shoutQuestion.getQuestion()}"></h4>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-left" colspan="7">
+                                                <ul th:each="answer, index : ${shoutQuestionsAnswer}">
+                                                    <li th:if="${ shoutQuestion.getId() == answer.getQuestionId()}" th:text="${answer.getUserAnswer()}"></li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    </th:block>
+
                                 </table>
 <!--                            </div>-->
                         </div>
@@ -119,12 +148,21 @@
     <script th:src="@{/default/plugins/morris-js/morris.min.js}"></script>
     <script th:src="@{/default/plugins/morris-js/raphael-js/raphael.min.js}"></script>
 
+    <script th:src="@{/default/plugins/html2canvas/bluebird.min.js}"></script>
+
+    <script type = "text/javascript" src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+    <script type = "text/javascript" src = "https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
 
     <script th:inline="javascript">
         var row_cnt = [[${borders.size()}]];
         var course_id = [[${courseId}]];
 
         $( document ).ready(function() {
+
+
+
+
 
             for(var i=0; i<row_cnt; i++ ) {
 
@@ -174,6 +212,116 @@
                 });
             }
         });
+
+        //
+        // function safePdf() {
+        //     var doc = new jsPDF();
+        //     doc.fromHTML(document.getElementById("demo-dt-basic1"), 15, 15, {
+        //         'width': 170
+        //     });
+        //     console.log(doc);
+        //     doc.save("설문통계.pdf");
+        // }
+
+        // $('#pdfsave').click(function() {
+        //
+        //     alert('test');
+        //
+        //     html2canvas(document.getElementById("demo-dt-basic1")).then(function(canvas) {
+        //         var imgData = canvas.toDataURL("image/png");
+        //         var doc = new jsPDF('p', 'mm', [297, 210]);
+        //         doc.addImage(imgData, 'PNG', 10, 10, 190, 95);
+        //         doc.save('sample-file.pdf');
+        //     });
+        // });
+
+
+        function saveAsPdf() {
+
+            html2canvas(document.getElementById("demo-dt-basic1")).then(function(canvas) {
+
+                var name = '설문통계';
+                var imgData = canvas.toDataURL('image/png');
+                var imgWidth = 210;
+                var pageHeight = 295;
+                var imgHeight = canvas.height * imgWidth / canvas.width;
+                var heightLeft = imgHeight;
+                var doc = new jsPDF('p', 'mm');
+
+                var x = 3;
+                var y = 10;
+
+                doc.addImage(imgData, 'PNG', x, y, imgWidth-6, imgHeight-5);   // addImage(imageData, format, x, y, width, height, alias, compression, rotation)
+                heightLeft -= pageHeight;
+
+                while (heightLeft >= 0) {
+                    y = heightLeft - imgHeight;
+                    doc.addPage();
+                    doc.addImage(imgData, 'PNG', x, y, imgWidth-6, imgHeight-5);   // addImage(imageData, format, x, y, width, height, alias, compression, rotation)
+                    heightLeft -= pageHeight;
+                }
+
+                doc.save(name + '.pdf');
+
+
+
+                // var imgData = canvas.toDataURL('image/png');
+                // var imgWidth = 210;
+                // var pageHeight = imgWidth / 1.414;
+                // var imgHeight = canvas.height * imgWidth / canvas.width;
+                //
+                // var doc = new jsPDF({
+                //     'orientation': 'l',
+                //     'unit': 'mm',
+                //     'format': 'a4'
+                // });
+                //
+                // doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+                // doc.save(name);
+                // console.log('Reached here?');
+
+
+                //캔버스를 이미지로 변환
+                // var imgData = canvas.toDataURL('image/png');
+                //
+                // var imgWidth = 210; // 이미지 가로 길이(mm) A4 기준
+                // var pageHeight = imgWidth * 1.414;  // 출력 페이지 세로 길이 계산 A4 기준
+                //
+                // var imgHeight = canvas.height * imgWidth / canvas.width;
+                //
+                // var heightLeft = imgHeight;
+                //
+                // var doc = new jsPDF({
+                //     'orientation': 'p', // p(종), l(횡)
+                //     'unit': 'mm',
+                //     'format': 'a4'
+                // });
+                // var top = 10;
+                // var left = 5;
+                //
+                //
+                //
+                // // 첫 페이지 출력
+                // doc.addImage(imgData, 'PNG', left, top, imgWidth, imgHeight);
+                // heightLeft -= pageHeight;
+                //
+                // // 한 페이지 이상일 경우 루프 돌면서 출력
+                // while (heightLeft >= 20) {
+                //     position = heightLeft - imgHeight;
+                //     doc.addPage();
+                //     doc.addImage(imgData, 'PNG', left, top, imgWidth, imgHeight);
+                //     heightLeft -= pageHeight;
+                // }
+                //
+                // //doc.internal.scaleFactor = 0.8;
+                //
+                // // 파일 저장
+                // doc.save(name);
+
+
+
+            });
+        }
 
     </script>
 </th:block>

@@ -207,4 +207,21 @@ public class SurveyAdminController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + newFileName + "\"")
                 .body(resource);
     }
+
+    @GetMapping("/updateActive/{id}")
+    public String updateActive(@PathVariable("id") long id) {
+
+        // 모든 설문을 초기화 한다.
+        for(Survey survey1 : surveyService.getList()) {
+            survey1.setIsActive(0);
+            surveyService.saveSurvey(survey1);
+        }
+
+        // 요청된 설문을 기본 설문으로 변경한다.
+        Survey survey = surveyService.getSurveyById(id);
+        survey.setIsActive(1);
+        surveyService.saveSurvey(survey);
+
+        return "redirect:/admin/survey/list/";
+    }
 }

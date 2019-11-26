@@ -46,17 +46,36 @@
                             <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
                         </div>
 
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="mailList" th:text="#{label.course.account.add}">교육대상자</label>
-                            <div class="col-sm-9">
-                                <select class="form-control" name="mailList" id="mailList" multiple="multiple">
-                                    <option th:each="user : ${mailList}" th:value="${user.getUserId()}" th:text="${user.getName()}"></option>
-                                </select>
+                        <!-- 외부교육참석보고서 -->
+                        <!-- 외부교육 과정개설 신청후 외부교육을 참조한다. -->
+                        <th:block th:if="${border.getTemplate().getId() == 8}">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label text-center" for="courseAccount">외부교육선택</label>
+                                <div class="col-sm-9">
+                                    <input type="hidden" th:field="*{courseAccount.id}" id="courseAccount" placeholder="제목" class="form-control col-sm-4" required="required">
+                                    <input type="text" id="courseName" placeholder="과정명" class="form-control col-sm-8">
+                                </div>
+                                <span th:if="${#fields.hasErrors('courseAccount.id')}" th:errors="*{courseAccount.id}"></span>
+                                <div class="col-sm-1 pull-right">
+                                    <a class="btn btn-primary" id="btnCourse">과정선택</a>
+                                </div>
                             </div>
-                            <div class="col-sm-1 pull-right">
-                                <a class="btn btn-primary" id="btnOrg" th:text="#{label.organization}">조직도</a>
+                        </th:block>
+
+                        <!-- 부서별 교육신청시 -->
+                        <th:block th:if="${border.getTemplate().getId() == 217}">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="mailList" th:text="#{label.course.account.add}">교육수강생</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" name="mailList" id="mailList" multiple="multiple">
+                                        <option th:each="user : ${mailList}" th:value="${user.getUserId()}" th:text="${user.getName()}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-1 pull-right">
+                                    <a class="btn btn-primary" id="btnOrg" th:text="#{label.organization}">조직도</a>
+                                </div>
                             </div>
-                        </div>
+                        </th:block>
 
                         <div id="editSection"></div>
 

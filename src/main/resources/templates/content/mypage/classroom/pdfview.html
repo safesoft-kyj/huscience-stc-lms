@@ -22,11 +22,20 @@
     <link th:href="@{/default/plugins/ionicons/css/ionicons.min.css}" rel="stylesheet">
 
     <style>
+        #wrap {
+            padding-top: 130px;
+        }
+
+        .navbar-fixed-top {
+            background: #3A444E;
+            color: white;
+        }
+
         .pdfobject-container{
             /*margin-top:50px;*/
             /*margin-left:50px;*/
             /*width: 600px;*/
-            height: 600px;
+            height: 570px;
             padding:0;
             margin: 0;
         }
@@ -39,42 +48,40 @@
 
 </head>
 <body oncontextmenu="return false">
-    <div id="container" class="effect aside-float aside-bright mainnav-lg">
-        <div class="col-md-12">
-            <div class="panel">
-                <div class="panel-heading">
-                    <div class="col-sm-10">
-                        <h3 class="text-primary" th:text="${courseSectionFile.getCourseSection().getName()}"> / <span th:text="${courseSectionFile.getCourseSection().getMinute() + '분'}"></span> </h3>
-                    </div>
-                    <div class="col-sm-2 text-right">
-                        <h3 class="demo-icon btn btn-warning" onclick="closeWindow();"><i class="ti-close"></i> <span>종료</span></h3>
+
+<div id="wrap">
+
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm12">
+                        <h3 class="text-light" th:text="${courseSectionFile.getCourseSection().getName()}"> / <span th:text="${courseSectionFile.getCourseSection().getMinute() + '분'}"></span> </h3>
                     </div>
                 </div>
-                <div class="panel-body" style="padding-bottom: 0;">
-                    <table class="table table-condensed" cellspacing="0" width="100%" style="padding-bottom: 0">
-                        <colgroup><col width="70%" /><col width="30%" /></colgroup>
-                        <tr>
-                            <td style="vertical-align: bottom;">
-                                <br>
-                                <div class="progress">
-                                    <div id="time" style="width: 0%;" class="progress-bar progress-bar-success">0%</div>
-                                </div>
-                            </td>
-                            <td class="text-right" style="vertical-align: top">
-                                <h3 id="ptimer"><div class="demo-icon"><i class="ti-timer"></i> <span id="timer">0:0:00</span></div> </h3>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="vertical-align: top;margin: 0; padding:0;">
-                                <div id="example1"></div>
-                            </td>
-                        </tr>
-                    </table>
-
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h3 id="ptimer" class="text-light"><i class="ti-timer"></i> <span id="timer">0:0:00</span> </h3>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <h3 class="demo-icon btn btn-mint" onclick="closeWindow();"><i class="ti-close"></i> <span th:text="#{label.end}">종료</span></h3>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Begin page content -->
+    <div class="container">
+        <div class="panel">
+            <div class="panel-body">
+                <div id="example1"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
 
 <!--jQuery [ REQUIRED ]-->
 <script th:src="@{/default/js/jquery.min.js}"></script>
@@ -143,8 +150,8 @@
             if ((hours + miniutes + seconds) >= 0) {
                 $('#timer').html(m);   // div 영역에 보여줌
 
-                $('.progress-bar').css("width", progress_rate);
-                $('.progress-bar').text(progress_rate);
+                // $('.progress-bar').css("width", progress_rate);
+                // $('.progress-bar').text(progress_rate);
             } else {
                 saveSectionSecond();
                 update_flag = '1';
@@ -207,8 +214,8 @@
     } else {
         $('#ptimer').html("학습시간 종료");   // div 영역에 보여줌
 
-        $('.progress-bar').css("width", "100%");
-        $('.progress-bar').text("100%");
+        // $('.progress-bar').css("width", "100%");
+        // $('.progress-bar').text("100%");
     }
 
 

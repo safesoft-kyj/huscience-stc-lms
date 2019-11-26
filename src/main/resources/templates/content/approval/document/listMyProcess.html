@@ -68,7 +68,7 @@
                                         <td th:text="${index.count}" class="text-center"></td>
                                         <td>
                                             <a th:href="@{/document/approval/{id}(id=${border.getId()})}">
-                                                <span th:text="${border.getDocument().getTitle()}"></span>
+                                                <span th:text="${border.getTitle()}"></span>
                                             </a>
                                         </td>
                                         <td th:text="${border.getRequestDate()}" class="text-center"></td>
@@ -81,8 +81,8 @@
                                             </div>
                                         </td>
                                         <td class="text-center">
-                                            <a th:text="#{label.edit}" th:href="@{/document/edit/{id}(id=${border.getDocument().getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
-                                            <a th:text="#{label.delete}" th:href="@{/document/delete/{id}(id=${border.getDocument().getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                            <a th:text="#{label.edit}" th:href="@{/document/edit/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                            <a th:text="#{label.delete}" th:href="@{/document/delete/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
                                         </td>
                                     </tr>
                                     </tbody>

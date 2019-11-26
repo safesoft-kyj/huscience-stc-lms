@@ -244,15 +244,15 @@
                                                 <table id="customer-list-page8" class="" cellspacing="0" width="100%">
                                                     <tbody>
                                                     <tr th:each="app1, index : ${app2List}">
-                                                        <td class="col-md-3" th:text="${app1.getDocumentAccount().getRequestDate()}"></td>
+                                                        <td class="col-md-3" th:text="${app1.getDocument().getRequestDate()}"></td>
 
                                                         <td class="col-md-9 text-left">
                                                             <a th:href="@{/document/approvalAppr1/{id}(id=${app1.getId()})}">
-                                                                <th:block th:if="${#strings.length(app1.getDocumentAccount().getDocument().getTitle()) > 30}">
-                                                                    <span th:text="${#strings.substring(app1.getDocumentAccount().getDocument().getTitle(), 0, 30) + '...'}"></span>
+                                                                <th:block th:if="${#strings.length(app1.getDocument().getTitle()) > 30}">
+                                                                    <span th:text="${#strings.substring(app1.getDocument().getTitle(), 0, 30) + '...'}"></span>
                                                                 </th:block>
-                                                                <th:block th:unless="${#strings.length(app1.getDocumentAccount().getDocument().getTitle()) > 30}">
-                                                                    <span th:text="${app1.getDocumentAccount().getDocument().getTitle()}"></span>
+                                                                <th:block th:unless="${#strings.length(app1.getDocument().getTitle()) > 30}">
+                                                                    <span th:text="${app1.getDocument().getTitle()}"></span>
                                                                 </th:block>
                                                             </a>
                                                         </td>
@@ -272,11 +272,11 @@
 
                                                         <td class="col-md-9 text-left">
                                                             <a th:href="@{/document/approval/{id}(id=${app1.getId()})}">
-                                                                <th:block th:if="${#strings.length(app1.getDocument().getTitle()) > 30}">
-                                                                    <span th:text="${#strings.substring(app1.getDocument().getTitle(), 0, 30) + '...'}"></span>
+                                                                <th:block th:if="${#strings.length(app1.getTitle()) > 30}">
+                                                                    <span th:text="${#strings.substring(app1.getTitle(), 0, 30) + '...'}"></span>
                                                                 </th:block>
-                                                                <th:block th:unless="${#strings.length(app1.getDocument().getTitle()) > 30}">
-                                                                    <span th:text="${app1.getDocument().getTitle()}"></span>
+                                                                <th:block th:unless="${#strings.length(app1.getTitle()) > 30}">
+                                                                    <span th:text="${app1.getTitle()}"></span>
                                                                 </th:block>
                                                             </a>
                                                         </td>

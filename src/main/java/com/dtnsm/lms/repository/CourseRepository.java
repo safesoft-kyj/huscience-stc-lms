@@ -12,6 +12,8 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     Page<Course> findAllByActiveGreaterThan(int active, Pageable pageable);
 
+    Page<Course> findAllByCourseMaster_Id(String typeId, Pageable pageable);
+
     Page<Course> findAllByCourseMaster_IdAndActiveGreaterThan(String typeId, int active, Pageable pageable);
 
     // 제목, 내용 검색(status 0은 서비스 전 교육과정)

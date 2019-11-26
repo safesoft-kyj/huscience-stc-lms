@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+
+    <style>
+        .table-head {
+            background: #3A444E;
+            margin: 0;
+            padding: 0;
+        }
+
+        th {
+            text-align: center;
+            vertical-align: middle;
+        }
+    </style>
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content" style="margin-bottom:0">
+
+
+<!--            <div class="panel">-->
+<!--                <div class="panel-body">-->
+<!--                    <br>-->
+<!--                    <div th:switch="${courseQuiz}">-->
+<!--                        <div th:case="null">No customer yet!</div>-->
+<!--                        <div th:case="*">-->
+<!--                            <hr class="table-head">-->
+<!--                            <table id="demo-dt-basic1" class="table" cellspacing="0" width="100%" style="margin-top:0">-->
+<!--                                <tr>-->
+<!--                                    <th>문항</th>-->
+<!--                                    <th th:each="courseAccount, index : ${courseQuiz.getCourse().getCourseAccountList()}">-->
+<!--                                        <div th:text="${courseAccount.getAccount().getName()}"></div>-->
+<!--                                    </th>-->
+<!--                                    &lt;!&ndash; 합계 &ndash;&gt;-->
+<!--                                    <th>총오답수</th>-->
+<!--                                </tr>-->
+<!--                                <tr th:each="quiz, index : ${courseQuiz.getQuizQuestions()}">-->
+<!--                                    <td th:text="${'Q' + index.count + ' ' + quiz.getQuestion()}" class="text-left"></td>-->
+<!--                                    <td th:each="courseAccount, index : ${courseQuiz.getCourse().getCourseAccountList()}">-->
+
+<!--                                        <div th:each="quizAction, index : ${courseAccount.getCourseQuizActions()}">-->
+<!--                                            <div th:each="quizAnswer, index : ${quizAction.getActionAnswers()}">-->
+<!--&lt;!&ndash;                                                <span th:text="${quizAnswer.getQuestion().getQuestion()}"></span>&ndash;&gt;-->
+<!--                                                <span th:text="${quizAnswer.getAnswerCount()}"></span>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+
+<!--                                    </td>-->
+<!--                                    &lt;!&ndash; 합계 &ndash;&gt;-->
+<!--                                    <td class="text-center"></td>-->
+<!--                                </tr>-->
+<!--                            </table>-->
+<!--                        </div>-->
+<!--                    </div>&lt;!&ndash;switch End &ndash;&gt;-->
+
+<!--                </div>&lt;!&ndash;panel-body End &ndash;&gt;-->
+<!--            </div>&lt;!&ndash; panel End &ndash;&gt;-->
+
+
+            <div class="panel" id="exportReport">
+                <div class="panel-body">
+                    <div class="row text-left">
+                        <div class="col-sm-12">
+                            <p class="text-right">
+                                <button class="btn btn-primary" onclick="saveAsPdf();">PDF저장</button>
+                                <a class="btn btn-primary" th:href="@{/admin/course/quiz/list/{courseId}(courseId=${courseQuiz.getCourse().getId()})}"><i class="demo-pli-back"></i> Back</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div th:switch="${courseQuiz}">
+                        <div th:case="null">No customer yet!</div>
+                        <div th:case="*">
+                            <hr class="table-head">
+                            <table id="demo-dt-basic1" class="table" cellspacing="0" width="100%" style="margin-top:0">
+                                <tr>
+                                    <td class="text-left" colspan="7">
+                                        <h3 class="title text-info"><span th:text="${pageInfo.getPageTitle() + ' 시험결과분석 - 오답(1:오답, 0:정답)'}"></span></h3>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>문항</th>
+                                    <th th:each="courseAccount, index : ${courseQuiz.getCourse().getCourseAccountList()}">
+                                        <div th:text="${courseAccount.getAccount().getName()}"></div>
+                                    </th>
+                                    <!-- 합계 -->
+                                    <th class="col-sm-1">오답수/합계</th>
+                                    <th class="col-sm-1">오답률</th>
+                                </tr>
+                                <tr th:each="quiz, index : ${questionList}">
+                                    <td th:text="${'Q' + index.count + ' ' + quiz.getQuestion()}" class="text-left"></td>
+                                    <td th:each="courseAccount, index : ${courseQuiz.getCourse().getCourseAccountList()}" class="text-center">
+                                        <div>
+                                            <th:block th:each="quizAction, index : ${courseAccount.getCourseQuizActions()}">
+                                                <th:block th:each="quizAnswer, index : ${quizAction.getActionAnswers()}">
+                                                    <th:block th:if="${#strings.equalsIgnoreCase(quiz.getQuestionId(), quizAnswer.getQuestion().getId())}">
+                                                        <span th:text="${quizAnswer.getAnswerCount() == 0 ? 1: 0}" style="width:20px"></span>&nbsp;&nbsp;
+                                                    </th:block>
+                                                </th:block>
+                                            </th:block>
+                                        </div>
+                                    </td>
+                                    <!-- 합계 -->
+                                    <td class="text-center" th:text="${quiz.getFailCount() + ' / ' + quiz.getCnt()}"></td>
+                                    <td class="text-center" th:text="${quiz.getFailRate() + '%'}"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div><!--switch End -->
+
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div>
+    </div>
+</th:block>
+
+
+<th:block layout:fragment="custom_js">
+
+
+    <script th:src="@{/default/plugins/html2canvas/bluebird.min.js}"></script>
+
+    <script type = "text/javascript" src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+    <script type = "text/javascript" src = "https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+
+    <script>
+
+        $(document).ready(function() {
+        });
+
+
+        function saveAsPdf() {
+
+            html2canvas(document.getElementById("demo-dt-basic1")).then(function(canvas) {
+
+                var name = '오답분석.pdf';
+
+                var imgData = canvas.toDataURL('image/png');
+                var imgWidth = 210;
+                var pageHeight = 295;
+                var imgHeight = canvas.height * imgWidth / canvas.width;
+                var heightLeft = imgHeight;
+                var doc = new jsPDF('p', 'mm');
+
+                var x = 3;
+                var y = 10;
+
+                doc.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight-5);   // addImage(imageData, format, x, y, width, height, alias, compression, rotation)
+                heightLeft -= pageHeight;
+
+                while (heightLeft >= 0) {
+                    y = heightLeft - imgHeight;
+                    doc.addPage();
+                    doc.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight-5);   // addImage(imageData, format, x, y, width, height, alias, compression, rotation)
+                    heightLeft -= pageHeight;
+                }
+
+                doc.save(name + '.pdf');
+
+            });
+        }
+    </script>
+
+</th:block>
+</html>

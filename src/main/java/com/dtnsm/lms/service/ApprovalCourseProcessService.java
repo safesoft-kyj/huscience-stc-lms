@@ -43,6 +43,9 @@ public class ApprovalCourseProcessService {
     CourseAccountOrderService courseAccountOrderService;
 
     @Autowired
+    CourseSectionActionService courseSectionActionService;
+
+    @Autowired
     SignatureService signatureService;
 
 //    public void courseRequestProcess(Account account, Course course) {
@@ -77,6 +80,8 @@ public class ApprovalCourseProcessService {
         courseAccount.setCourseStatus(CourseStepStatus.request);
         courseAccount.setFStatus("0");
         courseAccount.setFCurrSeq(1);
+        courseAccount.setFromDate(fromDate);
+        courseAccount.setToDate(toDate);
 
         // 결재자수 Max 설정
         if(isAppr1.equals("Y") && isAppr2.equals("Y")) {
@@ -155,8 +160,33 @@ public class ApprovalCourseProcessService {
         // 과정 생성
         // TODO : 교육신청시 교육과정 생성 유무
 
-        // 사용자별 과정 생성
+        // Course 마스터에 의한 사용자별 교육과정 생성
         createUserCourse(saveCourseAccount, course.getFromDate(), course.getToDate());
+
+        // 사용자별 과정 생성
+        /*
+            self-training	N	N	BC0101
+            class training	Y	Y	BC0102
+            부서별 교육	N	Y	BC0102
+            외부 교육	N	Y	BC0101
+        */
+        // self 교육인 아닌 경우 교육 사전 처리를 진행한다.
+//        if (!saveCourseAccount.getCourse().getCourseMaster().equals("BC0101")) {
+//
+//            // 1.강의 처리(self 교육이외에는 실제 강의가 없음)
+//           for(CourseSectionAction courseSectionAction : saveCourseAccount.getCourseSectionActions()) {
+//               // 강의를 종료 시킨다.
+//               courseSectionAction.setStatus(SectionStatusType.COMPLETE);
+//               courseSectionActionService.save(courseSectionAction);
+//           }
+//
+//            // 2.시험도 없고 설문도 없는 경우 교육 완료 처리
+//            if(course.getIsQuiz().equals("N") && course.getIsSurvey().equals("N")) {
+//                saveCourseAccount.setCourseStatus(CourseStepStatus.complete);
+//
+//                courseAccountService.save(saveCourseAccount);
+//            }
+//        }
     }
 
 
@@ -174,10 +204,16 @@ public class ApprovalCourseProcessService {
                 courseSectionAction.setCourseSection(courseSection);
                 courseSectionAction.setTotalUseSecond(0);
                 courseSectionAction.setRunCount(0);
-                courseSectionAction.setStatus(SectionStatusType.REQUEST);
                 courseSectionAction.setFromDate(fromDate);  // 개인별 교육기간 설정
                 courseSectionAction.setToDate(toDate);      // 개인별 교육기간 설정
-                sectionActionService.save(courseSectionAction);
+                courseSectionAction.setStatus(SectionStatusType.REQUEST);
+                CourseSectionAction courseSectionAction1 = sectionActionService.save(courseSectionAction);
+
+                // self외에는 status를 complete로 변경한다.
+
+                if (!courseAccount.getCourse().getCourseMaster().getId().equals("BC0101")) {
+                    sectionActionService.UpdateCourseSectionActionComplete(courseSectionAction1);
+                }
             }
         }
 
@@ -190,10 +226,10 @@ public class ApprovalCourseProcessService {
                 courseQuizAction.setQuiz(courseQuiz);
                 courseQuizAction.setTotalUseSecond(0);
                 courseQuizAction.setRunCount(0);
-                courseQuizAction.setStatus(QuizStatusType.REQUEST);
                 courseQuizAction.setFromDate(fromDate);  // 개인별 교육기간 설정
                 courseQuizAction.setToDate(toDate);      // 개인별 교육기간 설정
                 courseQuizAction.setQuestionCount(courseQuiz.getQuizQuestions().size());
+                courseQuizAction.setStatus(QuizStatusType.REQUEST);
                 quizActionService.saveQuizAction(courseQuizAction);
             }
         }
@@ -205,10 +241,10 @@ public class ApprovalCourseProcessService {
                 courseSurveyAction.setCourseAccount(courseAccount);
                 courseSurveyAction.setAccount(account);
                 courseSurveyAction.setCourseSurvey(courseSurvey);
-                courseSurveyAction.setStatus(SurveyStatusType.REQUEST);
                 courseSurveyAction.setFromDate(fromDate);  // 개인별 교육기간 설정
                 courseSurveyAction.setToDate(toDate);      // 개인별 교육기간 설정
                 courseSurveyAction.setQuestionCount(courseSurvey.getQuestions().size());
+                courseSurveyAction.setStatus(SurveyStatusType.REQUEST);
                 surveyActionService.saveSurveyAction(courseSurveyAction);
             }
         }
@@ -316,7 +352,8 @@ public class ApprovalCourseProcessService {
             courseAccount.setFStatus("1");
             courseAccount.setCourseStatus(CourseStepStatus.process);
 
-            courseAccountService.save(courseAccount);
+            courseAccount = courseAccountService.save(courseAccount);
+
 
             // 최종 승인이면 기안자에게 메일 전송
             sendMail(courseAccount.getAccount(), courseAccount.getCourse(), MailSendType.APPROVAL2);

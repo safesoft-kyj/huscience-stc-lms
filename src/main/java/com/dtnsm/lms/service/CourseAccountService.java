@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CourseAccountService {
@@ -45,9 +46,14 @@ public class CourseAccountService {
         return courseAccountRepository.findById(id).get();
     }
 
+    public Optional<CourseAccount> getId(long id) {
+        return courseAccountRepository.findById(id);
+    }
+
     public CourseAccount getByCourseIdAndUserId(long courseId, String userId) {
         return courseAccountRepository.findByCourse_IdAndAccount_UserId(courseId, userId);
     }
+
 
 
     public List<CourseAccount> getCourseAccountByCourseId(long courseId) {
@@ -129,6 +135,24 @@ public class CourseAccountService {
 
         return courseAccountRepository.findByAccount_UserIdAndFStatus(userId, status, pageable);
     }
+
+
+    // 과정유형, 사용자, 완결여부로 가져오기(전자결재 팦업창에서 사용)
+    public List<CourseAccount> getAllByCourse_CourseMaster_IdAndAccount_UserIdAndIsCommit(String typeId, String userId, String isCommit) {
+        return courseAccountRepository.findAllByCourse_CourseMaster_IdAndAccount_UserIdAndIsCommit(typeId, userId, isCommit);
+    }
+
+    // 과정유형, 사용자, 완결여부로 가져오기(전자결재 팦업창에서 사용)
+    public Page<CourseAccount> getAllByCourse_CourseMaster_IdAndAccount_UserIdAndIsCommit(String typeId, String userId, String isCommit, Pageable pageable) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+
+        return courseAccountRepository.findAllByCourse_CourseMaster_IdAndAccount_UserIdAndIsCommit(typeId, userId, isCommit, pageable);
+    }
+
+
 
 
     //    public CourseAccount getByCourseIdAndApprUserId1(long courseId, String userId) {

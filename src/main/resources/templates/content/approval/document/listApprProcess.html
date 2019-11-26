@@ -66,13 +66,13 @@
                                         <td th:text="${index.count}" class="text-center"></td>
                                         <td>
                                             <a th:href="@{/document/approvalAppr1/{id}(id=${border.getId()})}">
-                                                <span th:text="${border.getDocumentAccount().getDocument().getTitle()}"></span>
+                                                <span th:text="${border.getDocument().getTitle()}"></span>
                                             </a>
                                         </td>
-                                        <td th:text="${border.getDocumentAccount().getRequestDate()}" class="text-center"></td>
-                                        <td th:text="${border.getDocumentAccount().getAccount().getName()}" class="text-center"></td>
+                                        <td th:text="${border.getDocument().getRequestDate()}" class="text-center"></td>
+                                        <td th:text="${border.getDocument().getAccount().getName()}" class="text-center"></td>
                                         <td class="text-center">
-                                            <div th:switch="${border.getDocumentAccount().getFStatus()}">
+                                            <div th:switch="${border.getDocument().getFStatus()}">
                                                 <span th:case="${'0'}" class="text-info" th:text="${'진행중'}"></span>
                                                 <span th:case="${'1'}" class="text-success" th:text="${'최종승인'}"></span>
                                                 <span th:case="${'2'}" class="text-danger" th:text="${'반려'}"></span>

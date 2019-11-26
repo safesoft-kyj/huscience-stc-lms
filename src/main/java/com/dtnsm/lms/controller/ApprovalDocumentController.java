@@ -4,7 +4,6 @@ import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.DocumentAccountOrder;
 import com.dtnsm.lms.service.ApprovalDocumentProcessService;
 import com.dtnsm.lms.service.DocumentAccountOrderService;
-import com.dtnsm.lms.service.DocumentAccountService;
 import com.dtnsm.lms.service.DocumentService;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
@@ -25,7 +24,7 @@ public class ApprovalDocumentController {
     DocumentService documentService;
 
     @Autowired
-    DocumentAccountService documentAccountService;
+    DocumentService documentAccountService;
 
     @Autowired
     DocumentAccountOrderService documentAccountOrderService;

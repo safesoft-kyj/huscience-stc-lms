@@ -149,7 +149,105 @@ public class DocumentService {
         documentRepository.save(document);
     }
 
-    public long getCount() {
-        return documentRepository.count();
+
+    public Document getByDocumentIdAndUserId(long docId, String userId) {
+        return documentRepository.findByIdAndAccount_UserId(docId, userId);
+    }
+
+
+    public List<Document> getDocumentAccountByDocId(long docId) {
+        return documentRepository.findById(docId);
+    }
+
+    public List<Document> getCourseAccountByUserId(String userId) {
+        return documentRepository.findByAccount_UserId(userId);
+    }
+
+    // 상태별 신청 조회
+    public List<Document> getAllByStatus(String status) {
+
+        return documentRepository.findByFStatus(status);
+    }
+
+    // 상태별 신청 조회
+    public Page<Document> getAllByStatus(String status, Pageable pageable) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+
+        return documentRepository.findByFStatus(status, pageable);
+    }
+
+    // 최종 완결(신청결재, 교육)
+    public List<Document> getCourseAccountIsCommitByUserId(String userId, String isCommit) {
+        return documentRepository.findAllByAccount_UserIdAndIsCommit(userId, isCommit);
+    }
+
+    // 내신청함
+    public Page<Document> getListUserId(String userId, Pageable pageable) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+
+        return documentRepository.findByAccount_UserId(userId, pageable);
+    }
+
+    //진행중 문서
+    public Page<Document> getAllByStatus(String userId, String status, Pageable pageable) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+
+        return documentRepository.findByAccount_UserIdAndFStatus(userId, status, pageable);
+    }
+
+    //진행중 문서
+    public List<Document> getAllByStatus(String userId, String status) {
+        return documentRepository.findByAccount_UserIdAndFStatus(userId, status);
+    }
+
+
+    //완결 조회(기각 제외)
+    public Page<Document> getCustomByUserCommit(String userId, Pageable pageable) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+
+        return documentRepository.findByAccount_UserIdAndFStatus(userId, "1", pageable);
+    }
+
+
+    public List<Document> getCustomListByUserIdAndIsCommit(String userId, String isCommit) {
+
+        return documentRepository.findByAccount_UserIdAndFStatus(userId, isCommit);
+    }
+
+    // 2차결재자(과정 관리자) 미결, 완결 구분
+    public Page<Document> getListApprUserId2AndIsAppr2(String isManagerApproval,  String userId, String status, String isAppr1, Pageable pageable) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+
+        return documentRepository.findByAccount_UserIdAndFStatus(userId, status, pageable);
+    }
+
+    // 과정유형, 사용자, 완결여부로 가져오기(과정 팦업창에서 사용)
+    public List<Document> getAllByDocument_Template_IdAndIsCommit(int templateId, String isCommit) {
+        return documentRepository.findAllByTemplate_IdAndIsCommit(templateId, isCommit);
+    }
+
+    // 과정유형, 사용자, 완결여부로 가져오기(과정 팦업창에서 사용)
+    public Page<Document> getAllByDocument_Template_IdAndIsCommit(int templateId, String isCommit, Pageable pageable) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+
+        return documentRepository.findAllByTemplate_IdAndIsCommit(templateId, isCommit, pageable);
     }
 }

@@ -101,14 +101,14 @@
                             <div class="col-sm-2">
                                 <input type="number" th:field="*{hour}" id="hour" placeholder="hour" class="form-control" required="required">
                             </div>
+                            <span th:if="${#fields.hasErrors('hour')}" th:errors="*{hour}"></span>
                             <label class="col-sm-2 control-label" for="cnt" th:text="#{label.course.peoplecount}">교육정원</label>
                             <div class="col-sm-4">
                                 <input type="number" th:field="*{cnt}" id="cnt" placeholder="교육정원" class="form-control" required="required">
                             </div>
+                            <span th:if="${#fields.hasErrors('cnt')}" th:errors="*{cnt}"></span>
                         </div>
                         <div class="form-group">
-                            <span th:if="${#fields.hasErrors('cnt')}" th:errors="*{cnt}"></span>
-                            <span th:if="${#fields.hasErrors('hour')}" th:errors="*{hour}"></span>
                             <label class="col-sm-2 control-label" th:text="#{label.course.isbook}">교제제공여부</label>
                             <div class="col-sm-4">
                                 <select th:field="*{isBook}" class="form-control">
@@ -116,7 +116,7 @@
                                     <option value="N" >N</option>
                                 </select>
                             </div>
-                            <span th:if="${#fields.hasErrors('isQuiz')}" th:errors="*{isQuiz}"></span>
+                            <span th:if="${#fields.hasErrors('isBook')}" th:errors="*{isBook}"></span>
                             <label class="col-sm-2 control-label" th:text="#{label.course.isquiz}">시험진행여부</label>
                             <div class="col-sm-4">
                                 <select th:field="*{isQuiz}" class="form-control">
@@ -124,6 +124,7 @@
                                     <option value="N" >N</option>
                                 </select>
                             </div>
+                            <span th:if="${#fields.hasErrors('isQuiz')}" th:errors="*{isQuiz}"></span>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label" th:text="#{label.course.iscerti}">수료증여부</label>

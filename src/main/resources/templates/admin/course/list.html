@@ -84,17 +84,17 @@
 
                                             <th:block th:unless="${#strings.equalsIgnoreCase(border.getCourseMaster().getId(), 'BC0101')}">
                                                 <th:block th:if="${#strings.equalsIgnoreCase(border.getRequestFromDate(), border.getRequestToDate())}">
-                                                    <div th:text="${border.getRequestFromDate()}"></div>
+                                                    <span th:text="${border.getRequestFromDate()}"></span>&nbsp;/&nbsp;
                                                 </th:block>
                                                 <th:block th:unless="${#strings.equalsIgnoreCase(border.getRequestFromDate(), border.getRequestToDate())}">
-                                                    <div th:text="${border.getRequestFromDate() + '~' + border.getRequestToDate()}"></div>
+                                                    <span th:text="${border.getRequestFromDate() + '~' + border.getRequestToDate()}"></span>&nbsp;/&nbsp;
                                                 </th:block>
 
                                                 <th:block th:if="${#strings.equalsIgnoreCase(border.getFromDate(), border.getToDate())}">
-                                                    <div th:text="${border.getFromDate()}"></div>
+                                                    <span th:text="${border.getFromDate()}"></span>
                                                 </th:block>
                                                 <th:block th:unless="${#strings.equalsIgnoreCase(border.getFromDate(), border.getToDate())}">
-                                                    <div th:text="${border.getFromDate() + '~' + border.getToDate()}"></div>
+                                                    <span th:text="${border.getFromDate() + '~' + border.getToDate()}"></span>
                                                 </th:block>
                                             </th:block>
                                         </td>

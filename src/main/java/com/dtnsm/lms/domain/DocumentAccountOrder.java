@@ -51,5 +51,5 @@ public class DocumentAccountOrder extends AuditorEntity<String> {
 
     @ManyToOne
     @JoinColumn(name = "doc_no")
-    private DocumentAccount documentAccount;
+    private Document document;
 }

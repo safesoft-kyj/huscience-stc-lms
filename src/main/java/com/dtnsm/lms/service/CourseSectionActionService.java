@@ -1,6 +1,8 @@
 package com.dtnsm.lms.service;
 
+import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.domain.CourseSectionAction;
+import com.dtnsm.lms.domain.constant.SectionStatusType;
 import com.dtnsm.lms.repository.CourseSectionActionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,24 @@ public class CourseSectionActionService {
 
     public List<CourseSectionAction> getAllByUserId(String userId) {
         return sectionActionRepository.findAllByAccount_UserId(userId);
+    }
+
+    // self 교육이 아닌경우 강의상태를 종료 시킨다.
+    public CourseSectionAction UpdateCourseSectionActionComplete(CourseSectionAction courseSectionAction) {
+
+        CourseAccount courseAccount = courseSectionAction.getCourseAccount();
+
+        CourseSectionAction courseSectionAction1 = null;
+
+        if (!courseAccount.getCourse().getCourseMaster().getId().equals("BC0101")) {
+
+            // 1.강의 처리(self 교육이외에는 실제 강의가 없음)
+            // 강의를 종료 시킨다.
+            courseSectionAction.setStatus(SectionStatusType.COMPLETE);
+            courseSectionAction1 = sectionActionRepository.save(courseSectionAction);
+        }
+
+        return courseSectionAction1;
     }
 
 }

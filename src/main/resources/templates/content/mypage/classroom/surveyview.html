@@ -28,47 +28,20 @@
 
     <style>
 
-        body {
-            padding-top: 250px;
+        #wrap {
+            padding-top: 235px;
         }
 
-        #layer_top
-        {
-            /*height:100px;*/
-            /*width:100%;*/
-            /*color: #555;*/
-            /*font-size:12px;*/
-            /*position: fixed;*/
-            z-index:9999;
-            /*top:0px;*/
-            /*left:40px;*/
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-
-            height: 250px;
-            padding: 1rem;
-            /*background: teal;*/
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .navbar-fixed-top {
+            background: #3A444E;
+            color: white;
         }
 
-        /*#layer_body*/
-        /*{*/
-        /*    height:35px;*/
-        /*    width:95%;*/
-        /*    color: #555;*/
-        /*    font-size:12px;*/
-        /*    position:sticky;*/
-        /*    !*z-index:997;*!*/
-        /*    top:200px;*/
-        /*    left:30px;*/
-        /*    overflow-scrolling: auto;*/
-        /*}*/
 
+        td {
+            background: gray;
+            color: black;
+        }
 
     </style>
 
@@ -76,106 +49,115 @@
 <!--<body oncontextmenu="return false">-->
 <body>
 
-<div id="container" class="effect aside-float aside-bright mainnav-lg">
-
-    <div class="panel" id="layer_top">
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-sm-7">
-                    <h3 class="text-primary" th:text="${surveyAction.getCourseSurvey().getName()}"></h3>
+<div id="wrap">
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm12">
+                        <h3 class="text-light" th:text="${surveyAction.getCourseSurvey().getName()}"></h3>
+                    </div>
                 </div>
-                <div class="col-sm-5 text-right">
-                    <h3 class="demo-icon btn btn-success" onclick="form_submit();return false;" id="sendAnswer"><span th:text="#{label.course.survey.submit}">설문 제출</span></h3>
-                    <h3 class="demo-icon btn btn-warning" onclick="closeWindow();"><i class="ti-close"></i> <span th:text="#{label.end}">종료</span></h3>
+                <div class="row">
+                    <div class="col-sm-12 text-right">
+                        <h3 class="demo-icon btn btn-info" onclick="form_submit();" id="sendAnswer"><i class="ti-save"></i> <span>설문 제출</span></h3>
+                        <h3 class="demo-icon btn btn-mint" onclick="closeWindow();"><i class="ti-close"></i> <span th:text="#{label.end}">종료</span></h3>
+                    </div>
                 </div>
-                <table class="table table-striped table-bordered" cellspacing="0" width="100%" style="overflow-scrolling: auto;">
-                    <tbody>
-                    <tr>
-                        <th:block th:each="question, index : ${surveyAction.getCourseSurvey().getQuestions()}">
-                            <td class="text-center" th:if="${#strings.equalsIgnoreCase(question.getSurveyGubun(), 'M')}">
-                                <a th:href="${'#' + question.getId()}" th:text="${index.count + '번'}"></a>
-                            </td>
-                        </th:block>
-                    <tr>
-                        <th:block th:each="question, index : ${surveyAction.getCourseSurvey().getQuestions()}">
-                            <td class="text-center" th:if="${#strings.equalsIgnoreCase(question.getSurveyGubun(), 'M')}">
-                                <span th:id="${'question-' + question.getId()}" th:text="${'미입력'}"></span>
-                            </td>
-                        </th:block>
-                    </tr>
-                    </tbody>
-                </table>
+                <br>
+                <div class="row">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered" cellspacing="0" width="100%">
+                            <tbody>
+                            <tr>
+                                <th:block th:each="question, index : ${surveyAction.getCourseSurvey().getQuestions()}">
+                                    <th class="text-center bg-dark" th:if="${#strings.equalsIgnoreCase(question.getSurveyGubun(), 'M')}">
+                                        <a th:href="${'#' + question.getId()}" th:text="${index.count + '번'}"></a>
+                                    </th>
+                                </th:block>
+                            <tr>
+                                <th:block th:each="question, index : ${surveyAction.getCourseSurvey().getQuestions()}">
+                                    <td class="text-center text-light" th:if="${#strings.equalsIgnoreCase(question.getSurveyGubun(), 'M')}">
+                                        <span th:id="${'question-' + question.getId()}" th:text="${'미입력'}"></span>
+                                    </td>
+                                </th:block>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+    <!-- Begin page content -->
+    <div class="container">
+        <div class="panel">
+            <div class="panel-body">
+                <form class="form-horizontal" id="boardFrm" th:action="@{/mypage/classroom/surveyview-post/{surveyActionId}(surveyActionId=${surveyAction.getId()})}" method="post" >
+                    <th:block th:each="question, index : ${surveyAction.getCourseSurvey().getQuestions()}">
 
-
-
-    <div class="panel">
-        <div class="panel-body">
-            <form class="form-horizontal" id="boardFrm" th:action="@{/mypage/classroom/surveyview-post/{surveyActionId}(surveyActionId=${surveyAction.getId()})}" method="post" >
-                <th:block th:each="question, index : ${surveyAction.getCourseSurvey().getQuestions()}">
-
-                    <div class="panel" th:id="${question.getId()}">
-                        <div class="panel-body">
-                            <div class="row">
-                                <div th:text="${index.count + '. ' + question.getQuestion()}"></div>
-                            </div>
-                            <th:block th:if="${#strings.equalsIgnoreCase(question.getSurveyGubun(), 'S')}">
+                        <div class="panel" th:id="${question.getId()}">
+                            <div class="panel-body">
                                 <div class="row">
-                                    <div class="form-group pad-ver">
-                                        <div class="col-md-12">
-                                            <textarea rows="5" style="width:800px;" th:name="${'question-'+question.getId()}"></textarea>
+                                    <div th:text="${index.count + '. ' + question.getQuestion()}"></div>
+                                </div>
+                                <th:block th:if="${#strings.equalsIgnoreCase(question.getSurveyGubun(), 'S')}">
+                                    <div class="row">
+                                        <div class="form-group pad-ver">
+                                            <div class="col-md-12">
+                                                <textarea rows="5" style="width:800px;" th:name="${'question-'+question.getId()}"></textarea>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </th:block>
+                                </th:block>
 
 
 
-                            <th:block th:if="${#strings.equalsIgnoreCase(question.getSurveyGubun(), 'M')}">
-                            <div class="row">
-                                <div class="form-group pad-ver">
-                                    <div class="col-md-12 ">
-                                        <!-- Radio Buttons -->
-                                        <th:block th:unless="${#strings.isEmpty(question.getEx1())}">
-                                            <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx1(), '')}">
-                                                <input th:id="${question.getId() + '-ex-1'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" th:value="${question.getEx1_score()}">
-                                                <label th:for="${question.getId() + '-ex-1'}" th:text="${question.getEx1()}"></label>
+                                <th:block th:if="${#strings.equalsIgnoreCase(question.getSurveyGubun(), 'M')}">
+                                    <div class="row">
+                                        <div class="form-group pad-ver">
+                                            <div class="col-md-12 ">
+                                                <!-- Radio Buttons -->
+                                                <th:block th:unless="${#strings.isEmpty(question.getEx1())}">
+                                                    <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx1(), '')}">
+                                                        <input th:id="${question.getId() + '-ex-1'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" th:value="${question.getEx1_score()}">
+                                                        <label th:for="${question.getId() + '-ex-1'}" th:text="${question.getEx1()}"></label>
+                                                    </div>
+                                                </th:block>
+                                                <th:block th:unless="${#strings.isEmpty(question.getEx2())}">
+                                                    <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx2(), '')}">
+                                                        <input th:id="${question.getId() + '-ex-2'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" th:value="${question.getEx2_score()}">
+                                                        <label th:for="${question.getId() + '-ex-2'}" th:text="${question.getEx2()}"></label>
+                                                    </div>
+                                                </th:block>
+                                                <th:block th:unless="${#strings.isEmpty(question.getEx3())}">
+                                                    <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx3(), '')}">
+                                                        <input th:id="${question.getId() + '-ex-3'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" th:value="${question.getEx3_score()}">
+                                                        <label th:for="${question.getId() + '-ex-3'}" th:text="${question.getEx3()}"></label>
+                                                    </div>
+                                                </th:block>
+                                                <th:block th:unless="${#strings.isEmpty(question.getEx4())}">
+                                                    <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx4(), '')}">
+                                                        <input th:id="${question.getId() + '-ex-4'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" th:value="${question.getEx4_score()}">
+                                                        <label th:for="${question.getId() + '-ex-4'}" th:text="${question.getEx4()}"></label>
+                                                    </div>
+                                                </th:block>
+                                                <th:block th:unless="${#strings.isEmpty(question.getEx5())}">
+                                                    <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx5(), '')}">
+                                                        <input th:id="${question.getId() + '-ex-5'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" th:value="${question.getEx5_score()}">
+                                                        <label th:for="${question.getId() + '-ex-5'}" th:text="${question.getEx5()}"></label>
+                                                    </div>
+                                                </th:block>
                                             </div>
-                                        </th:block>
-                                        <th:block th:unless="${#strings.isEmpty(question.getEx2())}">
-                                            <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx2(), '')}">
-                                                <input th:id="${question.getId() + '-ex-2'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" th:value="${question.getEx2_score()}">
-                                                <label th:for="${question.getId() + '-ex-2'}" th:text="${question.getEx2()}"></label>
-                                            </div>
-                                        </th:block>
-                                        <th:block th:unless="${#strings.isEmpty(question.getEx3())}">
-                                            <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx3(), '')}">
-                                                <input th:id="${question.getId() + '-ex-3'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" th:value="${question.getEx3_score()}">
-                                                <label th:for="${question.getId() + '-ex-3'}" th:text="${question.getEx3()}"></label>
-                                            </div>
-                                        </th:block>
-                                        <th:block th:unless="${#strings.isEmpty(question.getEx4())}">
-                                            <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx4(), '')}">
-                                                <input th:id="${question.getId() + '-ex-4'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" th:value="${question.getEx4_score()}">
-                                                <label th:for="${question.getId() + '-ex-4'}" th:text="${question.getEx4()}"></label>
-                                            </div>
-                                        </th:block>
-                                        <th:block th:unless="${#strings.isEmpty(question.getEx5())}">
-                                            <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx5(), '')}">
-                                                <input th:id="${question.getId() + '-ex-5'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" th:value="${question.getEx5_score()}">
-                                                <label th:for="${question.getId() + '-ex-5'}" th:text="${question.getEx5()}"></label>
-                                            </div>
-                                        </th:block>
+                                        </div>
                                     </div>
-                                </div>
+                                </th:block>
                             </div>
-                            </th:block>
                         </div>
-                    </div>
-                </th:block>
-            </form>
+                    </th:block>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -243,7 +225,7 @@
 
     function radioEvent(name, val) {
         tmp_int += 1;
-        $('#' + name).html("<span class='text-success answer'>" + val + "</span>");
+        $('#' + name).html("<string><span class='text-light answer'>" + val + "</span></string>");
         return false;
     }
 

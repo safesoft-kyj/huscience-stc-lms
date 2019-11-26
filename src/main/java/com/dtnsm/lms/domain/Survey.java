@@ -28,6 +28,10 @@ public class Survey extends AuditorCreateEntity<String> {
     @Column(name="name")
     private String name;
 
+    // 1: 기본 설문, 0:선택 설문
+    @ColumnDefault("0")
+    private int isActive = 0;
+
     @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SurveyFile> surveyFiles = new ArrayList<>();
 

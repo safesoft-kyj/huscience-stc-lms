@@ -1,6 +1,5 @@
 package com.dtnsm.lms.controller;
 
-import com.dtnsm.common.entity.Signature;
 import com.dtnsm.common.repository.SignatureRepository;
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.*;
@@ -29,7 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -48,9 +46,6 @@ public class DocumentController {
 
     @Autowired
     DocumentTemplateService templateService;
-
-    @Autowired
-    private DocumentAccountService documentAccountService;
 
     @Autowired
     private DocumentAccountOrderService documentAccountOrderService;
@@ -74,10 +69,13 @@ public class DocumentController {
     @Autowired
     SignatureRepository signatureRepository;
 
+    @Autowired CourseService courseService;
+
+    @Autowired
+    CourseAccountService courseAccountService;
+
 
     private PageInfo pageInfo = new PageInfo();
-
-    private BorderMaster borderMaster;
 
     private MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
 
@@ -144,24 +142,45 @@ public class DocumentController {
         return "content/document/view";
     }
 
+
+
     @GetMapping("/add/{templateId}")
     public String noticeAdd(@PathVariable("templateId") int templateId, Model model) {
 
         DocumentTemplate template = templateService.getById(templateId);
 
-        Document border = new Document();
-        border.setTemplate(template);
-        border.setTitle("[" + template.getTitle() + "]");
-        border.setContent(template.getContent());
+        Document document = new Document();
+        document.setTemplate(template);
+        document.setTitle("[" + template.getTitle() + "]");
+        document.setContent(template.getContent());
 
-
-        pageInfo.setPageTitle(template.getTitle() + " 등록");
+        pageInfo.setPageTitle(template.getTitle());
 
         model.addAttribute(pageInfo);
-        model.addAttribute("border", border);
+        model.addAttribute("document", document);
         model.addAttribute("mailList", userService.getAccountList());
 
         return "content/document/add";
+    }
+
+    @GetMapping("/popupCourse/{typeId}")
+    public String popupCourse(@PathVariable("typeId") String typeId, Model model, Pageable pageable) {
+
+        Page<CourseAccount> coursePorcessList = courseAccountService.getAllByCourse_CourseMaster_IdAndAccount_UserIdAndIsCommit("BC0104", SessionUtil.getUserId(), "0", pageable);
+        Page<CourseAccount> courseComplteList = courseAccountService.getAllByCourse_CourseMaster_IdAndAccount_UserIdAndIsCommit("BC0104", SessionUtil.getUserId(), "1", pageable);
+
+//        Document border = new Document();
+//        border.setTemplate(template);
+//        border.setTitle("[" + template.getTitle() + "]");
+//        border.setContent(template.getContent());
+//
+//        pageInfo.setPageTitle(template.getTitle());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("processList", coursePorcessList);
+        model.addAttribute("completeList", courseComplteList);
+
+        return "content/document/popupCourse";
     }
 
     @PostMapping("/add-post")
@@ -171,7 +190,12 @@ public class DocumentController {
             , @RequestParam("files") MultipartFile[] files
             , BindingResult result) {
         if(result.hasErrors()) {
-            return "document/add/" + document.getTemplate().getId();
+            //return "document/add/" + document.getTemplate().getId();
+            return "redirect:/document/add/" + document.getTemplate().getId();
+        }
+
+        if (document.getTemplate().getId() == 8) {
+            if (document.getCourseAccount().getId() == 0) return "redirect:/document/add/" + document.getTemplate().getId();
         }
 
         boolean isMail = mails[0].equals("0") ? false : true;
@@ -181,6 +205,22 @@ public class DocumentController {
         }
 
         DocumentTemplate template = templateService.getById(document.getTemplate().getId());
+
+
+        //  교육과정 미선택시(교육참석보고시에만 선택됨)
+        if (document.getCourseAccount() != null) {
+            logger.info("===================================================" + document.getCourseAccount());
+
+            if (document.getCourseAccount().getId() >= 0) {
+
+                Optional<CourseAccount> courseAccount = courseAccountService.getId(document.getCourseAccount().getId());
+
+                if(courseAccount.isPresent()) {
+                    document.setCourseAccount(courseAccount.get());
+                }
+            }
+        }
+
 
         document.setAccount(userService.getAccountByUserId(SessionUtil.getUserId()));
         document.setTemplate(template);
@@ -252,14 +292,14 @@ public class DocumentController {
 //        document.setDocumentAccountList(documentAccountList);
 
 
-        if (oldDocument.getDocumentAccountList().size() > 0) {
+        if (oldDocument != null) {
 
+            document.setCourseAccount(oldDocument.getCourseAccount());
             document.setDocumentFiles(oldDocument.getDocumentFiles());
             document.setDocumentCourseAccountList(oldDocument.getDocumentCourseAccountList());
-            document.setDocumentAccountList(oldDocument.getDocumentAccountList());
 
             // 다음결재자가 결재를 하지 않은 경우는 수정한다.
-            if (oldDocument.getDocumentAccountList().get(0).getFCurrSeq() <= 1) {
+            if (oldDocument.getFCurrSeq() <= 1) {
 
                 Document document1 = documentService.save(document);
 
@@ -280,9 +320,9 @@ public class DocumentController {
         Document document = documentService.getById(id);
 
         // 다음결재자가 결재를 하지 않은 경우는 삭제한다.
-        if (document.getDocumentAccountList().size() > 0) {
+        if (document != null) {
 
-            if (document.getDocumentAccountList().get(0).getFCurrSeq() <= 1) {
+            if (document.getFCurrSeq() <= 1) {
 
                 documentService.delete(document);
 
@@ -338,13 +378,12 @@ public class DocumentController {
     @GetMapping("/approval/{id}")
     public String approval(@PathVariable("id") long docId, Model model) {
 
-        DocumentAccount documentAccount = documentAccountService.getById(docId);
+        Document document = documentService.getById(docId);
 
-        pageInfo.setPageTitle(documentAccount.getDocument().getTemplate().getTitle() + " 상세");
+        pageInfo.setPageTitle(document.getTemplate().getTitle() + " 상세");
 
         model.addAttribute(pageInfo);
-        model.addAttribute("document", documentAccount.getDocument());
-        model.addAttribute("documentAccount", documentAccount);
+        model.addAttribute("document", document);
         model.addAttribute("signature", GlobalUtil.getSignature(signatureRepository, SessionUtil.getUserId()));
 
         return "content/document/approval";
@@ -356,13 +395,12 @@ public class DocumentController {
 
         DocumentAccountOrder documentAccountOrder = documentAccountOrderService.getById(orderId);
 
-        DocumentAccount documentAccount = documentAccountOrder.getDocumentAccount();
+        Document document = documentAccountOrder.getDocument();
 
-        pageInfo.setPageTitle(documentAccount.getDocument().getTemplate().getTitle() + " 상세");
+        pageInfo.setPageTitle(document.getTemplate().getTitle() + " 상세");
 
         model.addAttribute(pageInfo);
-        model.addAttribute("document", documentAccount.getDocument());
-        model.addAttribute("documentAccount", documentAccount);
+        model.addAttribute("document", document);
         model.addAttribute("documentAccountOrder", documentAccountOrder);
         model.addAttribute("userId", SessionUtil.getUserId());
 
@@ -373,14 +411,13 @@ public class DocumentController {
     @GetMapping("/approvalAppr2/{id}")
     public String approvalAppr2(@PathVariable("id") long docId, Model model) {
 
-        DocumentAccount documentAccount = documentAccountService.getById(docId);
+        Document document = documentService.getById(docId);
 
-        pageInfo.setPageTitle(documentAccount.getDocument().getTemplate().getTitle() + " 상세");
+        pageInfo.setPageTitle(document.getTemplate().getTitle() + " 상세");
 
         model.addAttribute(pageInfo);
-        model.addAttribute("document",  documentAccount.getDocument());
-        model.addAttribute("documentAccount", documentAccount);
-        model.addAttribute("documentAccountOrder", documentAccount.getDocumentAccountOrders());
+        model.addAttribute("document",  document);
+        model.addAttribute("documentAccountOrder", document.getDocumentAccountOrders());
         model.addAttribute("userId", SessionUtil.getUserId());
         return "content/document/approvalAppr2";
     }

@@ -2,14 +2,17 @@ package com.dtnsm.lms.controller.RestController;
 
 import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.domain.CourseAccountOrder;
-import com.dtnsm.lms.domain.DocumentAccount;
+import com.dtnsm.lms.domain.Document;
 import com.dtnsm.lms.domain.DocumentAccountOrder;
 import com.dtnsm.lms.service.CourseAccountOrderService;
 import com.dtnsm.lms.service.CourseAccountService;
 import com.dtnsm.lms.service.DocumentAccountOrderService;
-import com.dtnsm.lms.service.DocumentAccountService;
+import com.dtnsm.lms.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +29,7 @@ public class ApprovalRestController {
     CourseAccountOrderService courseAccountOrderService;
 
     @Autowired
-    DocumentAccountService documentAccountService;
+    DocumentService documentService;
 
     @Autowired
     DocumentAccountOrderService documentAccountOrderService;
@@ -57,10 +60,10 @@ public class ApprovalRestController {
         List<DocumentAccountOrder> documentAccountList = documentAccountOrderService.getAllByNext(userId, "1", "0");
 
         // 전자결재 미결건
-        List<DocumentAccount> documentAccountList3 = documentAccountService.getAllByStatus("0");
+        List<Document> documentAccountList3 = documentService.getAllByStatus("0");
 
         // 전자결재 진행중인 건
-        List<DocumentAccount> documentAccountList2 = documentAccountService.getAllByStatus(userId, "0");
+        List<Document> documentAccountList2 = documentService.getAllByStatus(userId, "0");
 
 
         // 사용자별 결재 미결건

@@ -1,13 +1,14 @@
 package com.dtnsm.lms.service;
 
-import com.dtnsm.lms.domain.CourseSection;
-import com.dtnsm.lms.domain.CourseSectionFile;
+import com.dtnsm.lms.domain.*;
+import com.dtnsm.lms.domain.constant.SectionStatusType;
 import com.dtnsm.lms.repository.CourseSectionRepository;
 import com.dtnsm.lms.exception.FileUploadException;
 import com.dtnsm.lms.properties.FileUploadProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,6 +23,15 @@ public class CourseSectionService {
 
     @Autowired
     CourseSectionFileService sectionFileService;
+
+    @Autowired
+    CourseSectionActionService courseSectionActionService;
+
+
+
+
+    @Autowired
+    CodeService codeService;
 
     private final Path fileLocation;
 
@@ -72,4 +82,45 @@ public class CourseSectionService {
         return sectionRepository.findById(id).get();
     }
 
+
+    // 교육과정의 첫번재 강의를 등록한다.
+    public void CreateAutoSection(Course course) {
+
+        // 과정에 등록된 강의 시간 정보를 가지고 온다.
+        float hour = course.getHour();
+
+        CourseSection courseSection = new CourseSection();
+        courseSection.setName(course.getTitle());
+        courseSection.setDescription("");
+        courseSection.setTeacher("");
+        courseSection.setStudyDate(course.getToDate());
+        courseSection.setCourse(course);
+        courseSection.setHour(hour);
+        courseSection.setMinute(Math.round(courseSection.getHour() * 60));
+        courseSection.setSecond(Math.round(courseSection.getMinute() * 60));
+        saveSection(courseSection);
+    }
+
+    // 교육과정의 첫번재 강의를 등록한다.
+    public void CreateAutoSection(Course course, MultipartFile file) {
+
+        // 과정에 등록된 강의 시간 정보를 가지고 온다.
+        float hour = course.getHour();
+
+        CourseSection courseSection = new CourseSection();
+        courseSection.setName(course.getTitle());
+        courseSection.setDescription("");
+        courseSection.setTeacher("");
+        courseSection.setStudyDate(course.getToDate());
+        courseSection.setCourse(course);
+        courseSection.setHour(hour);
+        courseSection.setMinute(Math.round(courseSection.getHour() * 60));
+        courseSection.setSecond(Math.round(courseSection.getMinute() * 60));
+        CourseSection courseSection1 = saveSection(courseSection);
+
+        // 문제파일을 업로드 하고 테이블에 insert 한다.
+        if (file != null) {
+            sectionFileService.storeFile(file, courseSection1);
+        }
+    }
 }

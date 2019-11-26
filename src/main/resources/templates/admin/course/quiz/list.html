@@ -72,7 +72,8 @@
                                         <td th:text="${border.getName()}"></a></td>
                                         <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy-MMM-dd')} : ${border.getCreatedDate()}" class="text-center"></td>
                                         <td class="text-center">
-                                            <a th:href="@{/admin/course/quiz/view/{id}(id=${border.getId()})}"><span class="badge badge-mint" th:text="#{label.view}"></span></a>
+                                            <a th:href="@{/admin/course/quiz/view/{id}(id=${border.getId()})}"><span class="badge badge-mint" th:text="#{label.title.quiz}"></span></a>
+                                            <a th:href="@{/admin/course/quiz/report/{id}(id=${border.getId()})}"><span class="badge badge-info" th:text="#{label.title.report}"></span></a>
                                             <!--                                            <a class="label label-warning" th:href="@{/admin/course/section/add/{id}(id=${border.getId()})}" th:text="#{label.course.add}">강의등록</a>-->
                                         </td>
                                         <td class="text-center">

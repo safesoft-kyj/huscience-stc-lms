@@ -29,6 +29,11 @@ public class CourseQuiz extends AuditorCreateEntity<String> {
     @Column(name="name")
     private String name;
 
+    // 총학습시간(시)
+    @Column(name="exam_hour", columnDefinition="numeric(5,2)")
+    @ColumnDefault("0")
+    private float hour;
+
     // 총시험시간(분)
     @Column(name="exam_minute")
     @ColumnDefault("0")

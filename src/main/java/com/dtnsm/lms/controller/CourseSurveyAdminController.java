@@ -2,6 +2,7 @@ package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.mybatis.dto.ReportForm1;
+import com.dtnsm.lms.mybatis.dto.ReportForm3;
 import com.dtnsm.lms.mybatis.service.ReportMapperService;
 import com.dtnsm.lms.service.CodeService;
 import com.dtnsm.lms.service.CourseService;
@@ -15,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -96,31 +98,8 @@ public class CourseSurveyAdminController {
         // Section 저장
         CourseSurvey courseSurvey1 = courseSurveyService.saveSurvey(courseSurvey);
 
-
-        if(courseSurvey1.getSurvey() != null) {
-
-            // 설문 template을 과정 설문에 복사
-            for(SurveyQuestion surveyQuestion : courseSurvey.getSurvey().getSurveyQuestions()) {
-
-                CourseSurveyQuestion courseSurveyQuestion = new CourseSurveyQuestion();
-                courseSurveyQuestion.setCourseSurvey(courseSurvey1);
-                courseSurveyQuestion.setQuestion(surveyQuestion.getQuestion());
-                courseSurveyQuestion.setEx1(surveyQuestion.getEx1());
-                courseSurveyQuestion.setEx2(surveyQuestion.getEx2());
-                courseSurveyQuestion.setEx3(surveyQuestion.getEx3());
-                courseSurveyQuestion.setEx4(surveyQuestion.getEx4());
-                courseSurveyQuestion.setEx5(surveyQuestion.getEx5());
-                courseSurveyQuestion.setEx1_score(surveyQuestion.getEx1_score());
-                courseSurveyQuestion.setEx2_score(surveyQuestion.getEx2_score());
-                courseSurveyQuestion.setEx3_score(surveyQuestion.getEx3_score());
-                courseSurveyQuestion.setEx4_score(surveyQuestion.getEx4_score());
-                courseSurveyQuestion.setEx5_score(surveyQuestion.getEx5_score());
-                courseSurveyQuestion.setSurveyGubun(surveyQuestion.getSurveyGubun());
-
-                courseSurveyService.saveSurveyQuestion(courseSurveyQuestion);
-            }
-
-        }
+        // 선택된 설문을 복사한다.
+        courseSurveyService.CopySurveyQuestion(courseSurvey1);
 
         return "redirect:/admin/course/list/" + courseSurvey1.getCourse().getCourseMaster().getId();
     }
@@ -197,11 +176,23 @@ public class CourseSurveyAdminController {
 
         List<ReportForm1> borders = reportMapperService.getSurveyReport(courseSurvey.getCourse().getId());
 
+        List<ReportForm3> shoutQuestionsAnswer = reportMapperService.getSurveyReport2(courseSurvey.getCourse().getId());
+
+
+        List<CourseSurveyQuestion> shoutQuestions = new ArrayList<>();
+        for(CourseSurveyQuestion courseSurveyQuestion : courseSurvey.getQuestions()) {
+            if (courseSurveyQuestion.getSurveyGubun().equals("S")) {
+                shoutQuestions.add(courseSurveyQuestion);
+            }
+        }
+
         pageInfo.setPageId("self");
         pageInfo.setPageTitle(courseSurvey.getName());
 
         model.addAttribute(pageInfo);
         model.addAttribute("borders", borders);
+        model.addAttribute("shoutQuestions", shoutQuestions);
+        model.addAttribute("shoutQuestionsAnswer", shoutQuestionsAnswer);
         model.addAttribute("courseId", courseSurvey.getCourse().getId());
 
         return "admin/course/survey/report";

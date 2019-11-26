@@ -47,7 +47,7 @@
                     <!--End Horizontal Form-->
                     <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/section/edit-post/{id}(id=${courseSection.getId()})}" th:object="${courseSection}" method="post" enctype="multipart/form-data" >
                         <input type="hidden" th:value="${id}" id="id" name="id">
-                        <input type="hidden" th:field="*{type}" id="type" >
+<!--                        <input type="hidden" th:field="*{type}" id="type" >-->
 <!--                        <div class="form-group">-->
 <!--                            <label class="col-sm-2 control-label" th:text="#{label.gubun}">구분</label>-->
 <!--                            <div class="col-sm-10">-->

@@ -25,6 +25,16 @@ public class CourseAccount extends AuditorEntity<String> {
     @JoinColumn(name = "course_id")
     private Course course;
 
+    // 시작일
+    @Column(length = 10)
+    @ColumnDefault("'1900-01-01'")
+    private String fromDate;
+
+    // 종료일
+    @Column(length = 10)
+    @ColumnDefault("'1900-01-01'")
+    private String toDate;
+
     // 교육 신청자
     @ManyToOne
     @JoinColumn(name = "user_id",columnDefinition="VARCHAR(30)")
@@ -63,6 +73,12 @@ public class CourseAccount extends AuditorEntity<String> {
     @Column(length = 1)
     @ColumnDefault("'0'")
     private String fStatus = "0";
+
+//    @Column(nullable = true)
+//    @ManyToOne
+//    @JoinColumn(name = "document_id")
+    @ColumnDefault("0")
+    private long document_id=0;
 
     @OneToMany(mappedBy = "courseAccount", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CourseSectionAction> courseSectionActions = new ArrayList<>();

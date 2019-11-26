@@ -37,6 +37,13 @@ public interface CourseAccountRepository extends JpaRepository<CourseAccount, Lo
 
     Page<CourseAccount> findByFStatus(String status, Pageable pageable);
 
+    // 과정유형, 사용자, 완결여부로 가져오기(전자결재 팦업창에서 사용)
+    Page<CourseAccount> findAllByCourse_CourseMaster_IdAndAccount_UserIdAndIsCommit(String typeId, String userId, String isCommit, Pageable pageable);
+
+    List<CourseAccount> findAllByCourse_CourseMaster_IdAndAccount_UserIdAndIsCommit(String typeId, String userId, String isCommit);
+
+
+
 
     //    CourseAccount findByCourse_IdAndApprUserId1_UserId(long courseId, String userId);
 //

@@ -25,4 +25,8 @@ public class DocumentCourseAccount extends AuditorEntity<String> {
     @ManyToOne
     @JoinColumn(name = "user_id",columnDefinition="VARCHAR(30)")
     private Account account;
+
+    // 교육과정 등록 완료 여부 (0:미적용, 1:적용)
+    @ColumnDefault("'0'")
+    private String isCommit = "0";
 }

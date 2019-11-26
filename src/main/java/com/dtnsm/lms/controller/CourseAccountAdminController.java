@@ -42,7 +42,7 @@ public class CourseAccountAdminController {
 
     public CourseAccountAdminController() {
         pageInfo.setParentId("m-course");
-        pageInfo.setParentTitle("교육대상자");
+        pageInfo.setParentTitle("교육수강생");
 
         //courseMaster = courseMasterService.getById("A01");
     }
@@ -53,7 +53,7 @@ public class CourseAccountAdminController {
         Course course = courseService.getCourseById(courseId);
 
         pageInfo.setPageId("m-course-list-page");
-        pageInfo.setPageTitle("교육대상자 조회");
+        pageInfo.setPageTitle(course.getTitle());
         model.addAttribute(pageInfo);
         model.addAttribute("borders", course.getCourseAccountList());
         model.addAttribute("typeId", course.getCourseMaster().getId());
@@ -64,7 +64,7 @@ public class CourseAccountAdminController {
     @GetMapping("/add/{courseId}")
     public String courseAccountAdd(@PathVariable("courseId") Long courseId, Model model) {
 
-        pageInfo.setPageTitle("필수교육자 등록");
+        pageInfo.setPageTitle("수강생 등록");
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseId", courseId);

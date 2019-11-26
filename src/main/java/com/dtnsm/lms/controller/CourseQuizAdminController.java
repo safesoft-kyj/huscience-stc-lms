@@ -2,10 +2,11 @@ package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.component.ExcelReader;
 import com.dtnsm.lms.domain.*;
-import com.dtnsm.lms.service.CodeService;
-import com.dtnsm.lms.service.CourseQuizFileService;
-import com.dtnsm.lms.service.CourseQuizService;
-import com.dtnsm.lms.service.CourseService;
+import com.dtnsm.lms.mybatis.dto.QuizReportForm1;
+import com.dtnsm.lms.mybatis.dto.ReportForm1;
+import com.dtnsm.lms.mybatis.dto.ReportForm3;
+import com.dtnsm.lms.mybatis.service.ReportMapperService;
+import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -42,6 +44,9 @@ public class CourseQuizAdminController {
     private CourseQuizFileService fileService;
 
     @Autowired
+    private ReportMapperService reportMapperService;
+
+    @Autowired
     ExcelReader excelReader;
 
     private MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
@@ -57,7 +62,7 @@ public class CourseQuizAdminController {
 
     public CourseQuizAdminController() {
         pageInfo.setParentId("m-course");
-        pageInfo.setParentTitle("공지사항");
+        pageInfo.setParentTitle("과정시험정보");
     }
 
     @GetMapping("/list/{courseId}")
@@ -107,7 +112,8 @@ public class CourseQuizAdminController {
 
         Course course = courseService.getCourseById(id);
         quiz.setCourse(course);
-        quiz.setSecond(quiz.getMinute()*60);
+        quiz.setMinute(Math.round(quiz.getHour() * 60));
+        quiz.setSecond(Math.round(quiz.getMinute() * 60));
 
         // Section 저장
         CourseQuiz quiz1 = quizService.saveQuiz(quiz);
@@ -263,5 +269,24 @@ public class CourseQuizAdminController {
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + newFileName + "\"")
                 .body(resource);
+    }
+
+    // Report
+    @GetMapping("/report/{id}")
+    public String reportPage(@PathVariable("id") long quizId, Model model) {
+
+        CourseQuiz courseQuiz = quizService.getCourseQuizById(quizId);
+
+        // 문제 오답 통계 쿼리
+        List<QuizReportForm1> questionList = reportMapperService.getQuizReport(courseQuiz.getCourse().getId(), quizId);
+
+        pageInfo.setPageId("self");
+        pageInfo.setPageTitle(courseQuiz.getName());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("courseQuiz", courseQuiz);
+        model.addAttribute("questionList", questionList);
+
+        return "admin/course/quiz/report";
     }
 }

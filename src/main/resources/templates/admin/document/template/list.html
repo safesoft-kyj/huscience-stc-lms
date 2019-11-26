@@ -54,6 +54,8 @@
                                 <tr>
                                     <th class="text-center col-sm-1" th:text="#{label.no}">번호</th>
                                     <th class="text-center" th:text="#{label.subject}">제목</th>
+                                    <th class="text-center col-sm-1" th:text="#{label.approval1by}">팀장/부서장</th>
+                                    <th class="text-center col-sm-1" th:text="#{label.approval2by}">관리자</th>
                                     <th class="text-center col-sm-2" th:text="#{label.actions}">Actions</th>
                                 </tr>
                                 </thead>
@@ -61,6 +63,8 @@
                                 <tr th:each="border, index : ${borders}">
                                     <td th:text="${index.count}" class="text-center"></td>
                                     <td><a th:href="@{/admin/document/template/view/{id}(id=${border.getId()})}" th:text="${border.getTitle()}">Edit</a></td>
+                                    <td th:text="${border.getIsTeamMangerApproval()}" class="text-center"></td>
+                                    <td th:text="${border.getIsCourseMangerApproval()}" class="text-center"></td>
                                     <td class="text-center">
                                         <a th:text="#{label.edit}" th:href="@{/admin/document/template/edit/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
                                         <a th:text="#{label.delete}" th:href="@{/admin/document/template/delete/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>

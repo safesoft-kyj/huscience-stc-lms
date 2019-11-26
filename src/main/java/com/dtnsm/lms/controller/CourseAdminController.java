@@ -2,14 +2,14 @@ package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.*;
-import com.dtnsm.lms.domain.constant.ApprovalStatusType;
-import com.dtnsm.lms.domain.constant.CourseRequestType;
+import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,9 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -54,17 +52,25 @@ public class CourseAdminController {
     CourseService courseService;
 
     @Autowired
+    CourseSectionService courseSectionService;
+
+    @Autowired
+    CourseQuizService courseQuizService;
+
+    @Autowired
+    CourseSurveyService courseSurveyService;
+
+    @Autowired
     private CourseFileService courseFileService;
+
+    @Autowired
+    private SurveyService surveyService;
 
     @Autowired
     private CourseFileService fileService;
 
-
     @Autowired
-    private CourseManagerService courseManagerService;
-
-    @Autowired
-    private ApprovalCourseProcessService approvalCourseProcessService;
+    private DocumentService documentAccountService;
 
     private PageInfo pageInfo = new PageInfo();
 
@@ -129,20 +135,48 @@ public class CourseAdminController {
         return "admin/course/view";
     }
 
+
+    //  부서별 교육신청서를 조회한다.
+    @GetMapping("/popupDocument/{id}")
+    public String popupCourse(@PathVariable("id") int id, Model model, Pageable pageable) {
+
+        Page<Document> documentPorcessList = documentAccountService.getAllByDocument_Template_IdAndIsCommit(id, "0", pageable);
+        Page<Document> documentComplteList = documentAccountService.getAllByDocument_Template_IdAndIsCommit(id, "1", pageable);
+
+        for(Document document : documentComplteList) {
+            logger.info(document.getTitle());
+        }
+
+        for(Document document : documentPorcessList) {
+            logger.info(document.getTitle());
+        }
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("processList", documentPorcessList);
+        model.addAttribute("completeList", documentComplteList);
+
+        return "admin/course/popupDocument";
+    }
+
+
     @GetMapping("/add/{typeId}")
     public String noticeAdd(@PathVariable("typeId") String typeId, Model model) {
 
         this.courseMaster = courseMasterService.getById(typeId);
         Course course = new Course();
         course.setCourseMaster(this.courseMaster);
+        course.setDay(1);
 
         //Course course = courseService.save(new Course("", "", this.courseMaster));
 
         pageInfo.setPageTitle(courseMaster.getCourseName() + " 등록");
 
+        Survey survey = surveyService.getByIsActive(1);
+
         model.addAttribute(pageInfo);
         model.addAttribute("course", course);
         model.addAttribute("id", typeId);
+        model.addAttribute("survey", survey);
 
         String formName = "add";
 
@@ -161,7 +195,10 @@ public class CourseAdminController {
 
     @PostMapping("/add-post")
     public String noticeAddPost(@Valid Course course
+            , @RequestParam(value = "documentId", required = false, defaultValue = "0") long documentId
             , @RequestParam("files") MultipartFile[] files
+            , @RequestParam(value = "section_file", required = false) MultipartFile section_file
+            , @RequestParam(value = "quiz_file", required = false) MultipartFile quiz_file
             , BindingResult result) {
         if(result.hasErrors()) {
             return "admin/course/add";
@@ -180,10 +217,67 @@ public class CourseAdminController {
 
         Course course1 = courseService.save(course);
 
+        // 기본적인 강의를 1개 생성한다.
+        courseSectionService.CreateAutoSection(course1, section_file);
+
+        // 기본적인 시험 1개 생성한다.(course의 isQuiz가 Y인 경우만 생성된다)
+        courseQuizService.CreateAutoQuiz(course1, quiz_file);
+
+        // 기본적인 설문 1개 생성한다.(course의 isSurve가 Y인 경우만 생성된다)
+        courseSurveyService.CreateAutoSurvey(course1);
+
+
         Arrays.asList(files)
                 .stream()
                 .map(file -> courseFileService.storeFile(file, course1))
                 .collect(Collectors.toList());
+
+
+        //  부서별 교육이면 부서별 교육신청서를 등록한다.(2019/11/25 회의시 부서별 교육신청 프로세스를 정상프로세서로 변경 협의하여 주석 처리:임상무님, 이미주 대리)
+//        if (course1.getCourseMaster().getId().equals("BC0103")) {
+//            Document document = documentService.getById(documentId);
+//            if (document != null) {
+//
+//                for(DocumentCourseAccount documentCourseAccount : document.getDocumentCourseAccountList()) {
+////                    approvalCourseProcessService.courseRequestProcess(documentCourseAccount.getAccount(), course1, "0", course1.getFromDate(), course1.getToDate());
+//
+//                    // 팀장/부서장 승인여부
+//                    String isAppr1 = course.getCourseMaster().getIsTeamMangerApproval();
+//                    // 관리자 승인여부
+//                    String isAppr2 = course.getCourseMaster().getIsCourseMangerApproval();
+//
+//                    // 교육신청
+//                    CourseAccount courseAccount = new CourseAccount();
+//                    courseAccount.setCourse(course1);
+//                    courseAccount.setAccount(documentCourseAccount.getAccount());
+//                    courseAccount.setRequestDate(DateUtil.getTodayString());
+//                    courseAccount.setFWdate(DateUtil.getToday());
+//                    courseAccount.setRequestType("0");        // 교육신청(0:관리자지정, 1:사용자 신청)
+//                    courseAccount.setCourseStatus(CourseStepStatus.complete);
+//                    courseAccount.setFStatus("1");
+//                    courseAccount.setFCurrSeq(1);
+//                    courseAccount.setFromDate(course1.getFromDate());
+//                    courseAccount.setToDate(course1.getToDate());
+//
+//                    // 결재자수 Max 설정
+//                    if(isAppr1.equals("Y") && isAppr2.equals("Y")) {
+//                        courseAccount.setFFinalCount(2);
+//                        courseAccount.setIsApproval("1");   // 전자결재유무 0:없음, 1:있음
+//                    } else if(isAppr1.equals("Y")) {
+//                        courseAccount.setFFinalCount(1);
+//                        courseAccount.setIsApproval("1");   // 전자결재유무 0:없음, 1:있음
+//                    } else {
+//                        courseAccount.setFFinalCount(0);
+//                        courseAccount.setIsApproval("0");   // 전자결재유무 0:없음, 1:있음
+//                        courseAccount.setFStatus("1");      // 전자결재가 없으면 완료한것으로 처리한다.
+//                        courseAccount.setCourseStatus(CourseStepStatus.complete);
+//                    }
+//
+//                    CourseAccount saveCourseAccount = courseAccountService.save(courseAccount);
+//
+//                }
+//            }
+//        }
 
         return "redirect:/admin/course/list/" + course1.getCourseMaster().getId();
     }
@@ -228,6 +322,7 @@ public class CourseAdminController {
     @PostMapping("/edit-post/{id}")
     public String noticeEditPost(@PathVariable("id") long id
             , @Valid Course course
+            , @RequestParam(value = "documentId", required = false, defaultValue = "0") long documentId
             , @RequestParam("files") MultipartFile[] files
             , BindingResult result) {
         if(result.hasErrors()) {

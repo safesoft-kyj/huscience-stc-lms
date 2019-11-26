@@ -59,6 +59,9 @@
                                     <tr style="background: #FAFAFA;">
                                         <th class="text-center" th:text="#{label.no}">번호</th>
                                         <th class="text-center" th:text="#{label.subject}">제목</th>
+                                        <th class="text-center">수강시작일</th>
+                                        <th class="text-center">수강종료일</th>
+                                        <th class="text-center">수강신청일</th>
                                         <th class="text-center" th:text="#{label.course.account.requestType}">신청유형</th>
                                         <th class="text-center" th:text="#{label.course.account.apprStatus}">결재상태</th>
                                         <th class="text-center" th:text="#{label.course.account.courseStep}">교육단계</th>
@@ -71,6 +74,9 @@
                                     <tr th:each="border, index : ${borders}">
                                         <td class="text-center" th:text="${index.count}"></td>
                                         <td class="text-center" th:text="${border.getAccount().getName()}"></td>
+                                        <td class="text-center" th:text="${border.getFromDate()}"></td>
+                                        <td class="text-center" th:text="${border.getToDate()}"></td>
+                                        <td class="text-center" th:text="${border.getRequestDate()}"></td>
                                         <td class="text-center">
                                             <span th:if="${#strings.equalsIgnoreCase(border.getRequestType(), '0')}">지정</span>
                                             <span th:if="${#strings.equalsIgnoreCase(border.getRequestType(), '1')}">신청</span>

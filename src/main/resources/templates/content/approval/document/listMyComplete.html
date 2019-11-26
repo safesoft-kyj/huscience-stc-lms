@@ -66,8 +66,8 @@
                                     <tr th:each="border, index : ${borders}">
                                         <td th:text="${index.count}" class="text-center"></td>
                                         <td>
-                                            <a th:href="@{/document/approval/{id}(id=${border.getDocument().getId()})}">
-                                                <span th:text="${border.getDocument().getTitle()}"></span>
+                                            <a th:href="@{/document/approval/{id}(id=${border.getId()})}">
+                                                <span th:text="${border.getTitle()}"></span>
                                             </a>
                                         </td>
                                         <td th:text="${border.getRequestDate()}" class="text-center"></td>

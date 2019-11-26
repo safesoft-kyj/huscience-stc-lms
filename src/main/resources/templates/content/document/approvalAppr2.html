@@ -56,15 +56,15 @@
                                 <tbody>
                                 <tr>
                                     <td>신청일자</td>
-                                    <td th:text="${documentAccount.getFWdate()} ? ${#dates.format(documentAccount.getFWdate(), 'yyyy-MMM-dd')} : ${documentAccount.getFWdate()}" class="text-center"></td>
+                                    <td th:text="${document.getFWdate()} ? ${#dates.format(document.getFWdate(), 'yyyy-MMM-dd')} : ${document.getFWdate()}" class="text-center"></td>
                                 </tr>
                                 <tr>
                                     <td>신청부서</td>
-                                    <td th:text="${documentAccount.getAccount().getOrgDepart()}"></td>
+                                    <td th:text="${document.getAccount().getOrgDepart()}"></td>
                                 </tr>
                                 <tr>
                                     <td>신 청 자</td>
-                                    <td th:text="${documentAccount.getAccount().getName()}"></td>
+                                    <td th:text="${document.getAccount().getName()}"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -83,13 +83,13 @@
                                     <td rowspan="3" style="vertical-align: middle" class="text-center" >
                                         <div>결<br/><br/>재</div>
                                     </td>
-                                    <th:block th:each="border, index : ${documentAccount.getDocumentAccountOrders()}">
+                                    <th:block th:each="border, index : ${document.getDocumentAccountOrders()}">
                                         <td th:text="${border.getFUser().getName()}" class="text-center">
                                         </td>
                                     </th:block>
                                 </tr>
                                 <tr>
-                                    <th:block th:each="border, index : ${documentAccount.getDocumentAccountOrders()}">
+                                    <th:block th:each="border, index : ${document.getDocumentAccountOrders()}">
                                         <td th:switch="${border.getFStatus()}" class="text-center" style="vertical-align: middle">
                                             <span th:case="${'0'}" class="text-info" th:text="${''}"></span>
                                             <img th:case="${'1'}" class="text-success sign" th:src="${border.getSignature()}"></img>
@@ -98,7 +98,7 @@
                                     </th:block>
                                 </tr>
                                 <tr>
-                                    <th:block th:each="border, index : ${documentAccount.getDocumentAccountOrders()}">
+                                    <th:block th:each="border, index : ${document.getDocumentAccountOrders()}">
                                         <td th:text="${border.getFDate()} ? ${#dates.format(border.getFDate(), 'yyyy/MMM/dd')} : ${border.getFDate()}" class="text-center"></td>
                                         </td>
                                     </th:block>

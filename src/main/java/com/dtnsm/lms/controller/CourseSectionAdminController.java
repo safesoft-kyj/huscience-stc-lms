@@ -1,11 +1,7 @@
 package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.domain.*;
-import com.dtnsm.lms.service.CodeService;
-import com.dtnsm.lms.service.CourseSectionFileService;
-import com.dtnsm.lms.service.CourseSectionService;
-import com.dtnsm.lms.service.CourseMasterService;
-import com.dtnsm.lms.service.CourseService;
+import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
@@ -92,7 +88,6 @@ public class CourseSectionAdminController {
         Course course = courseService.getCourseById(courseId);
         CourseSection courseSection = new CourseSection();
         courseSection.setCourse(course);
-        courseSection.setType(codeService.getMinorById(minorCode));
 
         pageInfo.setPageTitle(course.getTitle() + " 등록");
 
@@ -104,6 +99,8 @@ public class CourseSectionAdminController {
 
         return "admin/course/section/add";
     }
+
+
 
     @PostMapping("/add-post")
     public String noticeAddPost(@Valid CourseSection courseSection
@@ -119,6 +116,7 @@ public class CourseSectionAdminController {
         courseSection.setMinute(Math.round(courseSection.getHour()*60));
         courseSection.setSecond(Math.round(courseSection.getMinute()*60));
         CourseSection courseSection1 = sectionService.saveSection(courseSection);
+
 
         // Section 저장
         Arrays.asList(files)

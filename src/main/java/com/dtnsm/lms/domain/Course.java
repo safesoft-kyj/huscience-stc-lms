@@ -62,9 +62,10 @@ public class Course extends AuditorCreateEntity<String> {
     @ColumnDefault("0")
     private int day;
 
-    // 교육시간
+    // 총학습시간(시)
+    @Column(name="hour", columnDefinition="numeric(5,2)")
     @ColumnDefault("0")
-    private int hour;
+    private float hour;
 
     // 교육정원
     @ColumnDefault("0")

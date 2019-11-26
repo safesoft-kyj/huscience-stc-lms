@@ -58,6 +58,10 @@ public class SurveyService {
         return surveyRepository.findById(id).get();
     }
 
+    public Survey getByIsActive(int id) {
+        return surveyRepository.findByIsActive(id);
+    }
+
     /*
         Question
      */
@@ -77,4 +81,6 @@ public class SurveyService {
     public SurveyQuestion getSurveyQuestionById(Long id) {
         return surveyQuestionRepository.findById(id).get();
     }
+
+
 }

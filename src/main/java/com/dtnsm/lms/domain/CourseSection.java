@@ -50,11 +50,11 @@ public class CourseSection extends AuditorCreateEntity<String> {
     @ColumnDefault("0")
     private int second;
 
-    // 문제 유형(BC0201:객관식, BC0202:주관식) => Major Code : BC02
-    // Parent 필드 추가
-    @ManyToOne
-    @JoinColumn(name = "type")
-    private ElMinor type;
+//    // 문제 유형(BC0201:객관식, BC0202:주관식) => Major Code : BC02
+//    // Parent 필드 추가
+//    @ManyToOne
+//    @JoinColumn(name = "type")
+//    private ElMinor type;
 
     // Parent 필드 추가
     @ManyToOne

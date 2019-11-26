@@ -1,8 +1,6 @@
 package com.dtnsm.lms.mybatis.service;
 
-import com.dtnsm.lms.mybatis.dto.CourseCountVO;
-import com.dtnsm.lms.mybatis.dto.ReportForm1;
-import com.dtnsm.lms.mybatis.dto.ReportForm2;
+import com.dtnsm.lms.mybatis.dto.*;
 import com.dtnsm.lms.mybatis.mapper.CourseMapper;
 import com.dtnsm.lms.mybatis.mapper.ReportMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +18,15 @@ public class ReportMapperService {
         return reportMapper.selectSurveyReport(courseId);
     }
 
+    public List<ReportForm3> getSurveyReport2(Long courseId) {
+        return reportMapper.selectSurveyReport2(courseId);
+    }
+
     public List<ReportForm2> getSurveyChart(Long courseId, Long questionId) {
         return reportMapper.selectSurveyChart(courseId, questionId);
     }
 
+    public List<QuizReportForm1> getQuizReport(Long courseId, Long questionId) {
+        return reportMapper.selectQuizReport(courseId, questionId);
+    }
 }
