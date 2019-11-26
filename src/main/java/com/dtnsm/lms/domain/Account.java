@@ -64,14 +64,17 @@ public class Account {
                     name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
 
+    @OneToMany(mappedBy = "account")
+    private List<BinderCv> binderCvList;
+
 //    @OneToMany(mappedBy = "account")
 //    private List<BinderJd> binderJdList;
 
     @OneToMany(mappedBy = "account")
     private List<CourseAccount> courseAccountList;
 
-//    @OneToMany(mappedBy = "document")
-//    private List<Document> documentList;
+    @OneToMany(mappedBy = "document")
+    private List<DocumentAccount> documentAccountList;
 
     public Account() {}
 
@@ -97,12 +100,12 @@ public class Account {
         return courseAccountList.add(courseAccount);
     }
 
-//    public boolean addDocument(Document documents) {
-//        if(documentList == null)
-//            documentList = new ArrayList<>();
-//
-//        return documentList.add(documents);
-//    }
+    public boolean addDocumentAccount(DocumentAccount documentAccount) {
+        if(documentAccountList == null)
+            documentAccountList = new ArrayList<>();
+
+        return documentAccountList.add(documentAccount);
+    }
 
 //    public Long getId() {
 //        return id;

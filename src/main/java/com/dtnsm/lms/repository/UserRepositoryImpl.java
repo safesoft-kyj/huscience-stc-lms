@@ -1,6 +1,7 @@
 package com.dtnsm.lms.repository;
 
 import com.dtnsm.common.entity.QUserJobDescription;
+import com.dtnsm.common.entity.constant.JobDescriptionStatus;
 import com.dtnsm.lms.domain.Account;
 import com.dtnsm.lms.domain.QAccount;
 import com.dtnsm.lms.domain.UserJobDescriptionDTO;
@@ -11,6 +12,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.ObjectUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 

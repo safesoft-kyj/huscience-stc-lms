@@ -3,6 +3,7 @@ package com.dtnsm.lms.service;
 import com.dtnsm.common.entity.JobDescription;
 import com.dtnsm.common.entity.JobDescriptionVersion;
 import com.dtnsm.common.entity.QJobDescriptionVersion;
+import com.dtnsm.common.entity.constant.JobDescriptionVersionStatus;
 import com.dtnsm.common.repository.JobDescriptionRepository;
 import com.dtnsm.common.repository.JobDescriptionVersionRepository;
 import com.querydsl.core.BooleanBuilder;
@@ -33,6 +34,15 @@ public class JobDescriptionVersionService {
 
 //        return repository.findAllByJd_IdOrderByVerDesc(jdId);
         return null;
+    }
+
+    public Optional<JobDescriptionVersion> findByJobDescriptionId(Integer jobDescriptionId) {
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        QJobDescriptionVersion qJobDescriptionVersion = QJobDescriptionVersion.jobDescriptionVersion;
+        booleanBuilder.and(qJobDescriptionVersion.status.eq(JobDescriptionVersionStatus.CURRENT));
+        booleanBuilder.and(qJobDescriptionVersion.jobDescription.id.eq(jobDescriptionId));
+
+        return repository.findOne(booleanBuilder);
     }
 
     public Optional<JobDescriptionVersion> findByJobDescriptionVersion(JobDescriptionVersion jobDescriptionVersion) {
@@ -69,7 +79,10 @@ public class JobDescriptionVersionService {
         return repository.findById(id).get();
     }
 
-    @Transactional
+    public JobDescriptionVersion update(JobDescriptionVersion jobDescriptionVersion) {
+        return repository.save(jobDescriptionVersion);
+    }
+
     public JobDescriptionVersion save(JobDescriptionVersion obj){
         if(ObjectUtils.isEmpty(obj.getJobDescription().getId())) {
             JobDescription savedJobDescription = jobDescriptionRepository.save(obj.getJobDescription());

@@ -2,6 +2,7 @@ package com.dtnsm.lms.controller;
 
 import com.dtnsm.common.entity.JobDescription;
 import com.dtnsm.common.entity.JobDescriptionVersion;
+import com.dtnsm.common.entity.constant.JobDescriptionVersionStatus;
 import com.dtnsm.lms.service.JobDescriptionService;
 import com.dtnsm.lms.service.JobDescriptionVersionService;
 import com.dtnsm.lms.util.DateUtil;
@@ -12,6 +13,7 @@ import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -64,6 +66,7 @@ public class JobDescriptionController {
     }
 
     @PostMapping("/add")
+    @Transactional
     public String uploadJobDescription(@RequestParam("file") MultipartFile file, Model model) throws Exception {
         pageInfo.setPageId("m-customer-add");
         pageInfo.setPageTitle(pageTitle + " Insert");
@@ -102,9 +105,23 @@ public class JobDescriptionController {
                     jobDescription.setShortName(shortName);
                     jobDescription.setTitle(fullName);
 
+                    /**
+                     * 이전 버전이 존재 하는 경우 SUPERSEDED 상태로 변경 한다.
+                     */
+                    if(!ObjectUtils.isEmpty(jobDescription.getId())) {
+                        Optional<JobDescriptionVersion> optionalJobDescriptionVersion = jobDescriptionVersionService.findByJobDescriptionId(jobDescription.getId());
+                        if(optionalJobDescriptionVersion.isPresent()) {
+                            JobDescriptionVersion currentVersion = optionalJobDescriptionVersion.get();
+                            currentVersion.setStatus(JobDescriptionVersionStatus.SUPERSEDED);
+
+                            jobDescriptionVersionService.update(currentVersion);
+                        }
+                    }
+
                     JobDescriptionVersion jobDescriptionVersion = new JobDescriptionVersion();
                     jobDescriptionVersion.setJobDescription(jobDescription);
                     jobDescriptionVersion.setVersion_no(versionNo);
+                    jobDescriptionVersion.setStatus(JobDescriptionVersionStatus.CURRENT);
                     jobDescriptionVersion.setRelease_date(DateUtil.getStringToDate(releaseDate, "dd-MMM-yyyy"));
                     jobDescriptionVersion.setFile(file);
 

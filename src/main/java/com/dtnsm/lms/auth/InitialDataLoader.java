@@ -1,13 +1,9 @@
 package com.dtnsm.lms.auth;//package com.dtnsm.elearning.auth;
 
-import com.dtnsm.lms.domain.Account;
-import com.dtnsm.lms.domain.Privilege;
-import com.dtnsm.lms.domain.Role;
+import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.mybatis.dto.UserVO;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
-import com.dtnsm.lms.repository.PrivilegeRepository;
-import com.dtnsm.lms.repository.RoleRepository;
-import com.dtnsm.lms.repository.UserRepository;
+import com.dtnsm.lms.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -39,6 +35,12 @@ public class InitialDataLoader implements
 
     @Autowired
     private UserMapperService userMapperService;
+
+    @Autowired
+    private CVIndicationRepository indicationRepository;
+
+    @Autowired
+    private CVPhaseRepository phaseRepository;
 
     @Override
     @Transactional
@@ -96,6 +98,15 @@ public class InitialDataLoader implements
 
         }
 
+        addIndication(1, "Ulcerative Colitis");
+        addIndication(2, "Breast Cancer");
+        addIndication(3, "Type 2 Diabetes Mellitus");
+
+        addPhase(1, "Phase 0");
+        addPhase(2, "Phase I");
+        addPhase(3, "Phase II");
+        addPhase(4, "Phase III");
+        addPhase(5, "Phase IV");
         alreadySetup = true;
     }
 
@@ -108,6 +119,22 @@ public class InitialDataLoader implements
             privilegeRepository.save(privilege);
         }
         return privilege;
+    }
+
+    private void addIndication(Integer id, String indication) {
+        CVIndication cvIndication = new CVIndication();
+        cvIndication.setId(id);
+        cvIndication.setIndication(indication);
+
+        indicationRepository.save(cvIndication);
+    }
+
+    private void addPhase(Integer id, String phase) {
+        CVPhase cvPhase = new CVPhase();
+        cvPhase.setId(id);
+        cvPhase.setPhase(phase);
+
+        phaseRepository.save(cvPhase);
     }
 
     private Role createRoleIfNotFound(String name, String memo, Collection<Privilege> privileges) {

@@ -37,74 +37,89 @@
         <!--Page content-->
         <!--===================================================-->
         <div id="page-content">
-
-            <!-- Basic Data Tables -->
-            <!--===================================================-->
-            <div class="panel">
-                <div class="panel-body">
-                    <div class="row">
-                    <div class="col-sm-12 table-toolbar-right">
-                        <button class="btn btn-primary btn-sm" data-target="#assign-modal" data-toggle="modal">Assign</button>
-                    </div>
-                    </div>
-                    <div th:switch="${userJobDescriptions}">
-                        <div th:case="null">No customer yet!</div>
-                        <div th:case="*">
-                            <hr class="table-head">
-                            <div class="table-responsive">
-                                <table id="customer-list-page" class="table" cellspacing="0" width="100%">
-                                    <thead>
-                                    <tr style="background: #FAFAFA;">
-                                        <th class="text-center">번호</th>
-                                        <th class="text-center">아이디</th>
-                                        <th class="text-center">이름</th>
-                                        <th class="text-center">Job Title</th>
-                                        <th class="text-center">배정일</th>
-                                        <th class="text-center">동의일</th>
-                                        <th class="text-center">승인일</th>
-                                        <th class="text-center">상태</th>
-                                        <th class="text-center">Actions</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="user, index : ${userJobDescriptions}">
-                                        <td th:text="${index.count}" class="text-center"></td>
-                                        <td th:text="${user.account.userId}" class="text-center"></td>
-                                        <td th:text="${user.account.engName}" class="text-center"></td>
-                                        <td class="text-center">
-                                            <span th:if="${user.userJobDescription != null}" th:text="|${user.userJobDescription.jobDescriptionVersion.jobDescription.title} v${user.userJobDescription.jobDescriptionVersion.version_no}|">-</span>
-                                        </td>
-                                        <td class="text-center">
-                                            <span th:if="${user.userJobDescription != null &&  user.userJobDescription.assignDate != null}" th:text="${#dates.format(user.userJobDescription.assignDate, 'yyyy-MM-dd')}">-</span>
-                                        </td>
-                                        <td class="text-center">
-                                            <span th:if="${user.userJobDescription != null && user.userJobDescription.agreeDate != null}" th:text="${#dates.format(user.userJobDescription.agreeDate, 'yyyy-MM-dd')}">-</span>
-                                        </td>
-                                        <td class="text-center">
-                                            <span th:if="${user.userJobDescription != null && user.userJobDescription.approvedDate != null}" th:text="${#dates.format(user.userJobDescription.approvedDate, 'yyyy-MM-dd')}">-</span>
-                                        </td>
-                                        <td class="text-center">
-                                            <span class="label label-info" th:text="(${user.userJobDescription != null} ? ${user.userJobDescription.status.label} : '-')"></span>
-                                        </td>
-                                        <td class="text-center">
-
-                                            <th:block th:if="${user.userJobDescription != null && user.userJobDescription.status.name() eq 'AGREE'}">
-                                                <button class="btn btn-info btn-sm" data-target="#approval-modal" th:attr="data-id=${user.userJobDescription.id}, data-assign-date=${#dates.format(user.userJobDescription.assignDate, 'dd-MMM-yyyy')}" data-toggle="modal">Approval</button>
-                                            </th:block>
-                                            <th:block th:if="${user.userJobDescription != null && user.userJobDescription.status.name() eq 'APPROVED'}">
-                                                <button class="btn btn-info btn-sm" data-target="#revoke-modal" th:attr="data-id=${user.userJobDescription.id}" data-toggle="modal">Revoke</button>
-                                            </th:block>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+            <div class="tab-base">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a data-toggle="tab" href="#demo-lft-tab-1">Current</a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#demo-lft-tab-2">Old Versions</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <!-- Basic Data Tables -->
+                    <!--===================================================-->
+                    <div class="panel">
+                        <div class="panel-body">
+                            <div class="row">
+                            <div class="col-sm-12 table-toolbar-right">
+                                <button class="btn btn-primary btn-sm" data-target="#assign-modal" data-toggle="modal">Assign</button>
                             </div>
-                        </div>
+                            </div>
+                            <div th:switch="${userJobDescriptions}">
+                                <div th:case="null">No customer yet!</div>
+                                <div th:case="*">
+                                    <hr class="table-head">
+                                    <div class="table-responsive">
+                                        <table id="customer-list-page" class="table" cellspacing="0" width="100%">
+                                            <thead>
+                                            <tr style="background: #FAFAFA;">
+                                                <th class="text-center">번호</th>
+                                                <th class="text-center">아이디</th>
+                                                <th class="text-center">이름</th>
+                                                <th class="text-center">Job Title</th>
+                                                <th class="text-center">배정일</th>
+                                                <th class="text-center">동의일</th>
+                                                <th class="text-center">승인일</th>
+                                                <th class="text-center">상태</th>
+                                                <th class="text-center">Actions</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="user, index : ${userJobDescriptions}">
+                                                <td th:text="${index.count}" class="text-center"></td>
+                                                <td th:text="${user.account.userId}" class="text-center"></td>
+                                                <td th:text="${user.account.engName}" class="text-center"></td>
+                                                <td>
+                                                    <span th:if="${user.userJobDescription != null}" th:text="|${user.userJobDescription.jobDescriptionVersion.jobDescription.title} v${user.userJobDescription.jobDescriptionVersion.version_no}|">-</span>
+                                                    <th:block th:if="${user.userJobDescription != null && (user.userJobDescription.status.name() eq 'APPROVED' or user.userJobDescription.status.name() eq 'REVOKED')}">
+                                                        <a class="btn btn-purple btn-xs" th:href="@{/employees/jd/{id}/print(id=${user.userJobDescription.id})}"><i class="fa fa-file-pdf-o"></i> Job Description</a>
+                                                    </th:block>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span th:if="${user.userJobDescription != null &&  user.userJobDescription.assignDate != null}" th:text="${#dates.format(user.userJobDescription.assignDate, 'yyyy-MM-dd')}">-</span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span th:if="${user.userJobDescription != null && user.userJobDescription.agreeDate != null}" th:text="${#dates.format(user.userJobDescription.agreeDate, 'yyyy-MM-dd')}">-</span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span th:if="${user.userJobDescription != null && user.userJobDescription.approvedDate != null}" th:text="${#dates.format(user.userJobDescription.approvedDate, 'yyyy-MM-dd')}">-</span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="label label-info" th:text="(${user.userJobDescription != null} ? ${user.userJobDescription.status.label} : '-')"></span>
+                                                </td>
+                                                <td class="text-center">
+
+                                                    <th:block th:if="${user.userJobDescription != null && user.userJobDescription.status.name() eq 'AGREE'}">
+                                                        <button class="btn btn-info btn-sm" data-target="#approval-modal" th:attr="data-id=${user.userJobDescription.id}, data-assign-date=${#dates.format(user.userJobDescription.assignDate, 'dd-MMM-yyyy')}" data-toggle="modal">Approval</button>
+                                                    </th:block>
+
+                                                    <th:block th:if="${user.userJobDescription != null && user.userJobDescription.status.name() eq 'APPROVED'}">
+                                                        <button class="btn btn-warning btn-xs" data-target="#revoke-modal" th:attr="data-id=${user.userJobDescription.id}" data-toggle="modal">Revoke</button>
+                                                    </th:block>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
 
 
-                    </div><!--switch End -->
-                </div><!--panel-body End -->
-            </div><!-- panel End -->
+                            </div><!--switch End -->
+                        </div><!--panel-body End -->
+                    </div><!-- panel End -->
+                </div>
+            </div>
         </div><!-- Page content End -->
     </div><!-- Content container End -->
 
