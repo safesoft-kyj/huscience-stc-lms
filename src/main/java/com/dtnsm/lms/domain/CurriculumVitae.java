@@ -36,6 +36,12 @@ public class CurriculumVitae extends AuditorEntity<String> implements Serializab
     @Column(name = "initial")
     private boolean initial;
 
+    @Column(name = "reviewer_id")
+    private String reviewerId;
+
+    @Column(name = "reviewed_date")
+    private Date reviewedDate;
+
     @Column(name = "base64sign", columnDefinition = "varchar(max)")
     private String base64sign;
 

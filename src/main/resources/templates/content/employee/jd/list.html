@@ -39,13 +39,14 @@
         <div id="page-content">
             <div class="tab-base">
                 <ul class="nav nav-tabs">
-                    <li class="active">
-                        <a data-toggle="tab" href="#demo-lft-tab-1">Current</a>
+                    <li id="current">
+                        <a href="/employees/jd/approved">Current</a>
                     </li>
-                    <li>
-                        <a data-toggle="tab" href="#demo-lft-tab-2">Old Versions</a>
+                    <li id="superseded">
+                        <a href="/employees/jd/superseded">Old Versions</a>
                     </li>
                 </ul>
+
                 <div class="tab-content">
                     <!-- Basic Data Tables -->
                     <!--===================================================-->
@@ -82,7 +83,7 @@
                                                 <td th:text="${user.account.engName}" class="text-center"></td>
                                                 <td>
                                                     <span th:if="${user.userJobDescription != null}" th:text="|${user.userJobDescription.jobDescriptionVersion.jobDescription.title} v${user.userJobDescription.jobDescriptionVersion.version_no}|">-</span>
-                                                    <th:block th:if="${user.userJobDescription != null && (user.userJobDescription.status.name() eq 'APPROVED' or user.userJobDescription.status.name() eq 'REVOKED')}">
+                                                    <th:block th:if="${user.userJobDescription != null && (user.userJobDescription.status.name() eq 'APPROVED' or user.userJobDescription.status.name() eq 'REVOKED' or user.userJobDescription.status.name() eq 'SUPERSEDED')}">
                                                         <a class="btn btn-purple btn-xs" th:href="@{/employees/jd/{id}/print(id=${user.userJobDescription.id})}"><i class="fa fa-file-pdf-o"></i> Job Description</a>
                                                     </th:block>
                                                 </td>
@@ -261,6 +262,14 @@
                 $("#assignDateTxt").text(assignDate);
             });
         });
+
+        var pathname = location.pathname;
+        var isSuperseded = pathname.indexOf("superseded") != -1;
+        if(isSuperseded) {
+            $("#superseded").addClass("active");
+        } else {
+            $("#current").addClass("active");
+        }
     </script>
 </th:block>
 

@@ -6,6 +6,7 @@ import com.dtnsm.common.entity.UserJobDescription;
 import com.dtnsm.common.entity.constant.JobDescriptionStatus;
 import com.dtnsm.common.repository.SignatureRepository;
 import com.dtnsm.common.repository.UserJobDescriptionRepository;
+import com.dtnsm.common.utils.Base64Utils;
 import com.dtnsm.lms.auth.CustomUserDetails;
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.*;
@@ -24,7 +25,10 @@ import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 import com.dtnsm.lms.validator.CurriculumVitaeValidator;
+import com.dtnsm.lms.xdocreport.CurriculumVitaeReportService;
+import com.dtnsm.lms.xdocreport.dto.*;
 import com.querydsl.core.BooleanBuilder;
+import fr.opensagres.xdocreport.document.images.ByteArrayImageProvider;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -32,6 +36,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -43,14 +48,14 @@ import org.springframework.web.util.WebUtils;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/mypage")
-@SessionAttributes({"pageInfo", "draftCV", "phaseList", "indicationList"})
+@SessionAttributes({"pageInfo", "cv", "phaseList", "indicationList"})
 public class MyPageController {
     @Autowired
     CourseService courseService;
@@ -90,6 +95,8 @@ public class MyPageController {
     private CVIndicationRepository indicationRepository;
     @Autowired
     private CVPhaseRepository phaseRepository;
+    @Autowired
+    private CurriculumVitaeReportService curriculumVitaeReportService;
 
     @Autowired
     private SignatureRepository signatureRepository;
@@ -566,59 +573,160 @@ public class MyPageController {
                 .body(resource);
     }
 
-    @GetMapping({"/cv", "/cv/{status}"})
-    public String cv(@PathVariable(value = "status", required = false) String status, Model model) {
+    @GetMapping("/cv")
+    public String cv() {
+        String userId = SessionUtil.getUserId();
+        long current = countCV(userId, CurriculumVitaeStatus.CURRENT);
+        if(current > 0) {
+            return "redirect:/mypage/cv/current";
+        } else {
+            long count = countCV(userId);
+
+            if(count == 0) {
+                return "redirect:/mypage/cv/edit";
+            } else {
+                Optional<CurriculumVitae> optionalCurriculumVitae = getCV(userId, CurriculumVitaeStatus.TEMP);
+                if(optionalCurriculumVitae.isPresent()) {
+                    return "redirect:/mypage/cv/edit?id=" + optionalCurriculumVitae.get().getId();
+                } else {
+                    return "redirect:/mypage/cv/review";
+                }
+            }
+        }
+    }
+
+    @GetMapping({"/cv/edit", "/cv/edit/{id}"})
+    public String cv(@RequestParam(value = "id", required = false) Integer id, Model model) {
         pageInfo.setPageId("m-mypage-cv");
         pageInfo.setPageTitle("Curriculum Vitae");
 
         model.addAttribute(pageInfo);
 
-        status = "draft";//TODO 테스트 코드 차후 제거
-
-        String userId = SessionUtil.getUserId();
-
         model.addAttribute("indicationList", indicationRepository.findAll(QCVIndication.cVIndication.indication.asc()));
         model.addAttribute("phaseList", phaseRepository.findAll(QCVPhase.cVPhase.phase.asc()));
+        CurriculumVitae cv;
+        if(ObjectUtils.isEmpty(id)) {
+            cv = new CurriculumVitae();
+            cv.setInitial(true);
+            cv.getEducations().add(new CVEducation());
 
-        if(StringUtils.isEmpty(status)) {
-            Optional<CurriculumVitae> optionalDraftCurriculumVitae = getCV(userId, CurriculumVitaeStatus.DRAFT);
-            if (optionalDraftCurriculumVitae.isPresent()) {
-                //작성중인 CV가 존재함.
-                model.addAttribute("draftCV", optionalDraftCurriculumVitae.get());
+            CVCareerHistory history = new CVCareerHistory();
+            history.setPresent(true);
+            history.setCityCountry("Seoul, Korea");
+            history.setClinicalTrialExperience(true);
+            history.setCompanyName("Dt&SanoMedics");
+            Account account = SessionUtil.getUserDetail().getUser();
+            if(!ObjectUtils.isEmpty(account.getIndate())) {
+                history.setStartDate(DateUtil.getStringToDate(account.getIndate()));
             }
-            Optional<CurriculumVitae> optionalCurrentCurriculumVitae = getCV(userId, CurriculumVitaeStatus.CURRENT);
-            if(optionalCurrentCurriculumVitae.isPresent()) {
-                model.addAttribute("currentCV", optionalCurrentCurriculumVitae.get());
-            }
+            cv.getCareerHistories().add(history);
+            cv.getLicenses().add(new CVLicense());
+            cv.getCertifications().add(new CVCertification());
+            cv.getMemberships().add(new CVMembership());
+            cv.getLanguages().add(new CVLanguage());
+            cv.getComputerKnowledges().add(new CVComputerKnowledge());
+            cv.getExperiences().add(new CVExperience());
         } else {
-            CurriculumVitaeStatus curriculumVitaeStatus = CurriculumVitaeStatus.valueOf(status.toUpperCase());
-            Optional<CurriculumVitae> optionalCurriculumVitae = getCV(userId, curriculumVitaeStatus);
-            if(curriculumVitaeStatus == CurriculumVitaeStatus.DRAFT) {
-                CurriculumVitae cv;
-                if(optionalCurriculumVitae.isPresent()) {
-                    cv = optionalCurriculumVitae.get();
-                } else {
-                    cv = new CurriculumVitae();
-                    cv.getEducations().add(new CVEducation());
-                    cv.getCareerHistories().add(new CVCareerHistory());
-                    cv.getLicenses().add(new CVLicense());
-                    cv.getCertifications().add(new CVCertification());
-                    cv.getMemberships().add(new CVMembership());
-                    cv.getLanguages().add(new CVLanguage());
-                    cv.getComputerKnowledges().add(new CVComputerKnowledge());
-                    cv.getExperiences().add(new CVExperience());
-                }
-                model.addAttribute("draftCV", cv);
-            }
+            cv = getCV(id).get();
         }
 
-        return "content/mypage/cv/list";
+        model.addAttribute("cv", cv);
+
+        return "content/mypage/cv/edit";
     }
 
-    @PostMapping({"/cv", "/cv/{status}"})
-    public String cv(@ModelAttribute("draftCV") CurriculumVitae draftCV, BindingResult result, SessionStatus status, HttpServletRequest request, Model model) throws Exception {
+    @Transactional
+    @GetMapping("/cv/view/{id}")
+    public void get(@PathVariable("id") Integer id, HttpServletResponse response) throws Exception {
+        CurriculumVitae savedCV = curriculumVitaeRepository.findById(id).get();
+        CV dto = new CV();
+        dto.setEngName(savedCV.getAccount().getEngName());
+        dto.setSignDate(DateUtil.getDateToString(savedCV.getSignDate(), "dd-MMM-yyyy").toUpperCase());
+        if (!StringUtils.isEmpty(savedCV.getBase64sign())) {
+            dto.setSign(new ByteArrayImageProvider(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(savedCV.getBase64sign()))));
+        }
+
+        dto.setEducations(savedCV.getEducations().stream().map(e ->
+                EducationDTO.builder()
+                        .startDate(DateUtil.getDateToString(e.getStartDate(), "MMM yyyy"))
+                        .endDate(e.isPresent() ? "Present" : DateUtil.getDateToString(e.getEndDate(), "MMM yyyy"))
+                        .nameOfUniversity(e.getNameOfUniversity())
+                        .degree(e.getDegree())
+                        .cityCountry(e.getCityCountry())
+                        .thesisTitle(e.getThesisTitle())
+                        .nameOfSupervisor(e.getNameOfSupervisor()).build())
+                .collect(Collectors.toList()));
+
+        dto.setCareerHistories(savedCV.getCareerHistories().stream().map(c ->
+                CareerHistoryDTO.builder()
+                        .companyName(c.getCompanyName())
+                        .cityCountry(c.getCityCountry())
+                        .startDate(DateUtil.getDateToString(c.getStartDate(), "MMM yyyy"))
+                        .endDate(c.isPresent() ? "Present" : DateUtil.getDateToString(c.getEndDate(), "MMM yyyy"))
+                        .position(c.getPosition())
+                        .teamDepartment(c.getTeamDepartment())
+                        .build()
+        ).collect(Collectors.toList()));
+
+        dto.setLicenses(savedCV.getLicenses().stream().map(i ->
+                LicenseDTO.builder()
+                        .licenseNo(i.getLicenseNo())
+                        .licenseInCountry(i.getLicenseInCountry())
+                        .build()
+        ).collect(Collectors.toList()));
+
+        dto.setCertifications(savedCV.getCertifications().stream().map(i ->
+                CertificationDTO.builder()
+                        .nameOfCertification(i.getNameOfCertification())
+                        .organizers(i.getOrganizers())
+                        .issueDate(DateUtil.getDateToString(i.getIssueDate(), "MMM YYYY").toUpperCase())
+                        .build()
+        ).collect(Collectors.toList()));
+
+        dto.setMemberships(savedCV.getMemberships().stream().map(i ->
+                MembershipDTO.builder()
+                        .name(i.getMembershipName())
+                        .startYear(i.getStartYear())
+                        .endYear(i.getEndYear())
+                        .build()
+        ).collect(Collectors.toList()));
+
+        dto.setLanguages(savedCV.getLanguages().stream().map(i ->
+                LanguageDTO.builder()
+                .language(i.getLanguage())
+                .level(i.getLevel().getLabel())
+                .certificateProgramList(i.getLanguageCertifications().stream().map(c -> c.getCertificateProgram()).collect(Collectors.toList()))
+                .build()
+        ).collect(Collectors.toList()));
+
+        dto.setComputerKnowledges(savedCV.getComputerKnowledges().stream().map(i ->
+                ComputerKnowledgeDTO.builder()
+                .name(i.getProgramName())
+                .level(i.getLevel().getLabel())
+                .certificateProgramList(i.getComputerCertifications().stream().map(c -> c.getCertificateProgram()).collect(Collectors.toList()))
+                .build()
+                ).collect(Collectors.toList()));
+
+        dto.setExperiences(savedCV.getExperiences().stream().map(i ->
+                ExperienceDTO.builder()
+                        .indication(i.getIndication().getIndication())
+                        .phase(i.getPhase().getPhase())
+                        .role(i.getRole())
+                        .globalOrLocal(i.getGlobalOrLocal().getLabel())
+                        .workingDetails(i.getWorkingDetails())
+                        .build()
+        ).collect(Collectors.toList()));
+        response.setHeader("Content-Disposition", "attachment; filename=\"cv.pdf\"");
+        response.setContentType("application/pdf");
+        curriculumVitaeReportService.generateReport(dto, response);
+    }
+
+    @Transactional
+    @PostMapping("/cv/edit")
+    public String cv(@ModelAttribute("cv") CurriculumVitae cv, BindingResult result, SessionStatus sessionStatus, HttpServletRequest request, Model model) throws Exception {
         boolean isAdd = WebUtils.hasSubmitParameter(request, "add");
         boolean isRemove = WebUtils.hasSubmitParameter(request, "remove");
+
         if(isAdd) {
             String target = ServletRequestUtils.getStringParameter(request,"add");
             int index = -1;
@@ -631,114 +739,201 @@ public class MyPageController {
             model.addAttribute("target", target);
             switch (target) {
                 case "education":
-                    draftCV.getEducations().add(new CVEducation());
+                    cv.getEducations().add(new CVEducation());
                     break;
                 case "careerHistory":
-                    draftCV.getCareerHistories().add(new CVCareerHistory());
+                    cv.getCareerHistories().add(new CVCareerHistory());
                     break;
                 case "license":
-                    draftCV.getLicenses().add(new CVLicense());
+                    cv.getLicenses().add(new CVLicense());
                     break;
                 case "certification":
-                    draftCV.getCertifications().add(new CVCertification());
+                    cv.getCertifications().add(new CVCertification());
                     break;
                 case "membership":
-                    draftCV.getMemberships().add(new CVMembership());
+                    cv.getMemberships().add(new CVMembership());
                     break;
                 case "language":
-                    draftCV.getLanguages().add(new CVLanguage());
+                    cv.getLanguages().add(new CVLanguage());
                     break;
                 case "languageCertification":
-                    draftCV.getLanguages().get(index).getLanguageCertifications().add(new CVLanguageCertification());
+                    cv.getLanguages().get(index).getLanguageCertifications().add(new CVLanguageCertification());
                     break;
                 case "computerKnowledge":
-                    draftCV.getComputerKnowledges().add(new CVComputerKnowledge());
+                    cv.getComputerKnowledges().add(new CVComputerKnowledge());
                     break;
                 case "computerCertification":
-                    draftCV.getComputerKnowledges().get(index).getComputerCertifications().add(new CVComputerCertification());
+                    cv.getComputerKnowledges().get(index).getComputerCertifications().add(new CVComputerCertification());
                     break;
                 case "experience":
-                    draftCV.getExperiences().add(new CVExperience());
+                    cv.getExperiences().add(new CVExperience());
                     break;
             }
 
-            return "content/mypage/cv/list";
+            return "content/mypage/cv/edit";
         } else if(isRemove) {
             String target = ServletRequestUtils.getStringParameter(request,"remove");
             String[] s = target.split(":");
             switch(s[0]) {
                 case "education":
-                    draftCV.getEducations().remove(Integer.parseInt(s[1]));
+                    cv.getEducations().remove(Integer.parseInt(s[1]));
                     break;
                 case "careerHistory":
-                    draftCV.getCareerHistories().remove(Integer.parseInt(s[1]));
+                    cv.getCareerHistories().remove(Integer.parseInt(s[1]));
                     break;
                 case "license":
-                    draftCV.getLicenses().remove(Integer.parseInt(s[1]));
+                    cv.getLicenses().remove(Integer.parseInt(s[1]));
                     break;
                 case "certification":
-                    draftCV.getCertifications().remove(Integer.parseInt(s[1]));
+                    cv.getCertifications().remove(Integer.parseInt(s[1]));
                     break;
                 case "membership":
-                    draftCV.getMemberships().remove(Integer.parseInt(s[1]));
+                    cv.getMemberships().remove(Integer.parseInt(s[1]));
                     break;
                 case "language":
-                    draftCV.getLanguages().remove(Integer.parseInt(s[1]));
+                    cv.getLanguages().remove(Integer.parseInt(s[1]));
                     break;
                 case "languageCertification":
                     String[] index = s[1].split("\\.");
-                    draftCV.getLanguages().get(Integer.parseInt(index[0])).getLanguageCertifications().remove(Integer.parseInt(index[1]));
+                    cv.getLanguages().get(Integer.parseInt(index[0])).getLanguageCertifications().remove(Integer.parseInt(index[1]));
                     break;
                 case "computerKnowledge":
-                    draftCV.getComputerKnowledges().remove(Integer.parseInt(s[1]));
+                    cv.getComputerKnowledges().remove(Integer.parseInt(s[1]));
                     break;
                 case "computerCertification":
                     String[] cindex = s[1].split("\\.");
-                    draftCV.getComputerKnowledges().get(Integer.parseInt(cindex[0])).getComputerCertifications().remove(Integer.parseInt(cindex[1]));
+                    cv.getComputerKnowledges().get(Integer.parseInt(cindex[0])).getComputerCertifications().remove(Integer.parseInt(cindex[1]));
                     break;
                 case "experience":
-                    draftCV.getExperiences().remove(Integer.parseInt(s[1]));
+                    cv.getExperiences().remove(Integer.parseInt(s[1]));
                     break;
             }
 
             model.addAttribute("target", s[0]);
 
-            return "content/mypage/cv/list";
+            return "content/mypage/cv/edit";
         }
 
-        boolean isDraft = WebUtils.hasSubmitParameter(request, "_draft");
+        boolean isSubmit = WebUtils.hasSubmitParameter(request, "_submit");
+
+        if(isSubmit) {
+            String stringStatus = ServletRequestUtils.getStringParameter(request, "_submit");
+            CurriculumVitaeStatus status = CurriculumVitaeStatus.valueOf(stringStatus.toUpperCase());
+            curriculumVitaeValidator.validate(cv, result);
+            if (result.hasErrors()) {
+                return "content/mypage/cv/edit";
+            }
+
+            cv.setStatus(status);
+            cv.setAccount(SessionUtil.getUserDetail().getUser());
+            if (ObjectUtils.isEmpty(cv.getId())) {
+                cv.setInitial(countCV(SessionUtil.getUserId()) == 0 ? true : false);
+            }
+
+            if (status != CurriculumVitaeStatus.TEMP) {
+                Optional<Signature> optionalSignature = signatureRepository.findById(SessionUtil.getUserId());
+                cv.setBase64sign(optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "");
+                cv.setSignDate(new Date());
+            }
+
+            CurriculumVitae savedCV = curriculumVitaeService.save(cv);
+
+            new Thread(() -> {
+                try {
+                    CV dto = new CV();
+                    dto.setEngName(savedCV.getAccount().getEngName());
+                    dto.setSignDate(DateUtil.getDateToString(savedCV.getSignDate(), "dd-MMM-yyyy").toUpperCase());
+                    if (!StringUtils.isEmpty(savedCV.getBase64sign())) {
+                        dto.setSign(new ByteArrayImageProvider(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(savedCV.getBase64sign()))));
+                    }
+
+                    dto.setEducations(savedCV.getEducations().stream().map(e ->
+                            EducationDTO.builder()
+                                    .startDate(DateUtil.getDateToString(e.getStartDate(), "MMM yyyy"))
+                            .endDate(e.isPresent() ? "Present" : DateUtil.getDateToString(e.getEndDate(), "MMM yyyy"))
+                            .nameOfUniversity(e.getNameOfUniversity())
+                            .degree(e.getDegree())
+                            .thesisTitle(e.getThesisTitle())
+                            .nameOfSupervisor(e.getNameOfSupervisor()).build())
+                            .collect(Collectors.toList()));
+
+                    dto.setCareerHistories(savedCV.getCareerHistories().stream().map(c ->
+                        CareerHistoryDTO.builder()
+                                .companyName(c.getCompanyName())
+                                .cityCountry(c.getCityCountry())
+                                .startDate(DateUtil.getDateToString(c.getStartDate(), "MMM yyyy"))
+                                .endDate(c.isPresent() ? "Present" : DateUtil.getDateToString(c.getEndDate(), "MMM yyyy"))
+                                .position(c.getPosition())
+                                .teamDepartment(c.getTeamDepartment())
+                                .build()
+                    ).collect(Collectors.toList()));
+
+                    dto.setLicenses(savedCV.getLicenses().stream().map(i ->
+                            LicenseDTO.builder()
+                            .licenseNo(i.getLicenseNo())
+                            .licenseInCountry(i.getLicenseInCountry())
+                            .build()
+                    ).collect(Collectors.toList()));
+
+                    dto.setCertifications(savedCV.getCertifications().stream().map(i ->
+                            CertificationDTO.builder()
+                            .nameOfCertification(i.getNameOfCertification())
+                            .organizers(i.getOrganizers())
+                            .issueDate(DateUtil.getDateToString(i.getIssueDate(), "MMM YYYY").toUpperCase())
+                            .build()
+                    ).collect(Collectors.toList()));
+
+                    dto.setMemberships(savedCV.getMemberships().stream().map(i ->
+                            MembershipDTO.builder()
+                            .name(i.getMembershipName())
+                            .startYear(i.getStartYear())
+                            .endYear(i.getEndYear())
+                            .build()
+                            ).collect(Collectors.toList()));
+
+                    dto.setExperiences(savedCV.getExperiences().stream().map(i ->
+                            ExperienceDTO.builder()
+                            .indication(i.getIndication().getIndication())
+                            .phase(i.getPhase().getPhase())
+                            .globalOrLocal(i.getGlobalOrLocal().getLabel())
+                            .workingDetails(i.getWorkingDetails())
+                            .build()
+                            ).collect(Collectors.toList()));
 
 
+                } catch (Exception e) {
 
-        curriculumVitaeValidator.validate(draftCV, result);
-        if(result.hasErrors()) {
-            return "content/mypage/cv/list";
+                }
+            }).run();
+
+            sessionStatus.setComplete();
+            return "redirect:/mypage/cv";
+        } else {
+            throw new RuntimeException("잘못된 요청 입니다.");
         }
-
-        draftCV.setStatus(isDraft ? CurriculumVitaeStatus.DRAFT : CurriculumVitaeStatus.CURRENT);
-        draftCV.setAccount(SessionUtil.getUserDetail().getUser());
-        if(ObjectUtils.isEmpty(draftCV.getId())) {
-            draftCV.setInitial(countCV(SessionUtil.getUserId()) == 0 ? true : false);
-        }
-
-        if(!isDraft) {
-            Optional<Signature> optionalSignature = signatureRepository.findById(SessionUtil.getUserId());
-            draftCV.setBase64sign(optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "");
-            draftCV.setSignDate(new Date());
-        }
-
-        curriculumVitaeService.save(draftCV);
-
-        status.setComplete();
-        return "redirect:/mypage/cv";
     }
 
+    protected Optional<CurriculumVitae> getCV(Integer id) {
+        QCurriculumVitae qCurriculumVitae = QCurriculumVitae.curriculumVitae;
+        BooleanBuilder builder = new BooleanBuilder();
+//        builder.and(qCurriculumVitae.account.userId.eq(userId));
+//        builder.and(qCurriculumVitae.status.eq(status));
+        builder.and(qCurriculumVitae.id.eq(id));
+        return curriculumVitaeRepository.findOne(builder);
+    }
     protected Optional<CurriculumVitae> getCV(String userId, CurriculumVitaeStatus status) {
         QCurriculumVitae qCurriculumVitae = QCurriculumVitae.curriculumVitae;
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qCurriculumVitae.account.userId.eq(userId));
         builder.and(qCurriculumVitae.status.eq(status));
         return curriculumVitaeRepository.findOne(builder);
+    }
+    protected long countCV(String userId, CurriculumVitaeStatus status) {
+        QCurriculumVitae qCurriculumVitae = QCurriculumVitae.curriculumVitae;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qCurriculumVitae.account.userId.eq(userId));
+        builder.and(qCurriculumVitae.status.eq(status));
+        return curriculumVitaeRepository.count(builder);
     }
 
     protected long countCV(String userId) {
@@ -748,15 +943,20 @@ public class MyPageController {
         return curriculumVitaeRepository.count(builder);
     }
 
-    @GetMapping("/jd")
-    public String jd(Model model) {
+    @GetMapping("/jd/{status}")
+    public String jd(@PathVariable(value = "status") String stringStatus, Model model) {
         pageInfo.setPageId("m-mypage-jd");
         pageInfo.setPageTitle("Job Description");
 
         QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qUserJobDescription.username.eq(SessionUtil.getUserId()));
-        builder.and(qUserJobDescription.status.ne(JobDescriptionStatus.SUPERSEDED));
+        JobDescriptionStatus status = JobDescriptionStatus.valueOf(stringStatus.toUpperCase());
+        if(status == JobDescriptionStatus.SUPERSEDED) {
+            builder.and(qUserJobDescription.status.in(Arrays.asList(JobDescriptionStatus.SUPERSEDED, JobDescriptionStatus.REVOKED)));
+        } else {
+            builder.and(qUserJobDescription.status.in(Arrays.asList(JobDescriptionStatus.APPROVED, JobDescriptionStatus.AGREE, JobDescriptionStatus.ASSIGNED)));
+        }
         Iterable<UserJobDescription> userJobDescriptions = userJobDescriptionRepository.findAll(builder, qUserJobDescription.createdDate.desc());
 
         model.addAttribute(pageInfo);

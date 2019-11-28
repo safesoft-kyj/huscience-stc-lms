@@ -40,19 +40,20 @@
             <div class="tab-base">
                 <ul class="nav nav-tabs">
                     <li id="current">
-                        <a href="/mypage/jd/approved">Current</a>
+                        <a href="/employees/cv/current">Current</a>
                     </li>
                     <li id="superseded">
-                        <a href="/mypage/jd/superseded">Old Version</a>
+                        <a href="/employees/cv/superseded">Old Versions</a>
                     </li>
                 </ul>
+
                 <div class="tab-content">
                     <!-- Basic Data Tables -->
                     <!--===================================================-->
                     <div class="panel">
                         <div class="panel-body">
-                            <div th:switch="${userJobDescriptions}">
-                                <div th:case="null">Job Title 정보가 존재하지 않습니다.</div>
+                            <div th:switch="${cvList}">
+                                <div th:case="null">No customer yet!</div>
                                 <div th:case="*">
                                     <hr class="table-head">
                                     <div class="table-responsive">
@@ -60,35 +61,28 @@
                                             <thead>
                                             <tr style="background: #FAFAFA;">
                                                 <th class="text-center">번호</th>
-                                                <th class="text-center">Job Title</th>
-                                                <th class="text-center">배정일</th>
-                                                <th class="text-center">동의일</th>
-                                                <th class="text-center">승인일</th>
-        <!--                                        <th class="text-center">상태</th>-->
+                                                <th class="text-center">아이디</th>
+                                                <th class="text-center">이름</th>
+                                                <th class="text-center">Curriculum Vitae</th>
+                                                <th class="text-center">상태</th>
+                                                <th class="text-center">Actions</th>
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr th:each="user, index : ${userJobDescriptions}">
+                                            <tr th:each="user, index : ${cvList}">
                                                 <td th:text="${index.count}" class="text-center"></td>
-                                                <td>
-                                                    <span th:text="|${user.jobDescriptionVersion.jobDescription.title} v${user.jobDescriptionVersion.version_no}|">-</span>
-                                                    <th:block th:if="${user.status.name() eq 'APPROVED' or user.status.name() eq 'REVOKE' or user.status.name() eq 'SUPERSEDED'}">
-                                                        <a class="btn btn-purple btn-xs" th:href="@{/employees/jd/{id}/print(id=${user.id})}"><i class="fa fa-file-pdf-o"></i> Job Description</a>
-                                                    </th:block>
-                                                </td>
-                                                <td th:text="${#dates.format(user.assignDate, 'yyyy-MM-dd')}" class="text-center"></td>
-                                                <td class="text-center">
-                                                    <th:block th:if="${user.agreeDate == null}">
-                                                        <button class="btn btn-info btn-xs" data-target="#agree-modal" th:attr="data-id=${user.id}" data-toggle="modal"><i class="fa fa-file-pdf-o"></i> View</button>
-        <!--                                                <a class="btn btn-info btn-xs" th:href="@{/mypage/jd/viewFile/{id}(id=${user.jobDescriptionVersion.jobDescriptionVersionFile.id})}"><i class="fa fa-file-pdf-o"></i> View</a>-->
-                                                    </th:block>
-                                                    <span th:if="${user.agreeDate != null}" th:text="${#dates.format(user.assignDate, 'yyyy-MM-dd')}"></span>
+                                                <td th:text="${user.account.userId}" class="text-center"></td>
+                                                <td th:text="${user.account.engName}" class="text-center"></td>
+                                                <td th:text="|Curriculum Vitae(${#dates.format(user.curriculumVitae.lastModifiedDate, 'yyyy-MM-dd')})|" class="text-center">
                                                 </td>
                                                 <td class="text-center">
-                                                    <span th:if="${user.approvedDate != null}" th:text="${#dates.format(user.approvedDate, 'yyyy-MM-dd')}"></span>
+                                                    <span th:text="${user.curriculumVitae.status.name()}" class="label label-info"></span>
                                                 </td>
+                                                <td class="text-center">
+                                                    <th:block th:if="${user.curriculumVitae.status.name() eq 'REVIEW'}">
+                                                        <button class="btn btn-warning btn-xs" data-target="#approval-modal" th:attr="data-id=${user.curriculumVitae.id}" data-toggle="modal">Review</button>
+                                                    </th:block>
                                                 </td>
-        <!--                                        <td th:text="${user.status.label}" class="text-center"></td>-->
                                             </tr>
                                             </tbody>
                                         </table>
@@ -106,29 +100,28 @@
 
     <!--Default Bootstrap Modal-->
     <!--===================================================-->
-    <div class="modal fade" id="agree-modal" role="dialog" tabindex="-1" aria-labelledby="agree-modal" aria-hidden="true">
+    <div class="modal fade" id="approval-modal" role="dialog" tabindex="-1" aria-labelledby="assign-modal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form name="f" id="agreeForm" method="post">
+                <form name="f" id="approvalForm" method="post" th:action="@{/employees/cv/approval}">
                     <input type="hidden" id="id" name="id"/>
                     <!--Modal header-->
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
-                        <h4 class="modal-title">Job Description</h4>
+                        <h4 class="modal-title">Curriculum Viate</h4>
                     </div>
 
                     <!--Modal body-->
                     <div class="modal-body">
-                        <p class="text-semibold">
-                            I acknowledge that I have read and understand my given role and responsibilities
-                            and am capable of performing all of the stated requirements.
+                        <p>
+                            CV 검토 완료 처리 하시겠습니까?
                         </p>
                     </div>
 
                     <!--Modal footer-->
                     <div class="modal-footer">
                         <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
-                        <button class="btn btn-primary">Agree</button>
+                        <button class="btn btn-primary">Approval</button>
                     </div>
                 </form>
             </div>
@@ -140,10 +133,8 @@
 
 <th:block layout:fragment="custom_js">
     <script>
-        // $('#selectOption').chosen({width:'100%'});
         $(document).ready(function() {
-
-            $("#agree-modal").on('show.bs.modal', function(e) {
+            $("#approval-modal").on('show.bs.modal', function(e) {
                 var id = $(e.relatedTarget).data('id');
                 $("#id").val(id);
             });
