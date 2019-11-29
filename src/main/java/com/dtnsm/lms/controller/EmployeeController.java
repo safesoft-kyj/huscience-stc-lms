@@ -8,6 +8,9 @@ import com.dtnsm.common.repository.UserJobDescriptionRepository;
 import com.dtnsm.common.utils.Base64Utils;
 import com.dtnsm.lms.auth.UserService;
 import com.dtnsm.lms.domain.Account;
+import com.dtnsm.lms.domain.CurriculumVitae;
+import com.dtnsm.lms.domain.constant.CurriculumVitaeStatus;
+import com.dtnsm.lms.repository.CurriculumVitaeRepository;
 import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.JobDescriptionFileService;
 import com.dtnsm.lms.util.DateUtil;
@@ -44,6 +47,7 @@ public class EmployeeController {
     private final SignatureRepository signatureRepository;
     private final JobDescriptionFileService jobDescriptionFileService;
     private final JobDescriptionReportService jobDescriptionReportService;
+    private final CurriculumVitaeRepository curriculumVitaeRepository;
     private PageInfo pageInfo = new PageInfo();
 
 
@@ -63,8 +67,46 @@ public class EmployeeController {
         return "content/employee/list";
     }
 
-    @GetMapping("/employees/jd")
-    public String getEmployeeJD(@RequestParam(value = "id", required = false, defaultValue = "") String userId, Model model) {
+    @GetMapping("/employees/cv/{status}")
+    public String getEmployeeCV(@PathVariable("status") String stringStatus, @RequestParam(value = "id", required = false, defaultValue = "") String userId, Model model) {
+        pageInfo.setParentId("m-employee");
+        pageInfo.setParentTitle("Team/Dept Employees");
+
+        pageInfo.setPageId("m-jd");
+        pageInfo.setPageTitle("Curriculum Vitae");
+        model.addAttribute(pageInfo);
+
+        CurriculumVitaeStatus status = CurriculumVitaeStatus.valueOf(stringStatus.toUpperCase());
+
+
+        Optional<List<Account>> optionalAccounts = userService.findByParentUserId(SessionUtil.getUserId());
+        if(optionalAccounts.isPresent()) {
+            model.addAttribute("users", optionalAccounts.get());
+            model.addAttribute("userId", userId);
+            model.addAttribute("cvList", userRepository.getUserCurriculumVitaeList(SessionUtil.getUserId(), status));
+        }
+        return "content/employee/cv/list";
+    }
+
+    @PostMapping("employees/cv/approval")
+    public String approvalEmployeeCV(@RequestParam("id") Integer id) {
+        Optional<CurriculumVitae> optionalCurriculumVitae = curriculumVitaeRepository.findById(id);
+        if(optionalCurriculumVitae.isPresent()) {
+
+            CurriculumVitae cv = optionalCurriculumVitae.get();
+            cv.setReviewedDate(new Date());
+            cv.setReviewerId(SessionUtil.getUserId());
+            cv.setStatus(CurriculumVitaeStatus.CURRENT);
+            curriculumVitaeRepository.save(cv);
+
+            //TODO CV (승인 알림)
+        }
+
+        return "redirect:/employees/cv/current";
+    }
+
+    @GetMapping("/employees/jd/{status}")
+    public String getEmployeeJD(@PathVariable("status") String stringStatus, @RequestParam(value = "id", required = false, defaultValue = "") String userId, Model model) {
         pageInfo.setParentId("m-employee");
         pageInfo.setParentTitle("Team/Dept Employees");
 
@@ -72,6 +114,11 @@ public class EmployeeController {
         pageInfo.setPageTitle("Job Description");
         model.addAttribute(pageInfo);
 
+        JobDescriptionStatus status = JobDescriptionStatus.valueOf(stringStatus.toUpperCase());
+
+        /**
+         * CURRENT 상태의 직무 정보를 가져온다.
+         */
         List<JobDescriptionVersion> jobDescriptionVersions = jobDescriptionVersionRepository.getCurrentJobDescriptionVersions();
         model.addAttribute("jdVersions", jobDescriptionVersions);
 
@@ -79,7 +126,7 @@ public class EmployeeController {
         if(optionalAccounts.isPresent()) {
             model.addAttribute("users", optionalAccounts.get());
             model.addAttribute("userId", userId);
-            model.addAttribute("userJobDescriptions", userRepository.getUserJobDescriptionByParentUserId(SessionUtil.getUserId()));
+            model.addAttribute("userJobDescriptions", userRepository.getUserJobDescriptionByParentUserId(SessionUtil.getUserId(), status));
         }
         return "content/employee/jd/list";
     }
@@ -91,7 +138,7 @@ public class EmployeeController {
         userJobDescriptionRepository.save(userJobDescription);
 
         //TODO 알림 전송(JD 배정 알림)
-        return "redirect:/employees/jd";
+        return "redirect:/employees/jd/approved";
     }
 
     @PostMapping("employees/jd/approval")
@@ -152,7 +199,7 @@ public class EmployeeController {
                 .empSign(StringUtils.isEmpty(userJobDescription.getAgreeSign()) ? null : new ByteArrayImageProvider(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(userJobDescription.getAgreeSign()))))
                 .mngSign(StringUtils.isEmpty(userJobDescription.getApprovedSign()) ? null : new ByteArrayImageProvider(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(userJobDescription.getApprovedSign())))).build();
 
-        response.setHeader("Content-Disposition", "attachment; filename=\""+file.getFileName().substring(0, file.getFileName().lastIndexOf(".")) + ".pdf\"");
+//        response.setHeader("Content-Disposition", "attachment; filename=\""+file.getFileName().substring(0, file.getFileName().lastIndexOf(".")) + ".pdf\"");
         response.setContentType("application/pdf");
         jobDescriptionReportService.generateReport(jobDescriptionSign, resource.getInputStream(), response);
     }

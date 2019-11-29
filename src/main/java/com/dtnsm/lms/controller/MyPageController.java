@@ -14,7 +14,10 @@ import com.dtnsm.lms.domain.constant.CurriculumVitaeStatus;
 import com.dtnsm.lms.domain.constant.QuizStatusType;
 import com.dtnsm.lms.domain.constant.SurveyStatusType;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
-import com.dtnsm.lms.repository.*;
+import com.dtnsm.lms.repository.CVIndicationRepository;
+import com.dtnsm.lms.repository.CVPhaseRepository;
+import com.dtnsm.lms.repository.CurriculumVitaeRepository;
+import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.FileUtil;
@@ -25,26 +28,21 @@ import com.querydsl.core.BooleanBuilder;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.FastByteArrayOutputStream;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.WebUtils;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -56,12 +54,6 @@ import java.util.Optional;
 public class MyPageController {
     @Autowired
     CourseService courseService;
-    @Autowired
-    BinderLogService binderLogService;
-    @Autowired
-    CourseCertificateService courseCertificateService;
-    @Autowired
-    CourseTrainingLogRepository courseTrainingLogRepository;
     @Autowired
     CourseAccountService courseAccountService;
     @Autowired
@@ -163,45 +155,6 @@ public class MyPageController {
         return "content/mypage/myInfo";
     }
 
-    // 초기 교육 자료를 업로드 한다.
-    @GetMapping("/uploadTrainingLog")
-    public String uploadTraingLog(Model model) {
-
-        pageInfo.setPageId("m-training-log-upload");
-        pageInfo.setPageTitle("Training Log Upload");
-
-        List<CourseTrainingLog> courseTrainingLogs = courseTrainingLogRepository.findAllByAccount_UserIdAndIsUpload(SessionUtil.getUserId(), "1");
-
-        model.addAttribute(pageInfo);
-        model.addAttribute("courseTrainingLogs", courseTrainingLogs);
-
-        return "content/mypage/uploadTrainingLog";
-    }
-
-    // 초기 교육 자료를 업로드 한다.
-    @PostMapping("uploadTrainingLog")
-    public String uploadTraingLogPost( @RequestParam(value="isUploadDataDelete",  defaultValue = "0") boolean isUploadDataDelete
-            , @RequestParam("file") MultipartFile multipartFile) {
-
-        if(multipartFile.isEmpty()) return "redirect:/mypage/uploadTrainingLog";
-
-        boolean isUpload = true;
-        try {
-            isUpload = binderLogService.uploadTrainingLog(SessionUtil.getUserId(), multipartFile, isUploadDataDelete);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "redirect:/mypage/uploadTrainingLog";
-    }
-
-    // 업로드한 초기 교육자료를 삭제한다.
-    @GetMapping("uploadTrainingLogDelete")
-    public String uploadTraingLogDelete() {
-
-        binderLogService.uploadTriningLogDelete(SessionUtil.getUserId());
-
-        return "redirect:/mypage/uploadTrainingLog";
-    }
 
     // 상위결재자 설정
     @PostMapping("/teamManager/add-post")
@@ -226,15 +179,20 @@ public class MyPageController {
     }
 
     @GetMapping("/certificate/view")
-    public String certificateView(Model model, Pageable pageable) {
+    public String certificateView(Model model) {
 
         pageInfo.setPageId("m-mypage-myinfo");
         pageInfo.setPageTitle("수료증발급");
 
-        Page<CourseAccount> courseAccountList = courseAccountService.getAllByAccount_UserIdAndIsCommitAndCourse_IsCerti(SessionUtil.getUserId(), "1", "Y", pageable);
+        List<CourseAccount> courseAccountList = courseAccountService.getCourseAccountByUserId(SessionUtil.getUserId());
+
+        List<Course> courseList = new ArrayList<>();
+        for(CourseAccount courseAccount : courseAccountList) {
+            courseList.add(courseAccount.getCourse());
+        }
 
         model.addAttribute(pageInfo);
-        model.addAttribute("borders", courseAccountList);
+        model.addAttribute("courseList", courseList);
 
         return "content/mypage/certificate/view";
     }
@@ -249,19 +207,8 @@ public class MyPageController {
 
         Course course = courseService.getCourseById(courseId);
 
-        Optional<Signature> optionalSignature = signatureRepository.findById(SessionUtil.getUserId());
-
-//        String certiNo = courseCertificateService.newCertificateNumber(course.getCertiHead(), courseAccount.getToDate().substring(0, 4)).getFullNumber();
-
         model.addAttribute(pageInfo);
         model.addAttribute("courseAccount", courseAccount);
-        model.addAttribute("sign1", optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "");
-        model.addAttribute("sign2", optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "");
-        model.addAttribute("userName1", "Lim, Hyunjin");
-        model.addAttribute("userDepart1", " / QMO of Dt&SanoMedics");
-        model.addAttribute("userName2", "Kim, Kwangho");
-        model.addAttribute("userDepart2", " / Registered Director of");
-        model.addAttribute("userDepart21", "Dt&SanoMedics");
 
         return "content/mypage/certificate/print";
     }
@@ -341,6 +288,8 @@ public class MyPageController {
             newQuizAction.setQuiz(courseQuiz);
             newQuizAction.setCourseAccount(quizAction.getCourseAccount());
             newQuizAction.setIsActive("1");
+            newQuizAction.setFromDate(quizAction.getFromDate());
+            newQuizAction.setToDate(quizAction.getToDate());
             newQuizAction.setQuestionCount(quizAction.getQuestionCount());
             quizAction = courseQuizActionService.saveQuizAction(newQuizAction);
         }
@@ -436,10 +385,7 @@ public class MyPageController {
             } else {  // 설문 여부가 N인 경우 CourseAccount 의 상태값을 완료로 변경하고 디지털 바인더 로그를 발생시킨다.
 
                 courseAccount.setCourseStatus(CourseStepStatus.complete);
-                courseAccount.setIsAttendance("1");
                 courseAccount.setIsCommit("1");
-                String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
-                courseAccount.setCertificateNo(certificateNo);
 
                 courseAccountService.save(courseAccount);
 
@@ -545,11 +491,7 @@ public class MyPageController {
             // CourseAccount 상태값 처리
             CourseAccount courseAccount1 = courseQuizAction1.getCourseAccount();
             courseAccount1.setCourseStatus(CourseStepStatus.complete);
-            courseAccount1.setIsAttendance("1");
             courseAccount1.setIsCommit("1");
-            String certificateNo = courseCertificateService.newCertificateNumber(courseAccount1.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount1).getFullNumber();
-            courseAccount1.setCertificateNo(certificateNo);
-
             courseAccountService.save(courseAccount1);
 
 
