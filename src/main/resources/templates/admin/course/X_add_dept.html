@@ -1,0 +1,269 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="ko"-->
+<!--      xmlns="http://www.w3.org/1999/xhtml"-->
+<!--      xmlns:th="http://www.thymeleaf.org"-->
+<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
+<!--      layout:decorate="~{layout/default_layout}">-->
+
+<!--<th:block layout:fragment="html_head">-->
+<!--    <title>TachyonTech Info</title>-->
+<!--</th:block>-->
+
+<!--<th:block layout:fragment="custom_css">-->
+<!--    &lt;!&ndash;Dropzone [ OPTIONAL ]&ndash;&gt;-->
+<!--    <link th:href="@{/default/plugins/dropzone/dropzone.min.css}" rel="stylesheet">-->
+
+<!--    <style>-->
+
+<!--    </style>-->
+
+<!--</th:block>-->
+
+<!--<th:block layout:fragment="content_body">-->
+<!--    &lt;!&ndash;-->
+<!--    <div th:replace="fragments/common/loading"></div>-->
+<!--    &ndash;&gt;-->
+<!--    &lt;!&ndash;CONTENT CONTAINER&ndash;&gt;-->
+<!--    &lt;!&ndash;===================================================&ndash;&gt;-->
+<!--    <div id="content-container">-->
+
+<!--        &lt;!&ndash;Page Title&ndash;&gt;-->
+<!--        <div th:replace="fragments/common/content_title :: content-title"></div>-->
+<!--        &lt;!&ndash;Page Title End&ndash;&gt;-->
+<!--        &lt;!&ndash;Page content&ndash;&gt;-->
+<!--        &lt;!&ndash;===================================================&ndash;&gt;-->
+<!--        <div id="page-content">-->
+
+<!--            &lt;!&ndash; Basic Data Tables &ndash;&gt;-->
+<!--            &lt;!&ndash;===================================================&ndash;&gt;-->
+<!--            <div class="panel">-->
+<!--&lt;!&ndash;                <div class="panel-heading">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <h3 class="panel-title">교육 등록</h3>&ndash;&gt;-->
+<!--&lt;!&ndash;                </div>&ndash;&gt;-->
+<!--                <div class="panel-body">-->
+<!--                    <br>-->
+<!--                    &lt;!&ndash;===================================================&ndash;&gt;-->
+<!--                    &lt;!&ndash;End Horizontal Form&ndash;&gt;-->
+<!--                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/add-post}" th:object="${course}" method="post" enctype="multipart/form-data" >-->
+<!--                        <input type="hidden" th:field="*{id}" id="id" name="id">-->
+<!--                        <input type="hidden" th:field="*{courseMaster.id}" id="type-id" name="type-id">-->
+<!--                        <div class="form-group">-->
+<!--                            <label class="col-sm-2 control-label" for="title" th:text="#{label.course.type}">교육유형</label>-->
+<!--                            <div class="col-sm-10">-->
+<!--                                <input type="text" th:value="${course.courseMaster.getCourseName()}"  placeholder="제목" class="form-control" readonly="readonly">-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="form-group">-->
+<!--                            <label class="col-sm-2 control-label text-center" for="documentId">교육신청서선택</label>-->
+<!--                            <div class="col-sm-9">-->
+<!--                                <input type="hidden" name="documentId" id="documentId" placeholder="교육신청서" class="form-control col-sm-4" required="required">-->
+<!--                                <input type="text" id="documentName" placeholder="교육신청서" class="form-control col-sm-8" readonly>-->
+<!--                            </div>-->
+<!--                            <div class="col-sm-1 pull-right">-->
+<!--                                <a class="btn btn-primary" id="btnCourse">선택</a>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--&lt;!&ndash;                        <div class="form-group">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <label class="col-sm-2 control-label"></label>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <div class="checkbox">&ndash;&gt;-->
+<!--&lt;!&ndash;                                &nbsp;&nbsp;<input id="isNewEmpCourse" name="isNewEmpCourse" class="magic-checkbox" type="checkbox" value="1">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <label for="isNewEmpCourse">신입사원 필수교육</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                            </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--                        <div class="form-group">-->
+<!--                            <label class="col-sm-2 control-label" for="title" th:text="#{label.course.name}">과정명</label>-->
+<!--                            <div class="col-sm-10">-->
+<!--                                <input type="text" th:field="*{title}" id="title" placeholder="과정명" class="form-control" required="required">-->
+<!--                            </div>-->
+<!--                            <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>-->
+<!--                        </div>-->
+<!--                        <div class="form-group">-->
+<!--                            <label class="col-sm-2 control-label" for="title" th:text="#{label.course.requesperiod}">신청기간</label>-->
+<!--                            <div class="col-sm-10">-->
+<!--                                <div id="demo-dp-range">-->
+<!--                                    <div class="input-daterange input-group" id="datepicker">-->
+<!--                                        <input type="text" th:field="*{requestFromDate}" id="requestFromDate" placeholder="From" class="form-control" required="required">-->
+<!--                                        <span th:if="${#fields.hasErrors('requestFromDate')}" th:errors="*{requestFromDate}"></span>-->
+<!--                                        <span class="input-group-addon">to</span>-->
+<!--                                        <input type="text" th:field="*{requestToDate}" id="requestToDate" placeholder="To" class="form-control" required="required">-->
+<!--                                        <span th:if="${#fields.hasErrors('requestToDate')}" th:errors="*{requestToDate}"></span>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="form-group">-->
+<!--                            <label class="col-sm-2 control-label" for="title" th:text="#{label.course.period}">교육기간</label>-->
+<!--                            <div class="col-sm-10">-->
+<!--                                <div id="demo-dp-range2">-->
+<!--                                    <div class="input-daterange input-group" id="datepicker2">-->
+<!--                                        <input type="text" th:field="*{fromDate}" id="fromDate" placeholder="From" class="form-control" required="required">-->
+<!--                                        <span th:if="${#fields.hasErrors('fromDate')}" th:errors="*{fromDate}"></span>-->
+<!--                                        <span class="input-group-addon">to</span>-->
+<!--                                        <input type="text" th:field="*{toDate}" id="toDate" placeholder="To" class="form-control" required="required">-->
+<!--                                        <span th:if="${#fields.hasErrors('toDate')}" th:errors="*{toDate}"></span>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="form-group">-->
+<!--                            <label class="col-sm-2 control-label" th:text="#{label.course.isbook}">교제제공여부</label>-->
+<!--                            <div class="col-sm-4">-->
+<!--                                <select th:field="*{isBook}" class="form-control">-->
+<!--                                    <option value="Y" >Y</option>-->
+<!--                                    <option value="N" >N</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                            <span th:if="${#fields.hasErrors('isQuiz')}" th:errors="*{isQuiz}"></span>-->
+<!--                            <label class="col-sm-2 control-label" th:text="#{label.course.isquiz}">시험진행여부</label>-->
+<!--                            <div class="col-sm-4">-->
+<!--                                <select th:field="*{isQuiz}" class="form-control">-->
+<!--                                    <option value="Y" >Y</option>-->
+<!--                                    <option value="N" >N</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="form-group">-->
+<!--                            <label class="col-sm-2 control-label" th:text="#{label.course.iscerti}">수료증여부</label>-->
+<!--                            <div class="col-sm-4">-->
+<!--                                <select th:field="*{isCerti}" class="form-control">-->
+<!--                                    <option value="Y" >Y</option>-->
+<!--                                    <option value="N" >N</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                            <span th:if="${#fields.hasErrors('isCerti')}" th:errors="*{isCerti}"></span>-->
+<!--                            <label class="col-sm-2 control-label" th:text="#{label.course.issurvey}">설문진행여부</label>-->
+<!--                            <div class="col-sm-4">-->
+<!--                                <select th:field="*{isSurvey}" class="form-control">-->
+<!--                                    <option value="Y" >Y</option>-->
+<!--                                    <option value="N" >N</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                            <span th:if="${#fields.hasErrors('isSurvey')}" th:errors="*{isSurvey}"></span>-->
+<!--                        </div>-->
+<!--                        <div class="form-group">-->
+<!--                            <span th:if="${#fields.hasErrors('isCerti')}" th:errors="*{isCerti}"></span>-->
+<!--                            <label class="col-sm-2 control-label" th:text="#{label.course.certiHeadText}">발급번호(HeadText)</label>-->
+<!--                            <div class="col-sm-10">-->
+<!--                                <input type="text" th:field="*{certiHead}" id="certiHead" placeholder="수료증 발급번호" class="form-control">-->
+<!--                            </div>-->
+<!--                            <span th:if="${#fields.hasErrors('certiHead')}" th:errors="*{certiHead}"></span>-->
+<!--                        </div>-->
+
+<!--                        <div id="editSection"></div>-->
+<!--                        <div class="form-group">-->
+<!--                            <label class="col-sm-2 control-label" for="editor" th:text="#{label.course.introduce}">소개</label>-->
+<!--                            <div class="col-sm-10">-->
+<!--                                <textarea class="form-control" th:field="*{content}" name="content" id="editor" style="width: 100%; height: 300px;" required></textarea>-->
+<!--                            </div>-->
+<!--                            <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>-->
+<!--                        </div>-->
+<!--                        <div class="form-group" th:each="num: ${#numbers.sequence(1,2)}">-->
+<!--                            <label class="col-sm-2 control-label" for="editor" th:text="#{label.file} + ${num}">첨부파일</label>-->
+<!--                            <div class="col-sm-10">-->
+<!--                                <input type="file" name="files">-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="panel-footer text-right">-->
+<!--                            <button class="btn btn-primary" type="submit" id="submit-all"  th:text="#{label.save}">-->
+<!--                                <i class="fa fa-upload-cloud"></i> 저장-->
+<!--                            </button>-->
+<!--                            <a th:href="@{/admin/course/list/{typeId}(typeId=${course.getCourseMaster().getId()})}" class="btn btn-success" th:text="#{label.list}">-->
+<!--                                <i class="fa fa-upload-cloud"></i> 목록-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                    </form>-->
+<!--                </div>&lt;!&ndash;panel-body End &ndash;&gt;-->
+<!--            </div>&lt;!&ndash; panel End &ndash;&gt;-->
+<!--        </div>&lt;!&ndash; Page content End &ndash;&gt;-->
+<!--    </div>&lt;!&ndash; Content container End &ndash;&gt;-->
+
+<!--</th:block>-->
+
+<!--<th:block layout:fragment="custom_js">-->
+<!--    &lt;!&ndash;Dropzone [ OPTIONAL ]&ndash;&gt;-->
+<!--&lt;!&ndash;    <script th:src="@{/default/plugins/dropzone/dropzone.js}"></script>&ndash;&gt;-->
+
+
+<!--    <script type="text/javascript" th:src="@{/editor/js/HuskyEZCreator.js}" charset="utf-8"></script>-->
+<!--    <script type="text/javascript" th:src="@{/default/js/custom/course-editor.js}" charset="utf-8"></script>-->
+
+<!--&lt;!&ndash;    <script type="text/javascript" th:src="@{/default/js/custom/course-file.js}" charset="utf-8"></script>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <script type="text/javascript" th:src="@{/default/js/custom/course-add.js}" charset="utf-8"></script>&ndash;&gt;-->
+
+
+
+<!--&lt;!&ndash;    <script th:src="@{/default/js/demo/form-component.js}"></script>&ndash;&gt;-->
+
+<!--    <script>-->
+<!--        $('#demo-dp-range .input-daterange').datepicker({-->
+<!--            // format: "MM dd, yyyy",-->
+<!--            format: "yyyy-mm-dd",-->
+<!--            todayBtn: "linked",-->
+<!--            autoclose: true,-->
+<!--            todayHighlight: true-->
+<!--        });-->
+
+<!--        $('#demo-dp-range2 .input-daterange').datepicker({-->
+<!--            // format: "MM dd, yyyy",-->
+<!--            format: "yyyy-mm-dd",-->
+<!--            todayBtn: "linked",-->
+<!--            autoclose: true,-->
+<!--            todayHighlight: true-->
+<!--        });-->
+
+<!--        // $('#mailList').chosen({width:'100%'});-->
+<!--        //-->
+<!--        // $("#btnOrg").on("click", function() {-->
+<!--        //     var url = "/admin/depart/treeView";-->
+<!--        //     // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음-->
+<!--        //     var popupX = (window.screen.width / 2) - (800 / 2);-->
+<!--        //     // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음-->
+<!--        //     var popupY= (window.screen.height / 2) - (550 / 2);-->
+<!--        //-->
+<!--        //     var name = "조직도";-->
+<!--        //     var option = "width = 800, height = 550, top = 100, left = 200, menubar=no,directories=no, location = no, scrollbars=no, resizable=no"-->
+<!--        //     option += ", left=" + popupX + ", top=" + popupY;-->
+<!--        //     window.open(url, name, option);-->
+<!--        // });-->
+
+
+<!--        // 조직도에서 사용자 ID를 받아 온다(배열로 받아옴)-->
+<!--        // function selectMailList(selectOptionArray) {-->
+<!--        //-->
+<!--        //     // 싱글값 변경-->
+<!--        //     // $('#select-id').val("22").trigger('chosen:updated');-->
+<!--        //     // 여러값 변경시는 배열로 전달-->
+<!--        //     $('#mailList').val(selectOptionArray).trigger('chosen:updated');-->
+<!--        // }-->
+
+<!--        $("#btnCourse").on("click", function() {-->
+<!--            var url = "/admin/course/popupDocument/217";-->
+<!--            // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음-->
+<!--            var popupX = (window.screen.width / 2) - (800 / 2);-->
+<!--            // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음-->
+<!--            var popupY= (window.screen.height / 2) - (550 / 2);-->
+
+<!--            var name = "조직도";-->
+<!--            var option = "width = 800, height = 550, top = 100, left = 200, menubar=no,directories=no, location = no, scrollbars=no, resizable=no"-->
+<!--            option += ", left=" + popupX + ", top=" + popupY;-->
+<!--            window.open(url, name, option);-->
+<!--        });-->
+
+
+<!--        // 조직도에서 사용자 ID를 받아 온다-->
+<!--        function selectDocument(documentId, documentName) {-->
+
+<!--            // 싱글값 변경-->
+<!--            // $('#select-id').val("22").trigger('chosen:updated');-->
+<!--            // 여러값 변경시는 배열로 전달-->
+<!--            $('#documentId').val(documentId);-->
+<!--            $('#documentName').val(documentName);-->
+<!--        }-->
+
+<!--    </script>-->
+
+
+<!--</th:block>-->
+
+<!--</html>-->

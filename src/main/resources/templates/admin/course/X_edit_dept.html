@@ -1,0 +1,367 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="ko"-->
+<!--      xmlns="http://www.w3.org/1999/xhtml"-->
+<!--      xmlns:th="http://www.thymeleaf.org"-->
+<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
+<!--      layout:decorator="layout/default_layout">-->
+
+<!--<th:block layout:fragment="html_head">-->
+<!--    <title>TachyonTech Info</title>-->
+<!--</th:block>-->
+
+<!--<th:block layout:fragment="custom_css"></th:block>-->
+
+<!--<th:block layout:fragment="content_body">-->
+<!--    &lt;!&ndash;-->
+<!--    <div th:replace="fragments/common/loading"></div>-->
+<!--    &ndash;&gt;-->
+<!--    &lt;!&ndash;CONTENT CONTAINER&ndash;&gt;-->
+<!--    &lt;!&ndash;===================================================&ndash;&gt;-->
+<!--    <div id="content-container">-->
+
+<!--        &lt;!&ndash;Page Title&ndash;&gt;-->
+<!--        <div th:replace="fragments/common/content_title :: content-title"></div>-->
+<!--        &lt;!&ndash;Page Title End&ndash;&gt;-->
+<!--        &lt;!&ndash;Page content&ndash;&gt;-->
+<!--        &lt;!&ndash;===================================================&ndash;&gt;-->
+<!--        <div id="page-content">-->
+
+<!--            &lt;!&ndash; Basic Data Tables &ndash;&gt;-->
+<!--            &lt;!&ndash;===================================================&ndash;&gt;-->
+<!--            <div class="panel">-->
+<!--                <div class="panel-heading">-->
+<!--                    <h3 class="panel-title">공지사항 수정</h3>-->
+<!--                </div>-->
+<!--                <div class="panel-body">-->
+<!--                    &lt;!&ndash;===================================================&ndash;&gt;-->
+<!--                    &lt;!&ndash;End Horizontal Form&ndash;&gt;-->
+<!--                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/edit-post/{id}(id=${course.getId()})}" th:object="${course}" method="post" enctype="multipart/form-data">-->
+<!--                        <input type="hidden" th:field="*{id}" id="id" name="id">-->
+<!--                        <input type="hidden" th:field="*{courseMaster.id}" id="type-id" name="type-id">-->
+<!--                        <div class="form-group">-->
+<!--                            <label class="col-sm-2 control-label" for="title" th:text="#{label.course.type}">교육유형</label>-->
+<!--                            <div class="col-sm-10">-->
+<!--                                <input type="text" th:value="${course.courseMaster.getCourseName()}"  placeholder="제목" class="form-control" readonly="readonly">-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="form-group">-->
+<!--                            <label class="col-sm-2 control-label text-center" for="documentId">교육신청서선택</label>-->
+<!--                            <div class="col-sm-9">-->
+<!--                                <input type="hidden" name="documentId" id="documentId" placeholder="제목" class="form-control col-sm-4" required="required">-->
+<!--                                <input type="text" id="documentName" placeholder="과정명" class="form-control col-sm-8">-->
+<!--                            </div>-->
+<!--                            <div class="col-sm-1 pull-right">-->
+<!--                                <a class="btn btn-primary" id="btnCourse">선택</a>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="form-group">-->
+<!--                            <label class="col-sm-2 control-label"></label>-->
+<!--                            <div class="checkbox">-->
+<!--                                &nbsp;<input id="isNewEmpCourse" name="isNewEmpCourse" class="magic-checkbox" type="checkbox" value="1" th:checked="${#strings.equalsIgnoreCase(course.getIsNewEmpCourse(), '1')}">-->
+<!--                                <label for="isNewEmpCourse">신입사원 필수교육</label>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="form-group">-->
+<!--                            <label class="col-sm-2 control-label" for="title" th:text="#{label.course.name}">과정명</label>-->
+<!--                            <div class="col-sm-10">-->
+<!--                                <input type="text" th:field="*{title}" id="title" placeholder="과정명" class="form-control" required="required">-->
+<!--                            </div>-->
+<!--                            <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>-->
+<!--                        </div>-->
+<!--                        <div class="form-group">-->
+<!--                            <label class="col-sm-2 control-label" for="title" th:text="#{label.course.requesperiod}">신청기간</label>-->
+<!--                            <div class="col-sm-10">-->
+<!--                                <div id="demo-dp-range">-->
+<!--                                    <div class="input-daterange input-group" id="datepicker">-->
+<!--                                        <input type="text" th:field="*{requestFromDate}" id="requestFromDate" placeholder="From" class="form-control" required="required">-->
+<!--                                        <span th:if="${#fields.hasErrors('requestFromDate')}" th:errors="*{requestFromDate}"></span>-->
+<!--                                        <span class="input-group-addon">to</span>-->
+<!--                                        <input type="text" th:field="*{requestToDate}" id="requestToDate" placeholder="To" class="form-control" required="required">-->
+<!--                                        <span th:if="${#fields.hasErrors('requestToDate')}" th:errors="*{requestToDate}"></span>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="form-group">-->
+<!--                            <label class="col-sm-2 control-label" for="title" th:text="#{label.course.period}">교육기간</label>-->
+<!--                            <div class="col-sm-10">-->
+<!--                                <div id="demo-dp-range2">-->
+<!--                                    <div class="input-daterange input-group" id="datepicker2">-->
+<!--                                        <input type="text" th:field="*{fromDate}" id="fromDate" placeholder="From" class="form-control" required="required">-->
+<!--                                        <span th:if="${#fields.hasErrors('fromDate')}" th:errors="*{fromDate}"></span>-->
+<!--                                        <span class="input-group-addon">to</span>-->
+<!--                                        <input type="text" th:field="*{toDate}" id="toDate" placeholder="To" class="form-control" required="required">-->
+<!--                                        <span th:if="${#fields.hasErrors('toDate')}" th:errors="*{toDate}"></span>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="form-group">-->
+<!--                            <label class="col-sm-2 control-label" th:text="#{label.course.isbook}">교제제공여부</label>-->
+<!--                            <div class="col-sm-4">-->
+<!--                                <select th:field="*{isBook}" class="form-control">-->
+<!--                                    <option value="Y" >Y</option>-->
+<!--                                    <option value="N" >N</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                            <span th:if="${#fields.hasErrors('isBook')}" th:errors="*{isBook}"></span>-->
+<!--                            <label class="col-sm-2 control-label" th:text="#{label.course.isquiz}">시험진행여부</label>-->
+<!--                            <div class="col-sm-4">-->
+<!--                                <select th:field="*{isQuiz}" class="form-control">-->
+<!--                                    <option value="Y" >Y</option>-->
+<!--                                    <option value="N" >N</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                            <span th:if="${#fields.hasErrors('isQuiz')}" th:errors="*{isQuiz}"></span>-->
+<!--                        </div>-->
+<!--                        <div class="form-group">-->
+<!--                            <label class="col-sm-2 control-label" th:text="#{label.course.iscerti}">수료증여부</label>-->
+<!--                            <div class="col-sm-4">-->
+<!--                                <select th:field="*{isCerti}" class="form-control">-->
+<!--                                    <option value="Y" >Y</option>-->
+<!--                                    <option value="N" >N</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                            <span th:if="${#fields.hasErrors('isCerti')}" th:errors="*{isCerti}"></span>-->
+<!--                            <label class="col-sm-2 control-label" th:text="#{label.course.issurvey}">설문진행여부</label>-->
+<!--                            <div class="col-sm-4">-->
+<!--                                <select th:field="*{isSurvey}" class="form-control">-->
+<!--                                    <option value="Y" >Y</option>-->
+<!--                                    <option value="N" >N</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                            <span th:if="${#fields.hasErrors('isSurvey')}" th:errors="*{isSurvey}"></span>-->
+<!--                        </div>-->
+<!--                        <div class="form-group">-->
+<!--                            <span th:if="${#fields.hasErrors('isCerti')}" th:errors="*{isCerti}"></span>-->
+<!--                            <label class="col-sm-2 control-label" th:text="#{label.course.certiHeadText}">발급번호(HeadText)</label>-->
+<!--                            <div class="col-sm-10">-->
+<!--                                <input type="text" th:field="*{certiHead}" id="certiHead" placeholder="수료증 발급번호" class="form-control">-->
+<!--                            </div>-->
+<!--                            <span th:if="${#fields.hasErrors('certiHead')}" th:errors="*{certiHead}"></span>-->
+<!--                        </div>-->
+<!--                        <div id="editSection"></div>-->
+<!--                        <div class="form-group">-->
+<!--                            <label class="col-sm-2 control-label" for="editor" th:text="#{label.course.introduce}">소개</label>-->
+<!--                            <div class="col-sm-10">-->
+<!--                                <textarea class="form-control" th:field="*{content}" name="content" id="editor" style="width: 100%; height: 300px;" required></textarea>-->
+<!--                            </div>-->
+<!--                            <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>-->
+<!--                        </div>-->
+<!--                        <div class="form-group">-->
+<!--                            <label class="col-sm-2 control-label" th:text="#{label.file}">첨부파일</label>-->
+<!--                            <div class="col-sm-10">-->
+<!--                                <div th:switch="${course.getCourseFiles().isEmpty()}">-->
+<!--                                    <div th:case="true"></div>-->
+<!--                                    <div th:case="*">-->
+<!--                                        <table id="customer-list-page" class="table table-striped table-courseed" cellspacing="0" width="100%">-->
+<!--                                            <thead>-->
+<!--                                            <tr>-->
+<!--                                                <th class="text-center col-sm-8" th:text="#{label.filename}">File Name</th>-->
+<!--                                                <th class="text-center col-sm-2" th:text="#{label.filesize}">Size</th>-->
+<!--                                                <th class="text-center col-sm-2" th:text="#{label.delete}">삭제</th>-->
+<!--                                            </tr>-->
+<!--                                            </thead>-->
+<!--                                            <tbody>-->
+<!--                                            <tr th:each="uploadFile : ${course.getCourseFiles()}">-->
+<!--                                                <td>-->
+<!--                                                    <a th:href="@{/admin/course/download-file/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>-->
+<!--                                                </td>-->
+<!--                                                <td th:text="${uploadFile.getSize()}" class="text-center"></td>-->
+<!--                                                <td class="text-center col-sm-2">-->
+<!--                                                   <a class="btn btn-xs btn-danger" th:href="@{/admin/course/delete-file/{course_id}/{file_id}(course_id=${course.getId()}, file_id=${uploadFile.getId()})}"><i class="demo-psi-trash"></i></a>-->
+<!--                                                </td>-->
+<!--                                            </tr>-->
+<!--                                            </tbody>-->
+<!--                                        </table>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+
+<!--                        <div class="form-group" th:each="num: ${#numbers.sequence(1,1)}">-->
+<!--                            <label class="col-sm-2 control-label" for="editor" th:text="#{label.file} + ${num}">첨부파일</label>-->
+<!--                            <div class="col-sm-10">-->
+<!--                                <input type="file" name="files" multiple = "multiple">-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+<!--&lt;!&ndash;                        <div class="form-group">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <label class="col-sm-2 control-label">첨부파일</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <div class="col-sm-10">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <div class="bord-top pad-ver">&ndash;&gt;-->
+<!--&lt;!&ndash;                                        &lt;!&ndash; The fileinput-button span is used to style the file input field as button &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <span class="btn btn-success fileinput-button dz-clickable">&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <i class="fa fa-plus"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <span>Add files...</span>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        </span>&ndash;&gt;-->
+
+<!--&lt;!&ndash;                                        <div class="btn-group pull-right">&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <button id="dz-remove-btn" class="btn btn-danger cancel" type="reset" disabled>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                <i class="demo-psi-trash"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;                                            </button>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;                                    <div id="dz-previews">&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <div id="dz-template" class="pad-top bord-top">&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <div class="media">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                <div class="media-body">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    &lt;!&ndash;This is used as the file preview template&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    <div class="media-block">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        <div class="media-left">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                            <img class="dz-img" data-dz-thumbnail>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        <div class="media-body">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                            <p class="text-main text-bold mar-no text-overflow" data-dz-name></p>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                            <span class="dz-error text-danger text-sm" data-dz-errormessage></span>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                            <p class="text-sm" data-dz-size></p>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                            <div id="dz-total-progress" style="opacity:0">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                <div class="progress progress-xs active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                    <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                            </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                <div class="media-right">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    <button data-dz-remove class="btn btn-xs btn-danger dz-cancel"><i class="demo-psi-trash"></i></button>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                            </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;                                </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;                                <div th:switch="${course.getBorderFiles().isEmpty()}">&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <div th:case="true"></div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <div th:case="*">&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <table id="customer-list-page" class="table table-striped table-courseed" cellspacing="0" width="100%">&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <thead>&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                <th class="text-center col-sm-8">파일명</th>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                <th class="text-center col-sm-2">사이즈</th>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                <th class="text-center col-sm-2">삭제</th>&ndash;&gt;-->
+<!--&lt;!&ndash;                                            </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                                            </thead>&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <tbody>&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <tr th:each="uploadFile : ${course.getBorderFiles()}">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                <td>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    <a th:href="@{/admin/course/download-file/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                </td>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                <td th:text="${uploadFile.getSize()}" class="text-center"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                <td class="text-center col-sm-2">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                   <a class="btn btn-xs btn-danger" th:href="@{/admin/course/delete-file/{course_id}/{file_id}(course_id=${course.getId()}, file_id=${uploadFile.getId()})}"><i class="demo-psi-trash"></i></a>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                </td>&ndash;&gt;-->
+<!--&lt;!&ndash;                                            </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                                            </tbody>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        </table>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                            </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--                        <div class="panel-footer text-right">-->
+<!--&lt;!&ndash;                            <button id="dz-upload-btn" class="btn btn-primary" type="submit">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <i class="fa fa-upload-cloud"></i> 저장&ndash;&gt;-->
+<!--&lt;!&ndash;                            </button>&ndash;&gt;-->
+<!--                            <button class="btn btn-primary" type="submit" id="submit-all" th:text="#{label.save}">-->
+<!--                                <i class="fa fa-upload-cloud"></i> 저장-->
+<!--                            </button>-->
+<!--                            <a th:href="@{/admin/course/list/{typeId}(typeId=${course.getCourseMaster().getId()})}" class="btn btn-success" th:text="#{label.list}">-->
+<!--                                <i class="fa fa-upload-cloud"></i> 목록-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                    </form>-->
+<!--                </div>&lt;!&ndash;panel-body End &ndash;&gt;-->
+<!--            </div>&lt;!&ndash; panel End &ndash;&gt;-->
+<!--        </div>&lt;!&ndash; Page content End &ndash;&gt;-->
+<!--    </div>&lt;!&ndash; Content container End &ndash;&gt;-->
+<!--</th:block>-->
+
+<!--<th:block layout:fragment="custom_js">-->
+
+<!--    &lt;!&ndash;Dropzone [ OPTIONAL ]&ndash;&gt;-->
+<!--&lt;!&ndash;    <script th:src="@{/default/plugins/dropzone/dropzone.min.js}"></script>&ndash;&gt;-->
+
+<!--    <script type="text/javascript" th:src="@{/editor/js/HuskyEZCreator.js}" charset="utf-8"></script>-->
+<!--    <script type="text/javascript" th:src="@{/default/js/custom/course-editor.js}" charset="utf-8"></script>-->
+
+<!--&lt;!&ndash;    <script type="text/javascript" th:src="@{/default/js/custom/course-file.js}" charset="utf-8"></script>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <script type="text/javascript" th:src="@{/default/js/custom/course-add.js}" charset="utf-8"></script>&ndash;&gt;-->
+
+<!--    <script>-->
+<!--        $('#demo-dp-range .input-daterange').datepicker({-->
+<!--            // format: "MM dd, yyyy",-->
+<!--            format: "yyyy-mm-dd",-->
+<!--            todayBtn: "linked",-->
+<!--            autoclose: true,-->
+<!--            todayHighlight: true-->
+<!--        });-->
+
+<!--        $('#demo-dp-range2 .input-daterange').datepicker({-->
+<!--            // format: "MM dd, yyyy",-->
+<!--            format: "yyyy-mm-dd",-->
+<!--            todayBtn: "linked",-->
+<!--            autoclose: true,-->
+<!--            todayHighlight: true-->
+<!--        });-->
+
+<!--        // $('#mailList, #mailList2').chosen({width:'100%'});-->
+<!--        //-->
+<!--        // $("#btnOrg").on("click", function() {-->
+<!--        //     var url = "/admin/depart/treeView";-->
+<!--        //     // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음-->
+<!--        //     var popupX = (window.screen.width / 2) - (800 / 2);-->
+<!--        //     // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음-->
+<!--        //     var popupY= (window.screen.height / 2) - (550 / 2);-->
+<!--        //-->
+<!--        //     var name = "조직도";-->
+<!--        //     var option = "width = 800, height = 550, top = 100, left = 200, menubar=no,directories=no, location = no, scrollbars=no, resizable=no"-->
+<!--        //     option += ", left=" + popupX + ", top=" + popupY;-->
+<!--        //     window.open(url, name, option);-->
+<!--        // });-->
+<!--        //-->
+<!--        // // 조직도에서 사용자 ID를 받아 온다(배열로 받아옴)-->
+<!--        // function selectMailList(selectOptionArray) {-->
+<!--        //-->
+<!--        //     // 싱글값 변경-->
+<!--        //     // $('#select-id').val("22").trigger('chosen:updated');-->
+<!--        //     // 여러값 변경시는 배열로 전달-->
+<!--        //     $('#mailList').val(selectOptionArray).trigger('chosen:updated');-->
+<!--        // }-->
+
+<!--        $("#btnCourse").on("click", function() {-->
+<!--            var url = "/admin/course/popupDocument/217";-->
+<!--            // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음-->
+<!--            var popupX = (window.screen.width / 2) - (800 / 2);-->
+<!--            // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음-->
+<!--            var popupY= (window.screen.height / 2) - (550 / 2);-->
+
+<!--            var name = "조직도";-->
+<!--            var option = "width = 800, height = 550, top = 100, left = 200, menubar=no,directories=no, location = no, scrollbars=no, resizable=no"-->
+<!--            option += ", left=" + popupX + ", top=" + popupY;-->
+<!--            window.open(url, name, option);-->
+<!--        });-->
+
+
+<!--        // 조직도에서 사용자 ID를 받아 온다(배열로 받아옴)-->
+<!--        function selectCourse(documentId, documentNme) {-->
+
+<!--            // 싱글값 변경-->
+<!--            // $('#select-id').val("22").trigger('chosen:updated');-->
+<!--            // 여러값 변경시는 배열로 전달-->
+<!--            $('#documentId').val(documentId);-->
+<!--            $('#documentNme').val(documentNme);-->
+<!--        }-->
+
+
+<!--    </script>-->
+
+<!--    &lt;!&ndash;Form File Upload [ SAMPLE ]&ndash;&gt;-->
+<!--&lt;!&ndash;    <script th:src="@{/default/js/demo/form-file-upload.js}"></script>&ndash;&gt;-->
+<!--</th:block>-->
+
+<!--</html>-->

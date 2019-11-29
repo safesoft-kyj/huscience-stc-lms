@@ -55,7 +55,6 @@ public class CourseAccountService {
     }
 
 
-
     public List<CourseAccount> getCourseAccountByCourseId(long courseId) {
         return courseAccountRepository.findByCourse_Id(courseId);
     }
@@ -137,6 +136,18 @@ public class CourseAccountService {
     }
 
 
+    // 수강생별 증명서 발급 대상 과정
+    public Page<CourseAccount> getAllByAccount_UserIdAndIsCommitAndCourse_IsCerti(String userId,  String isCommit, String isCerti, Pageable pageable) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+
+        return courseAccountRepository.findAllByAccount_UserIdAndIsCommitAndCourse_IsCerti(userId, isCommit, isCerti, pageable);
+    }
+
+
+
     // 과정유형, 사용자, 완결여부로 가져오기(전자결재 팦업창에서 사용)
     public List<CourseAccount> getAllByCourse_CourseMaster_IdAndAccount_UserIdAndIsCommit(String typeId, String userId, String isCommit) {
         return courseAccountRepository.findAllByCourse_CourseMaster_IdAndAccount_UserIdAndIsCommit(typeId, userId, isCommit);
@@ -151,6 +162,23 @@ public class CourseAccountService {
 
         return courseAccountRepository.findAllByCourse_CourseMaster_IdAndAccount_UserIdAndIsCommit(typeId, userId, isCommit, pageable);
     }
+
+
+    // 과정유형, 사용자, 완결여부로 가져오기(전자결재 팦업창에서 사용)
+    public List<CourseAccount> getAllByCourse_CourseMaster_IdAndAccount_UserIdAndFStatusAndIsCommit(String typeId, String userId, String fStatus, String isCommit) {
+        return courseAccountRepository.findAllByCourse_CourseMaster_IdAndAccount_UserIdAndFStatusAndIsCommit(typeId, userId, fStatus, isCommit);
+    }
+
+    // 과정유형, 사용자, 완결여부로 가져오기(전자결재 팦업창에서 사용)
+    public Page<CourseAccount> getAllByCourse_CourseMaster_IdAndAccount_UserIdAndFStatusAndIsCommit(String typeId, String userId, String fStatus, String isCommit, Pageable pageable) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+
+        return courseAccountRepository.findAllByCourse_CourseMaster_IdAndAccount_UserIdAndFStatusAndIsCommit(typeId, userId, fStatus, isCommit, pageable);
+    }
+
 
 
 

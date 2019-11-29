@@ -78,6 +78,7 @@ public class CourseSectionAdminController {
         model.addAttribute(pageInfo);
         model.addAttribute("borders", sectionService.getAllByCourseId(courseId));
         model.addAttribute("typeId", course.getCourseMaster().getId());
+        model.addAttribute("gubunId", course.getCourseMaster().getCourseGubun().getMinorCd());
 
         return "admin/course/section/list";
     }
@@ -117,12 +118,15 @@ public class CourseSectionAdminController {
         courseSection.setSecond(Math.round(courseSection.getMinute()*60));
         CourseSection courseSection1 = sectionService.saveSection(courseSection);
 
-
         // Section 저장
         Arrays.asList(files)
                 .stream()
                 .map(file -> fileService.storeFile(file, courseSection1))
                 .collect(Collectors.toList());
+
+
+        // 강의 시간의 변경시 과정의 시간을 업데이트 한다.
+        courseService.updateCourseHour(course);
 
         return "redirect:/admin/course/section/list/" + courseSection1.getCourse().getId();
     }
@@ -160,6 +164,9 @@ public class CourseSectionAdminController {
         courseSection.setSecond(Math.round(courseSection.getMinute()*60));
 
         CourseSection courseSection1 = sectionService.saveSection(courseSection);
+
+        // 강의 시간의 변경시 과정의 시간을 업데이트 한다.
+        courseService.updateCourseHour(courseSection1.getCourse());
 
         Arrays.asList(files)
                 .stream()

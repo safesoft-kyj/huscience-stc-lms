@@ -26,6 +26,9 @@ public class Account {
     private String email;
     private String password;
 
+    // 사번
+    @Column(length = 100)
+    private String comNum;
     // 부서
     private String orgDepart;
     // 업무
@@ -64,8 +67,8 @@ public class Account {
                     name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
 
-    @OneToMany(mappedBy = "account")
-    private List<BinderCv> binderCvList;
+//    @OneToMany(mappedBy = "account")
+//    private List<BinderCv> binderCvList;
 
 //    @OneToMany(mappedBy = "account")
 //    private List<BinderJd> binderJdList;
@@ -73,8 +76,8 @@ public class Account {
     @OneToMany(mappedBy = "account")
     private List<CourseAccount> courseAccountList;
 
-    @OneToMany(mappedBy = "document")
-    private List<DocumentAccount> documentAccountList;
+//    @OneToMany(mappedBy = "document")
+//    private List<DocumentAccount> documentAccountList;
 
     public Account() {}
 
@@ -100,12 +103,12 @@ public class Account {
         return courseAccountList.add(courseAccount);
     }
 
-    public boolean addDocumentAccount(DocumentAccount documentAccount) {
-        if(documentAccountList == null)
-            documentAccountList = new ArrayList<>();
-
-        return documentAccountList.add(documentAccount);
-    }
+//    public boolean addDocumentAccount(DocumentAccount documentAccount) {
+//        if(documentAccountList == null)
+//            documentAccountList = new ArrayList<>();
+//
+//        return documentAccountList.add(documentAccount);
+//    }
 
 //    public Long getId() {
 //        return id;
@@ -146,6 +149,15 @@ public class Account {
     public String getEngName() {
         return engName;
     }
+
+    public void setComNum(String comNum) {
+        this.comNum = comNum;
+    }
+
+    public String getComNum() {
+        return comNum;
+    }
+
     public String getOrgDepart() {
         return orgDepart;
     }

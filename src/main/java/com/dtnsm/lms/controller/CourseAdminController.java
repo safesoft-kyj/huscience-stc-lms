@@ -2,14 +2,12 @@ package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.*;
-import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -86,7 +84,6 @@ public class CourseAdminController {
     }
 
 
-    // region # 공지사항
     @GetMapping("/list/{typeId}")
     public String listPage(@PathVariable("typeId") String typeId
             , @RequestParam(value = "searchType", defaultValue = "all") String searchType
@@ -158,19 +155,19 @@ public class CourseAdminController {
         return "admin/course/popupDocument";
     }
 
+    // On Line 교육 등록(self 교육)
+    @GetMapping("/addOnline/{typeId}")
+    public String addOnLine(@PathVariable("typeId") String typeId, Model model) {
 
-    @GetMapping("/add/{typeId}")
-    public String noticeAdd(@PathVariable("typeId") String typeId, Model model) {
-
-        this.courseMaster = courseMasterService.getById(typeId);
         Course course = new Course();
-        course.setCourseMaster(this.courseMaster);
-        course.setDay(1);
+        course.setCourseMaster(courseMasterService.getById(typeId));
+//        course.setDay(1);
 
         //Course course = courseService.save(new Course("", "", this.courseMaster));
 
-        pageInfo.setPageTitle(courseMaster.getCourseName() + " 등록");
+        pageInfo.setPageTitle(course.getCourseMaster().getCourseName() + " 등록");
 
+        // 기본 설문을 가지고 온다.
         Survey survey = surveyService.getByIsActive(1);
 
         model.addAttribute(pageInfo);
@@ -178,42 +175,55 @@ public class CourseAdminController {
         model.addAttribute("id", typeId);
         model.addAttribute("survey", survey);
 
-        String formName = "add";
-
-        if(typeId.equals("BC0101")) {   // Self training
-            formName = "add_self";
-        } else if(typeId.equals("BC0102")) {    // class Training
-            formName = "add_class";
-        } else if (typeId.equals("BC0103")) {   // 부서별 교육
-            formName = "add_class";
-        } else if (typeId.equals("BC0104")) {   // 외부 교육
-            formName = "add_class";
-        }
-
-        return "admin/course/" + formName;
+        return "admin/course/addOnline";
     }
+
+    // Off Line 교육 등록(class, 부서별, 외부 교육)
+    @GetMapping("/addOffLine/{typeId}")
+    public String addOffLine(@PathVariable("typeId") String typeId, Model model) {
+
+        Course course = new Course();
+        course.setCourseMaster(courseMasterService.getById(typeId));
+//        course.setDay(1);
+
+        //Course course = courseService.save(new Course("", "", this.courseMaster));
+
+        pageInfo.setPageTitle(course.getCourseMaster().getCourseName() + " 등록");
+
+        // 기본 설문을 가지고 온다.
+        Survey survey = surveyService.getByIsActive(1);
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("course", course);
+        model.addAttribute("id", typeId);
+        model.addAttribute("survey", survey);
+
+        return "admin/course/addOffLine";
+    }
+
 
     @PostMapping("/add-post")
     public String noticeAddPost(@Valid Course course
             , @RequestParam(value = "documentId", required = false, defaultValue = "0") long documentId
+            , @RequestParam(value = "passCount", required = false, defaultValue = "0") int passCount
+            , @RequestParam(value = "examHour", required = false, defaultValue = "0") float examHour
             , @RequestParam("files") MultipartFile[] files
             , @RequestParam(value = "section_file", required = false) MultipartFile section_file
             , @RequestParam(value = "quiz_file", required = false) MultipartFile quiz_file
             , BindingResult result) {
         if(result.hasErrors()) {
-            return "admin/course/add";
+            return "redirect:/admin/course/list/" + course.getCourseMaster().getId();
         }
 
         course.setCourseMaster(courseMasterService.getById(course.getCourseMaster().getId()));
 
-        // self 교육인 경우 신청일자 및 교육일자가 별도로 없음으로 기본값으로 셋팅한다.
-        // RequestType : 1:상시, 2:기간
-//        if(course.getCourseMaster().getRequestType().equals("1")) {
-//            course.setRequestFromDate("1900-01-01");
-//            course.setRequestToDate("2999-12-31");
-//            course.setFromDate("1900-01-01");
-//            course.setToDate("2999-12-31");
-//        }
+        // isAlways : 1:상시, 2:기간 => 상시인 경우 오늘부터 최대일자로 기간을 설정한다.
+        if(course.getIsAlways().equals("1")) {
+            course.setRequestFromDate(DateUtil.getTodayString());
+            course.setRequestToDate("2999-12-31");
+            course.setFromDate(DateUtil.getTodayString());
+            course.setToDate("2999-12-31");
+        }
 
         Course course1 = courseService.save(course);
 
@@ -221,7 +231,7 @@ public class CourseAdminController {
         courseSectionService.CreateAutoSection(course1, section_file);
 
         // 기본적인 시험 1개 생성한다.(course의 isQuiz가 Y인 경우만 생성된다)
-        courseQuizService.CreateAutoQuiz(course1, quiz_file);
+        courseQuizService.CreateAutoQuiz(course1, quiz_file, passCount, examHour);
 
         // 기본적인 설문 1개 생성한다.(course의 isSurve가 Y인 경우만 생성된다)
         courseSurveyService.CreateAutoSurvey(course1);
@@ -293,8 +303,27 @@ public class CourseAdminController {
 //        return "redirect:/admin/course/list/" + course.getCourseMaster().getId();
 //    }
 
-    @GetMapping("/edit/{id}")
-    public String noticeEdit(@PathVariable("id") long id, Model model) {
+    @GetMapping("/editOnLine/{id}")
+    public String editOnLine(@PathVariable("id") long id, Model model) {
+
+        Course course = courseService.getCourseById(id);
+        pageInfo.setPageTitle(course.getCourseMaster().getCourseName() + " 수정");
+
+        // 기본 설문을 가지고 온다.
+        Survey survey = surveyService.getByIsActive(1);
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("course", course);
+        model.addAttribute("id", course.getId());
+        model.addAttribute("survey", survey);
+
+        String typeId = course.getCourseMaster().getId();
+
+        return "admin/course/editOnLine";
+    }
+
+    @GetMapping("/editOffLine/{id}")
+    public String editOffLine(@PathVariable("id") long id, Model model) {
 
         Course course = courseService.getCourseById(id);
         pageInfo.setPageTitle(course.getCourseMaster().getCourseName() + " 수정");
@@ -304,19 +333,8 @@ public class CourseAdminController {
         model.addAttribute("id", course.getId());
 
         String typeId = course.getCourseMaster().getId();
-        String formName = "edit";
 
-        if(typeId.equals("BC0101")) {   // Self training
-            formName = "edit_self";
-        } else if(typeId.equals("BC0102")) {    // class Training
-            formName = "edit_class";
-        } else if (typeId.equals("BC0103")) {   // 부서별 교육
-            formName = "edit_class";
-        } else if (typeId.equals("BC0104")) {   // 외부 교육
-            formName = "edit_class";
-        }
-
-        return "admin/course/" + formName;
+        return "admin/course/editOffLine";
     }
 
     @PostMapping("/edit-post/{id}")
@@ -331,6 +349,16 @@ public class CourseAdminController {
         }
 
         Course oldCourse = courseService.getCourseById(id);
+
+        // isAlways : 1:상시, 2:기간 => 상시인 경우 오늘부터 최대일자로 기간을 설정한다.
+        if(oldCourse.getIsAlways().equals(course.getIsAlways())) {
+            if(course.getIsAlways().equals("1")) {
+                course.setRequestFromDate(DateUtil.getTodayString());
+                course.setRequestToDate("2999-12-31");
+                course.setFromDate(DateUtil.getTodayString());
+                course.setToDate("2999-12-31");
+            }
+        }
 
         course.setActive(oldCourse.getActive());
         course.setSurveys(oldCourse.getSurveys());

@@ -57,54 +57,56 @@
                                 <th class="text-center" th:text="#{label.actions}"></th>
                                 </thead>
                                 <tbody>
-                                <th:block th:each="sectionAction, index : ${courseSectionActions}">
-                                <tr>
-                                    <td class="text-center" th:text="${index.count}"}></td>
-                                    <td class="text-center" th:text="#{label.title.section}"}></td>
-                                    <td class="text-left" th:text="${sectionAction.getCourseSection().getName()}"}></td>
-    <!--                                <td class="text-center" th:text="${section.getFromDate() + ' ~ ' + section.getToDate()}"></td>-->
-                                    <td class="text-center" th:text="${sectionAction.getCourseSection().getMinute()} + '분'"}></td>
-    <!--                                <td class="text-center" th:text="${section.getTeacher()}"}></td>-->
-                                    <td class="text-center" >
 
-                                        <div class="progress">
-                                            <div id="time"  class="progress-bar progress-bar-info"
-                                                 th:attr="style=${'width:' + T(Math).round((sectionAction.getTotalUseSecond()*1.0) / sectionAction.getCourseSection().getSecond() * 100) + '%'}"
-                                                 th:text="${T(Math).round((sectionAction.getTotalUseSecond()*1.0) / sectionAction.getCourseSection().getSecond() * 100) + ' %'}">0%</div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center" >
-                                        <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'REQUEST')}">
-                                            <span th:text="${sectionAction.getStatus()}" class="label label-mint"></span>
+                                    <th:block th:each="sectionAction, index : ${courseSectionActions}">
+                                        <th:block th:if="${sectionAction.getCourseAccount().getCourse().getCourseMaster().getCourseGubun().getMinorCd().equals('BC0101')}">
+                                            <tr>
+                                                <td class="text-center" th:text="${index.count}"}></td>
+                                                <td class="text-center" th:text="#{label.title.section}"}></td>
+                                                <td class="text-left" th:text="${sectionAction.getCourseSection().getName()}"}></td>
+                <!--                                <td class="text-center" th:text="${section.getFromDate() + ' ~ ' + section.getToDate()}"></td>-->
+                                                <td class="text-center" th:text="${sectionAction.getCourseSection().getMinute()} + '분'"}></td>
+                <!--                                <td class="text-center" th:text="${section.getTeacher()}"}></td>-->
+                                                <td class="text-center" >
+
+                                                    <div class="progress">
+                                                        <div id="time"  class="progress-bar progress-bar-info"
+                                                             th:attr="style=${'width:' + T(Math).round((sectionAction.getTotalUseSecond()*1.0) / sectionAction.getCourseSection().getSecond() * 100) + '%'}"
+                                                             th:text="${T(Math).round((sectionAction.getTotalUseSecond()*1.0) / sectionAction.getCourseSection().getSecond() * 100) + ' %'}">0%</div>
+                                                    </div>
+                                                </td>
+                                                <td class="text-center" >
+                                                    <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'REQUEST')}">
+                                                        <span th:text="${sectionAction.getStatus()}" class="label label-mint"></span>
+                                                    </th:block>
+                                                    <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'ONGOING')}">
+                                                        <span th:text="${sectionAction.getStatus()}" class="label label-danger"></span>
+                                                    </th:block>
+                                                    <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE')}">
+                                                        <span th:text="${sectionAction.getStatus()}" class="label label-success"></span>
+                                                    </th:block>
+                                                </td>
+                                                <td class="text-center">
+                <!--                                    <a href="#" class="btn btn-success" id="popupBtn" onclick="popupPdfView('11', '디티앤사노메딕스')" target="_blank">학습하기</a>-->
+                <!--                                    <span th:id="${'id' + index.count}" th:text="${section.getId()}"></span>-->
+
+
+                                                    <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE')}">
+                                                        <span class="label label-table label-success" th:text="#{label.course.section.commit}">학습종료</span>
+                                                    </th:block>
+
+                                                    <th:block th:unless="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE') or #strings.isEmpty(sectionAction.getStatus())}">
+                                                        <th:block th:inline="text" th:each="sectionFile : ${sectionAction.getCourseSection().getSectionFiles()}">
+                                                            <a href="#" class="label label-table label-info" id="popupBtn"
+                                                               th:onclick="|javascript:popupPdfView('${sectionFile.getId()}', '${sectionAction.getId()}');return false;|" target="_blank" th:text="#{label.course.section.request}">학습하기</a>
+                                                        </th:block>
+                                                    </th:block>
+
+
+                                                </td>
+                                            </tr>
                                         </th:block>
-                                        <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'ONGOING')}">
-                                            <span th:text="${sectionAction.getStatus()}" class="label label-danger"></span>
-                                        </th:block>
-                                        <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE')}">
-                                            <span th:text="${sectionAction.getStatus()}" class="label label-success"></span>
-                                        </th:block>
-
-                                    </td>
-                                    <td class="text-center">
-    <!--                                    <a href="#" class="btn btn-success" id="popupBtn" onclick="popupPdfView('11', '디티앤사노메딕스')" target="_blank">학습하기</a>-->
-    <!--                                    <span th:id="${'id' + index.count}" th:text="${section.getId()}"></span>-->
-
-
-                                        <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE')}">
-                                            <span class="label label-table label-success" th:text="#{label.course.section.commit}">학습종료</span>
-                                        </th:block>
-
-                                        <th:block th:unless="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE') or #strings.isEmpty(sectionAction.getStatus())}">
-                                            <th:block th:inline="text" th:each="sectionFile : ${sectionAction.getCourseSection().getSectionFiles()}">
-                                                <a href="#" class="label label-table label-info" id="popupBtn"
-                                                   th:onclick="|javascript:popupPdfView('${sectionFile.getId()}', '${sectionAction.getId()}');return false;|" target="_blank" th:text="#{label.course.section.request}">학습하기</a>
-                                            </th:block>
-                                        </th:block>
-
-
-                                    </td>
-                                </tr>
-                                </th:block>
+                                     </th:block>
 
     <!--                            <tr th:each="quizAction, index : ${courseQuizActions}">-->
                                 <th:block th:each="quizAction, index : ${quizActions}">

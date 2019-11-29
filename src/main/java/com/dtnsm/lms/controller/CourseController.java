@@ -173,7 +173,7 @@ public class CourseController {
         List<CourseAccount> courseAccountList = courseService.getCourseById(id).getCourseAccountList();
 
         // 교육 신청 처리(requestType 0:관리자 지정, 1:신청)
-        approvalCourseProcessService.courseRequestProcess(account, course, "1", "", "");
+        approvalCourseProcessService.courseRequestProcess(account, course, "1");
 
         return "redirect:/course/request/commit/" + id;
     }

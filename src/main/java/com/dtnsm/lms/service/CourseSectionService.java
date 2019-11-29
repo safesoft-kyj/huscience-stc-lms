@@ -111,7 +111,7 @@ public class CourseSectionService {
         courseSection.setName(course.getTitle());
         courseSection.setDescription("");
         courseSection.setTeacher("");
-        courseSection.setStudyDate(course.getToDate());
+        courseSection.setStudyDate(course.getFromDate());
         courseSection.setCourse(course);
         courseSection.setHour(hour);
         courseSection.setMinute(Math.round(courseSection.getHour() * 60));

@@ -166,8 +166,8 @@ public class DocumentController {
     @GetMapping("/popupCourse/{typeId}")
     public String popupCourse(@PathVariable("typeId") String typeId, Model model, Pageable pageable) {
 
-        Page<CourseAccount> coursePorcessList = courseAccountService.getAllByCourse_CourseMaster_IdAndAccount_UserIdAndIsCommit("BC0104", SessionUtil.getUserId(), "0", pageable);
-        Page<CourseAccount> courseComplteList = courseAccountService.getAllByCourse_CourseMaster_IdAndAccount_UserIdAndIsCommit("BC0104", SessionUtil.getUserId(), "1", pageable);
+        Page<CourseAccount> coursePorcessList = courseAccountService.getAllByCourse_CourseMaster_IdAndAccount_UserIdAndFStatusAndIsCommit("BC0104", SessionUtil.getUserId(), "1", "0", pageable);
+        Page<CourseAccount> courseComplteList = courseAccountService.getAllByCourse_CourseMaster_IdAndAccount_UserIdAndFStatusAndIsCommit("BC0104", SessionUtil.getUserId(), "1", "1", pageable);
 
 //        Document border = new Document();
 //        border.setTemplate(template);

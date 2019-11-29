@@ -1,14 +1,18 @@
 package com.dtnsm.lms.repository;
 
+import com.dtnsm.common.entity.JobDescription;
 import com.dtnsm.lms.domain.Course;
+import com.dtnsm.lms.domain.CourseMaster;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import java.util.List;
 
 
-public interface CourseRepository extends JpaRepository<Course, Long> {
+public interface CourseRepository extends JpaRepository<Course, Long>, QuerydslPredicateExecutor<Course> {
 
     Page<Course> findAllByActiveGreaterThan(int active, Pageable pageable);
 
@@ -25,6 +29,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     // 제목 검색
     Page<Course> findAllByCourseMaster_IdAndTitleLikeAndActiveGreaterThan(String typeId, String title, int active, Pageable pageable);
 
+
     Page<Course> findAllByTitleLikeAndActiveGreaterThan(String title, int active, Pageable pageable);
 
     List<Course> findAllByTitleAndActiveGreaterThan(String title, int active);
@@ -40,5 +45,4 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     // 신입사원 필수교육
     List<Course> findAllByIsNewEmpCourse(String isNewEmpCourse);
-
 }

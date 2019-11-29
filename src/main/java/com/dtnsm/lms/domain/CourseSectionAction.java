@@ -27,16 +27,6 @@ public class CourseSectionAction extends AuditorCreateEntity<String> {
     @Column(name="exam_date", length = 10)
     private String executeDate;
 
-    // 시작일
-    @Column(length = 10)
-    @ColumnDefault("'1900-01-01'")
-    private String fromDate;
-
-    // 종료일
-    @Column(length = 10)
-    @ColumnDefault("'1900-01-01'")
-    private String toDate;
-
     // 총시험시간(초) => 진도율 계산시 필요
     @Column(name="total_use_second")
     @ColumnDefault("0")

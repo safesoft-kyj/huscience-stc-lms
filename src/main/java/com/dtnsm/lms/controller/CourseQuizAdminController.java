@@ -175,7 +175,8 @@ public class CourseQuizAdminController {
         courseQuiz.setQuizFiles(courseQuizOld.getQuizFiles());
         courseQuiz.setQuizActions(courseQuizOld.getQuizActions());
         courseQuiz.setQuizQuestions(courseQuizOld.getQuizQuestions());
-        courseQuiz.setSecond(courseQuizOld.getMinute()*60);
+        courseQuiz.setMinute(Math.round(courseQuiz.getHour() * 60));
+        courseQuiz.setSecond(Math.round(courseQuiz.getMinute() * 60));
 
         CourseQuiz courseQuiz1 = quizService.saveQuiz(courseQuiz);
 

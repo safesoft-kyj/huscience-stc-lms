@@ -46,15 +46,43 @@
                         <tr>
                             <td class="text-right" style="vertical-align: middle; background: #FAFAFA;">과정구분</td>
                             <td>
+                                <div th:switch="${courseTypeList}">
+                                    <h2 th:case="null">No customer yet!</h2>
+                                    <div th:case="*">
+<!--                                        <div class="form-group pad-ver">-->
+                                            <!--                                                    <label class="col-md-3 control-label text-right">Radio Buttons</label>-->
+                                            <div class="col-md-9 text-left">
+                                                <!-- Radio Buttons -->
+                                                <div class="radio">
+                                                    <input id='lbl-code0' class="magic-radio" type="radio" name="gubunId" value="" checked>
+                                                    <label for='lbl-code0'>전체</label>
+
+                                                    <th:block th:each="code, index : ${courseTypeList}">
+
+                                                        <input th:id="${'lbl-code' + index.count}" class="magic-radio" type="radio" name="gubunId" th:value="${code.getMinorCd()}" th:checked="${#strings.equalsIgnoreCase(code.getMinorCd(), param.gubunId)}">
+                                                        <label th:for="${'lbl-code' + index.count}" th:text="${code.getMinorNm()}">Option 1 (pre-checked)</label>
+                                                    </th:block>
+
+                                                </div>
+<!--                                            </div>-->
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-right" style="vertical-align: middle; background: #FAFAFA;">과정유형</td>
+                            <td>
                                 <div th:switch="${courseMasterList}">
                                     <h2 th:case="null">No customer yet!</h2>
                                     <div th:case="*">
-                                         <div class="form-group pad-ver">
+<!--                                         <div class="form-group pad-ver">-->
 <!--                                                    <label class="col-md-3 control-label text-right">Radio Buttons</label>-->
                                             <div class="col-md-9 text-left">
                                                 <!-- Radio Buttons -->
                                                 <div class="radio">
-                                                        <input id='demo-inline-form-radio0' class="magic-radio" type="radio" name="typeId" value="all" checked>
+                                                        <input id='demo-inline-form-radio0' class="magic-radio" type="radio" name="typeId" value="" checked>
                                                         <label for='demo-inline-form-radio0'>전체</label>
 
                                                     <th:block th:each="courseMaster, index : ${courseMasterList}">
@@ -65,7 +93,7 @@
 
                                                 </div>
                                             </div>
-                                        </div>
+<!--                                        </div>-->
 
                                     </div>
                                 </div>
@@ -117,14 +145,13 @@
                                             <i class="ti-time"></i>&nbsp;<span th:text="${'교육시간: '+border.getHour()+'시간'}"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                             <i class="ti-user"></i>&nbsp;<span th:text="${'교육정원: '+border.getCnt()+'명'}"></span>
                                         </p>
-<!--                                        <p th:if="${border.getCourseMaster().getRequestType().equals('1')}">-->
-<!--                                            <i class="ti-calendar"></i>&nbsp;-->
-<!--                                            <span th:text="${'신청기간: 상시 | '}"></span>&nbsp;&nbsp;-->
-<!--                                            <i class="ti-calendar"></i>&nbsp;-->
-<!--                                            <span th:text="${'교육기간: 상시'}"></span>-->
-<!--                                        </p>-->
-<!--                                        <p th:unless="${border.getCourseMaster().getRequestType().equals('1')}">-->
-                                        <p>
+                                        <p th:if="${border.getIsAlways().equals('1')}">
+                                            <i class="ti-calendar"></i>&nbsp;
+                                            <span th:text="${'신청기간: 상시 | '}"></span>&nbsp;&nbsp;
+                                            <i class="ti-calendar"></i>&nbsp;
+                                            <span th:text="${'교육기간: 상시'}"></span>
+                                        </p>
+                                        <p th:unless="${border.getIsAlways().equals('1')}">
                                             <i class="ti-calendar"></i>&nbsp;
                                             <span th:text="${'신청기간: '+border.getRequestFromDate()+'~'+border.getRequestToDate()+' | '}"></span>&nbsp;&nbsp;
                                             <i class="ti-calendar"></i>&nbsp;

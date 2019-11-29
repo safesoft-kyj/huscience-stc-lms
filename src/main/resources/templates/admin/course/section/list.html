@@ -59,8 +59,14 @@
                                     <tr style="background: #FAFAFA;">
                                         <th class="text-center" th:text="#{label.no}">번호</th>
                                         <th class="text-center" th:text="#{label.subject}">제목</th>
-                                        <th class="text-center col-sm-2" th:text="#{label.course.section.studyDate}">학습일</th>
+                                        <!-- 오프라인 교육인 경우만  -->
+                                        <th:block th:unless="${#strings.equalsIgnoreCase(gubunId, 'BC0101')}">
+                                        <th class="text-center col-sm-2" th:text="#{label.course.period}">학습일</th>
+                                        </th:block>
+                                        <!-- 오프라인 교육인 경우만  -->
+                                        <th:block th:if="${#strings.equalsIgnoreCase(gubunId, 'BC0101')}">
                                         <th class="text-center col-sm-1" th:text="#{label.course.section.file}"></th>
+                                        </th:block>
                                         <th class="text-center col-sm-1" th:text="#{label.hour}">시간</th>
                                         <th class="text-center col-sm-1" th:text="#{label.minute}">분</th>
                                         <th class="text-center col-sm-2" th:text="#{label.actions}">Edit</th>
@@ -73,12 +79,16 @@
                                             <div th:text="${border.getName()}"></div>
                                             <div th:utext="${border.getDescription().replaceAll('\r\n', '<br>')}"></div>
                                         </td>
+                                        <th:block th:unless="${#strings.equalsIgnoreCase(gubunId, 'BC0101')}">
                                         <td th:text="${border.getStudyDate()}" class="text-center"></td>
+                                        </th:block>
+                                        <th:block th:if="${#strings.equalsIgnoreCase(gubunId, 'BC0101')}">
                                         <td class="text-center">
                                             <div th:each="uploadFile : ${border.getSectionFiles()}">
                                                 <a th:href="@{/admin/course/section/download-file/{id}(id=${uploadFile.getId()})}"><span class="badge badge-mint" th:text="#{label.download}"></span></a>
                                             </div>
                                         </td>
+                                        </th:block>
                                         <td th:text="${border.getHour()}" class="text-center"></td>
                                         <td th:text="${border.getMinute()}" class="text-center"></td>
                                         <td class="text-center">

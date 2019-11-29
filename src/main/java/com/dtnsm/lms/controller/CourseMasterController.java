@@ -51,7 +51,7 @@ public class CourseMasterController {
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courseMasterService.getPageList(pageable));
         // 교육신철일자 유형(1:상시, 2:기간)
-        List<ElMinor> codeList = codeService.getMinorList("BC04");
+        List<ElMinor> codeList = codeService.getMinorList("BC01");
         model.addAttribute("codeList", codeList);
 
         return "admin/course-master/list";
@@ -82,8 +82,8 @@ public class CourseMasterController {
         model.addAttribute(pageInfo);
         model.addAttribute("course", courseMaster);
         model.addAttribute("minorList", courseMasterService.getTypeList());
-        // 교육신철일자 유형(1:상시, 2:기간)
-        List<ElMinor> codeList = codeService.getMinorList("BC04");
+        // 교육유형 (BC0101:온라인, BC0102:오프라인)
+        List<ElMinor> codeList = codeService.getMinorList("BC01");
         model.addAttribute("codeList", codeList);
 
         return "admin/course-master/add";

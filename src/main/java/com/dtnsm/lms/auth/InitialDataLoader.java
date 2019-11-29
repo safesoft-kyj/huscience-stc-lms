@@ -83,6 +83,7 @@ public class InitialDataLoader implements
                 account.setUserId(userVO.getUserId());
                 account.setName(userVO.getKorName());
                 account.setEngName(userVO.getEngName());
+                account.setComNum(userVO.getComNum());
                 account.setPassword(userVO.getPassword());
                 account.setEmail(userVO.getEmail());
                 account.setComJob(userVO.getComJob());

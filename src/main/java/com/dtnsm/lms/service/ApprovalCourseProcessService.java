@@ -6,7 +6,6 @@ import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.*;
 import com.dtnsm.lms.repository.CourseAccountRepository;
 import com.dtnsm.lms.util.DateUtil;
-import com.dtnsm.lms.util.GlobalUtil;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,7 +62,9 @@ public class ApprovalCourseProcessService {
 //    }
 
     // 교육 신청 처리
-    public void courseRequestProcess(Account account, Course course, String requestType, String fromDate, String toDate) {
+    public void courseRequestProcess(Account account, Course course, String requestType) {
+        String fromDate;
+        String toDate;
 
         // 팀장/부서장 승인여부
         String isAppr1 = course.getCourseMaster().getIsTeamMangerApproval();
@@ -80,6 +81,23 @@ public class ApprovalCourseProcessService {
         courseAccount.setCourseStatus(CourseStepStatus.request);
         courseAccount.setFStatus("0");
         courseAccount.setFCurrSeq(1);
+
+        /*
+        교육과정에 따른 교육 기간 설정
+            1. 상시 교육
+                - 교육시작일자 : 신청일자
+                - 교육종료일자 : 과정의 교육일수로 계산
+            2. 상시교육이 아닌 경우
+                - 교육시작일자 : 개설과정의 교육시작일
+                - 교육종료일자 : 개설과정의 교육종료일
+        */
+        if (course.getIsAlways().equals("1")) {     // 상시교육일 경우
+            fromDate = DateUtil.getTodayString();
+            toDate = DateUtil.getStringDateAddDay(fromDate, course.getDay());
+        } else {    // 상시교육이 아닌 경우
+            fromDate = course.getFromDate();
+            toDate = course.getToDate();
+        }
         courseAccount.setFromDate(fromDate);
         courseAccount.setToDate(toDate);
 
@@ -94,6 +112,12 @@ public class ApprovalCourseProcessService {
             courseAccount.setFFinalCount(0);
             courseAccount.setIsApproval("0");   // 전자결재유무 0:없음, 1:있음
             courseAccount.setFStatus("1");      // 전자결재가 없으면 완료한것으로 처리한다.
+
+        }
+
+        // 교육 종결
+        if (course.getCourseMaster().getId().equals("BC0101")) {  // self
+            courseAccount.setIsAttendance("1"); // 교육참석유무(0:미참석, 1:참석) => 기본값 0
             courseAccount.setCourseStatus(CourseStepStatus.process);
         }
 
@@ -108,7 +132,7 @@ public class ApprovalCourseProcessService {
             courseAccountOrder.setSignature(signatureService.getSign(account.getUserId()));
             courseAccountOrder.setCourseAccount(saveCourseAccount);
 
-            // fKind : 0:초기, 1:결재, 2. 합의, 3:확인
+            // fKind : 0:초기, 1:결재(팀장), 2. 합의(관리자)
             courseAccountOrder.setFKind("1");
             courseAccountOrder.setFStatus("1");
             courseAccountOrder.setFSeq(0);
@@ -125,7 +149,7 @@ public class ApprovalCourseProcessService {
                 CourseAccountOrder courseAccountOrder2 = new CourseAccountOrder();
                 courseAccountOrder2.setFUser(apprAccount2);
                 courseAccountOrder2.setCourseAccount(saveCourseAccount);
-                // fKind : 0:초기, 1:결재, 2. 합의, 3:확인
+                // fKind : 0:초기, 1:결재(팀장), 2. 합의(관리자)
                 courseAccountOrder2.setFKind("1");
                 courseAccountOrder2.setFStatus("0");
                 courseAccountOrder2.setFSeq(1);
@@ -144,13 +168,20 @@ public class ApprovalCourseProcessService {
                 CourseAccountOrder courseAccountOrder3 = new CourseAccountOrder();
                 courseAccountOrder3.setFUser(apprAccount3);
                 courseAccountOrder3.setCourseAccount(saveCourseAccount);
-                courseAccountOrder3.setFKind("1");
+                // fKind : 0:초기, 1:결재(팀장), 2. 합의(관리자)
+                courseAccountOrder3.setFKind("2");
                 courseAccountOrder3.setFStatus("0");
                 courseAccountOrder3.setFSeq(2);
 
                courseAccountOrderService.save(courseAccountOrder3);
 
                 //courseAccount.addCourseAccountOrder(courseAccountOrderService.save(courseAccountOrder1));
+            }
+        } else {    // self외 교육은 전자결재가 없는 경우 (시험, 설문, 수료증)이 없으면 교육을 종결시킨다.
+            if(course.getIsQuiz().equals("N") && course.getIsSurvey().equals("N") && course.getIsCerti().equals("N")) {
+                courseAccount.setCourseStatus(CourseStepStatus.complete);
+            } else {
+                courseAccount.setCourseStatus(CourseStepStatus.process);
             }
         }
 
@@ -161,7 +192,7 @@ public class ApprovalCourseProcessService {
         // TODO : 교육신청시 교육과정 생성 유무
 
         // Course 마스터에 의한 사용자별 교육과정 생성
-        createUserCourse(saveCourseAccount, course.getFromDate(), course.getToDate());
+        createUserCourse(saveCourseAccount);
 
         // 사용자별 과정 생성
         /*
@@ -191,7 +222,7 @@ public class ApprovalCourseProcessService {
 
 
     // 교육과정 생성
-    public void createUserCourse(CourseAccount courseAccount, String fromDate, String toDate) {
+    public void createUserCourse(CourseAccount courseAccount) {
         Account account = courseAccount.getAccount();
         Course course = courseAccount.getCourse();
 
@@ -204,13 +235,12 @@ public class ApprovalCourseProcessService {
                 courseSectionAction.setCourseSection(courseSection);
                 courseSectionAction.setTotalUseSecond(0);
                 courseSectionAction.setRunCount(0);
-                courseSectionAction.setFromDate(fromDate);  // 개인별 교육기간 설정
-                courseSectionAction.setToDate(toDate);      // 개인별 교육기간 설정
+//                courseSectionAction.setFromDate(fromDate);  // 개인별 교육기간 설정
+//                courseSectionAction.setToDate(toDate);      // 개인별 교육기간 설정
                 courseSectionAction.setStatus(SectionStatusType.REQUEST);
                 CourseSectionAction courseSectionAction1 = sectionActionService.save(courseSectionAction);
 
                 // self외에는 status를 complete로 변경한다.
-
                 if (!courseAccount.getCourse().getCourseMaster().getId().equals("BC0101")) {
                     sectionActionService.UpdateCourseSectionActionComplete(courseSectionAction1);
                 }
@@ -226,10 +256,16 @@ public class ApprovalCourseProcessService {
                 courseQuizAction.setQuiz(courseQuiz);
                 courseQuizAction.setTotalUseSecond(0);
                 courseQuizAction.setRunCount(0);
-                courseQuizAction.setFromDate(fromDate);  // 개인별 교육기간 설정
-                courseQuizAction.setToDate(toDate);      // 개인별 교육기간 설정
+//                courseQuizAction.setFromDate(fromDate);  // 개인별 교육기간 설정
+//                courseQuizAction.setToDate(toDate);      // 개인별 교육기간 설정
                 courseQuizAction.setQuestionCount(courseQuiz.getQuizQuestions().size());
                 courseQuizAction.setStatus(QuizStatusType.REQUEST);
+
+                // self외에는 실제 강의가 없기 때문에 상태를 ongoing 상태로 변경한다.
+                if (!courseAccount.getCourse().getCourseMaster().getId().equals("BC0101")) {
+                    courseQuizAction.setStatus(QuizStatusType.ONGOING);
+                }
+
                 quizActionService.saveQuizAction(courseQuizAction);
             }
         }
@@ -241,10 +277,16 @@ public class ApprovalCourseProcessService {
                 courseSurveyAction.setCourseAccount(courseAccount);
                 courseSurveyAction.setAccount(account);
                 courseSurveyAction.setCourseSurvey(courseSurvey);
-                courseSurveyAction.setFromDate(fromDate);  // 개인별 교육기간 설정
-                courseSurveyAction.setToDate(toDate);      // 개인별 교육기간 설정
+//                courseSurveyAction.setFromDate(fromDate);  // 개인별 교육기간 설정
+//                courseSurveyAction.setToDate(toDate);      // 개인별 교육기간 설정
                 courseSurveyAction.setQuestionCount(courseSurvey.getQuestions().size());
                 courseSurveyAction.setStatus(SurveyStatusType.REQUEST);
+
+                // self외에는 시험이 없는 경우 onGoing 상태로 변경한다
+                if (!courseAccount.getCourse().getCourseMaster().getId().equals("BC0101") && courseAccount.getCourse().getIsQuiz().equals("N")) {
+                    courseSurveyAction.setStatus(SurveyStatusType.ONGOING);
+                }
+
                 surveyActionService.saveSurveyAction(courseSurveyAction);
             }
         }

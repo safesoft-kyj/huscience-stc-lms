@@ -2,12 +2,16 @@ package com.dtnsm.lms.service;
 
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.Account;
+import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.domain.Document;
 import com.dtnsm.lms.domain.DocumentAccountOrder;
+import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import com.dtnsm.lms.domain.constant.MailSendType;
 import com.dtnsm.lms.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 @Service
 public class ApprovalDocumentProcessService {
@@ -25,10 +29,16 @@ public class ApprovalDocumentProcessService {
     CourseManagerService courseManagerService;
 
     @Autowired
+    CourseAccountService courseAccountService;
+
+    @Autowired
     private MailService mailService;
 
     @Autowired
     SignatureService signatureService;
+
+    @Autowired
+    CourseCertificateService courseCertificateService;
 
     // 기안 처리
     public void documentRequestProcess(Account account, Document document) {
@@ -65,7 +75,7 @@ public class ApprovalDocumentProcessService {
         documentAccountOrder.setSignature(signatureService.getSign(account.getUserId()));
         documentAccountOrder.setDocument(saveDocument);
 
-        // fKind : 0:초기, 1:결재, 2. 합의, 3:확인
+        // fKind : 0:초기, 1:결재(팀장), 2. 합의(관리자)
         documentAccountOrder.setFKind("1");
         documentAccountOrder.setFStatus("1");
         documentAccountOrder.setFSeq(0);
@@ -80,7 +90,7 @@ public class ApprovalDocumentProcessService {
             DocumentAccountOrder documentAccountOrder2 = new DocumentAccountOrder();
             documentAccountOrder2.setFUser(apprAccount2);
             documentAccountOrder2.setDocument(saveDocument);
-            // fKind : 0:초기, 1:결재, 2. 합의, 3:확인
+            // fKind : 0:초기, 1:결재(팀장), 2. 합의(관리자)
             documentAccountOrder2.setFKind("1");
             documentAccountOrder2.setFStatus("0");
             documentAccountOrder2.setFSeq(1);
@@ -97,7 +107,8 @@ public class ApprovalDocumentProcessService {
             DocumentAccountOrder documentAccountOrder3 = new DocumentAccountOrder();
             documentAccountOrder3.setFUser(apprAccount3);
             documentAccountOrder3.setDocument(saveDocument);
-            documentAccountOrder3.setFKind("1");
+            // fKind : 0:초기, 1:결재(팀장), 2. 합의(관리자)
+            documentAccountOrder3.setFKind("2");
             documentAccountOrder3.setFStatus("0");
             documentAccountOrder3.setFSeq(2);
 
@@ -130,10 +141,27 @@ public class ApprovalDocumentProcessService {
             document.setFStatus("1");    // 0 진행중, 1:승인, 2:기각
             document.setIsCommit("1");   // 0 진행중 1:종결
 
-            documentService.save(document);
+            Document document1 = documentService.save(document);
+
+            // 교육참석보고서 이면 연결된 교육과정을 종결시킨다.
+            // TODO : 교육참석보고서 ID가 8에서 다르게 변경될 경우 수정 요함
+            if(document1.getTemplate().getId() == 8 && document1.getCourseAccount() != null) {
+
+                CourseAccount courseAccount = document1.getCourseAccount();
+                courseAccount.setCourseStatus(CourseStepStatus.complete);
+                courseAccount.setIsAttendance("1");
+                courseAccount.setIsCommit("1");
+
+                String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
+                courseAccount.setCertificateNo(certificateNo);
+
+                courseAccountService.save(courseAccount);
+
+                // TODO : Training Log 처리
+            }
 
             // 최종 승인이면 기안자에게 메일 전송
-            sendMail(document.getAccount(), document, MailSendType.APPROVAL1);
+            sendMail(document.getAccount(), document1, MailSendType.APPROVAL1);
         } else {
             DocumentAccountOrder nextOrder = documentAccountOrderService.getByFnoAndSeq(documentAccountOrder.getDocument().getId(), documentAccountOrder.getFSeq()+1);
             if (nextOrder != null) {
@@ -192,17 +220,26 @@ public class ApprovalDocumentProcessService {
             document.setFStatus("1");
             document.setIsCommit("1");   // 0 진행중 1:종결
 
-            document = documentService.save(document);
+            Document document1 = documentService.save(document);
 
-            // TODO : 외부교육 2차 외부교육 참석보고서 승인 처리시 바인더 로그 처리 (8: 외부교육참석보고서, 217:부서별교육신청서)
-            if(document.getTemplate().getId() == 8) {
+            // 교육참석보고서 이면 연결된 교육과정을 종결시킨다.
+            // TODO : 교육참석보고서 ID가 8에서 다르게 변경될 경우 수정 요함
+            if(document1.getTemplate().getId() == 8 && document1.getCourseAccount() != null) {
 
+                CourseAccount courseAccount = document1.getCourseAccount();
+                courseAccount.setCourseStatus(CourseStepStatus.complete);
+                courseAccount.setIsAttendance("1");
+                courseAccount.setIsCommit("1");
+                String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
+                courseAccount.setCertificateNo(certificateNo);
 
+                courseAccountService.save(courseAccount);
+
+                // TODO : Training Log 처리
             }
 
-
             // 최종 승인이면 기안자에게 메일 전송
-            sendMail(document.getAccount(), document, MailSendType.APPROVAL2);
+            sendMail(document.getAccount(), document1, MailSendType.APPROVAL2);
         } else {
             DocumentAccountOrder nextOrder = documentAccountOrderService.getByFnoAndSeq(documentAccountOrder.getDocument().getId(), documentAccountOrder.getFSeq()+1);
             if (nextOrder != null) {

@@ -3,17 +3,66 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Yamicode Email</title>
+    <title>Dt&SanoMedics LMS Email</title>
+    <link href="/default/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
 </head>
-<body>
-<h3>교육결재가 정상적으로 승인 되었습니다.</h3>
-<table>
-    <tbody>
+
+<body itemscope itemtype="http://schema.org/EmailMessage">
+
+<table class="body-wrap">
     <tr>
-        <td>Message: </td>
-        <td><p th:utext="|${message}|">Hello</p></td>
+        <td></td>
+        <td class="container" width="600">
+            <div class="content">
+                <table class="main" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td class="alert alert-warning">
+                            교육결재가 정상적으로 승인 되었습니다.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p th:utext="|${message}|">Hello</p></td>
+                    </tr>
+<!--                    <tr>-->
+<!--                        <td class="content-wrap">-->
+<!--                            <table width="100%" cellpadding="0" cellspacing="0">-->
+<!--                                <tr>-->
+<!--                                    <td class="content-block">-->
+<!--                                        You have <strong>1 free report</strong> remaining.-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td class="content-block">-->
+<!--                                        Add your credit card now to upgrade your account to a premium plan to ensure you don't miss out on any reports.-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+                                <tr>
+                                    <td class="content-block">
+                                        <a href="/login" class="btn-primary">LMS</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="content-block">
+                                        Dt&SanoMedics
+                                    </td>
+                                </tr>
+<!--                            </table>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+                </table>
+<!--                <div class="footer">-->
+<!--                    <table width="100%">-->
+<!--                        <tr>-->
+<!--                            <td class="aligncenter content-block"><a href="#">Unsubscribe</a> from these alerts.</td>-->
+<!--                        </tr>-->
+<!--                    </table>-->
+<!--                </div>-->
+            </div>
+        </td>
+        <td></td>
     </tr>
-    </tbody>
 </table>
+
 </body>
 </html>
+

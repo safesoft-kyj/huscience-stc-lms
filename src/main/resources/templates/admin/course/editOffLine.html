@@ -45,13 +45,6 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label"></label>
-                            <div class="checkbox">
-                                &nbsp;<input id="isNewEmpCourse" name="isNewEmpCourse" class="magic-checkbox" type="checkbox" value="1" th:checked="${#strings.equalsIgnoreCase(course.getIsNewEmpCourse(), '1')}">
-                                <label for="isNewEmpCourse">신입사원 필수교육</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <label class="col-sm-2 control-label" for="title" th:text="#{label.course.name}">과정명</label>
                             <div class="col-sm-10">
                                 <input type="text" th:field="*{title}" id="title" placeholder="과정명" class="form-control" required="required">
@@ -87,15 +80,43 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-sm-2 control-label" for="team" th:text="#{label.course.team}">참석대상 부서/팀</label>
+                            <div class="col-sm-4">
+                                <input type="text" th:field="*{team}" id="team" placeholder="depart/team" class="form-control" required="required">
+                            </div>
+                            <span th:if="${#fields.hasErrors('team')}" th:errors="*{team}"></span>
+                            <label class="col-sm-2 control-label" for="day" th:text="#{label.course.place}">교육장소</label>
+                            <div class="col-sm-4">
+                                <input type="text" th:field="*{place}" id="place" placeholder="place" class="form-control" required="required">
+                            </div>
+                            <span th:if="${#fields.hasErrors('place')}" th:errors="*{place}"></span>
+                            <!--                        </th:block>-->
+                        </div>
+                        <div class="form-group">
                             <label class="col-sm-2 control-label" for="day" th:text="#{label.course.daycountandtime}">학습일수/시간</label>
                             <div class="col-sm-2">
                                 <input type="number" th:field="*{day}" id="day" placeholder="day" class="form-control" required="required">
                             </div>
                             <span th:if="${#fields.hasErrors('day')}" th:errors="*{day}"></span>
                             <div class="col-sm-2">
-                                <input type="number" th:field="*{hour}" id="hour" placeholder="hour" class="form-control" required="required">
+                                <input type="number" step=".01" th:field="*{hour}" id="hour" placeholder="hour" class="form-control" required="required">
                             </div>
                             <span th:if="${#fields.hasErrors('hour')}" th:errors="*{hour}"></span>
+                            <label class="col-sm-2 control-label" for="cnt" th:text="#{label.course.peoplecount}">교육정원</label>
+                            <div class="col-sm-4">
+                                <input type="number" th:field="*{cnt}" id="cnt" placeholder="교육정원" class="form-control" required="required">
+                            </div>
+                            <span th:if="${#fields.hasErrors('cnt')}" th:errors="*{cnt}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" th:text="#{label.course.isbook}">교제제공여부</label>
+                            <div class="col-sm-4">
+                                <select th:field="*{isBook}" class="form-control">
+                                    <option value="Y" >Y</option>
+                                    <option value="N" >N</option>
+                                </select>
+                            </div>
+                            <span th:if="${#fields.hasErrors('isBook')}" th:errors="*{isBook}"></span>
                             <label class="col-sm-2 control-label" th:text="#{label.course.isquiz}">시험진행여부</label>
                             <div class="col-sm-4">
                                 <select th:field="*{isQuiz}" class="form-control">
@@ -123,11 +144,10 @@
                             </div>
                             <span th:if="${#fields.hasErrors('isSurvey')}" th:errors="*{isSurvey}"></span>
                         </div>
-                        <div class="form-group">
-                            <span th:if="${#fields.hasErrors('isCerti')}" th:errors="*{isCerti}"></span>
-                            <label class="col-sm-2 control-label" th:text="#{label.course.certiHeadText}">발급번호(HeadText)</label>
+                        <div class="form-group" style="display: none" id="certi-detail">
+                            <label class="col-sm-2 control-label text-info" th:text="#{label.course.certiHeadText}">발급번호(HeadText)</label>
                             <div class="col-sm-10">
-                                <input type="text" th:field="*{certiHead}" id="certiHead" placeholder="수료증 발급번호" class="form-control">
+                                <input type="text" th:field="*{certiHead}" id="certiHead" placeholder="수료증 발급번호" class="form-control" onKeyUp="this.value=this.value.toUpperCase();">
                             </div>
                             <span th:if="${#fields.hasErrors('certiHead')}" th:errors="*{certiHead}"></span>
                         </div>
@@ -298,6 +318,16 @@
             todayBtn: "linked",
             autoclose: true,
             todayHighlight: true
+        });
+
+
+        // 수료증
+        $('#isCerti').change(function() {
+            if($('#isCerti option:selected').val() == "Y") {
+                $('#certi-detail').show();
+            } else {
+                $('#certi-detail').hide();
+            }
         });
 
         // $('#mailList, #mailList2').chosen({width:'100%'});

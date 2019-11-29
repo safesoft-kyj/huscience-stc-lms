@@ -39,8 +39,8 @@
                         <input type="hidden" th:field="*{id}" id="id" name="id">
                         <input type="hidden" th:field="*{template.id}">
                         <div class="form-group">
-<!--                            <label class="col-sm-2 control-label" for="title">제목</label>-->
-                            <div class="col-sm-12">
+                            <label class="col-sm-2 control-label text-center" for="title" th:text="#{label.subject}">제목</label>
+                            <div class="col-sm-10">
                                 <input type="text" th:field="*{title}" id="title" placeholder="제목" class="form-control" required>
                             </div>
                             <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>

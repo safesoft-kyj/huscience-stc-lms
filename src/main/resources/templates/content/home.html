@@ -171,28 +171,18 @@
                                 </div>
                             </div>
 
+
                             <div class="col-sm-6 col-lg-6 eq-box-lg">
                                 <div class="panel height-fix-pannel">
                                     <!--Panel body-->
                                     <div class="panel-body">
                                         <div class="panel-control">
                                             <ul class="nav nav-tabs">
-                                                <th:block th:if="${app1List.size() > 0}">
-                                                    <li class=""><a href="#demo-tabs-box-1" data-toggle="tab">교육신청 <span class="badge badge-purple" th:text="${app1List.size()}"></span></a></li>
-                                                </th:block>
-                                                <th:block th:if="${app1CommitList.size() > 0}">
-                                                    <li class=""><a href="#demo-tabs-box-2" data-toggle="tab">진행중 <span class="badge badge-purple" th:text="${app1CommitList.size()}"></span></a></li>
-                                                </th:block>
-                                                <th:block th:if="${app2List.size() > 0}">
-                                                    <li class=""><a href="#demo-tabs-box-3" data-toggle="tab">결재요청 <span class="badge badge-purple" th:text="${app2List.size()}"></span></a></li>
-                                                </th:block>
-                                                <th:block th:if="${app2CommitList.size() > 0}">
-                                                    <li class=""><a href="#demo-tabs-box-4" data-toggle="tab">진행중 <span class="badge badge-purple" th:text="${app2CommitList.size()}"></span></a></li>
-                                                </th:block>
+                                                <li class="active"><a href="#demo-tabs-box-1" data-toggle="tab">결재요청 <span class="badge badge-purple" th:text="${app1List.size()}"></span></a></li>
+                                                <li class=""><a href="#demo-tabs-box-2" data-toggle="tab">진행중 <span class="badge badge-purple" th:text="${app1CommitList.size()}"></span></a></li>
                                             </ul>
                                         </div>
                                         <div class="tab-content">
-                                            <th:block th:if="${app1List.size() > 0}">
                                             <div class="tab-pane fade in active" id="demo-tabs-box-1">
                                                 <table id="customer-list-page6" class="" cellspacing="0" width="100%">
                                                     <tbody>
@@ -209,14 +199,26 @@
                                                                 </th:block>
                                                             </a>
                                                         </td>
-<!--                                                        <td class="col-md-2" th:text="${app1.getCourseAccount().getAccount().getName()}"></td>-->
+                                                        <!--                                                        <td class="col-md-2" th:text="${app1.getCourseAccount().getAccount().getName()}"></td>-->
+                                                    </tr>
+                                                    <tr th:each="app1, index : ${app2List}">
+                                                        <td class="col-md-3" th:text="${app1.getDocument().getRequestDate()}"></td>
+                                                        <td class="col-md-9 text-left">
+                                                            <a th:href="@{/document/approvalAppr1/{id}(id=${app1.getId()})}">
+                                                                <th:block th:if="${#strings.length(app1.getDocument().getTitle()) > 30}">
+                                                                    <span th:text="${#strings.substring(app1.getDocument().getTitle(), 0, 30) + '...'}"></span>
+                                                                </th:block>
+                                                                <th:block th:unless="${#strings.length(app1.getDocument().getTitle()) > 30}">
+                                                                    <span th:text="${app1.getDocument().getTitle()}"></span>
+                                                                </th:block>
+                                                            </a>
+                                                        </td>
+                                                        <!--                                                        <td class="col-md-2" th:text="${app1.getDocumentAccount().getAccount().getName()}"></td>-->
                                                     </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
-                                            </th:block>
-                                            <th:block th:if="${app1CommitList.size() > 0}">
-                                            <div class="tab-pane fade in active" id="demo-tabs-box-2">
+                                            <div class="tab-pane fade in" id="demo-tabs-box-2">
                                                 <table id="customer-list-page7" class="table" cellspacing="0" width="100%">
                                                     <tbody>
                                                     <tr th:each="app1, index : ${app1CommitList}">
@@ -233,39 +235,8 @@
                                                                 </th:block>
                                                             </a>
                                                         </td>
-<!--                                                        <td class="col-md-2" th:text="${app1.getAccount().getName()}"></td>-->
+                                                        <!--                                                        <td class="col-md-2" th:text="${app1.getAccount().getName()}"></td>-->
                                                     </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            </th:block>
-                                            <th:block th:if="${app2List.size() > 0}">
-                                            <div class="tab-pane fade in active" id="demo-tabs-box-3">
-                                                <table id="customer-list-page8" class="" cellspacing="0" width="100%">
-                                                    <tbody>
-                                                    <tr th:each="app1, index : ${app2List}">
-                                                        <td class="col-md-3" th:text="${app1.getDocument().getRequestDate()}"></td>
-
-                                                        <td class="col-md-9 text-left">
-                                                            <a th:href="@{/document/approvalAppr1/{id}(id=${app1.getId()})}">
-                                                                <th:block th:if="${#strings.length(app1.getDocument().getTitle()) > 30}">
-                                                                    <span th:text="${#strings.substring(app1.getDocument().getTitle(), 0, 30) + '...'}"></span>
-                                                                </th:block>
-                                                                <th:block th:unless="${#strings.length(app1.getDocument().getTitle()) > 30}">
-                                                                    <span th:text="${app1.getDocument().getTitle()}"></span>
-                                                                </th:block>
-                                                            </a>
-                                                        </td>
-<!--                                                        <td class="col-md-2" th:text="${app1.getDocumentAccount().getAccount().getName()}"></td>-->
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            </th:block>
-                                            <th:block th:if="${app2CommitList.size() > 0}">
-                                            <div class="tab-pane fade in active" id="demo-tabs-box-4">
-                                                <table id="customer-list-page9" class="table" cellspacing="0" width="100%">
-                                                    <tbody>
                                                     <tr th:each="app1, index : ${app2CommitList}">
                                                         <!--                                                <td class="col-md-2" th:text="${#temporals.createDate(app1.getRequestDate(), 'yyyy-MM-dd')}"></td>-->
                                                         <td class="col-md-3" th:text="${app1.getRequestDate()}"></td>
@@ -280,12 +251,11 @@
                                                                 </th:block>
                                                             </a>
                                                         </td>
-<!--                                                        <td class="col-md-2" th:text="${app1.getAccount().getName()}"></td>-->
+                                                        <!--                                                        <td class="col-md-2" th:text="${app1.getAccount().getName()}"></td>-->
                                                     </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
-                                            </th:block>
                                         </div>
                                     </div>
                                 </div>

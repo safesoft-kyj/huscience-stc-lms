@@ -135,6 +135,10 @@ public class CourseSurveyAdminController {
 
         CourseSurvey courseSurvey1 = courseSurveyService.saveSurvey(courseSurvey);
 
+        // 선택된 설문을 복사한다.
+        courseSurveyService.CopySurveyQuestion(courseSurvey1);
+
+
         return "redirect:/admin/course/survey/list/" + courseSurvey1.getCourse().getId();
     }
 

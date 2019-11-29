@@ -4,10 +4,8 @@ import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.Account;
 import com.dtnsm.lms.domain.Course;
 import com.dtnsm.lms.domain.CourseAccount;
-import com.dtnsm.lms.service.ApprovalCourseProcessService;
-import com.dtnsm.lms.service.ApprovalDocumentProcessService;
-import com.dtnsm.lms.service.CourseAccountService;
-import com.dtnsm.lms.service.CourseService;
+import com.dtnsm.lms.domain.constant.CourseStepStatus;
+import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.PageInfo;
 import org.slf4j.LoggerFactory;
@@ -17,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -31,6 +30,9 @@ public class CourseAccountAdminController {
 
     @Autowired
     CourseAccountService courseAccountService;
+
+    @Autowired
+    CourseCertificateService courseCertificateService;
 
     @Autowired
     ApprovalCourseProcessService approvalCourseProcessService;
@@ -75,8 +77,6 @@ public class CourseAccountAdminController {
 
     @PostMapping("/add-post")
     public String courseAccountAddPost(@RequestParam(value = "") long courseId
-            , @RequestParam(value = "fromDate", required = false, defaultValue = "") String fromDate
-            , @RequestParam(value = "toDate", required = false, defaultValue = "") String toDate
             , @RequestParam(value = "mailList", required = false, defaultValue = "0") String[] mails) {
 
         Course course = courseService.getCourseById(courseId);
@@ -91,14 +91,62 @@ public class CourseAccountAdminController {
 
                 Account account = userService.findByUserId(userId);
 
+
                 // 요청 프로세서를 실행(요청 결재 및 강의를 생성한다)
                 // 교육 신청 처리(requestType 0:관리자 지정, 1:신청)
-                approvalCourseProcessService.courseRequestProcess(account, course, "0", fromDate, toDate);
+                approvalCourseProcessService.courseRequestProcess(account, course, "0");
+//                approvalCourseProcessService.courseRequestProcess(account, course, "0", fromDate, toDate);
             }
         }
 
         return "redirect:/admin/course/account/list/" + courseId;
     }
+
+    @GetMapping("/delete/{id}")
+    public String noticeDelete(@PathVariable("id") long docId) {
+
+        CourseAccount courseAccount = courseAccountService.getById(docId);
+        courseAccountService.delete(courseAccount);
+
+        return "redirect:/admin/course/account/list/" + courseAccount.getCourse().getId();
+    }
+
+
+    // 교육참석처리
+    @GetMapping("/updateAttendance/{id}")
+    public String updateAttendance(@PathVariable("id") long docId) {
+
+        CourseAccount courseAccount = courseAccountService.getById(docId);
+
+        if (courseAccount.getIsAttendance().equals("0")) {
+
+            // 교육참석으로 처리
+            courseAccount.setIsAttendance("1");
+
+            if(courseAccount.getCourse().getCourseMaster().getId().equals("BC0103")) {   // 부서별 교육이면 교육종료 시킨다.
+                courseAccount.setCourseStatus(CourseStepStatus.complete);
+                courseAccount.setIsCommit("1");
+
+                // TODO : Training Log 발생
+            } else if (courseAccount.getCourse().getCourseMaster().getId().equals("BC0102")) {   // Class 교육이면 시험, 설문, 수료증을 체크하여 종료 처리한다.
+
+                if(courseAccount.getCourse().getIsQuiz().equals("N") && courseAccount.getCourse().getIsQuiz().equals("N")) {
+                    courseAccount.setCourseStatus(CourseStepStatus.complete);
+                    courseAccount.setIsCommit("1");
+
+                    String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
+                    courseAccount.setCertificateNo(certificateNo);
+
+                    // TODO : Training Log 발생
+                }
+            }
+        }
+
+        courseAccount = courseAccountService.save(courseAccount);
+
+        return "redirect:/admin/course/account/list/" + courseAccount.getCourse().getId();
+    }
+
 
 //
 //    @GetMapping("/edit/{id}")

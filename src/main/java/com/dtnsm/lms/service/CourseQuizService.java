@@ -97,15 +97,12 @@ public class CourseQuizService {
     }
 
     // 교육과정의 첫번재 시험을 등록한다.
-    public void CreateAutoQuiz(Course course, MultipartFile file) {
+    public void CreateAutoQuiz(Course course, MultipartFile file, int passCount, float hour) {
 
         if (course.getIsQuiz().equals("Y")) {
-            // 과정에 등록된 강의 시간 정보를 가지고 온다.
-            float hour = course.getHour();
-
             CourseQuiz courseQuiz = new CourseQuiz();
             courseQuiz.setName("[시험] " + course.getTitle());
-            courseQuiz.setPassCount(1);
+            courseQuiz.setPassCount(passCount);
             courseQuiz.setCourse(course);
             courseQuiz.setHour(hour);
             courseQuiz.setMinute(Math.round(courseQuiz.getHour() * 60));

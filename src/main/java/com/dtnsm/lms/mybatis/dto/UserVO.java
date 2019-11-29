@@ -13,6 +13,7 @@ public class UserVO {
     private String userId;
     private String korName;
     private String engName;
+    private String comNum;
     private String password;
     private String orgCode;
     private String orgDepart;

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>설문완료</title>
+    <title>시험 완료</title>
 
     <!--Css lib-->
     <!--Open Sans Font [ OPTIONAL ]-->
@@ -34,7 +34,7 @@
 <!--<body oncontextmenu="return false">-->
 <body>
 <div id="container">
-    <div class="panel" th:classappend="${#strings.equalsIgnoreCase(courseQuizAction.getStatus(), 'COMPLETE')} ? panel-primary : pannel-danger">
+    <div class="panel" th:classappend="${#strings.equalsIgnoreCase(courseQuizAction.getStatus(), 'COMPLETE')} ? panel-info : pannel-danger">
         <!--Panel heading-->
         <div class="panel-heading">
             <div class="panel-control">
@@ -43,30 +43,61 @@
                     <i class="icon-min demo-psi-minimize-3"></i>
                 </button>
             </div>
-            <h3 class="panel-title" th:text="${courseQuizAction.getStatus()}"></h3>
-
+            <h3 class="panel-title">시험 결과</h3>
         </div>
+
         <!--Panel body-->
         <div class="panel-body">
             <div class="text-center">
-                <p>
-                    <div th:text="${'취득점수' + courseQuizAction.getScore()}"></div>
-                    <div th:text="${'합격점수' + courseQuizAction.getQuiz().getPassCount()}"></div>
-                    <div th:text="${'총문항수' + courseQuizAction.getQuiz().getQuizQuestions().size()}"></div>
-                </p>
-                <button class="btn btn-primary mar-ver" onclick="closeWindow();">확인</button>
+                <div class="col-sm-3 col-lg-3"></div>
+                <div class="col-sm-6 col-lg-6">
+                    <!--Sparkline pie chart -->
+                    <div class="panel panel-info panel-colorful">
+                        <div class="pad-all">
+                            <p class="text-lg text-semibold" th:text="${courseQuizAction.getStatus()}">Task Progress</p>
+
+                            <p class="mar-no">
+                                <span class="pull-right text-bold" th:text="${courseQuizAction.getScore()}">34</span> 취득점수
+                            </p>
+                            <p class="mar-no">
+                                <span class="pull-right text-bold" th:text="${courseQuizAction.getQuiz().getPassCount()}">79</span> 합격점수
+                            </p>
+                            <p class="mar-no">
+                                <span class="pull-right text-bold" th:text="${courseQuizAction.getQuiz().getQuizQuestions().size()}"}>79</span> 총문항수
+                            </p>
+                        </div>
+                        <div class="pad-all">
+                            <div class="pad-btm">
+                                <div class="progress progress-sm">
+                                    <div style="width: 45%;" class="progress-bar progress-bar-light" id="quizbar">
+                                        <span class="sr-only" th:text="${#numbers.formatPercent(courseQuizAction.getScore()*1.0/courseQuizAction.getQuiz().getQuizQuestions().size(), 1, 0)}">45%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-mint mar-ver" onclick="closeWindow();">확인</button>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-lg-3"></div>
             </div>
         </div>
     </div>
 </div>
-
 <!--jQuery [ REQUIRED ]-->
 <script th:src="@{/default/js/jquery.min.js}"></script>
 
 <!--BootstrapJS [ RECOMMENDED ]-->
 <script th:src="@{/default/js/bootstrap.min.js}"></script>
 
-<script>
+<script th:inline="javascript">
+
+    var quiznum = [[${#numbers.formatPercent(courseQuizAction.getScore()*1.0/courseQuizAction.getQuiz().getQuizQuestions().size(), 1, 0)}]];
+
+    $(document).ready(function () {
+
+        $( "#quizbar" ).css( "width", quiznum );
+    });
+
 
     // 윈도우 종료 이벤트 추가
     $(window).bind("beforeunload", function (e) {
@@ -78,7 +109,7 @@
     function closeWindow() {
         this.close();
     }
-
 </script>
+
 </body>
 </html>

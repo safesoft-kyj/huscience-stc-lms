@@ -1,9 +1,14 @@
 package com.dtnsm.lms.service;
 
+import com.dtnsm.common.entity.JobDescription;
+import com.dtnsm.common.entity.QJobDescription;
 import com.dtnsm.lms.domain.Course;
 import com.dtnsm.lms.domain.CourseFile;
+import com.dtnsm.lms.domain.CourseSection;
+import com.dtnsm.lms.domain.QCourse;
 import com.dtnsm.lms.repository.CourseRepository;
 import com.dtnsm.lms.util.DateUtil;
+import com.querydsl.core.BooleanBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CourseService {
@@ -256,5 +262,39 @@ public class CourseService {
     // 신입사원 필수교육
     public List<Course> getAllByIsNewEmpCourse(String isNewEmpCourse) {
         return courseRepository.findAllByIsNewEmpCourse(isNewEmpCourse);
+    }
+
+    private Page<Course> findAllByUserRequest(String gubunId, String typeId, String title, int active, Pageable pageable) {
+        QCourse qCourse = QCourse.course;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qCourse.courseMaster.courseGubun.minorCd.like(gubunId));
+        builder.and(qCourse.courseMaster.id.like(typeId));
+        builder.and(qCourse.active.eq(active));
+        builder.and(qCourse.title.like(title));
+        return courseRepository.findAll(builder, pageable);
+    }
+
+    public Page<Course> getAllByUserRequest(String gubunId, String typeId, String title, int active, Pageable pageable) {
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+
+        return findAllByUserRequest(gubunId + "%", typeId + "%", "%" + title + "%", active, pageable);
+    }
+
+
+
+    // 과정에 속한 강의 시간을 더하여 과정의 시간을 업데이트 한다.
+    public void updateCourseHour(Course course) {
+
+        if (course.getSections().size() > 0) {
+            //과정의 강의시간을 합하여 과정의 시간으로 업데이트 한다.
+            float sumHour = 0;
+            for (CourseSection s : course.getSections()) {
+                sumHour += s.getHour();
+            }
+            course.setHour(sumHour);
+            courseService.save(course);
+        }
     }
 }

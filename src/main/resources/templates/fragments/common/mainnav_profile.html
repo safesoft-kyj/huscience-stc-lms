@@ -14,9 +14,11 @@
 <!--                                                <i class="dropdown-caret"></i>-->
 <!--                                            </span>-->
             <p class="mnp-name">
-                <span sec:authentication="principal.username"></span>(<span sec:authentication="principal.userId" id="sec-user-name"></span>)
+                <span sec:authentication="principal.username"></span> /
+                <span sec:authentication="principal.userId" id="sec-user-name"></span>
             </p>
             <span class="mnp-desc" sec:authentication="principal.email"></span>
+
 
 
 <!--        </a>-->
@@ -38,7 +40,7 @@
 </div>
 
 <script type="text/javascript">
-    alert('text');
+    // alert('text');
     /*[# sec:authorize="hasRole('ROLE_ADMIN')"]*/
     document.writeln("ADMIN !!!");
     /*[/]*/

@@ -7,6 +7,7 @@ import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import com.dtnsm.lms.domain.constant.QuizStatusType;
 import com.dtnsm.lms.domain.constant.SectionStatusType;
 import com.dtnsm.lms.service.*;
+import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +41,9 @@ public class MypageRestController {
 
     @Autowired
     CourseAccountService courseAccountService;
+
+    @Autowired
+    CourseCertificateService courseCertificateService;
 
 
 
@@ -115,6 +119,10 @@ public class MypageRestController {
 
                 courseAccount.setCourseStatus(CourseStepStatus.complete);
                 courseAccount.setIsCommit("1");
+
+                String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
+                courseAccount.setCertificateNo(certificateNo);
+
                 courseAccountService.save(courseAccount);
 
                 //

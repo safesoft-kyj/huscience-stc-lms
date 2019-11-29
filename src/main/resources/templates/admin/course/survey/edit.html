@@ -40,11 +40,11 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label" th:text="#{label.course.survey.gubunSelect}">설문 선택</label>
                             <div class="col-sm-10">
-                                <select th:field="*{survey}" class="form-control" readonly="readonly">
-                                    <option th:each="survey : ${surveyList}" th:value="${survey.getId()}" th:text="${survey.getName()}"></option>
+                                <select th:field="*{survey.id}" class="form-control">
+                                    <option th:each="svy : ${surveyList}" th:value="${svy.getId()}" th:text="${svy.getName()}"></option>
                                 </select>
                             </div>
-                            <span th:if="${#fields.hasErrors('survey')}" th:errors="*{survey}"></span>
+                            <span th:if="${#fields.hasErrors('survey.id')}" th:errors="*{survey.id}"></span>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="name" th:text="#{label.course.survey.name}">설문명</label>

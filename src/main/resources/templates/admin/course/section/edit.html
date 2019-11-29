@@ -71,6 +71,8 @@
                             </div>
                             <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
                         </div>
+                        <!-- 오프라인 교육인 경우만  -->
+                        <th:block th:unless="${#strings.equalsIgnoreCase(courseSection.getCourse().getCourseMaster().getCourseGubun().getMinorCd(), 'BC0101')}">
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="teacher" th:text="#{label.teacher}">강사명</label>
                             <div class="col-sm-10">
@@ -93,11 +95,12 @@
                                 </div>
                             </div>
                         </div>
+                        </th:block>
 
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="hour" th:text="#{label.hour}">학습시간(시)</label>
                             <div class="col-sm-2">
-                                <input type="number" step="any" th:field="*{hour}" id="hour" placeholder="" class="form-control" required="required">
+                                <input type="number" step=".01" th:field="*{hour}" id="hour" placeholder="" class="form-control" required="required">
                             </div>
                             <span th:if="${#fields.hasErrors('hour')}" th:errors="*{hour}"></span>
                         </div>
@@ -134,9 +137,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" th:text="#{label.course.section.file}">강의파일</label>
+                            <label class="col-sm-2 control-label"><i class="fa fa-file-excel-o text-info"></i></i> <span th:text="#{label.course.section.file}">강의파일</span></label>
                             <div class="col-sm-10">
-                                <input type="file" name="files">
+                                <input type="file" name="files" accept=".pdf">
                             </div>
                         </div>
                         <div class="panel-footer text-right">

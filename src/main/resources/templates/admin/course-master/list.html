@@ -53,9 +53,9 @@
                                     <th class="text-center col-sm-1" th:text="#{label.no}">번호</th>
                                     <th class="text-center col-sm-1" th:text="#{label.id}">ID</th>
                                     <th class="text-center" th:text="#{label.course.type}">교육유형명</th>
-                                    <th class="text-center col-sm-1" th:text="#{label.type}">신청일자유형</th>
-                                    <th class="text-center col-sm-1" th:text="#{label.course.isCourseTeamApproval}">팀장/부서장 승인여부</th>
-                                    <th class="text-center col-sm-1" th:text="#{label.course.isCourseManagerApproval}">과정관리자 승인여부</th>
+                                    <th class="text-center col-sm-2" th:text="#{label.type}">신청일자유형</th>
+                                    <th class="text-center col-sm-2" th:text="#{label.course.isCourseTeamApproval}">팀장/부서장 승인여부</th>
+                                    <th class="text-center col-sm-2" th:text="#{label.course.isCourseManagerApproval}">과정관리자 승인여부</th>
                                     <th class="text-center col-sm-2" th:text="#{label.edit}">Edit</th>
                                 </tr>
                                 </thead>
@@ -67,16 +67,11 @@
                                     <td>
                                         <select class="form-control" id="course-type" disabled>
                                             <option th:each="minor, index : ${codeList}" th:value="${minor.getMinorCd()}"
-                                                    th:text="${minor.getMinorNm()}" th:selected="${ minor.getMinorCd().equals(border.getRequestType()) }"></option>
+                                                    th:text="${minor.getMinorNm()}" th:selected="${ minor.getMinorCd().equals(border.getCourseGubun().getMinorCd()) }"></option>
                                         </select>
                                     </td>
                                     <td class="text-center" th:text="${border.getIsTeamMangerApproval()}"></td>
                                     <td class="text-center" th:text="${border.getIsCourseMangerApproval()}"></td>
-
-<!--                                    <td th:switch="${border.getRequestType()}" class="text-center">-->
-<!--                                        <span th:case="1">상시</span>-->
-<!--                                        <span th:case="2">기간</span>-->
-<!--                                    </td>-->
                                     <td class="text-center">
                                         <div class="form-inline">
                                             <a class="btn btn-warning" th:href="@{/admin/course-master/edit/{id}(id=${border.getId()})}" th:text="#{label.edit}">Edit</a>

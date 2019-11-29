@@ -19,7 +19,7 @@ public class CourseAccountOrder extends AuditorEntity<String> {
     // 컴멘트
     private String fComment;
 
-    // 0:초기, 1:결재, 2. 합의, 3:확인
+    // 0:초기, 1:결재(팀장), 2. 합의(관리자)
     @Column(length = 1)
     @ColumnDefault("'0'")
     private String fKind = "0";

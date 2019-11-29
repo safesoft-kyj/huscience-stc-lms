@@ -5,10 +5,7 @@ import com.dtnsm.lms.domain.CourseSectionFile;
 import com.dtnsm.lms.domain.Schedule;
 import com.dtnsm.lms.domain.ScheduleFile;
 import com.dtnsm.lms.domain.constant.ScheduleType;
-import com.dtnsm.lms.service.CourseMasterService;
-import com.dtnsm.lms.service.CourseService;
-import com.dtnsm.lms.service.ScheduleFileService;
-import com.dtnsm.lms.service.ScheduleService;
+import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,6 +36,9 @@ public class InfoController {
 
     @Autowired
     ScheduleFileService fileService;
+
+    @Autowired
+    CodeService codeService;
 
     private PageInfo pageInfo = new PageInfo();
 
@@ -100,7 +100,8 @@ public class InfoController {
 
     // 교육 신청
     @GetMapping("/request")
-    public String noticeListMulti(@RequestParam(value = "typeId", defaultValue = "all") String typeId
+    public String noticeListMulti(@RequestParam(value = "typeId", defaultValue = "") String typeId
+            , @RequestParam(value = "gubunId", defaultValue = "") String gubunId
             , @RequestParam(value = "title", defaultValue = "") String title
             , @PageableDefault Pageable pageable
             , Model model) {
@@ -108,20 +109,23 @@ public class InfoController {
         pageInfo.setPageId("m-info-request");
         pageInfo.setPageTitle("교육신청");
 
-        Page<Course> courses;
-        if(typeId.equals("all") && title.equals("")) {
-            courses = courseService.getPageList(0, pageable);
-        } else if (typeId.equals("all") && !title.equals("") ){
-            courses = courseService.getPageListByTitleLike(title, 0, pageable);
-        } else if (!typeId.equals("all") && title.equals("") ){
-            courses = courseService.getPageLisByTypeId(typeId, 0, pageable);
-        } else {
-            courses = courseService.getPageLisByTypeIdAndTitleLike(typeId, title, 0, pageable);
-        }
+//        Page<Course> courses;
+//        if( gubunId.equals("all") && typeId.equals("all") && title.equals("")) {
+//            courses = courseService.getPageList(0, pageable);
+//        } else if ( gubunId.equals("all") && typeId.equals("all") && !title.equals("") ){
+//            courses = courseService.getPageListByTitleLike(title, 0, pageable);
+//        } else if (!typeId.equals("all") && title.equals("") ){
+//            courses = courseService.getPageLisByTypeId(typeId, 0, pageable);
+//        } else {
+//            courses = courseService.getPageLisByTypeIdAndTitleLike(typeId, title, 0, pageable);
+//        }
+
+        Page<Course> courses = courseService.getAllByUserRequest(gubunId, typeId, title,1, pageable);
 
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courses);
         model.addAttribute("courseMasterList", courseMasterService.getList());
+        model.addAttribute("courseTypeList", codeService.getMinorList("BC01")); // onLine, offLine 구분
 
         return "content/info/request";
     }

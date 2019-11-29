@@ -67,12 +67,10 @@ public class CourseSurveyService {
         return questionRepository.findById(id).get();
     }
 
-    // 교육과정의 첫번재 시험을 등록한다.
+    // 교육과정의 첫번재 설문을 등록한다.
     public void CreateAutoSurvey(Course course) {
 
         if (course.getIsSurvey().equals("Y")) {
-            // 과정에 등록된 강의 시간 정보를 가지고 온다.
-            float hour = course.getHour();
 
             CourseSurvey courseSurvey = new CourseSurvey();
             courseSurvey.setName("[설문] " + course.getTitle());

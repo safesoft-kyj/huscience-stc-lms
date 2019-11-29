@@ -10,6 +10,16 @@
 </th:block>
 
 <th:block layout:fragment="custom_css">
+    <style>
+        .sign {
+            min-height: 90px;
+        }
+
+        .hide-div {
+            min-height: 90px;
+        }
+
+    </style>
 
 </th:block>
 
@@ -62,8 +72,10 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-sm-2"></div>
-                        <div class="col-sm-6">
+                        <th:block th:if="${courseAccount.getFFinalCount() < 2}">
+                            <div class="col-sm-3"></div>
+                        </th:block>
+                        <div class="col-sm-5">
                             <table class="table table-bordered" cellspacing="0" width="100%">
                                 <colgroup>
                                     <col width="10%">
@@ -77,27 +89,78 @@
                                         <div>결<br/><br/>재</div>
                                     </td>
                                     <th:block th:each="border, index : ${courseAccount.getCourseAccountOrders()}">
-                                        <td th:text="${border.getFUser().getName()}" class="text-center">
-                                        </td>
+                                        <th:block th:if="${border.getFKind().equals('1')}">
+                                            <td th:text="${border.getFUser().getName()}" class="text-center">
+                                            </td>
+                                        </th:block>
                                     </th:block>
                                 </tr>
                                 <tr>
                                     <th:block th:each="border, index : ${courseAccount.getCourseAccountOrders()}">
-                                        <td th:switch="${border.getFStatus()}" class="text-center" style="vertical-align: middle">
-                                            <span th:case="${'0'}" class="text-info" th:text="${''}"></span>
-                                            <img th:case="${'1'}" class="text-success sign" th:src="${border.getSignature()}"></img>
-                                            <span th:case="${'2'}" class="text-danger" th:text="${'반려'}"></span>
-                                        </td>
+                                        <th:block th:if="${border.getFKind().equals('1')}">
+                                            <td th:switch="${border.getFStatus()}" class="text-center" style="vertical-align: middle">
+                                                <span th:case="${'0'}" class="text-info" th:text="${''}"></span>
+                                                <img th:case="${'1'}" class="text-success sign" th:src="${border.getSignature()}"></img>
+                                                <span th:case="${'2'}" class="text-danger" th:text="${'반려'}"></span>
+                                            </td>
+                                        </th:block>
                                     </th:block>
                                 </tr>
                                 <tr>
                                     <th:block th:each="border, index : ${courseAccount.getCourseAccountOrders()}">
-                                        <td th:text="${border.getFDate()} ? ${#dates.format(border.getFDate(), 'yyyy/MMM/dd')} : ${border.getFDate()}" class="text-center"></td>
-                                        </td>
+                                        <th:block th:if="${border.getFKind().equals('1')}">
+                                            <td th:text="${border.getFDate()} ? ${#dates.format(border.getFDate(), 'yyyy/MMM/dd')} : ${border.getFDate()}" class="text-center"></td>
+                                            </td>
+                                        </th:block>
                                     </th:block>
                                 </tr>
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="col-sm-3">
+                            <th:block th:if="${courseAccount.getFFinalCount() >= 2}">
+                                <table class="table table-bordered col-sm-4" cellspacing="0" width="100%">
+                                    <colgroup>
+                                        <col width="10%">
+                                        <col width="30%">
+                                        <col width="30%">
+                                        <col width="30%">
+                                    </colgroup>
+                                    <tbody>
+                                    <tr>
+                                        <td rowspan="3" style="vertical-align: middle" class="text-center" >
+                                            <div>관<br/>리<br/>자</div>
+                                        </td>
+
+                                        <th:block th:each="border, index : ${courseAccount.getCourseAccountOrders()}">
+                                            <th:block th:if="${border.getFKind().equals('2')}">
+                                                <td th:text="${border.getFUser().getName()}" class="text-center">
+                                                </td>
+                                            </th:block>
+                                        </th:block>
+                                    </tr>
+                                    <tr>
+                                        <th:block th:each="border, index : ${courseAccount.getCourseAccountOrders()}">
+                                            <th:block th:if="${border.getFKind().equals('2')}">
+                                                <td th:switch="${border.getFStatus()}" class="text-center signImage" style="vertical-align: middle">
+                                                    <div th:case="${'0'}" class="hide-div">&nbsp;</div>
+                                                    <img th:case="${'1'}" class="text-success sign" th:src="${border.getSignature()}"></img>
+                                                    <span th:case="${'2'}" class="text-danger" th:text="${'반려'}"></span>
+                                                </td>
+                                            </th:block>
+                                        </th:block>
+                                    </tr>
+                                    <tr>
+                                        <th:block th:each="border, index : ${courseAccount.getCourseAccountOrders()}">
+                                            <th:block th:if="${border.getFKind().equals('2')}">
+                                                <td th:text="${border.getFDate()} ? ${#dates.format(border.getFDate(), 'yyyy/MMM/dd')} : ${'&nbsp;'}" class="text-center"></td>
+                                                </td>
+                                            </th:block>
+                                        </th:block>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </th:block>
                         </div>
                     </div>
 
@@ -177,7 +240,7 @@
                                     <th class="text-center">강의명</th>
 <!--                                    <th class="text-center">학습기간</th>-->
 <!--                                    <th class="text-center">학습시간</th>-->
-                                    <th class="text-center">Date & Times</th>
+                                    <th class="text-center" th:text="#{label.hour}">Date & Times</th>
                                     </thead>
                                     <tbody>
                                     <tr th:each="sections, index : ${course.getSections()}">
@@ -195,7 +258,7 @@
 <!--                                        </th:block>-->
 
 <!--                                        <td th:text="${sections.getFromTime() + '~' + sections.getToTime()}" class="text-center"></td>-->
-                                        <td class="text-center" th:text="${sections.getMinute() + '분'}"></td>
+                                        <td class="text-center" th:text="${sections.getHour()}"></td>
                                     </tr>
 
                                     <tr th:each="quiz, index : ${course.getQuizzes()}">
@@ -211,7 +274,7 @@
 <!--                                            <td th:text="${quiz.getFromDate() + '~' + quiz.getToDate()}" class="text-center"></td>-->
 <!--                                        </th:block>-->
 <!--                                        <td class="text-center"></td>-->
-                                        <td class="text-center" th:text="${quiz.getMinute() + '분'}"></td>
+                                        <td class="text-center" th:text="${quiz.getHour()}"></td>
                                     </tr>
                                     <tr th:each="survey, index : ${course.getSurveys()}">
                                         <td class="text-center" th:text="${index.count}"></td>

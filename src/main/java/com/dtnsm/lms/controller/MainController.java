@@ -95,10 +95,10 @@ public class MainController {
         // 교육신청 진행건
         List<CourseAccount> courseAccountOrders2 = courseAccountService.getAllByStatus(userId, "0");
 
-        // 교육신청 미결건
+        // 전자결재 미결건
         List<DocumentAccountOrder> documentAccountOrders1 = documentAccountOrderService.getAllByNext(userId, "1", "0");
 
-        // 교육신청 진행건
+        // 전자결재 진행건
         List<Document> documentAccountOrders2 = documentService.getAllByStatus(userId, "0");
 
 
@@ -108,10 +108,10 @@ public class MainController {
         // 교육결재 진행함
         model.addAttribute("app1CommitList", courseAccountOrders2);
 
-        // 교육결재 미결함
+        // 전자결재 미결함
         model.addAttribute("app2List", documentAccountOrders1);
 
-        // 교육결재 진행함
+        // 전자결재 진행함
         model.addAttribute("app2CommitList", documentAccountOrders2);
 
 

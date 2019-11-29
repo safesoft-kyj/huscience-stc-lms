@@ -30,10 +30,6 @@ public class Course extends AuditorCreateEntity<String> {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    // 교육 Agenda
-    @Column(columnDefinition = "TEXT")
-    private String agenda;
-
     // 신청시작일
     @Column(length = 10)
     @ColumnDefault("1900-01-01")
@@ -56,6 +52,7 @@ public class Course extends AuditorCreateEntity<String> {
 
     // 교육장소
     @Column(length = 50)
+    @ColumnDefault("''")
     private String place;
 
     // 교육일수
@@ -67,6 +64,11 @@ public class Course extends AuditorCreateEntity<String> {
     @ColumnDefault("0")
     private float hour;
 
+//    // 시험시간(시)
+//    @Column(name="exam_hour", columnDefinition="numeric(5,2)")
+//    @ColumnDefault("0")
+//    private float examHour;
+
     // 교육정원
     @ColumnDefault("0")
     private int cnt ;
@@ -77,34 +79,46 @@ public class Course extends AuditorCreateEntity<String> {
 
     // 참석대상 부서/팀
     @Column(length = 30)
+    @ColumnDefault("''")
     private String team ;
 
     // 교제 제공 여부
+    @ColumnDefault("'N'")
     private String isBook = "N" ;
 
     // 시험 진행 여부
+    @ColumnDefault("'N'")
     private String isQuiz = "N" ;
 
     // 설문 진행 여부
+    @ColumnDefault("'N'")
     private String isSurvey = "N" ;
 
     // 수료증 발급 여부
+    @ColumnDefault("'N'")
     private String isCerti = "N" ;
 
     @Column(length = 20)
     private String certiHead;
 
-   // 교육 대상자
-    @Column(length = 1000)
-    private String mailSender;
+    @Column(length = 1)
+    @ColumnDefault("0")
+    private String isNewEmpCourse = "0";  // 0:일반 Self 교육, 1:신입사원필수 Self 교육
+
+    // 상시 교육 여부
+    @Column(length = 1)
+    @ColumnDefault("0")
+    private String isAlways = "0" ;         // 0:기간, 1:상시
+
+//   // 교육 대상자
+//    @Column(length = 1000)
+//    private String mailSender;
 
     // 뷰 카운터
     @ColumnDefault("0")
     private int viewCnt;
 
-    @Column(length = 1)
-    @ColumnDefault("0")
-    private String isNewEmpCourse = "0";  // 0:일반 Self 교육, 1:신입사원필수 Self 교육
+
 
     // 0:서비스전, 1: 신청대기, 2:교육신청, 3:교육대기, 4:교육중, 5:교육종료
     @ColumnDefault("0")
