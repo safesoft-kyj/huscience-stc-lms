@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default_layout">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css"></th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-body">
+                    <!--===================================================-->
+                    <!--End Horizontal Form-->
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/certificate/info/edit-post/{id}(id=${border.getId()})}" th:object="${border}" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="sopName" th:text="#{label.certiInfo.sopname}">Text</label>
+                            <div class="col-sm-10">
+                                <input type="text" th:field="*{sopName}" id="sopName" placeholder="" class="form-control" required="required">
+                            </div>
+                            <span th:if="${#fields.hasErrors('sopName')}" th:errors="*{sopName}"></span>
+                        </div>
+                        <div class="form-group" id="notice_period">
+                            <label class="col-sm-2 control-label" for="sopEffectiveDate" th:text="#{label.certiInfo.sopdate}">공지기간</label>
+                            <div class="col-sm-10">
+                                <div id="demo-dp-component">
+                                    <div class="input-group date">
+                                        <input type="text" class="form-control" th:field="*{sopEffectiveDate}" id="sopEffectiveDate">
+                                        <span class="input-group-addon"><i class="demo-pli-calendar-4"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="cerManager1" th:text="#{label.certiInfo.cermanager1}">강사</label>
+                            <div class="col-sm-9">
+                                <select class="form-control"  th:field="*{cerManager1}" id="cerManager1">
+                                    <option th:each="user : ${managerList}" th:value="${user.getUserId()}" th:text="${user.getName()}"></option>
+                                </select>
+                            </div>
+                            <span th:if="${#fields.hasErrors('cerManager1')}" th:errors="*{cerManager1}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="cerManager2"  th:text="#{label.certiInfo.cermanager2}">대표자</label>
+                            <div class="col-sm-9">
+                                <select class="form-control"  th:field="*{cerManager2}" id="cerManager2">
+                                <option th:each="user : ${managerList}" th:value="${user.getUserId()}" th:text="${user.getName()}"></option>
+                                </select>
+                            </div>
+                            <span th:if="${#fields.hasErrors('cerManager2')}" th:errors="*{cerManager2}"></span>
+                        </div>
+                        <div class="panel-footer text-right">
+                            <button class="btn btn-primary" type="submit" id="submit-all" th:text="#{label.save}">
+                                <i class="fa fa-upload-cloud"></i> 저장
+                            </button>
+                        </div>
+                    </form>
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+
+
+    <script>
+
+        $('#cerManager1').chosen({width:'100%'});
+
+        $('#cerManager2').chosen({width:'100%'});
+
+        $('#demo-dp-component .input-group.date').datepicker({
+            // format: "MM dd, yyyy",
+            format: "yyyy-mm-dd",
+            todayBtn: "linked",
+            autoclose: true,
+            todayHighlight: true
+        });
+
+    </script>
+
+    <!--Form File Upload [ SAMPLE ]-->
+<!--    <script th:src="@{/default/js/demo/form-file-upload.js}"></script>-->
+</th:block>
+
+</html>

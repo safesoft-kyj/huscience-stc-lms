@@ -2,6 +2,7 @@ package com.dtnsm.lms.domain;
 
 import com.dtnsm.lms.auth.AuditorCreateEntity;
 import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -23,4 +24,8 @@ public class CourseCertificateInfo extends AuditorCreateEntity<String> {
     @ManyToOne
     @JoinColumn(name = "cer_manager2",columnDefinition="VARCHAR(30)")
     private Account cerManager2;
+
+    // 1: 기본 수료증
+    @ColumnDefault("0")
+    private int isActive = 0;
 }

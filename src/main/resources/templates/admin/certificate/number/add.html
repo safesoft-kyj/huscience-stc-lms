@@ -40,25 +40,37 @@
             <!-- Basic Data Tables -->
             <!--===================================================-->
             <div class="panel">
-                <div class="panel-heading">
-<!--                    <h3 class="panel-title">교육 등록</h3>-->
-                </div>
                 <div class="panel-body">
                     <!--===================================================-->
                     <!--End Horizontal Form-->
-                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/survey/add-post}" th:object="${survey}" method="post" enctype="multipart/form-data" >
-                           <div class="form-group">
-                            <label class="col-sm-2 control-label" for="name" th:text="#{label.course.survey.name}">설문명</label>
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/certificate/number/add-post}" th:object="${border}" method="post" enctype="multipart/form-data" >
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="cerText" th:text="#{label.certi.text}">Text</label>
                             <div class="col-sm-10">
-                                <input type="text" th:field="*{name}" id="name" placeholder="" class="form-control" required="required">
+                                <input type="text" th:field="*{cerText}" id="cerText" placeholder="" class="form-control" required="required">
                             </div>
-                            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+                            <span th:if="${#fields.hasErrors('cerText')}" th:errors="*{cerText}"></span>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" th:text="#{label.course.quiz.file}">문제파일</label>
+                            <label class="col-sm-2 control-label" for="cerYear" th:text="#{label.certi.year}">Year</label>
                             <div class="col-sm-10">
-                                <input type="file" name="file">
+                                <input type="text" th:field="*{cerYear}" id="cerYear" placeholder="" class="form-control" required="required">
                             </div>
+                            <span th:if="${#fields.hasErrors('cerYear')}" th:errors="*{cerYear}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="cerSeq" th:text="#{label.certi.seq}">Seq</label>
+                            <div class="col-sm-10">
+                                <input type="number" th:field="*{cerSeq}" id="cerSeq" placeholder="" class="form-control" required="required">
+                            </div>
+                            <span th:if="${#fields.hasErrors('cerSeq')}" th:errors="*{cerSeq}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="fullNumber" th:text="#{label.certi.fullNumber}">Full Number</label>
+                            <div class="col-sm-10">
+                                <input type="text" th:field="*{fullNumber}" id="fullNumber" placeholder="자동생성번호" class="form-control">
+                            </div>
+                            <span th:if="${#fields.hasErrors('fullNumber')}" th:errors="*{fullNumber}"></span>
                         </div>
                         <div class="panel-footer text-right">
                             <button class="btn btn-primary" type="submit" id="submit-all" th:text="#{label.save}">

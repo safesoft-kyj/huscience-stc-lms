@@ -10,7 +10,11 @@
 </th:block>
 
 <th:block layout:fragment="custom_css">
-
+    <style>
+        td,th {
+            text-align: center;
+        }
+    </style>
 </th:block>
 
 <th:block layout:fragment="content_body">
@@ -32,23 +36,17 @@
             <!-- Basic Data Tables -->
             <!--===================================================-->
             <div class="panel">
-                <div class="panel-heading">
-                    <h3 class="panel-title">
-                    </h3>
-                </div>
                 <div class="panel-body">
-                    <div class="row">
-                        <div class="col-sm-6" style="vertical-align: top">
-                            <span th:text="#{label.list.title(${surveyList.size()})}"></span>
+                    <div>
+                        <div class="col-sm-6">
+                            <!--                            <span th:text="#{label.list.title(${borders.size()})}"></span>-->
                         </div>
                         <div class="col-sm-6 text-right">
-                            <span class="input-group-btn">
-                                   <a th:href="@{/admin/survey/add}" class="btn btn-success" th:text="#{label.add}">Add new</a>
-                            </span>
+                            <p>
+                                <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/survey/add}"><i class="demo-pli-add"></i> Add</a>
+                            </p>
                         </div>
                     </div>
-                    <br>
-
 
                     <div th:switch="${surveyList}">
                         <h2 th:case="null">No customer yet!</h2>
@@ -64,7 +62,7 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="survey : ${surveyList}">
-                                    <td>
+                                    <td class="text-left">
                                         <th:block th:if="${survey.getIsActive() == 1}">
                                             <span class="badge badge-info" th:text="#{label.active}"></span>
                                         </th:block>
@@ -93,7 +91,7 @@
 
 <th:block layout:fragment="custom_js">
     <!--DataTables Sample [ SAMPLE ]-->
-    <script th:src="@{/default/js/demo/tables-datatables.js}"></script>
+<!--    <script th:src="@{/default/js/demo/tables-datatables.js}"></script>-->
 </th:block>
 
 </html>
