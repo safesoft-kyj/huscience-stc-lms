@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <!--Dropzone [ OPTIONAL ]-->
+    <link th:href="@{/default/plugins/dropzone/dropzone.min.css}" rel="stylesheet">
+
+    <!--Bootstrap Timepicker [ OPTIONAL ]-->
+    <link th:href="@{/default/plugins/bootstrap-timepicker/bootstrap-timepicker.min.css}" rel="stylesheet">
+
+
+    <!--Bootstrap Datepicker [ OPTIONAL ]-->
+    <link th:href="@{/default/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css}" rel="stylesheet">
+
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-heading">
+<!--                    <h3 class="panel-title">교육 등록</h3>-->
+                </div>
+                <div class="panel-body">
+                    <!--===================================================-->
+                    <!--End Horizontal Form-->
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/survey/add-post}" th:object="${survey}" method="post" enctype="multipart/form-data" >
+                           <div class="form-group">
+                            <label class="col-sm-2 control-label" for="name" th:text="#{label.course.survey.name}">설문명</label>
+                            <div class="col-sm-10">
+                                <input type="text" th:field="*{name}" id="name" placeholder="" class="form-control" required="required">
+                            </div>
+                            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" th:text="#{label.course.quiz.file}">문제파일</label>
+                            <div class="col-sm-10">
+                                <input type="file" name="file">
+                            </div>
+                        </div>
+                        <div class="panel-footer text-right">
+                            <button class="btn btn-primary" type="submit" id="submit-all" th:text="#{label.save}">
+                                <i class="fa fa-upload-cloud"></i> 저장
+                            </button>
+                        </div>
+                    </form>
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+
+</th:block>
+
+<th:block layout:fragment="custom_js">
+
+
+    <script>
+
+    </script>
+
+
+</th:block>
+
+</html>
+
