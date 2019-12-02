@@ -94,15 +94,15 @@ public class CourseAccount extends AuditorEntity<String> {
     @ColumnDefault("'0'")
     private String isCommit = "0";
 
+
 //    @Column(nullable = true)
 //    @ManyToOne
 //    @JoinColumn(name = "document_id")
 //    @ColumnDefault("0")
 //    private long document_id=0;
 
-//    @OneToOne
-//    @JoinColumn(name = "cer_id")
-//    private CourseCertificate certificate;
+    @OneToOne(mappedBy = "courseAccount")
+    private CourseCertificateLog courseCertificateLog;
 
     @OneToMany(mappedBy = "courseAccount", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CourseSectionAction> courseSectionActions = new ArrayList<>();
@@ -115,6 +115,7 @@ public class CourseAccount extends AuditorEntity<String> {
 
     @OneToMany(mappedBy = "courseAccount", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CourseAccountOrder> courseAccountOrders = new ArrayList<>();
+
 
     public boolean addCourseAccountOrder(CourseAccountOrder courseAccountOrder) {
         if(courseAccountOrders == null)

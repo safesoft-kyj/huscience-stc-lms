@@ -11,10 +11,18 @@
 
 <th:block layout:fragment="custom_css">
     <style>
+        #signature-pad {
+            min-height: 345px;
+        }
         .table-head {
             background: #3A444E;
             margin: 0;
             padding: 0;
+        }
+
+        .sign {
+            width: 300px;
+            height: 300px;
         }
     </style>
 </th:block>
@@ -43,41 +51,61 @@
                     <div th:switch="${account}">
                         <h2 th:case="null">내부직원이 아닙니다.</h2>
                         <div th:case="*">
-                            <hr class="table-head">
-                            <table class="table">
-                                <tr>
-                                    <td th:text="#{label.id}" class="col-sm-2 text-center" style="background: #FAFAFA;">아이디</td>
-                                    <td th:text="${account.getUserId()}"></td>
-                                </tr>
-                                <tr>
-                                    <td th:text="#{label.name}" class="text-center" style="background: #FAFAFA;">이름</td>
-                                    <td>
-                                        <span th:unless="${#strings.isEmpty(account.getName())}" th:text="${account.getName()}"></span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td th:text="#{label.engName}" class="text-center" style="background: #FAFAFA;">영문명</td>
-                                    <td>
-                                        <span th:unless="${#strings.isEmpty(account.getEngName())}" th:text="${account.getEngName()}"></span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td th:text="#{label.indate}" class="text-center" style="background: #FAFAFA;">입사일</td>
-                                    <td th:text="${account.getIndate()}"></td>
-                                </tr>
-                                <tr>
-                                    <td th:text="#{label.email}" class="text-center" style="background: #FAFAFA;">이메일</td>
-                                    <td th:text="${account.getEmail()}"></td>
-                                </tr>
-                                <tr>
-                                    <td th:text="#{label.depart}" class="text-center" style="background: #FAFAFA;">부서</td>
-                                    <td th:text="${account.getOrgDepart()}"></td>
-                                </tr>
-                                <tr>
-                                    <td th:text="#{label.job}" class="text-center" style="background: #FAFAFA;">업무</td>
-                                    <td th:text="${account.getComJob()}"></td>
-                                </tr>
-                            </table>
+                            <div class="row">
+                                <div class="col-sm-9 user-info">
+                                    <hr class="table-head">
+                                    <table class="table table-bordered">
+                                        <tr>
+                                            <td th:text="#{label.id}" class="col-sm-2 text-center" style="background: #FAFAFA;">아이디</td>
+                                            <td th:text="${account.getUserId()}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td th:text="#{label.name}" class="text-center" style="background: #FAFAFA;">이름</td>
+                                            <td>
+                                                <span th:unless="${#strings.isEmpty(account.getName())}" th:text="${account.getName()}"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td th:text="#{label.engName}" class="text-center" style="background: #FAFAFA;">영문명</td>
+                                            <td>
+                                                <span th:unless="${#strings.isEmpty(account.getEngName())}" th:text="${account.getEngName()}"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td th:text="#{label.indate}" class="text-center" style="background: #FAFAFA;">입사일</td>
+                                            <td th:text="${account.getIndate()}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td th:text="#{label.email}" class="text-center" style="background: #FAFAFA;">이메일</td>
+                                            <td th:text="${account.getEmail()}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td th:text="#{label.depart}" class="text-center" style="background: #FAFAFA;">부서</td>
+                                            <td th:text="${account.getOrgDepart()}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td th:text="#{label.job}" class="text-center" style="background: #FAFAFA;">업무</td>
+                                            <td th:text="${account.getComJob()}"></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-sm-3 text-center" style="vertical-align: middle; height:100%" >
+                                    <hr class="table-head">
+                                    <table class="table">
+                                        <tr>
+                                            <td>
+                                                <span class="btn btn-primary" onclick="popupSignView();"><i class="demo-pli-data-storage"></i> <span>사인변경</span></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <img class="text-success" th:src="${sign}" style="width:150px; height:150px;"></img>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
 
                         </div>
                     </div>
@@ -139,6 +167,22 @@
         $('#parentUserId').chosen({width:'100%'});
 
 
+        function popupSignView() {
+            var width = 600;
+            var height = 620;
+
+            var title = "사인 변경";
+            var url = "/mypage/signPopup";
+            // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+            var popupX = (window.screen.width / 2) - (width / 2);
+            // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
+            var popupY= (window.screen.height / 2) - (height / 2);
+
+            var option = "width =" + width + ", height =" + height + ", menubar=no, directories=no, location = no, scrollbars=yes, resizable=yes";
+            option += ", left=" + popupX + ", top=" + popupY;
+
+            window.open(url, title, option);
+        }
 
     </script>
 

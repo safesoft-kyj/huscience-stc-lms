@@ -49,7 +49,7 @@
 <div style="position:absolute;left:50%;margin-left:-396px;top:0px;width:792px;height:612px;overflow:hidden">
     <div style="position:absolute;left:0px;top:0px">
         <img src="/default/img/custom/certi_background.jpg" width=792 height=612></div>
-    <div style="position:absolute;left:72.00px;top:61.82px" class="cls_002"><span class="cls_002" th:utext="${'Certificate No.: ' + courseAccount.getCertificateNo()}">Certificate No.:</span></div>
+    <div style="position:absolute;left:72.00px;top:61.82px" class="cls_002"><span class="cls_002" th:utext="${'Certificate No.: ' + courseAccount.getCourseCertificateLog().getCerNo()}">Certificate No.:</span></div>
     <div style="position:absolute;left:124.58px;top:156.86px" class="cls_016"><span class="cls_016">CERTIFICATE </span><span class="cls_017">of</span><span class="cls_016"> ACHIEVEMENT</span></div>
     <div style="position:absolute;left:312.17px;top:209.69px" class="cls_004"><span class="cls_004">THIS IS TO CERTIFY THAT</span></div>
     <div style="position:absolute;left:0px;top:254.89px; width:100%; text-align: center;" class="cls_005"><span class="cls_005" th:text="${courseAccount.getAccount().getEngName()}">First Name  Last Name</span></div>
@@ -57,7 +57,7 @@
     <div style="position:absolute;left:0px;top:343.15px; width:100%; text-align: center;" class="cls_008"><span class="cls_008" th:text="${courseAccount.getCourse().getTitle()}"></span></div>
 <!--    <div style="position:absolute;left:0px;top:377.35px; width:100%; text-align: center;" class="cls_009"><span class="cls_009">On </span><span class="cls_008">DD MMM YYYY</span><span class="cls_009"> / From </span><span class="cls_008" th:text="${courseAccount.getCourse().getFromDate()}">DD MMM YYYY</span><span class="cls_009"> to </span><span class="cls_008" th:text="${courseAccount.getCourse().getToDate()}">DD MMM YYYY</span></div>-->
     <div style="position:absolute;left:0px;top:377.35px; width:100%; text-align: center;" class="cls_009">
-        <th:block th:if="${#strings.equalsIgnoreCase(courseAccount.getCourse().getFromDate(), courseAccount.getCourse().getToDate())}">
+        <th:block th:if="${#strings.equalsIgnoreCase(courseAccount.getFromDate(), courseAccount.getToDate())}">
             <span class="cls_009">On </span>
             <span class="cls_008" th:text="${#dates.format(T(com.dtnsm.lms.util.DateUtil).getStringToDate(courseAccount.getFromDate()), 'yyyy-MMM-dd')}">DD MMM YYYY</span>
         </th:block>
@@ -69,16 +69,16 @@
 
         </th:block>
     </div>
-    <div style="position:absolute;left:132.02px;top:470.86px" class="cls_010"><span class="cls_010"><img class="sign" th:src="${sign1}"></span></div>
-    <div style="position:absolute;left:401.33px;top:470.86px" class="cls_010"><span class="cls_010"><img class="sign" th:src="${sign1}"></span></div>
-    <div style="position:absolute;left:401.33px;top:498.10px" class="cls_011"><span class="cls_011" th:text="${userName2}">Kim, Kwangho</span><span class="cls_012" th:text="${userDepart2}"> / Registered Director of</span></div>
-    <div style="position:absolute;left:132.02px;top:504.82px" class="cls_011"><span class="cls_011" th:text="${userName1}">Lim, Hyunjin</span><span class="cls_012" th:text="${userDepart1}"> / QMO of Dt&SanoMedics</span></div>
-    <div style="position:absolute;left:401.33px;top:511.66px" class="cls_012"><span class="cls_012" th:text="${userDepart21}">Dt&SanoMedics</span></div>
-    <div style="position:absolute;left:72.00px;top:545.26px" class="cls_013"><span class="cls_013">SOP-TM0002_RD08 v1.1</span></div>
+    <div style="position:absolute;left:132.02px;top:470.86px" class="cls_010"><span class="cls_010"><img class="sign" th:src="${courseAccount.getCourseCertificateLog().getCerManagerSign1()}"></span></div>
+    <div style="position:absolute;left:401.33px;top:470.86px" class="cls_010"><span class="cls_010"><img class="sign" th:src="${courseAccount.getCourseCertificateLog().getCerManagerSign2()}"></span></div>
+    <div style="position:absolute;left:401.33px;top:498.10px" class="cls_011"><span class="cls_011" th:text="${courseAccount.getCourseCertificateLog().getCerManager2().getEngName()}">Kim, Kwangho</span><span class="cls_012" th:text="${' / ' + courseAccount.getCourseCertificateLog().getCerManager2().getOrgDepart()+ ' of Dt&SanoMedics'}"> / Registered Director of</span></div>
+    <div style="position:absolute;left:132.02px;top:504.82px" class="cls_011"><span class="cls_011" th:text="${courseAccount.getCourseCertificateLog().getCerManager1().getEngName()}">Lim, Hyunjin</span><span class="cls_012" th:text="${' / ' + courseAccount.getCourseCertificateLog().getCerManager1().getOrgDepart() + ' of'}"> / QMO of Dt&SanoMedics</span></div>
+    <div style="position:absolute;left:401.33px;top:511.66px" class="cls_012"><span class="cls_012">Dt&SanoMedics</span></div>
+    <div style="position:absolute;left:72.00px;top:545.26px" class="cls_013"><span class="cls_013" th:text="${courseAccount.getCourseCertificateLog().getSopName()}"></span></div>
     <div style="position:absolute;left:357.41px;top:545.26px" class="cls_013"><span class="cls_013">Page 1 / 1</span></div>
     <div style="position:absolute;left:653.74px;top:545.26px" class="cls_014"><span class="cls_014">CONFIDENTIAL</span></div>
     <div style="position:absolute;left:72.00px;top:556.18px" class="cls_013"><span class="cls_013">Certificate</span></div>
-    <div style="position:absolute;left:72.00px;top:567.22px" class="cls_013"><span class="cls_013">Effective Date: </span><span class="cls_015">04-MAR</span><span class="cls_013">-2019</span></div>
+    <div style="position:absolute;left:72.00px;top:567.22px" class="cls_013"><span class="cls_013">Effective Date: </span><span class="cls_015" th:text="${T(com.dtnsm.lms.util.DateUtil).getEnglishDate(courseAccount.getCourseCertificateLog().getSopEffectiveDate())}">04-MAR</span><span class="cls_013"></span></div>
 </div>
 
 <!--jQuery [ REQUIRED ]-->

@@ -65,6 +65,8 @@ public class MyPageController {
     @Autowired
     CourseCertificateService courseCertificateService;
     @Autowired
+    CourseTraingLogService courseTraingLogService;
+    @Autowired
     CourseTrainingLogRepository courseTrainingLogRepository;
     @Autowired
     CourseAccountService courseAccountService;
@@ -159,6 +161,10 @@ public class MyPageController {
 
         Account parentAccount = userService.getAccountByUserId(account.getParentUserId());
 
+        // 강사의 서명을 가지고 온다.
+        Optional<Signature> optionalSignature = signatureRepository.findById(SessionUtil.getUserId());
+        String sign = optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "";
+
 //        UserVO userVO = userMapperService.getUserById(account.getUserId());
 
         model.addAttribute(pageInfo);
@@ -166,9 +172,35 @@ public class MyPageController {
         model.addAttribute("account", account);
         model.addAttribute("parentAccount", parentAccount);
         model.addAttribute("accountList", userService.getAccountList());
+        model.addAttribute("sign", sign);
 
         return "content/mypage/myInfo";
     }
+
+    @GetMapping("/signPopup")
+    public String signPopup(Model model) {
+
+        pageInfo.setPageId("m-mypage-main");
+        pageInfo.setPageTitle("메인");
+
+        return "content/mypage/signPopup";
+    }
+
+    // Lms Traing Log 조회
+    @GetMapping("/courseTraingLog")
+    public String lmsTraingLog(Model model, Pageable pageable) {
+
+        pageInfo.setPageId("m-training-log-upload");
+        pageInfo.setPageTitle("Training Log Upload");
+
+        Page<CourseTrainingLog> courseTrainingLogs = courseTraingLogService.getAllByAccount_UserId(SessionUtil.getUserId(), pageable);
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("borders", courseTrainingLogs);
+
+        return "content/mypage/courseTrainingLog";
+    }
+
 
     // 초기 교육 자료를 업로드 한다.
     @GetMapping("/uploadTrainingLog")
@@ -184,6 +216,7 @@ public class MyPageController {
 
         return "content/mypage/uploadTrainingLog";
     }
+
 
     // 초기 교육 자료를 업로드 한다.
     @PostMapping("uploadTrainingLog")
@@ -256,27 +289,27 @@ public class MyPageController {
 
         CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserId(courseId, SessionUtil.getUserId());
 
-        Course course = courseService.getCourseById(courseId);
+//        Course course = courseService.getCourseById(courseId);
 
-        Optional<Signature> optionalSignature = signatureRepository.findById(SessionUtil.getUserId());
+//        Optional<Signature> optionalSignature = signatureRepository.findById(SessionUtil.getUserId());
 
 //        String certiNo = courseCertificateService.newCertificateNumber(course.getCertiHead(), courseAccount.getToDate().substring(0, 4)).getFullNumber();
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseAccount", courseAccount);
-        model.addAttribute("sign1", optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "");
-        model.addAttribute("sign2", optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "");
-        model.addAttribute("userName1", "Lim, Hyunjin");
-        model.addAttribute("userDepart1", " / QMO of Dt&SanoMedics");
-        model.addAttribute("userName2", "Kim, Kwangho");
-        model.addAttribute("userDepart2", " / Registered Director of");
-        model.addAttribute("userDepart21", "Dt&SanoMedics");
+//        model.addAttribute("sign1", optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "");
+//        model.addAttribute("sign2", optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "");
+//        model.addAttribute("userName1", "Lim, Hyunjin");
+//        model.addAttribute("userDepart1", " / QMO of Dt&SanoMedics");
+//        model.addAttribute("userName2", "Kim, Kwangho");
+//        model.addAttribute("userDepart2", " / Registered Director of");
+//        model.addAttribute("userDepart21", "Dt&SanoMedics");
 
         return "content/mypage/certificate/print";
     }
 
     @GetMapping("/classroom/view/{id}")
-    public String myInfo(@PathVariable("id") Long docId, Model model) {
+    public String myClassroomView(@PathVariable("id") Long docId, Model model) {
 
         pageInfo.setPageId("m-mypage-myinfo");
         pageInfo.setPageTitle("강의목차");

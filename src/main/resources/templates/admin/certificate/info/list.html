@@ -63,8 +63,13 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="certiInfo, index : ${borders}">
-                                    <td th:text="${certiInfo.getSopName()}"></td>
-                                    <td th:text="${certiInfo.getSopEffectiveDate()} ? ${#dates.format(T(com.)certiInfo.getSopEffectiveDate(), 'yyyy/MM/dd HH:mm')} : ${certiInfo.getSopEffectiveDate()}"></td>
+                                    <td class="text-left">
+                                        <th:block th:if="${certiInfo.getIsActive() == 1}">
+                                            <span class="badge badge-info" th:text="#{label.active}"></span>
+                                        </th:block>
+                                        <span th:text="${certiInfo.getSopName()}"></span>
+                                    </td>
+                                    <td th:text="${certiInfo.getSopEffectiveDate()}"></td>
                                     <td th:text="${certiInfo.getCerManager1().getEngName()}"></td>
                                     <td th:text="${certiInfo.getCerManager2().getEngName()}"></td>
                                     <td>

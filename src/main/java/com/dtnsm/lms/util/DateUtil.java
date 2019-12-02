@@ -61,6 +61,31 @@ public  class DateUtil {
         return date;
     }
 
+//    public static Date getStringToDate2(String stringDate, String format) {
+//        Date date = null;
+//        try {
+//            date = new SimpleDateFormat(format, Locale.ENGLISH).parse(stringDate);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        return date;
+//    }
+
+    public static String getEnglishDate(String stringDate) {
+        String outDateString = "";
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat outSdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
+
+            Date tmpDate = sdf.parse(stringDate);
+            outDateString = outSdf.format(tmpDate);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return outDateString;
+    }
+
     public static Date getStringToDate(String stringDate, String format) {
         Date date = null;
         try {

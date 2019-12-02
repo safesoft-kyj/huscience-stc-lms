@@ -1,6 +1,14 @@
 package com.dtnsm.lms.component;
 
+import com.dtnsm.lms.auth.UserService;
+import com.dtnsm.lms.auth.UserServiceImpl;
+import com.dtnsm.lms.domain.Account;
 import com.dtnsm.lms.domain.Course;
+import com.dtnsm.lms.domain.Role;
+import com.dtnsm.lms.mybatis.dto.UserVO;
+import com.dtnsm.lms.mybatis.service.UserMapperService;
+import com.dtnsm.lms.repository.RoleRepository;
+import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.CourseService;
 import com.dtnsm.lms.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -26,6 +35,15 @@ public class CourseScheduler {
 
     @Autowired
     CourseService courseService;
+
+    @Autowired
+    UserMapperService userMapperService;
+
+    @Autowired
+    UserServiceImpl userService;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
 //    @Scheduled(cron = "10 * * * * *")
 //    public void run() {
@@ -85,5 +103,50 @@ public class CourseScheduler {
             }
         }
 
+    }
+
+
+    /*
+    0 0 * * * *" = the top of every hour of every day.
+    10 * * * * *" = 매 10초마다 실행한다.
+    0 0 8-10 * * *" = 매일 8, 9, 10시에 실행한다
+    0 0 6,19 * * *" = 매일 오전 6시, 오후 7시에 실행한다.
+    0 0/30 8-10 * * *" = 8:00, 8:30, 9:00, 9:30, 10:00 and 10:30 every day.
+    0 0 9-17 * * MON-FRI" = 오전 9시부터 오후 5시까지 주중(월~금)에 실행한다.
+    0 0 0 25 12 ?" = every Christmas Day at midnight
+ */
+    // 그룹웨어 사용자를 추가한다.
+    @Scheduled(cron = "0 10 * * * *")
+    public void updateGroupwareUser() {
+
+        Role userRole = roleRepository.findByName("ROLE_USER");
+
+        // 그룹웨어 사용자 생성
+        for(UserVO userVO : userMapperService.getUserAll()) {
+
+            Account account = userService.getAccountByUserId(userVO.getUserId());
+
+            // 새로운 그룹웨어 유저가 추가되었을때 Account 계정을 추가한다.(적용전에는 전체 업데이트)
+            if (account == null) {
+
+                account = new Account();
+                account.setUserId(userVO.getUserId());
+                account.setName(userVO.getKorName());
+                account.setEngName(userVO.getEngName());
+                account.setComNum(userVO.getComNum());
+                account.setPassword(userVO.getPassword());
+                account.setEmail(userVO.getEmail());
+                account.setComJob(userVO.getComJob());
+                account.setComPosition(userVO.getComPosition());
+                account.setOrgDepart(userVO.getOrgDepart());
+                account.setIndate(userVO.getIndate());
+                account.setRoles(Arrays.asList(userRole));
+                // 사용자 구분 (U:내부직원, O:외부유저)
+                account.setUserType("U");
+                account.setEnabled(true);
+                userService.save(account);
+            }
+
+        }
     }
 }

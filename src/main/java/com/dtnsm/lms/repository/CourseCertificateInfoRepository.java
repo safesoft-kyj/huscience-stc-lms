@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CourseCertificateInfoRepository extends JpaRepository<CourseCertificateInfo, Integer> {
 
+    CourseCertificateInfo findByIsActive(int isActive);
 }

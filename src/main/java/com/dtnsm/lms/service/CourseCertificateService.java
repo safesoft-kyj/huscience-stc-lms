@@ -1,14 +1,17 @@
 package com.dtnsm.lms.service;
 
-import com.dtnsm.lms.domain.CourseAccount;
-import com.dtnsm.lms.domain.CourseCertificateNumber;
-import com.dtnsm.lms.domain.Privilege;
+import com.dtnsm.common.entity.Signature;
+import com.dtnsm.common.repository.SignatureRepository;
+import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.repository.CourseCertificateInfoRepository;
 import com.dtnsm.lms.repository.CourseCertificateLogRepository;
 import com.dtnsm.lms.repository.CourseCertificateNumberRepository;
-import com.google.common.base.Optional;
+import com.dtnsm.lms.util.DateUtil;
+import com.dtnsm.lms.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class CourseCertificateService {
@@ -21,6 +24,12 @@ public class CourseCertificateService {
 
     @Autowired
     CourseCertificateLogRepository courseCertificateLogRepository;
+
+    @Autowired
+    private SignatureRepository signatureRepository;
+
+    @Autowired
+    private SignatureService signatureService;
 
     @Autowired
     CourseAccountService courseAccountService;
@@ -41,7 +50,12 @@ public class CourseCertificateService {
                 , courseCertificateNumber.getCerYear()
                 , courseCertificateNumber.getCerSeq()));
 
-        return courseCertificateNumberRepository.save(courseCertificateNumber);
+        CourseCertificateNumber courseCertificateNumber1 = courseCertificateNumberRepository.save(courseCertificateNumber);
+
+        // 수료증 정보를 생성한다.
+        CreateCertificate(courseCertificateNumber1, courseAccount);
+
+        return courseCertificateNumber1;
     }
 
     // 현재 번호 받기
@@ -50,9 +64,39 @@ public class CourseCertificateService {
     }
 
     // Certification 기록
-    public void CreateCertificate(CourseAccount courseAccount) {
+    public CourseCertificateLog CreateCertificate(CourseCertificateNumber courseCertificateNumber, CourseAccount courseAccount) {
 
+        // 수료증 기본 정보를 가지고 온다.
+        CourseCertificateInfo courseCertificateInfo = courseCertificateInfoRepository.findByIsActive(1);
 
+        // 수료증 기본 정보가 없으면 종료한다.
+        if (courseCertificateInfo == null ) return null;
 
+        // 강사의 서명을 가지고 온다.
+        Signature optionalSignature = signatureService.getSignature(courseCertificateInfo.getCerManager1().getUserId());
+        String sign1 = optionalSignature != null ? optionalSignature.getBase64signature() : "";
+
+        // 대표자의 서명을 가지고 온다.
+        Signature optionalSignature2 = signatureService.getSignature(courseCertificateInfo.getCerManager2().getUserId());
+        String sign2 = optionalSignature != null ? optionalSignature2.getBase64signature() : "";
+
+        CourseCertificateLog courseCertificateLog = new CourseCertificateLog();
+        courseCertificateLog.setCerNo(courseCertificateNumber.getFullNumber());
+        courseCertificateLog.setSopName(courseCertificateInfo.getSopName());
+        courseCertificateLog.setSopEffectiveDate(courseCertificateInfo.getSopEffectiveDate());
+        courseCertificateLog.setCerManager1(courseCertificateInfo.getCerManager1());
+        courseCertificateLog.setCerManager2(courseCertificateInfo.getCerManager2());
+        courseCertificateLog.setCerManagerSign1(sign1);
+        courseCertificateLog.setCerManagerSign2(sign2);
+        courseCertificateLog.setCerDate(DateUtil.getTodayDate());
+        courseCertificateLog.setCourseAccount(courseAccount);
+
+        courseCertificateLog = courseCertificateLogRepository.save(courseCertificateLog);
+
+        // 과정 사용자 정보에 수료증 정보를 업데이트 한다.
+        courseAccount.setCourseCertificateLog(courseCertificateLog);
+        courseAccountService.save(courseAccount);
+
+        return courseCertificateLog;
     }
 }

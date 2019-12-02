@@ -90,9 +90,9 @@
                             <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" for="files">첨부파일</label>
+                            <label class="col-sm-2 control-label" for="files"><i class="fa fa-file-pdf-o text-info"></i> 수료증 업로드</label>
                             <div class="col-sm-10">
-                                <input type="file" name="files">
+                                <input type="file" name="files" id="files" accept=".pdf">
                             </div>
                         </div>
                         <div class="panel-footer text-right">
