@@ -1,6 +1,5 @@
 package com.dtnsm.lms.component;
 
-import com.dtnsm.lms.auth.UserService;
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.Account;
 import com.dtnsm.lms.domain.Course;
@@ -8,7 +7,6 @@ import com.dtnsm.lms.domain.Role;
 import com.dtnsm.lms.mybatis.dto.UserVO;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.repository.RoleRepository;
-import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.CourseService;
 import com.dtnsm.lms.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +51,7 @@ public class CourseScheduler {
 
 //    @Scheduled(cron = "0 0/50 11 * * *")
 
-    @Scheduled(cron = "0 0 8 * * *")
+    @Scheduled(cron = "0 0 8-18 * * *")
     public void updateStatus() {
 
         log.info("================================================");
@@ -116,7 +114,7 @@ public class CourseScheduler {
     0 0 0 25 12 ?" = every Christmas Day at midnight
  */
     // 그룹웨어 사용자를 추가한다.
-    @Scheduled(cron = "0 10 * * * *")
+    @Scheduled(cron = "0 0 3 * * *")
     public void updateGroupwareUser() {
 
         Role userRole = roleRepository.findByName("ROLE_USER");
@@ -144,6 +142,7 @@ public class CourseScheduler {
                 // 사용자 구분 (U:내부직원, O:외부유저)
                 account.setUserType("U");
                 account.setEnabled(true);
+                account.setComNum(userVO.getComNum());  //사번
                 userService.save(account);
             }
 

@@ -10,7 +10,11 @@
 </th:block>
 
 <th:block layout:fragment="custom_css">
-
+    <style>
+        td,th {
+            text-align: center;
+        }
+    </style>
 </th:block>
 
 <th:block layout:fragment="content_body">
@@ -72,10 +76,10 @@
                                     </td>
                                     <td class="text-center" th:text="${border.getIsTeamMangerApproval()}"></td>
                                     <td class="text-center" th:text="${border.getIsCourseMangerApproval()}"></td>
-                                    <td class="text-center">
+                                    <td>
                                         <div class="form-inline">
-                                            <a class="btn btn-warning" th:href="@{/admin/course-master/edit/{id}(id=${border.getId()})}" th:text="#{label.edit}">Edit</a>
-                                            <a class="btn btn-danger" th:href="@{/admin/course-master/delete/{id}(id=${border.getId()})}" th:text="#{label.delete}">Delete</a>
+                                            <a th:text="#{label.edit}" th:href="@{/admin/course-master/edit/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                            <a th:text="#{label.delete}" th:href="@{/admin/course-master/delete/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
                                         </div>
                                     </td>
                                 </tr>

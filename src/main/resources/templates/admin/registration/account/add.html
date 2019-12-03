@@ -96,11 +96,14 @@
                                  </select>
                              </div>
                          </div>
-
-                        <div class="panel-footer text-right">
-                            <button class="btn btn-success" type="submit">Submit</button>
-                        </div>
-
+                         <div class="panel-footer text-right">
+                             <button class="btn btn-primary" type="submit" id="submit-all">
+                                 <i class="fa fa-upload-cloud"></i> 저장
+                             </button>
+                             <a th:href="@{/admin/registration/account/list}" class="btn btn-success">
+                                 <i class="fa fa-upload-cloud"></i> 목록
+                             </a>
+                         </div>
                     </form>
                 </div><!--panel-body End -->
             </div><!-- panel End -->

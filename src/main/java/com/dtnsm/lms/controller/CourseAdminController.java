@@ -175,7 +175,7 @@ public class CourseAdminController {
         model.addAttribute("id", typeId);
         model.addAttribute("survey", survey);
 
-        return "admin/course/addOnline";
+        return "admin/course/addOnLine";
     }
 
     // Off Line 교육 등록(class, 부서별, 외부 교육)
@@ -345,7 +345,7 @@ public class CourseAdminController {
             , BindingResult result) {
         if(result.hasErrors()) {
             course.setId(id);
-            return "/admin/course/list/" + course.getCourseMaster().getId();
+            return "redirect:/admin/course/list/" + course.getCourseMaster().getId();
         }
 
         Course oldCourse = courseService.getCourseById(id);
@@ -497,7 +497,7 @@ public class CourseAdminController {
         // db및 파일 삭제
         fileService.deleteFile(file_id);
 
-        return "redirect:/admin/course/edit/" + course_id;
+        return "redirect:/admin/course/list/" + course_id;
 
     }
 

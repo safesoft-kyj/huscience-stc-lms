@@ -72,26 +72,31 @@ public class InfoController {
             , @PathVariable("sctype") ScheduleType sctype
             , Model model) {
 
-        Schedule schedule = scheduleService.getTop1BySctypeAndTitleLikeOrderByCreatedDateDesc(sctype, title);
-
-        List<String> titleList = new ArrayList<>();
-
-        ScheduleFile scheduleFile = null;
-
-        if(schedule.getScheduleFiles().size() > 0) scheduleFile = schedule.getScheduleFiles().get(0);
-
-        for(Schedule schedule1 : scheduleService.getListBySctypeOrderByCreatedDateDesc(sctype)){
-            titleList.add(schedule1.getTitle());
-        }
-
         pageInfo.setPageId("m-info-year");
-        pageInfo.setPageTitle(title);
+        pageInfo.setPageTitle("교육연간일정");
 
+        Schedule schedule = scheduleService.getByIsActive(sctype, 1);
+
+        if (schedule != null) {
+
+            List<String> titleList = new ArrayList<>();
+
+            ScheduleFile scheduleFile = null;
+
+            if (schedule.getScheduleFiles().size() > 0) scheduleFile = schedule.getScheduleFiles().get(0);
+
+            for (Schedule schedule1 : scheduleService.getListBySctypeOrderByCreatedDateDesc(sctype)) {
+                titleList.add(schedule1.getTitle());
+            }
+
+            model.addAttribute("scheduleFileId", scheduleFile.getId());
+//            model.addAttribute("titleList", titleList);
+        } else {
+            model.addAttribute("scheduleFileId", "");
+        }
 
         model.addAttribute(pageInfo);
         model.addAttribute("border", schedule);
-        model.addAttribute("scheduleFile", scheduleFile);
-        model.addAttribute("titleList", titleList);
         model.addAttribute("currTitle", title);
 
         return "content/info/year";

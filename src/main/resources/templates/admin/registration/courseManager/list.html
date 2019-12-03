@@ -10,7 +10,11 @@
 </th:block>
 
 <th:block layout:fragment="custom_css">
-
+    <style>
+        td,th {
+            text-align: center;
+        }
+    </style>
 </th:block>
 
 <th:block layout:fragment="content_body">
@@ -69,13 +73,19 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="manager : ${managers}">
-                                    <td th:text="${manager.getUserId()}"></td>
+                                    <td class="text-left">
+                                        <th:block th:if="${manager.getIsActive() == 1}">
+                                            <span class="badge badge-info" th:text="#{label.active}"></span>
+                                        </th:block>
+                                        <span th:text="${manager.getUserId()}">Edit</span>
+                                    </td>
                                     <td th:text="${manager.getAccount().getName()}"></td>
                                     <td th:text="${manager.getRegisterDate()}"></td>
-                                    <td class="text-center">
+                                    <td>
                                         <div class="form-inline">
-                                            <a class="btn btn-warning" th:href="@{/admin/registration/courseManager/edit/{userId}(userId=${manager.getUserId()})}">Edit</a>
-                                            <a class="btn btn-danger" th:href="@{/admin/registration/courseManager/delete/{userId}(userId=${manager.getUserId()})}">Delete</a>
+                                            <a th:text="#{label.active}" th:href="@{/admin/registration/courseManager/updateActive/{userId}(userId=${manager.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Active" data-container="body"></a>
+                                            <a th:text="#{label.edit}" th:href="@{/admin/registration/courseManager/edit/{userId}(userId=${manager.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                            <a th:text="#{label.delete}" th:href="@{/admin/registration/courseManager/delete/{userId}(userId=${manager.getUserId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
                                         </div>
                                     </td>
                                 </tr>

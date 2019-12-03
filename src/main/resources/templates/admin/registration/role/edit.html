@@ -29,10 +29,8 @@
             <!-- Basic Data Tables -->
             <!--===================================================-->
             <div class="panel">
-                <div class="panel-heading">
-                    <h3 class="panel-title">교육유형 수정</h3>
-                </div>
                 <div class="panel-body">
+                    <br>
                     <!--===================================================-->
                     <!--End Horizontal Form-->
                     <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/registration/role/edit-post/{id}(id=${role.id})}" th:object="${role}" method="post">
@@ -60,7 +58,12 @@
                         </div>
 
                         <div class="panel-footer text-right">
-                            <button class="btn btn-success" type="submit">Submit</button>
+                            <button class="btn btn-primary" type="submit" id="submit-all">
+                                <i class="fa fa-upload-cloud"></i> 저장
+                            </button>
+                            <a th:href="@{/admin/registration/role/list}" class="btn btn-success">
+                                <i class="fa fa-upload-cloud"></i> 목록
+                            </a>
                         </div>
                     </form>
                 </div><!--panel-body End -->

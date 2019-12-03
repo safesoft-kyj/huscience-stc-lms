@@ -53,7 +53,7 @@ public class CustomerAdminController {
     }
 
     @GetMapping("/add")
-    public String add(Customer elCustomer, Model model) {
+    public String add(Customer customer, Model model) {
 
         pageInfo.setPageId("m-customer-add");
         pageInfo.setPageTitle("협약기관등록");
@@ -83,7 +83,7 @@ public class CustomerAdminController {
         pageInfo.setPageId("m-customer-edit");
         pageInfo.setPageTitle("협약기관수정");
         model.addAttribute(pageInfo);
-        model.addAttribute("elCustomer", elCustomer);
+        model.addAttribute("customer", elCustomer);
 
         return "admin/customer/update";
     }

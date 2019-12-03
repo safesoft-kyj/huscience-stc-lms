@@ -42,38 +42,42 @@
 
             <!-- Basic Data Tables -->
             <!--===================================================-->
+
             <div class="panel">
-                <div class="panel-heading">
-                    <h3 class="panel-title" th:text="${currTitle}"></h3>
-                </div>
                 <div class="panel-body">
-                    <form class="form-horizontal" id="boardFrm"  name="boardFrm" th:action="@{/info/year/{sctype}(sctype=${sctype})}"  method="get">
-                        <div class="form-group">
-                            <div class="col-sm-6">
-                                <select name="title" class="form-control"  id="title" onchange="form_submit();">
-                                    <option th:each="title : ${titleList}" th:value="${title}" th:text="${title}" th:selected="${title} == ${currTitle}"></option>
-                                </select>
-                            </div>
-                            <div class="col-sm-6"></div>
-                        </div>
-                    </form>
-                    <table class="table table-striped" cellspacing="0" width="100%" style="height:600px;">
-                        <tr style="">
-                            <td>
-                                <div id="example1"></div>
-                            </td>
-                        </tr>
-                        <div th:switch="${border.getContent().isEmpty()}">
-                            <div th:case="true"></div>
-                            <div  th:case="*">
+                    <div th:switch="${border}">
+                        <div th:case="null" class="text-info">연간 일정자료가 존재하지 않습니다.</div>
+                        <div th:case="*">
+<!--                            <form class="form-horizontal" id="boardFrm"  name="boardFrm" th:action="@{/info/year/{sctype}(sctype=${sctype})}"  method="get">-->
+<!--                                <div class="form-group">-->
+<!--                                    <div class="col-sm-6">-->
+<!--                                        <select name="title" class="form-control"  id="title" onchange="form_submit();">-->
+<!--                                            <option th:each="title : ${titleList}" th:value="${title}" th:text="${title}" th:selected="${title} == ${currTitle}"></option>-->
+<!--                                        </select>-->
+<!--                                    </div>-->
+<!--                                    <div class="col-sm-6"></div>-->
+<!--                                </div>-->
+<!--                            </form>-->
+                            <h3 class="text-info"><i class="fa fa-calendar"></i> <span th:text="${border.getTitle()}"></span></h3>
+                            <table class="table table-striped" cellspacing="0" width="100%" style="height:600px;">
                                 <tr style="">
-                                    <td th:utext="${border.getContent()}" style="vertical-align:top;">
-                                        <div th:utext="${border.getContent()}" style="overflow: hidden;"></div>
+                                    <td>
+                                        <div id="example1"></div>
                                     </td>
                                 </tr>
-                            </div>
+                                <div th:switch="${border.getContent().isEmpty()}">
+                                    <div th:case="true"></div>
+                                    <div  th:case="*">
+                                        <tr style="">
+                                            <td th:utext="${border.getContent()}" style="vertical-align:top;">
+                                                <div th:utext="${border.getContent()}" style="overflow: hidden;"></div>
+                                            </td>
+                                        </tr>
+                                    </div>
+                                </div>
+                            </table>
                         </div>
-                    </table>
+                    </div>
                 </div><!--panel-body End -->
             </div><!-- panel End -->
         </div><!-- Page content End -->
@@ -91,30 +95,35 @@
             $('#boardFrm').submit();
         }
 
+
+
         // PDF 교육자료 실행
         /*<![CDATA[*/
-        var id = '[[${scheduleFile.getId()}]]'
 
-        if (id != null) {
+        var id = /*[[${scheduleFileId}]]*/
 
-            var options = {
-                height: "600px",
-                page: '1',
-                pdfOpenParams: {
-                    view: 'FitV',
-                    pagemode: 'thumbs',
-                    search: 'lorem ipsum'
-                },
+        if (id != '') {
 
-                forcePDFJS: true, // 강제로 PDF Viewer를 실행시키는 옵션
-                PDFJS_URL: "/default/plugins/pdfjs/web/viewer.html" //PDF.js의 PDF viewer를 viewer로 지정.
-            };
+            if (id != null) {
+                var options = {
+                    height: "600px",
+                    page: '1',
+                    pdfOpenParams: {
+                        view: 'FitV',
+                        pagemode: 'thumbs',
+                        search: 'lorem ipsum'
+                    },
 
-            //제일 처음 열리는 pdf파일 경로 설정.
-            PDFObject.embed("/admin/schedule/download-file/" + id, "#example1", options);
+                    forcePDFJS: true, // 강제로 PDF Viewer를 실행시키는 옵션
+                    PDFJS_URL: "/default/plugins/pdfjs/web/viewer.html" //PDF.js의 PDF viewer를 viewer로 지정.
+                };
+
+                //제일 처음 열리는 pdf파일 경로 설정.
+                PDFObject.embed("/admin/schedule/download-file/" + id, "#example1", options);
+            }
         }
-
         /*]]>*/
+
         function closeWindow() {
             this.close();
         }

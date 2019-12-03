@@ -10,7 +10,11 @@
 </th:block>
 
 <th:block layout:fragment="custom_css">
-
+    <style>
+        td,th {
+            text-align: center;
+        }
+    </style>
 </th:block>
 
 <th:block layout:fragment="content_body">
@@ -48,15 +52,18 @@
                     <div th:switch="${roles}">
                         <h2 th:case="null">No customer yet!</h2>
                         <div th:case="*">
-                            <h2></h2>
+                            <div class="row" style="margin-bottom: 5px;" >
+                                <div class="col-sm-12 text-right">
+                                    <a class="btn btn-purple" th:href="@{/admin/registration/role/add}"><i class="demo-pli-add"></i> Add</a>
+                                </div>
+                            </div>
                             <table id="demo-dt-basic" class="table table-striped table-bordered" cellspacing="0" width="100%">
                                 <thead>
                                 <tr>
                                     <th>RoleID</th>
                                     <th>Role명</th>
                                     <th>설명</th>
-                                    <th class="text-center col-sm-1">Edit</th>
-                                    <th class="text-center col-sm-1">Delete</th>
+                                    <th class="text-center">Edit</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -64,13 +71,17 @@
                                     <td th:text="${role.getId()}"></td>
                                     <td th:text="${role.getName()}"></td>
                                     <td th:text="${role.getMemo()}"></td>
-                                    <td class="text-center"><a th:href="@{/admin/registration/role/edit/{id}(id=${role.getId()})}">Edit</a></td>
-                                    <td class="text-center"><a th:href="@{/admin/registration/role/delete/{id}(id=${role.getId()})}">Delete</a></td>
+                                    <td>
+                                        <div class="form-inline">
+                                            <a th:text="#{label.edit}" th:href="@{/admin/registration/role/edit/{id}(id=${role.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                            <a th:text="#{label.delete}" th:href="@{/admin/registration/role/delete/{id}(id=${role.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                        </div>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <p><a href="/admin/registration/role/add">Add a new Role</a></p>
+
                     </div><!--switch End -->
                 </div><!--panel-body End -->
             </div><!-- panel End -->
@@ -81,7 +92,7 @@
 <th:block layout:fragment="custom_js">
 
     <!--DataTables Sample [ SAMPLE ]-->
-    <script th:src="@{/default/js/demo/tables-datatables.js}"></script>
+<!--    <script th:src="@{/default/js/demo/tables-datatables.js}"></script>-->
 
     <!--DataTables Sample [ SAMPLE ]-->
 

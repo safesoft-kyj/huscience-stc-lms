@@ -155,17 +155,14 @@ public class MyPageController {
         pageInfo.setPageId("m-mypage-main");
         pageInfo.setPageTitle("메인");
 
-        CustomUserDetails userDetails = SessionUtil.getUserDetail();
-        Account account = userService.getAccountByUserId(userDetails.getUserId());
-        List<CourseAccount> courseAccountList = courseAccountService.getCourseAccountByUserId(userDetails.getUserId());
+        Account account = userService.getAccountByUserId(SessionUtil.getUserId());
+        List<CourseAccount> courseAccountList = courseAccountService.getCourseAccountByUserId(SessionUtil.getUserId());
 
         Account parentAccount = userService.getAccountByUserId(account.getParentUserId());
 
-        // 강사의 서명을 가지고 온다.
+        // 나의 서명을 가지고 온다.
         Optional<Signature> optionalSignature = signatureRepository.findById(SessionUtil.getUserId());
         String sign = optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "";
-
-//        UserVO userVO = userMapperService.getUserById(account.getUserId());
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseAccountList", courseAccountList);
@@ -174,7 +171,7 @@ public class MyPageController {
         model.addAttribute("accountList", userService.getAccountList());
         model.addAttribute("sign", sign);
 
-        return "content/mypage/myInfo";
+        return "content/mypage/myinfo";
     }
 
     @GetMapping("/signPopup")

@@ -50,9 +50,8 @@
                                     </select>
                                     <input type="text" name="searchText" placeholder="Search" class="form-control" th:value="${param.searchText}">
                                     <span class="input-group-btn">
-					                        <button class="btn btn-primary" type="submit">Search</button>
-                                            <a th:href="@{/admin/border/add/{typeId}(typeId=${typeId})}"
-                                           class="btn btn-success" th:text="#{label.add}">Add new</a>
+					                    <button class="btn btn-primary" type="submit">Search</button>
+                                        <a class="btn btn-purple" th:href="@{/admin/border/add/{typeId}(typeId=${typeId})}"><i class="demo-pli-add"></i> Add</a>
                                     </span>
                                 </div>
                             </form>

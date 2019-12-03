@@ -51,7 +51,7 @@ public class CertificateInfoController {
     public String list(Model model) {
 
         pageInfo.setPageId("m-course-list-page");
-        pageInfo.setPageTitle("수료증번호관리");
+        pageInfo.setPageTitle("수료증정보조회");
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courseCertificateInfoRepository.findAll());
 
@@ -62,7 +62,7 @@ public class CertificateInfoController {
     public String add(Model model) {
 
         pageInfo.setPageId("m-course-add");
-        pageInfo.setPageTitle("수료증 번호 등록");
+        pageInfo.setPageTitle("수료증정보 등록");
 
         CourseCertificateInfo courseCertificateInfo = new CourseCertificateInfo();
 
@@ -88,7 +88,7 @@ public class CertificateInfoController {
     public String edit(@PathVariable("id") int id, Model model) {
 
         pageInfo.setPageId("m-course-edit");
-        pageInfo.setPageTitle("수료증 번호 수정");
+        pageInfo.setPageTitle("수료증정보 수정");
         model.addAttribute(pageInfo);
         model.addAttribute("border", courseCertificateInfoRepository.getOne(id));
         model.addAttribute("managerList", userService.getAccountList());

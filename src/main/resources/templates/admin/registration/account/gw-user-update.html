@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel panel-primary">
+                <!--Panel heading-->
+                <div class="panel-heading">
+                    <div class="panel-control">
+                        <button class="btn btn-default" data-panel="fullscreen">
+                            <i class="icon-max demo-psi-maximize-3"></i>
+                            <i class="icon-min demo-psi-minimize-3"></i>
+                        </button>
+                    </div>
+                    <h3 class="panel-title">그룹웨어 사용자 정보 업데이트 </h3>
+                </div>
+                <!--Panel body-->
+                <div class="panel-body">
+                    <div class="text-center">
+
+                        <br><br>
+                        <div class="col-sm-12" style="vertical-align: middle">
+                            <h3 class="modal-title">
+                                업데이트 완료되었습니다.
+                            </h3>
+                            <br><br>
+                            <a th:href="@{/admin/registration/account/list}" class="btn btn-success">
+                                <i class="fa fa-upload-cloud"></i> 목록
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+
+    <script>
+        $('#roleList').chosen({width:'100%'});
+
+    </script>
+</th:block>
+
+</html>

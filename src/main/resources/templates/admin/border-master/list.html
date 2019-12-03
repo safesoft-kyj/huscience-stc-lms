@@ -10,7 +10,11 @@
 </th:block>
 
 <th:block layout:fragment="custom_css">
-
+    <style>
+        td,th {
+            text-align: center;
+        }
+    </style>
 </th:block>
 
 <th:block layout:fragment="content_body">
@@ -41,7 +45,7 @@
                             총 <span th:text="${borders.getSize() + '건'}" class="text-danger"></span>의 게시물이 등록되어 있습니다.
                         </div>
                         <div class="col-sm-6 text-right">
-                            <p><a th:href="@{/admin/border-master/add}" class="btn btn-success">Add new</a></p>
+                            <a class="btn btn-purple" th:href="@{/admin/border-master/add}"><i class="demo-pli-add"></i> Add</a>
                         </div>
                     </div>
                     <div th:switch="${borders}">
@@ -50,11 +54,10 @@
                             <table id="customer-list-page" class="table table-striped table-bordered" cellspacing="0" width="100%">
                                 <thead>
                                 <tr>
-                                    <th class="text-center col-sm-1">번호</th>
+                                    <th class="text-center">번호</th>
                                     <th class="text-center">게시판ID</th>
                                     <th class="text-center">게시판명</th>
-                                    <th class="text-center col-sm-1">Edit</th>
-                                    <th class="text-center col-sm-1">Delete</th>
+                                    <th class="text-center">Edit</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -62,8 +65,12 @@
                                     <td th:text="${index.count}" class="text-center"></td>
                                     <td th:text="${border.getId()}"></td>
                                     <td th:text="${border.getBorderName()}"></td>
-                                    <td class="text-center"><a th:href="@{/admin/border-master/edit/{id}(id=${border.getId()})}">Edit</a></td>
-                                    <td class="text-center"><a th:href="@{/admin/border-master/delete/{id}(id=${border.getId()})}">Delete</a></td>
+                                    <td>
+                                        <div class="form-inline">
+                                            <a th:text="#{label.edit}" th:href="@{/admin/border-master/edit/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                            <a th:text="#{label.delete}" th:href="@{/admin/border-master/delete/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                        </div>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>

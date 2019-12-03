@@ -21,4 +21,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     List<Schedule> findAllBySctypeOrderByCreatedDateDesc(ScheduleType sctype);
 
+    Schedule findBySctypeAndIsActive(ScheduleType sctype, int isActive);
+
 }

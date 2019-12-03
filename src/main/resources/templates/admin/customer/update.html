@@ -29,23 +29,20 @@
             <!-- Basic Data Tables -->
             <!--===================================================-->
             <div class="panel">
-                <div class="panel-heading">
-                    <h3 class="panel-title">협약기관 수정</h3>
-                </div>
                 <div class="panel-body">
                     <!--===================================================-->
                     <!--End Horizontal Form-->
                     <form class="form-horizontal" action="#" th:action="@{/admin/customer/update/{id}(id=${customer.id})}" th:object="${customer}" method="post">
                         <div class="form-group">
-                            <label class="col-sm-3 control-label" for="name" th:text="#{label.customer.name}">협약기관명</label>
-                            <div class="col-sm-9">
-                                <input type="text" th:field="*{name}" id="name" placeholder="" class="form-control" required>
+                            <label class="col-sm-2 control-label" for="name" th:text="#{label.customer.name}">협약기관명</label>
+                            <div class="col-sm-10">
+                                <input type="text" th:field="*{name}" id="name" placeholder="협약기관명" class="form-control" required>
                             </div>
                             <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-3 control-label" for="condate" th:text="#{label.customer.date}">협약체결일</label>
-                            <div class="col-sm-9">
+                            <label class="col-sm-2 control-label" for="condate" th:text="#{label.customer.date}">협약체결일</label>
+                            <div class="col-sm-10">
                                 <!--Bootstrap Datepicker : Text Input-->
                                 <!--===================================================-->
                                 <div id="demo-dp-txtinput">
@@ -56,22 +53,27 @@
                             <span th:if="${#fields.hasErrors('condate')}" th:errors="*{condate}"></span>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-3 control-label" for="condition" th:text="#{label.customer.condition}">협약 특혜</label>
-                            <div class="col-sm-9">
+                            <label class="col-sm-2 control-label" for="condition" th:text="#{label.customer.condition}">협약 특혜</label>
+                            <div class="col-sm-10">
                                 <input type="text" th:field="*{condition}" id="condition" placeholder="" class="form-control" required>
                             </div>
                             <span th:if="${#fields.hasErrors('condition')}" th:errors="*{condition}"></span>
                         </div>
 
                         <div class="form-group">
-                            <label class="col-sm-3 control-label" for="homepage" th:text="#{label.homepage}">홈페이지</label>
-                            <div class="col-sm-9">
+                            <label class="col-sm-2 control-label" for="homepage" th:text="#{label.homepage}">홈페이지</label>
+                            <div class="col-sm-10">
                                 <input type="text" th:field="*{homepage}" id="homepage" placeholder="" class="form-control" required>
                             </div>
                             <span th:if="${#fields.hasErrors('homepage')}" th:errors="*{homepage}"></span>
                         </div>
                         <div class="panel-footer text-right">
-                            <button class="btn btn-success" type="submit">Submit</button>
+                            <button class="btn btn-primary" type="submit" id="submit-all">
+                                <i class="fa fa-upload-cloud"></i> 저장
+                            </button>
+                            <a th:href="@{/admin/customer/list}" class="btn btn-success">
+                                <i class="fa fa-upload-cloud"></i> 목록
+                            </a>
                         </div>
                     </form>
                 </div><!--panel-body End -->

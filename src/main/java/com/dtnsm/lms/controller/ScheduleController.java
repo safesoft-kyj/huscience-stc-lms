@@ -1,5 +1,6 @@
 package com.dtnsm.lms.controller;
 
+import com.dtnsm.lms.domain.CourseCertificateInfo;
 import com.dtnsm.lms.domain.Schedule;
 import com.dtnsm.lms.domain.ScheduleFile;
 import com.dtnsm.lms.domain.constant.ScheduleType;
@@ -76,6 +77,23 @@ public class ScheduleController {
         model.addAttribute("border", border1);
 
         return "admin/schedule/view/" + sctype;
+    }
+
+    @GetMapping("/updateActive/{id}")
+    public String updateActive(@PathVariable("id") long id) {
+
+        // 모든 설문을 초기화 한다.
+        for(Schedule schedule : scheduleService.getList()) {
+            schedule.setIsActive(0);
+            scheduleService.save(schedule);
+        }
+
+        // 요청된 설문을 기본 설문으로 변경한다.
+        Schedule schedule = scheduleService.getById(id);
+        schedule.setIsActive(1);
+        scheduleService.save(schedule);
+
+        return "redirect:/admin/schedule/list/" + schedule.getSctype();
     }
 
     @GetMapping("/add/{sctype}")
@@ -202,4 +220,6 @@ public class ScheduleController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + newFileName + "\"")
                 .body(resource);
     }
+
+
 }

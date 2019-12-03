@@ -28,14 +28,19 @@ public class Account {
 
     // 사번
     @Column(length = 100)
+    @ColumnDefault("''")
     private String comNum;
     // 부서
+    @ColumnDefault("''")
     private String orgDepart;
     // 업무
+    @ColumnDefault("''")
     private String comJob;
     // 직위
+    @ColumnDefault("''")
     private String comPosition;
     // 입사일
+    @ColumnDefault("''")
     private String indate;
 
     // 상위 결재권자

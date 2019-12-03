@@ -33,12 +33,10 @@
             <!-- Basic Data Tables -->
             <!--===================================================-->
             <div class="panel">
-                <div class="panel-heading">
-                    <h3 class="panel-title">공지사항 등록</h3>
-                </div>
                 <div class="panel-body">
                     <!--===================================================-->
                     <!--End Horizontal Form-->
+                    <br>
                     <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/border/add-post}" th:object="${border}" method="post" enctype="multipart/form-data" >
                         <input type="hidden" th:field="*{id}" id="id" name="id">
                         <input type="hidden" th:field="*{borderMaster.id}" id="type-id" name="type-id">

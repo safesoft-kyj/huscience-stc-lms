@@ -10,7 +10,11 @@
 </th:block>
 
 <th:block layout:fragment="custom_css">
-
+    <style>
+        td, th {
+        text-align: center;
+        }
+    </style>
 </th:block>
 
 <th:block layout:fragment="content_body">
@@ -47,7 +51,6 @@
                                     <th>Major 명</th>
                                     <th>코드타입</th>
                                     <th>Edit</th>
-                                    <th>Delete</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -55,8 +58,12 @@
                                     <td th:text="${elMajor.getMajorCd()}"></td>
                                     <td th:text="${elMajor.getMajorNm()}"></td>
                                     <td th:text="${elMajor.getType()}"></td>
-                                    <td><a th:href="@{/admin/code/major-edit/{id}(id=${elMajor.getMajorCd()})}">Edit</a></td>
-                                    <td><a th:href="@{/admin/code/major-delete/{id}(id=${elMajor.getMajorCd()})}">Delete</a></td>
+                                    <td>
+                                        <div class="form-inline">
+                                            <a th:text="#{label.edit}" th:href="@{/admin/code/major-edit/{id}(id=${elMajor.getMajorCd()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                            <a th:text="#{label.delete}" th:href="@{/admin/code/major-delete/{id}(id=${elMajor.getMajorCd()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                        </div>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>

@@ -1,9 +1,13 @@
 package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.auth.UserServiceImpl;
+import com.dtnsm.lms.component.CourseScheduler;
 import com.dtnsm.lms.domain.Account;
 import com.dtnsm.lms.domain.CourseManager;
 import com.dtnsm.lms.domain.Role;
+import com.dtnsm.lms.domain.Schedule;
+import com.dtnsm.lms.mybatis.mapper.UserMapper;
+import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.service.CourseManagerService;
 import com.dtnsm.lms.service.Mail;
 import com.dtnsm.lms.service.MailService;
@@ -33,6 +37,12 @@ public class RegistrationController {
 
     @Autowired
     private CourseManagerService courseManagerService;
+
+    @Autowired
+    private UserMapperService userMapperService;
+
+    @Autowired
+    CourseScheduler courseScheduler;
 
     private PageInfo pageInfo = new PageInfo();
 
@@ -110,6 +120,19 @@ public class RegistrationController {
         return "admin/registration/account/list";
     }
 
+    // 그룹웨어 사용자 업데이트
+    @GetMapping("/account/gw-user-update")
+    public String gwUserUpdate(Model model) {
+
+        pageInfo.setPageTitle("그룹웨어 사용자 업데이트");
+
+        courseScheduler.updateGroupwareUser();
+        model.addAttribute(pageInfo);
+
+        return "admin/registration/account/gw-user-update";
+    }
+
+
     @GetMapping("/account/edit/{id}")
     public String accountUpdate(@PathVariable("id") String id, Model model) {
         Account account = userService.getAccountByUserId(id);
@@ -133,6 +156,13 @@ public class RegistrationController {
             , BindingResult result) {
         if(result.hasErrors()) {
             return "admin/registration/role/update/" + id;
+        }
+
+       Account oldAccount = userService.getAccountByUserId(id);
+
+        // 내부사용자인 경우는 그룹웨어 패스워드로 업데이트 한다.
+        if (oldAccount.getUserType().equals("U")) {
+            account.setPassword(userMapperService.getUserById(id).getPassword());
         }
 
         userService.save(account);
@@ -288,6 +318,23 @@ public class RegistrationController {
 
 
         return "admin/registration/courseManager/edit";
+    }
+
+    @GetMapping("/courseManager/updateActive/{userId}")
+    public String updateActive(@PathVariable("userId") String userId) {
+
+        // 모든 설문을 초기화 한다.
+        for(CourseManager courseManager : courseManagerService.getList()) {
+            courseManager.setIsActive(0);
+            courseManagerService.save(courseManager);
+        }
+
+        // 요청된 설문을 기본 설문으로 변경한다.
+        CourseManager courseManager = courseManagerService.getByUserId(userId);
+        courseManager.setIsActive(1);
+        courseManagerService.save(courseManager);
+
+        return "redirect:/admin/registration/courseManager/list/";
     }
 
     @PostMapping("/courseManager/edit-post/{userId}")

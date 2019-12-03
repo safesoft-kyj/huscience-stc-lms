@@ -58,6 +58,10 @@ public class ScheduleService {
     }
 
 
+    public Schedule getByIsActive(ScheduleType sctype, int isActive) {
+        return scheduleRepository.findBySctypeAndIsActive(sctype, isActive);
+    }
+
 
      /*
         Employee Training Matrix 연 일정

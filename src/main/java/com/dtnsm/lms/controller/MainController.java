@@ -86,7 +86,7 @@ public class MainController {
                         , DateUtil.getStringMonthEndDate(), 0));
 
         // Employee training matrix
-        model.addAttribute("schedule", scheduleService.getTop1BySctypeOrderByCreatedDateDesc(ScheduleType.MATRIX));
+        model.addAttribute("schedule", scheduleService.getByIsActive(ScheduleType.MATRIX, 1));
 
 
         // 교육신청 미결건

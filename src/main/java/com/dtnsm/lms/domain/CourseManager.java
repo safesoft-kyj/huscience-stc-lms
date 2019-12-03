@@ -2,6 +2,7 @@ package com.dtnsm.lms.domain;
 
 import com.dtnsm.lms.auth.AuditorCreateEntity;
 import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -24,4 +25,8 @@ public class CourseManager extends AuditorCreateEntity<String> {
 
     @Column(length = 10)
     private String registerDate;
+
+    // 1: 기본 관리자
+    @ColumnDefault("0")
+    private int isActive = 0;
 }

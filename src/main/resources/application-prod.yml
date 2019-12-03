@@ -16,21 +16,22 @@ spring:
     servlet:
       content-type: text/html
   datasource:
-    url: jdbc:sqlserver://localhost:1433;DatabaseName=test_lms
+    url: jdbc:sqlserver://localhost:20170;DatabaseName=test_lms
     username: sa
     password: safe123!@#
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-  #  flyway:
-  #    url: jdbc:sqlserver://localhost:1433;DatabaseName=elearning
-  #    user: sa
-  #    password: Dtncro@123##
-  #    locations: classpath:/db/migration/cro
-  #    baseline-on-migrate: true
-  #    encoding: UTF-8
+  flyway:
+    #      url: jdbc:sqlserver://localhost:1433;DatabaseName=elearning
+    #      user: sa
+    #      password: Dtncro@123##
+    locations: classpath:/db/migration/lms
+    baseline-on-migrate: false
+    encoding: UTF-8
+    enabled: false
   jpa:
     hibernate:
-      ddl-auto: validate
-    generate-ddl: true
+      ddl-auto: none
+    generate-ddl: false
     show-sql: true
   servlet:
     multipart:

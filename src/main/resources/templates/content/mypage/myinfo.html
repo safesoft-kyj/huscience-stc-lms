@@ -3,7 +3,7 @@
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/default_layout}">
+      layout:decorator="layout/default_layout">
 
 <th:block layout:fragment="html_head">
     <title>TachyonTech Info</title>
@@ -63,6 +63,12 @@
                                             <td th:text="#{label.name}" class="text-center" style="background: #FAFAFA;">이름</td>
                                             <td>
                                                 <span th:unless="${#strings.isEmpty(account.getName())}" th:text="${account.getName()}"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td th:text="#{label.name}" class="text-center" style="background: #FAFAFA;">이름</td>
+                                            <td>
+                                                <span th:unless="${#strings.isEmpty(account.getComNum())}" th:text="${account.getComNum()}"></span>
                                             </td>
                                         </tr>
                                         <tr>

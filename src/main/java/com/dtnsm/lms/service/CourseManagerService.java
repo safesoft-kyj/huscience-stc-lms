@@ -40,8 +40,7 @@ public class CourseManagerService {
     }
 
     public CourseManager getCourseManager() {
-        List<CourseManager> managers = courseManagerRepository.findAll();
-        if (managers.size() > 0) return managers.get(0);
-        else return null;
+        CourseManager managers = courseManagerRepository.findByIsActive(1);
+        return managers;
     }
 }

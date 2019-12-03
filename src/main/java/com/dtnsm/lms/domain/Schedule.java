@@ -37,6 +37,10 @@ public class Schedule extends AuditorCreateEntity<String> {
     @ColumnDefault("0")
     private int viewCnt;
 
+    // 1: 기본 일정
+    @ColumnDefault("0")
+    private int isActive = 0;
+
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ScheduleFile> scheduleFiles = new ArrayList<>();
 
