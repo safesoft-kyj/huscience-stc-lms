@@ -15,6 +15,7 @@ import com.dtnsm.lms.domain.constant.CurriculumVitaeStatus;
 import com.dtnsm.lms.domain.constant.QuizStatusType;
 import com.dtnsm.lms.domain.constant.SurveyStatusType;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
+import com.dtnsm.lms.properties.FileUploadProperties;
 import com.dtnsm.lms.repository.*;
 import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.DateUtil;
@@ -26,7 +27,7 @@ import com.dtnsm.lms.xdocreport.CurriculumVitaeReportService;
 import com.dtnsm.lms.xdocreport.dto.*;
 import com.querydsl.core.BooleanBuilder;
 import fr.opensagres.xdocreport.document.images.ByteArrayImageProvider;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -47,16 +48,21 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.WebUtils;
 
 import javax.activation.MimetypesFileTypeMap;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/mypage")
-@SessionAttributes({"pageInfo", "draftCV", "phaseList", "indicationList"})
+@SessionAttributes({"pageInfo", "cv", "phaseList", "indicationList"})
+@Slf4j
 public class MyPageController {
     @Autowired
     CourseService courseService;
@@ -111,12 +117,15 @@ public class MyPageController {
     @Autowired
     private CurriculumVitaeReportService curriculumVitaeReportService;
 
+    @Autowired
+    private FileUploadProperties prop;
+
+    @Autowired
+    private EntityManager entityManager;
+
     private MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
 
     private PageInfo pageInfo = new PageInfo();
-
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseAdminController.class);
-
 
     public MyPageController() {
         pageInfo.setParentId("m-mypage");
@@ -548,7 +557,7 @@ public class MyPageController {
 //                userAnswer = String.valueOf(Integer.parseInt(userAnswer));
 
             }
-            logger.info(String.valueOf(iUserAnswerSum));
+            log.info(String.valueOf(iUserAnswerSum));
             questionAnswer = new CourseSurveyActionAnswer();
             questionAnswer.setUserAnswer(userAnswer);
             questionAnswer.setQuestion(question);
@@ -664,26 +673,45 @@ public class MyPageController {
     @GetMapping("/cv")
     public String cv() {
         String userId = SessionUtil.getUserId();
-        long current = countCV(userId, CurriculumVitaeStatus.CURRENT);
-        if(current > 0) {
-            return "redirect:/mypage/cv/current";
+        Optional<CurriculumVitae> currentCV = latestCV(userId);
+        if(currentCV.isPresent()) {
+            return "redirect:/mypage/cv/edit?id="+currentCV.get().getId();
         } else {
-            long count = countCV(userId);
-
-            if(count == 0) {
-                return "redirect:/mypage/cv/edit";
-            } else {
-                Optional<CurriculumVitae> optionalCurriculumVitae = getCV(userId, CurriculumVitaeStatus.TEMP);
-                if(optionalCurriculumVitae.isPresent()) {
-                    return "redirect:/mypage/cv/edit?id=" + optionalCurriculumVitae.get().getId();
-                } else {
-                    return "redirect:/mypage/cv/review";
-                }
-            }
+            return "redirect:/mypage/cv/edit";
         }
     }
 
-    @GetMapping({"/cv/edit", "/cv/edit/{id}"})
+    @GetMapping("/cv/new")
+    public String newCV(@RequestParam(value = "id") Integer id, Model model) throws Exception {
+        pageInfo.setPageId("m-mypage-cv");
+        pageInfo.setPageTitle("Curriculum Vitae");
+
+        model.addAttribute(pageInfo);
+
+        model.addAttribute("indicationList", indicationRepository.findAll(QCVIndication.cVIndication.indication.asc()));
+        model.addAttribute("phaseList", phaseRepository.findAll(QCVPhase.cVPhase.phase.asc()));
+
+        CurriculumVitae orgCV = curriculumVitaeRepository.getOne(id);
+        CurriculumVitae cv = (CurriculumVitae)orgCV.clone();
+        cv.setParentId(orgCV.getId());
+        cv.setId(null);
+        cv.setInitial(false);
+        cv.setStatus(CurriculumVitaeStatus.NEW);
+        cv.getEducations().forEach(e -> e.setReadOnly(true));
+        cv.getCareerHistories().forEach(c -> c.setReadOnly(true));
+        cv.getLicenses().forEach(i -> i.setReadOnly(true));
+        cv.getCertifications().forEach(i -> i.setReadOnly(true));
+        cv.getMemberships().forEach(i -> i.setReadOnly(true));
+        cv.getLanguages().forEach(i -> i.setReadOnly(true));
+        cv.getComputerKnowledges().forEach(i -> i.setReadOnly(true));
+        cv.getExperiences().forEach(i -> i.setReadOnly(true));
+
+        model.addAttribute("cv", cv);
+
+        return "content/mypage/cv/edit";
+    }
+
+    @GetMapping("/cv/edit")
     public String cv(@RequestParam(value = "id", required = false) Integer id, Model model) {
         pageInfo.setPageId("m-mypage-cv");
         pageInfo.setPageTitle("Curriculum Vitae");
@@ -723,9 +751,11 @@ public class MyPageController {
         return "content/mypage/cv/edit";
     }
 
+
     @Transactional
     @GetMapping("/cv/view/{id}")
     public void get(@PathVariable("id") Integer id, HttpServletResponse response) throws Exception {
+        //TODO 테스트 완료시 삭제
         CurriculumVitae savedCV = curriculumVitaeRepository.findById(id).get();
         CV dto = new CV();
         dto.setEngName(savedCV.getAccount().getEngName());
@@ -815,6 +845,7 @@ public class MyPageController {
         boolean isAdd = WebUtils.hasSubmitParameter(request, "add");
         boolean isRemove = WebUtils.hasSubmitParameter(request, "remove");
 
+        log.debug("@CV.id : {}", cv.getId());
         if(isAdd) {
             String target = ServletRequestUtils.getStringParameter(request,"add");
             int index = -1;
@@ -862,38 +893,93 @@ public class MyPageController {
         } else if(isRemove) {
             String target = ServletRequestUtils.getStringParameter(request,"remove");
             String[] s = target.split(":");
+            boolean isSaved = !ObjectUtils.isEmpty(cv.getId());
+            int index = -1;
+            if(s[1].indexOf(".") == -1) {
+                index = Integer.parseInt(s[1]);
+            }
             switch(s[0]) {
                 case "education":
-                    cv.getEducations().remove(Integer.parseInt(s[1]));
+                    if(isSaved) {
+                        if(!ObjectUtils.isEmpty(cv.getEducations().get(index).getId())) {
+                            cv.getRemoveEducations().add(cv.getEducations().get(index));
+                        }
+                    }
+                    cv.getEducations().remove(index);
                     break;
                 case "careerHistory":
-                    cv.getCareerHistories().remove(Integer.parseInt(s[1]));
+                    if(isSaved) {
+                        if(!ObjectUtils.isEmpty(cv.getCareerHistories().get(index).getId())) {
+                            cv.getRemoveCareerHistories().add(cv.getCareerHistories().get(index));
+                        }
+                    }
+                    cv.getCareerHistories().remove(index);
                     break;
                 case "license":
-                    cv.getLicenses().remove(Integer.parseInt(s[1]));
+                    if(isSaved) {
+                        if(!ObjectUtils.isEmpty(cv.getLicenses().get(index).getId())) {
+                            cv.getRemoveLicenses().add(cv.getLicenses().get(index));
+                        }
+                    }
+                    cv.getLicenses().remove(index);
                     break;
                 case "certification":
-                    cv.getCertifications().remove(Integer.parseInt(s[1]));
+                    if(isSaved) {
+                        if(!ObjectUtils.isEmpty(cv.getCertifications().get(index).getId())) {
+                            cv.getRemoveCertifications().add(cv.getCertifications().get(index));
+                        }
+                    }
+                    cv.getCertifications().remove(index);
                     break;
                 case "membership":
-                    cv.getMemberships().remove(Integer.parseInt(s[1]));
+                    if(isSaved) {
+                        if(!ObjectUtils.isEmpty(cv.getMemberships().get(index).getId())) {
+                            cv.getRemoveMemberships().add(cv.getMemberships().get(index));
+                        }
+                    }
+                    cv.getMemberships().remove(index);
                     break;
                 case "language":
-                    cv.getLanguages().remove(Integer.parseInt(s[1]));
+                    if(isSaved) {
+                        if(!ObjectUtils.isEmpty(cv.getLanguages().get(index).getId())) {
+                            cv.getRemoveLanguages().add(cv.getLanguages().get(index));
+                        }
+                    }
+                    cv.getLanguages().remove(index);
                     break;
                 case "languageCertification":
-                    String[] index = s[1].split("\\.");
-                    cv.getLanguages().get(Integer.parseInt(index[0])).getLanguageCertifications().remove(Integer.parseInt(index[1]));
+                    String[] sindex = s[1].split("\\.");
+                    if(isSaved) {
+                        if(!ObjectUtils.isEmpty(cv.getLanguages().get(Integer.parseInt(sindex[0])).getLanguageCertifications().get(Integer.parseInt(sindex[1])).getId())) {
+                            cv.getLanguages().get(Integer.parseInt(sindex[0])).getRemoveLanguageCertifications().add(cv.getLanguages().get(Integer.parseInt(sindex[0])).getLanguageCertifications().get(Integer.parseInt(sindex[1])));
+                        }
+                    }
+                    cv.getLanguages().get(Integer.parseInt(sindex[0])).getLanguageCertifications().remove(Integer.parseInt(sindex[1]));
                     break;
                 case "computerKnowledge":
-                    cv.getComputerKnowledges().remove(Integer.parseInt(s[1]));
+                    if(isSaved) {
+                        if(!ObjectUtils.isEmpty(cv.getComputerKnowledges().get(index).getId())) {
+                            cv.getRemoveComputerKnowledges().add(cv.getComputerKnowledges().get(index));
+                        }
+                    }
+                    cv.getComputerKnowledges().remove(index);
                     break;
                 case "computerCertification":
                     String[] cindex = s[1].split("\\.");
+                    if(isSaved) {
+                        if(!ObjectUtils.isEmpty(cv.getComputerKnowledges().get(Integer.parseInt(cindex[0])).getComputerCertifications().get(Integer.parseInt(cindex[1])).getId())) {
+                            cv.getComputerKnowledges().get(Integer.parseInt(cindex[0])).getRemoveComputerCertifications().add(cv.getComputerKnowledges().get(Integer.parseInt(cindex[0])).getComputerCertifications().get(Integer.parseInt(cindex[1])));
+                        }
+                    }
                     cv.getComputerKnowledges().get(Integer.parseInt(cindex[0])).getComputerCertifications().remove(Integer.parseInt(cindex[1]));
                     break;
                 case "experience":
-                    cv.getExperiences().remove(Integer.parseInt(s[1]));
+                    if(isSaved) {
+                        if(!ObjectUtils.isEmpty(cv.getExperiences().get(index).getId())) {
+                            cv.getRemoveExperiences().add(cv.getExperiences().get(index));
+                        }
+                    }
+                    cv.getExperiences().remove(index);
                     break;
             }
 
@@ -912,6 +998,17 @@ public class MyPageController {
                 return "content/mypage/cv/edit";
             }
 
+            if(status == CurriculumVitaeStatus.PUBLISH || status == CurriculumVitaeStatus.NEW) {
+//                entityManager.detach(cv);
+//                cv.setId(null);
+
+                if(status == CurriculumVitaeStatus.PUBLISH) {
+                    status = CurriculumVitaeStatus.CURRENT;
+                } else {
+                    status = CurriculumVitaeStatus.TEMP;
+                }
+            }
+
             cv.setStatus(status);
             cv.setAccount(SessionUtil.getUserDetail().getUser());
             if (ObjectUtils.isEmpty(cv.getId())) {
@@ -924,75 +1021,102 @@ public class MyPageController {
                 cv.setSignDate(new Date());
             }
 
+
             CurriculumVitae savedCV = curriculumVitaeService.save(cv);
 
-            new Thread(() -> {
-                try {
-                    CV dto = new CV();
-                    dto.setEngName(savedCV.getAccount().getEngName());
-                    dto.setSignDate(DateUtil.getDateToString(savedCV.getSignDate(), "dd-MMM-yyyy").toUpperCase());
-                    if (!StringUtils.isEmpty(savedCV.getBase64sign())) {
-                        dto.setSign(new ByteArrayImageProvider(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(savedCV.getBase64sign()))));
+            if (status == CurriculumVitaeStatus.REVIEW || status == CurriculumVitaeStatus.CURRENT) {
+                new Thread(() -> {
+                    try {
+//                    CurriculumVitae savedCV = curriculumVitaeRepository.findById(id).get();
+                        CV dto = new CV();
+                        dto.setEngName(savedCV.getAccount().getEngName());
+                        dto.setSignDate(DateUtil.getDateToString(savedCV.getSignDate(), "dd-MMM-yyyy").toUpperCase());
+                        if (!StringUtils.isEmpty(savedCV.getBase64sign())) {
+                            dto.setSign(new ByteArrayImageProvider(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(savedCV.getBase64sign()))));
+                        }
+
+                        dto.setEducations(savedCV.getEducations().stream().map(e ->
+                                EducationDTO.builder()
+                                        .startDate(DateUtil.getDateToString(e.getStartDate(), "MMM yyyy"))
+                                        .endDate(e.isPresent() ? "Present" : DateUtil.getDateToString(e.getEndDate(), "MMM yyyy"))
+                                        .nameOfUniversity(e.getNameOfUniversity())
+                                        .degree(e.getDegree())
+                                        .cityCountry(e.getCityCountry())
+                                        .thesisTitle(e.getThesisTitle())
+                                        .nameOfSupervisor(e.getNameOfSupervisor()).build())
+                                .collect(Collectors.toList()));
+
+                        dto.setCareerHistories(savedCV.getCareerHistories().stream().map(c ->
+                                CareerHistoryDTO.builder()
+                                        .companyName(c.getCompanyName())
+                                        .cityCountry(c.getCityCountry())
+                                        .startDate(DateUtil.getDateToString(c.getStartDate(), "MMM yyyy"))
+                                        .endDate(c.isPresent() ? "Present" : DateUtil.getDateToString(c.getEndDate(), "MMM yyyy"))
+                                        .position(c.getPosition())
+                                        .teamDepartment(c.getTeamDepartment())
+                                        .build()
+                        ).collect(Collectors.toList()));
+
+                        dto.setLicenses(savedCV.getLicenses().stream().map(i ->
+                                LicenseDTO.builder()
+                                        .licenseNo(i.getLicenseNo())
+                                        .licenseInCountry(i.getLicenseInCountry())
+                                        .build()
+                        ).collect(Collectors.toList()));
+
+                        dto.setCertifications(savedCV.getCertifications().stream().map(i ->
+                                CertificationDTO.builder()
+                                        .nameOfCertification(i.getNameOfCertification())
+                                        .organizers(i.getOrganizers())
+                                        .issueDate(DateUtil.getDateToString(i.getIssueDate(), "MMM YYYY").toUpperCase())
+                                        .build()
+                        ).collect(Collectors.toList()));
+
+                        dto.setMemberships(savedCV.getMemberships().stream().map(i ->
+                                MembershipDTO.builder()
+                                        .name(i.getMembershipName())
+                                        .startYear(i.getStartYear())
+                                        .endYear(i.getEndYear())
+                                        .build()
+                        ).collect(Collectors.toList()));
+
+                        dto.setLanguages(savedCV.getLanguages().stream().map(i ->
+                                LanguageDTO.builder()
+                                        .language(i.getLanguage())
+                                        .level(i.getLevel().getLabel())
+                                        .certificateProgramList(i.getLanguageCertifications().stream().map(c -> c.getCertificateProgram()).collect(Collectors.toList()))
+                                        .build()
+                        ).collect(Collectors.toList()));
+
+                        dto.setComputerKnowledges(savedCV.getComputerKnowledges().stream().map(i ->
+                                ComputerKnowledgeDTO.builder()
+                                        .name(i.getProgramName())
+                                        .level(i.getLevel().getLabel())
+                                        .certificateProgramList(i.getComputerCertifications().stream().map(c -> c.getCertificateProgram()).collect(Collectors.toList()))
+                                        .build()
+                        ).collect(Collectors.toList()));
+
+                        dto.setExperiences(savedCV.getExperiences().stream().map(i ->
+                                ExperienceDTO.builder()
+                                        .indication(i.getIndication().getIndication())
+                                        .phase(i.getPhase().getPhase())
+                                        .role(i.getRole())
+                                        .globalOrLocal(i.getGlobalOrLocal().getLabel())
+                                        .workingDetails(i.getWorkingDetails())
+                                        .build()
+                        ).collect(Collectors.toList()));
+//                    response.setHeader("Content-Disposition", "attachment; filename=\"cv.pdf\"");
+//                    response.setContentType("application/pdf");
+                        String outputFileName = "CV_"+savedCV.getId()+"_" + SessionUtil.getUserId() + "_" + (DateUtil.getDateToString(new Date(), "yyyyMMdd")) + ".pdf";
+                        Files.createDirectories(Paths.get(prop.getCvUploadDir()).toAbsolutePath().normalize());
+                        curriculumVitaeReportService.generateReport(dto, new File(prop.getCvUploadDir() + outputFileName));
+
+
+                    } catch (Exception e) {
+
                     }
-
-                    dto.setEducations(savedCV.getEducations().stream().map(e ->
-                            EducationDTO.builder()
-                                    .startDate(DateUtil.getDateToString(e.getStartDate(), "MMM yyyy"))
-                                    .endDate(e.isPresent() ? "Present" : DateUtil.getDateToString(e.getEndDate(), "MMM yyyy"))
-                                    .nameOfUniversity(e.getNameOfUniversity())
-                                    .degree(e.getDegree())
-                                    .thesisTitle(e.getThesisTitle())
-                                    .nameOfSupervisor(e.getNameOfSupervisor()).build())
-                            .collect(Collectors.toList()));
-
-                    dto.setCareerHistories(savedCV.getCareerHistories().stream().map(c ->
-                            CareerHistoryDTO.builder()
-                                    .companyName(c.getCompanyName())
-                                    .cityCountry(c.getCityCountry())
-                                    .startDate(DateUtil.getDateToString(c.getStartDate(), "MMM yyyy"))
-                                    .endDate(c.isPresent() ? "Present" : DateUtil.getDateToString(c.getEndDate(), "MMM yyyy"))
-                                    .position(c.getPosition())
-                                    .teamDepartment(c.getTeamDepartment())
-                                    .build()
-                    ).collect(Collectors.toList()));
-
-                    dto.setLicenses(savedCV.getLicenses().stream().map(i ->
-                            LicenseDTO.builder()
-                                    .licenseNo(i.getLicenseNo())
-                                    .licenseInCountry(i.getLicenseInCountry())
-                                    .build()
-                    ).collect(Collectors.toList()));
-
-                    dto.setCertifications(savedCV.getCertifications().stream().map(i ->
-                            CertificationDTO.builder()
-                                    .nameOfCertification(i.getNameOfCertification())
-                                    .organizers(i.getOrganizers())
-                                    .issueDate(DateUtil.getDateToString(i.getIssueDate(), "MMM YYYY").toUpperCase())
-                                    .build()
-                    ).collect(Collectors.toList()));
-
-                    dto.setMemberships(savedCV.getMemberships().stream().map(i ->
-                            MembershipDTO.builder()
-                                    .name(i.getMembershipName())
-                                    .startYear(i.getStartYear())
-                                    .endYear(i.getEndYear())
-                                    .build()
-                    ).collect(Collectors.toList()));
-
-                    dto.setExperiences(savedCV.getExperiences().stream().map(i ->
-                            ExperienceDTO.builder()
-                                    .indication(i.getIndication().getIndication())
-                                    .phase(i.getPhase().getPhase())
-                                    .globalOrLocal(i.getGlobalOrLocal().getLabel())
-                                    .workingDetails(i.getWorkingDetails())
-                                    .build()
-                    ).collect(Collectors.toList()));
-
-
-                } catch (Exception e) {
-
-                }
-            }).run();
+                }).run();
+            }
 
             sessionStatus.setComplete();
             return "redirect:/mypage/cv";
@@ -1015,6 +1139,18 @@ public class MyPageController {
         builder.and(qCurriculumVitae.account.userId.eq(userId));
         builder.and(qCurriculumVitae.status.eq(status));
         return curriculumVitaeRepository.findOne(builder);
+    }
+    protected Optional<CurriculumVitae> latestCV(String userId) {
+        QCurriculumVitae qCurriculumVitae = QCurriculumVitae.curriculumVitae;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qCurriculumVitae.account.userId.eq(userId));
+        Iterable<CurriculumVitae> iterable = curriculumVitaeRepository.findAll(builder, qCurriculumVitae.id.desc());
+        Iterator<CurriculumVitae> iter = iterable.iterator();
+        if(iter.hasNext()) {
+            return Optional.of(iter.next());
+        } else {
+            return Optional.empty();
+        }
     }
     protected long countCV(String userId, CurriculumVitaeStatus status) {
         QCurriculumVitae qCurriculumVitae = QCurriculumVitae.curriculumVitae;

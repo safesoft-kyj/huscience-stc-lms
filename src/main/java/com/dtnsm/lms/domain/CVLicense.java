@@ -32,7 +32,7 @@ public class CVLicense extends AuditorEntity<String> implements Serializable {
     @Column(name = "license_in_country")
     private String licenseInCountry;
 
-    @Transient
+    @Column(name = "readonly")
     private boolean readOnly;
 }
 

@@ -16,12 +16,12 @@ spring:
     servlet:
       content-type: text/html
   datasource:
-    url: jdbc:sqlserver://localhost:1433;DatabaseName=elearning
-    username: sa
-    password: Dtncro@123##
-#    url: jdbc:sqlserver://localhost:1433;DatabaseName=lms_test_20191118
+#    url: jdbc:sqlserver://localhost:1433;DatabaseName=elearning
 #    username: sa
-#    password: Test1234!
+#    password: Dtncro@123##
+    url: jdbc:sqlserver://localhost:1433;DatabaseName=lms_test_20191118
+    username: sa
+    password: Test1234!
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     initialization-mode: always
     data: classpath:/init-data/data.sql
@@ -85,6 +85,7 @@ logging.level.org.hibernate.type.descriptor.sql:  trace
 
 file:
   default-base: D://elearning//
+  cv-upload-dir: D://elearning//CV//
   border-upload-dir: D://elearning//upload//border//
   border-photo-upload-dir: D://elearning//upload//border//PhotoUpload//
   course-upload-dir: D://elearning//upload//course//

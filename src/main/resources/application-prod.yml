@@ -66,6 +66,7 @@ mybatis:
 
 file:
   default-base: C://UploadFiles//lms//
+  cv-upload-dir: C://UploadFiles//lms//CV//
   border-upload-dir: C://UploadFiles//lms//upload//border//
   border-photo-upload-dir: C://UploadFiles//lms//upload//border//PhotoUpload//
   course-upload-dir: C://UploadFiles//lms//upload//course//

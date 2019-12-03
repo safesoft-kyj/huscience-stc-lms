@@ -126,26 +126,26 @@
 <!--                <li><a data-th-href="@{/mypage/myinfo}">사용자정보</a></li>-->
             </ul>
         </li>
-<!--        <th:block th:with="isManager = ${#authorization.getAuthentication().getPrincipal().isManager()}">-->
-<!--            <th:block th:if="${isManager == true}">-->
-<!--                <li>-->
-<!--                    <a href="#">-->
-<!--                        <i class="demo-pli-home"></i>-->
-<!--                        <span class="menu-title">Team/Department</span>-->
-<!--                        <i class="arrow"></i>-->
-<!--                    </a>-->
+        <th:block th:with="isManager = ${#authorization.getAuthentication().getPrincipal().isManager()}">
+            <th:block th:if="${isManager == true}">
+                <li>
+                    <a href="#">
+                        <i class="demo-pli-home"></i>
+                        <span class="menu-title">Team/Department</span>
+                        <i class="arrow"></i>
+                    </a>
 
-<!--                    &lt;!&ndash;Submenu&ndash;&gt;-->
-<!--                    <ul class="collapse">-->
-<!--                        <li><a data-th-href="@{/employees}">Employees</a></li>-->
-<!--                        <li><a data-th-href="@{/employees/cv/current}">Curriculum Vitae</a></li>-->
-<!--                        <li><a data-th-href="@{/employees/jd/approved}">Job Description</a></li>-->
-<!--                        &lt;!&ndash;                <li><a data-th-href="@{/mypage/quiz}">시험/시험결과/수료증발급</a></li>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                <li><a data-th-href="@{/mypage/myinfo}">사용자정보</a></li>&ndash;&gt;-->
-<!--                    </ul>-->
-<!--                </li>-->
-<!--            </th:block>-->
-<!--        </th:block>-->
+                    <!--Submenu-->
+                    <ul class="collapse">
+                        <li><a data-th-href="@{/employees}">Employees</a></li>
+                        <li><a data-th-href="@{/employees/cv/current}">Curriculum Vitae</a></li>
+                        <li><a data-th-href="@{/employees/jd/approved}">Job Description</a></li>
+                        <!--                <li><a data-th-href="@{/mypage/quiz}">시험/시험결과/수료증발급</a></li>-->
+                        <!--                <li><a data-th-href="@{/mypage/myinfo}">사용자정보</a></li>-->
+                    </ul>
+                </li>
+            </th:block>
+        </th:block>
         <li class="list-divider"></li>
 
     </th:block>

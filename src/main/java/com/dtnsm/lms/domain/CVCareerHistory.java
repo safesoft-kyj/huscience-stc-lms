@@ -51,6 +51,6 @@ public class CVCareerHistory extends AuditorEntity<String> implements Serializab
     @Column(name = "team_department")
     private String teamDepartment;
 
-    @Transient
+    @Column(name = "readonly")
     private boolean readOnly;
 }

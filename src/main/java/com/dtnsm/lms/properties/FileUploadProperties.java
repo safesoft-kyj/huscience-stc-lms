@@ -35,8 +35,18 @@ public class FileUploadProperties {
     // Xdoc 관련 폴더
     private String xdocUploadDir;
 
+    private String cvUploadDir;
+
     public String getXdocUploadDir() {
         return xdocUploadDir;
+    }
+
+    public String getCvUploadDir() {
+        return cvUploadDir;
+    }
+
+    public void setCvUploadDir(String cvUploadDir) {
+        this.cvUploadDir = cvUploadDir;
     }
 
     public void setXdocUploadDir(String xdocUploadDir) {

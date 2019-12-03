@@ -36,7 +36,7 @@ public class CVMembership extends AuditorEntity<String> implements Serializable 
     @Column(name = "present")
     private boolean present;
 
-    @Transient
+    @Column(name = "readonly")
     private boolean readOnly;
 }
 

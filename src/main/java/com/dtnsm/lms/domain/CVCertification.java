@@ -34,7 +34,7 @@ public class CVCertification extends AuditorEntity<String> implements Serializab
     @Column(name = "issue_date")
     private Date issueDate;
 
-    @Transient
+    @Column(name = "readonly")
     private boolean readOnly;
 }
 

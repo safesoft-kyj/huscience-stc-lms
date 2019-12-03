@@ -55,6 +55,20 @@ public class CurriculumVitaeReportService {
             e.printStackTrace();
         }
     }
+    public void generateReport(CV cv, File output) {
+        try(OutputStream os = new FileOutputStream(output)) {
+            IContext context = report.createContext();
+            context.put("cv", cv);
+            context.put("sign", cv.getSign());
+//            context.put("history", cv.getCareerHistories());
+            Options options = Options.getTo(ConverterTypeTo.PDF).via(ConverterTypeVia.XWPF);
+            report.convert(context, options, os);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (XDocReportException e) {
+            e.printStackTrace();
+        }
+    }
 
     @PreDestroy
     public void destroy() {

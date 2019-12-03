@@ -32,11 +32,13 @@ public class CVComputerKnowledge extends AuditorEntity<String> implements Serial
     @Enumerated(EnumType.STRING)
     private SkillLevel level;
 
-    @OneToMany(mappedBy = "computerKnowledge")
+    @OneToMany(mappedBy = "computerKnowledge", cascade = CascadeType.REMOVE)
     private List<CVComputerCertification> computerCertifications = new ArrayList<>();
 
-
     @Transient
+    private List<CVComputerCertification> removeComputerCertifications = new ArrayList<>();
+
+    @Column(name = "readonly")
     private boolean readOnly;
 }
 

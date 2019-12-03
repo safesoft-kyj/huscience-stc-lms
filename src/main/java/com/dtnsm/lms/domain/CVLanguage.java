@@ -32,11 +32,13 @@ public class CVLanguage extends AuditorEntity<String> implements Serializable {
     @Enumerated(EnumType.STRING)
     private SkillLevel level;
 
-    @OneToMany(mappedBy = "language")
+    @OneToMany(mappedBy = "language", cascade = CascadeType.REMOVE)
     private List<CVLanguageCertification> languageCertifications = new ArrayList<>();
 
-
     @Transient
+    private List<CVLanguageCertification> removeLanguageCertifications = new ArrayList<>();
+
+    @Column(name = "readonly")
     private boolean readOnly;
 }
 
