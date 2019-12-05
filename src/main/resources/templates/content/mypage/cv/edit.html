@@ -31,10 +31,10 @@
             <div class="tab-base">
                 <ul class="nav nav-tabs">
                     <li class="active">
-                        <a data-toggle="tab" href="/mypage/cv/current">Current</a>
+                        <a href="/mypage/cv">Current</a>
                     </li>
                     <li>
-                        <a data-toggle="tab" href="/mypage/cv/old">Old Version</a>
+                        <a href="/mypage/cv/old">Old Version</a>
                     </li>
                 </ul>
                 <div class="tab-content">
@@ -247,7 +247,7 @@
                                                                 <tr>
                                                                     <td colspan="4" class="form-group" th:classappend="${#fields.hasErrors('licenses[__${stat.index}__].nameOfLicense')} ? 'has-error' : ''"><input type="text" class="form-control" placeholder="Name of License" th:field="*{licenses[__${stat.index}__].nameOfLicense}"></td>
                                                                     <td rowspan="2">
-                                                                        <button th:if="${license.readOnly eq fasle}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|license:${stat.index}|"><i class="fa fa-trash-o"></i></button>
+                                                                        <button th:if="${license.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|license:${stat.index}|"><i class="fa fa-trash-o"></i></button>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -288,7 +288,7 @@
                                                                         <input type="text" class="form-control issueDate" placeholder="Issue Date(MMM YYYY)" th:field="*{certifications[__${stat.index}__].issueDate}">
                                                                     </td>
                                                                     <td>
-                                                                        <button th:if="${certification.readOnly eq fasle}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|certification:${stat.index}|"><i class="fa fa-trash-o"></i>
+                                                                        <button th:if="${certification.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|certification:${stat.index}|"><i class="fa fa-trash-o"></i>
                                                                         </button>
                                                                     </td>
                                                                 </tr>
@@ -579,7 +579,7 @@
                                 <button class="btn btn-primary" name="_submit" value="review" type="submit" th:if="${cv.initial eq true and cv.id != null}">
                                     저장 & 검토 요청
                                 </button>
-                                </th:block>11
+                                </th:block>
 
                                 <th:block th:if="${cv.status != null and cv.status.name() == 'NEW'}">
                                 <button class="btn btn-info" type="submit" name="_submit" value="new">
@@ -593,7 +593,6 @@
                                 </button>
                                 </th:block>
 
-                                <span th:text="${cv.status.name()}"></span>
                                 <th:block th:if="${cv.status != null and cv.status.name() eq 'CURRENT'}">
                                 <a class="btn btn-primary" th:href="@{/mypage/cv/new?id={id}(id=${cv.id})}">
                                     New CV

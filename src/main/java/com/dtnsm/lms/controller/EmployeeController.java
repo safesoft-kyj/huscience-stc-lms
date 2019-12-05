@@ -10,6 +10,7 @@ import com.dtnsm.lms.auth.UserService;
 import com.dtnsm.lms.domain.Account;
 import com.dtnsm.lms.domain.CurriculumVitae;
 import com.dtnsm.lms.domain.constant.CurriculumVitaeStatus;
+import com.dtnsm.lms.properties.FileUploadProperties;
 import com.dtnsm.lms.repository.CurriculumVitaeRepository;
 import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.JobDescriptionFileService;
@@ -21,6 +22,7 @@ import com.dtnsm.lms.xdocreport.dto.JobDescriptionSign;
 import com.querydsl.core.BooleanBuilder;
 import fr.opensagres.xdocreport.document.images.ByteArrayImageProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +35,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -48,6 +53,7 @@ public class EmployeeController {
     private final JobDescriptionFileService jobDescriptionFileService;
     private final JobDescriptionReportService jobDescriptionReportService;
     private final CurriculumVitaeRepository curriculumVitaeRepository;
+    private final FileUploadProperties prop;
     private PageInfo pageInfo = new PageInfo();
 
 
@@ -157,13 +163,40 @@ public class EmployeeController {
              *  같은 JD의 이전 버전을 Superseded 상태로 변경한다.
              */
             superseded(userJobDescription.getUsername(), userJobDescription.getJobDescriptionVersion().getJobDescription().getId());
-
             userJobDescriptionRepository.save(userJobDescription);
+
+            /**
+             * 직원의 서명이 들어간 JD 파일(PDF) 생성 및 HTML 변환 정보 반환
+             */
+            new Thread(() -> {
+                try {
+                    JobDescriptionVersionFile file = userJobDescription.getJobDescriptionVersion().getJobDescriptionVersionFile();
+                    Resource resource = jobDescriptionFileService.loadFileAsResource(file.getSaveName());
+                    String format = "dd-MMM-yyyy";
+                    JobDescriptionSign jobDescriptionSign = JobDescriptionSign.builder()
+                            .assignDate(DateUtil.getDateToString(userJobDescription.getAssignDate(), format).toUpperCase())
+                            .agreeDate(ObjectUtils.isEmpty(userJobDescription.getAgreeDate()) ? "" : DateUtil.getDateToString(userJobDescription.getAgreeDate(), format).toUpperCase())
+                            .employeeName(userJobDescription.getEmployeeName())
+                            .approvedDate(ObjectUtils.isEmpty(userJobDescription.getApprovedDate()) ? "" : DateUtil.getDateToString(userJobDescription.getApprovedDate(), format).toUpperCase())
+                            .managerName(userJobDescription.getManagerName())
+                            .managerTitle(userJobDescription.getManagerTitle())
+                            .empSignStr(userJobDescription.getAgreeSign())
+                            .mngSignStr(userJobDescription.getApprovedSign())
+                            .empSign(StringUtils.isEmpty(userJobDescription.getAgreeSign()) ? null : new ByteArrayImageProvider(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(userJobDescription.getAgreeSign()))))
+                            .mngSign(StringUtils.isEmpty(userJobDescription.getApprovedSign()) ? null : new ByteArrayImageProvider(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(userJobDescription.getApprovedSign())))).build();
+
+                    String pdfOutput = prop.getBinderJdUploadDir() + "/JD_" + userJobDescription.getId() + ".pdf";
+
+                    jobDescriptionReportService.generateReport(jobDescriptionSign, resource.getInputStream(), pdfOutput, id);
+                } catch (Exception e) {
+                    System.err.println(e);
+                }
+            }).run();
 
             //TODO Job Description (승인 알림)
         }
 
-        return "redirect:/employees/jd";
+        return "redirect:/employees/jd/approved";
     }
 
     private void superseded(String username, Integer jobDescriptionId) {
@@ -180,29 +213,4 @@ public class EmployeeController {
             userJobDescriptionRepository.save(userJobDescription);
         }
     }
-
-    @GetMapping("/employees/jd/{id}/print")
-    public void getEmployeeJD(@PathVariable("id") Integer id, HttpServletResponse response) throws Exception {
-        UserJobDescription userJobDescription = userJobDescriptionRepository.findById(id).get();
-        JobDescriptionVersionFile file = userJobDescription.getJobDescriptionVersion().getJobDescriptionVersionFile();
-        Resource resource = jobDescriptionFileService.loadFileAsResource(file.getSaveName());
-        String format = "dd-MMM-yyyy";
-        JobDescriptionSign jobDescriptionSign = JobDescriptionSign.builder()
-                .assignDate(DateUtil.getDateToString(userJobDescription.getAssignDate(), format).toUpperCase())
-                .agreeDate(ObjectUtils.isEmpty(userJobDescription.getAgreeDate()) ? "" : DateUtil.getDateToString(userJobDescription.getAgreeDate(), format).toUpperCase())
-                .employeeName(userJobDescription.getEmployeeName())
-                .approvedDate(ObjectUtils.isEmpty(userJobDescription.getApprovedDate()) ? "" : DateUtil.getDateToString(userJobDescription.getApprovedDate(), format).toUpperCase())
-                .managerName(userJobDescription.getManagerName())
-                .managerTitle(userJobDescription.getManagerTitle())
-                .empSignStr(userJobDescription.getAgreeSign())
-                .mngSignStr(userJobDescription.getApprovedSign())
-                .empSign(StringUtils.isEmpty(userJobDescription.getAgreeSign()) ? null : new ByteArrayImageProvider(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(userJobDescription.getAgreeSign()))))
-                .mngSign(StringUtils.isEmpty(userJobDescription.getApprovedSign()) ? null : new ByteArrayImageProvider(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(userJobDescription.getApprovedSign())))).build();
-
-//        response.setHeader("Content-Disposition", "attachment; filename=\""+file.getFileName().substring(0, file.getFileName().lastIndexOf(".")) + ".pdf\"");
-        response.setContentType("application/pdf");
-        jobDescriptionReportService.generateReport(jobDescriptionSign, resource.getInputStream(), response);
-    }
-
-
 }

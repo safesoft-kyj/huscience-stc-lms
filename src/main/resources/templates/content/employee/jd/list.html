@@ -84,7 +84,9 @@
                                                 <td>
                                                     <span th:if="${user.userJobDescription != null}" th:text="|${user.userJobDescription.jobDescriptionVersion.jobDescription.title} v${user.userJobDescription.jobDescriptionVersion.version_no}|">-</span>
                                                     <th:block th:if="${user.userJobDescription != null && (user.userJobDescription.status.name() eq 'APPROVED' or user.userJobDescription.status.name() eq 'REVOKED' or user.userJobDescription.status.name() eq 'SUPERSEDED')}">
-                                                        <a class="btn btn-purple btn-xs" th:href="@{/employees/jd/{id}/print(id=${user.userJobDescription.id})}"><i class="fa fa-file-pdf-o"></i> Job Description</a>
+                                                        <input th:value="${user.userJobDescription.htmlContent}" th:id="|user_jd_cont_${user.userJobDescription.id}|" th:type="hidden">
+<!--                                                        <a class="btn btn-purple btn-xs" th:href="@{/employees/jd/{id}/print(id=${user.userJobDescription.id})}"><i class="fa fa-file-pdf-o"></i> Job Description</a>-->
+                                                        <button class="btn btn-info btn-xs" data-target="#jd-modal" th:attr="data-id=${user.userJobDescription.id}" data-toggle="modal"><i class="fa fa-file-pdf-o"></i> Job Description</button>
                                                     </th:block>
                                                 </td>
                                                 <td class="text-center">
@@ -97,12 +99,13 @@
                                                     <span th:if="${user.userJobDescription != null && user.userJobDescription.approvedDate != null}" th:text="${#dates.format(user.userJobDescription.approvedDate, 'yyyy-MM-dd')}">-</span>
                                                 </td>
                                                 <td class="text-center">
-                                                    <span class="label label-info" th:text="(${user.userJobDescription != null} ? ${user.userJobDescription.status.label} : '-')"></span>
+                                                    <span th:text="(${user.userJobDescription != null} ? ${user.userJobDescription.status.label} : '-')"></span>
                                                 </td>
                                                 <td class="text-center">
 
                                                     <th:block th:if="${user.userJobDescription != null && user.userJobDescription.status.name() eq 'AGREE'}">
-                                                        <button class="btn btn-info btn-sm" data-target="#approval-modal" th:attr="data-id=${user.userJobDescription.id}, data-assign-date=${#dates.format(user.userJobDescription.assignDate, 'dd-MMM-yyyy')}" data-toggle="modal">Approval</button>
+                                                        <input th:value="${user.userJobDescription.jobDescriptionVersion.jobDescriptionVersionFile.htmlContent}" th:id="|jd_cont_${user.userJobDescription.id}|" th:type="hidden">
+                                                        <button class="btn btn-info btn-xs" data-target="#approval-modal" th:attr="data-id=${user.userJobDescription.id}, data-assign-date=${#dates.format(user.userJobDescription.assignDate, 'dd-MMM-yyyy')}" data-toggle="modal">Approval</button>
                                                     </th:block>
 
                                                     <th:block th:if="${user.userJobDescription != null && user.userJobDescription.status.name() eq 'APPROVED'}">
@@ -129,7 +132,7 @@
     <div class="modal fade" id="assign-modal" role="dialog" tabindex="-1" aria-labelledby="assign-modal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form name="f" id="assignForm" method="post">
+                <form name="f" id="assignForm" method="post" th:action="@{/employees/jd}">
                 <!--Modal header-->
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
@@ -190,7 +193,7 @@
     <!--Default Bootstrap Modal-->
     <!--===================================================-->
     <div class="modal fade" id="approval-modal" role="dialog" tabindex="-1" aria-labelledby="assign-modal" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <form name="f" id="approvalForm" method="post" th:action="@{/employees/jd/approval}">
                     <input type="hidden" id="id" name="id"/>
@@ -202,11 +205,7 @@
 
                     <!--Modal body-->
                     <div class="modal-body">
-                        <p>
-                            I acknowledge that an overview of this job description has been given to the
-                            employee above.
-                            The date assigned in position is <span id="assignDateTxt">-</span> (Date: DD-MMM-YYYY).
-                        </p>
+                        <div id="preview_cont" class="text-center"></div>
                     </div>
 
                     <!--Modal footer-->
@@ -215,6 +214,32 @@
                         <button class="btn btn-primary">Approval</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+    <!--===================================================-->
+    <!--End Default Bootstrap Modal-->
+    <!--Default Bootstrap Modal-->
+    <!--===================================================-->
+    <div class="modal fade" id="jd-modal" role="dialog" tabindex="-1" aria-labelledby="jd-modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <!--Modal header-->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                    <h4 class="modal-title">Job Description</h4>
+                </div>
+
+                <!--Modal body-->
+                <div class="modal-body">
+                    <div id="preview_jd_cont" class="text-center"></div>
+                </div>
+
+                <!--Modal footer-->
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+<!--                    <button class="btn btn-primary">Close</button>-->
+                </div>
             </div>
         </div>
     </div>
@@ -259,7 +284,13 @@
                 var id = $(e.relatedTarget).data('id');
                 var assignDate = $(e.relatedTarget).data('assign-date');
                 $("#id").val(id);
+                $("#preview_cont").html($("#jd_cont_"+id).val());
                 $("#assignDateTxt").text(assignDate);
+            });
+
+            $("#jd-modal").on('show.bs.modal', function(e) {
+                var id = $(e.relatedTarget).data('id');
+                $("#preview_jd_cont").html($("#user_jd_cont_"+id).val());
             });
         });
 

@@ -3,6 +3,8 @@ package com.dtnsm.lms.controller;
 import com.dtnsm.common.entity.JobDescription;
 import com.dtnsm.common.entity.JobDescriptionVersion;
 import com.dtnsm.common.entity.constant.JobDescriptionVersionStatus;
+import com.dtnsm.lms.properties.FileUploadProperties;
+import com.dtnsm.lms.service.JobDescriptionFileService;
 import com.dtnsm.lms.service.JobDescriptionService;
 import com.dtnsm.lms.service.JobDescriptionVersionService;
 import com.dtnsm.lms.util.DateUtil;
@@ -11,7 +13,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.docx4j.Docx4J;
+import org.docx4j.Docx4jProperties;
+import org.docx4j.convert.out.HTMLSettings;
+import org.docx4j.convert.out.html.SdtToListSdtTagHandler;
+import org.docx4j.convert.out.html.SdtWriter;
+import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -22,7 +34,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +51,12 @@ public class JobDescriptionController {
 
     @Autowired
     JobDescriptionVersionService jobDescriptionVersionService;
+
+    @Autowired
+    private JobDescriptionFileService jobDescriptionFileService;
+
+    @Autowired
+    public FileUploadProperties prop;
 
     private PageInfo pageInfo = new PageInfo();
     private String pageTitle = "Job Description";
@@ -73,10 +93,12 @@ public class JobDescriptionController {
         model.addAttribute(pageInfo);
 
         if(!ObjectUtils.isEmpty(file) && file.isEmpty() == false) {
-            XWPFDocument document = new XWPFDocument(file.getInputStream());
+            InputStream is = file.getInputStream();
+
+
+            XWPFDocument document = new XWPFDocument(is);
             List<XWPFTable> tables = document.getTables();
             if (ObjectUtils.isEmpty(tables) == false && tables.size() == 4) {
-
                 String jobTitle = tables.get(0).getRow(0).getCell(1).getText();
 //                System.out.println("Job Title : " + jobTitle);
                 String fullName = jobTitle.substring(0, jobTitle.indexOf("(")).trim();
@@ -104,19 +126,6 @@ public class JobDescriptionController {
                     JobDescription jobDescription = optionalJobDescription.isPresent() ? optionalJobDescription.get() : new JobDescription();
                     jobDescription.setShortName(shortName);
                     jobDescription.setTitle(fullName);
-
-                    /**
-                     * 이전 버전이 존재 하는 경우 SUPERSEDED 상태로 변경 한다.
-                     */
-                    if(!ObjectUtils.isEmpty(jobDescription.getId())) {
-                        Optional<JobDescriptionVersion> optionalJobDescriptionVersion = jobDescriptionVersionService.findByJobDescriptionId(jobDescription.getId());
-                        if(optionalJobDescriptionVersion.isPresent()) {
-                            JobDescriptionVersion currentVersion = optionalJobDescriptionVersion.get();
-                            currentVersion.setStatus(JobDescriptionVersionStatus.SUPERSEDED);
-
-                            jobDescriptionVersionService.update(currentVersion);
-                        }
-                    }
 
                     JobDescriptionVersion jobDescriptionVersion = new JobDescriptionVersion();
                     jobDescriptionVersion.setJobDescription(jobDescription);
@@ -146,8 +155,23 @@ public class JobDescriptionController {
     }
 
     @PostMapping("/add-post")
+    @Transactional
     public String addPost(@ModelAttribute("jobDescriptionVersion") JobDescriptionVersion jobDescriptionVersion, SessionStatus status) {
         log.debug("@JobDescriptionVersion : {}", jobDescriptionVersion);
+
+        /**
+         * 이전 버전이 존재 하는 경우 SUPERSEDED 상태로 변경 한다.
+         */
+        if(!ObjectUtils.isEmpty(jobDescriptionVersion.getJobDescription().getId())) {
+
+            Optional<JobDescriptionVersion> optionalJobDescriptionVersion = jobDescriptionVersionService.findByJobDescriptionId(jobDescriptionVersion.getJobDescription().getId());
+            if(optionalJobDescriptionVersion.isPresent()) {
+                JobDescriptionVersion currentVersion = optionalJobDescriptionVersion.get();
+                currentVersion.setStatus(JobDescriptionVersionStatus.SUPERSEDED);
+
+                jobDescriptionVersionService.update(currentVersion);
+            }
+        }
 
         jobDescriptionVersionService.save(jobDescriptionVersion);
         status.setComplete();
@@ -155,17 +179,14 @@ public class JobDescriptionController {
     }
 
 
-//    @GetMapping("/edit/{id}")
-//    public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-//        JobDescription obj = jobDescriptionService.getById(id);
-//
-//        pageInfo.setPageId("m-customer-edit");
-//        pageInfo.setPageTitle(pageTitle + " Edit");
-//        model.addAttribute(pageInfo);
-//        model.addAttribute("jobDescription", obj);
-//
-//        return "admin/jd/edit";
-//    }
+    @GetMapping("/images/{imageName}")
+    public void getJdImage(@PathVariable("imageName") String imageName, HttpServletResponse res) throws Exception {
+        InputStream is = new FileInputStream(new File(prop.getBinderJdUploadDir() + "/_images/" + imageName));
+        OutputStream os = res.getOutputStream();
+        os.write(is.readAllBytes());
+        os.flush();
+        os.close();
+    }
 //
 //    @PostMapping("/edit-post/{id}")
 //    public String updateCustomer(@PathVariable("id") Integer id, @Valid JobDescription jobDescription, BindingResult result) {

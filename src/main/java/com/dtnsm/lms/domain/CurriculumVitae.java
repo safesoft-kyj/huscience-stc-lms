@@ -1,6 +1,5 @@
 package com.dtnsm.lms.domain;
 
-import com.dtnsm.lms.auth.AuditorCreateEntity;
 import com.dtnsm.lms.auth.AuditorEntity;
 import com.dtnsm.lms.domain.constant.CurriculumVitaeStatus;
 import lombok.Data;
@@ -12,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@SuppressWarnings("JpaDataSourceORMInspection")
 @Data
 @Entity
 @Table(name = "el_curriculum_vitae")
@@ -24,7 +22,7 @@ public class CurriculumVitae extends AuditorEntity<String> implements Serializab
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CV_SEQ_GENERATOR")
     private Integer id;
 
-    @Column(name = "parentId")
+    @Column(name = "parent_id")
     private Integer parentId;
 
     @ManyToOne
@@ -48,6 +46,12 @@ public class CurriculumVitae extends AuditorEntity<String> implements Serializab
 
     @Column(name = "base64sign", columnDefinition = "varchar(max)")
     private String base64sign;
+
+    @Column(name = "html_content", columnDefinition = "nvarchar(max)")
+    private String htmlContent;
+
+    @Column(name = "page_count")
+    private Integer pageCount;
 
     @Column(name = "status", length = 20)
     @Enumerated(EnumType.STRING)

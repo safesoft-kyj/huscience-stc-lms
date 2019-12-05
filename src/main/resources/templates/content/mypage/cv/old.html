@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <style>
+        .pdf_content {
+            padding:20px 0 0 20px;
+            background-color:gray;
+        }
+
+        .pdf_content svg {
+            background-color:#fff;
+        }
+    </style>
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+            <div class="tab-base">
+                <ul class="nav nav-tabs">
+                    <li>
+                        <a href="/mypage/cv">Current</a>
+                    </li>
+                    <li class="active">
+                        <a href="/mypage/cv/old">Old Version</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div th:switch="${oldVersions}">
+                        <div th:case="null">CV 이력이 존재 하지 않습니다.</div>
+                        <div th:case="*">
+                            <div class="panel-group accordion" id="accordion">
+                                <div class="panel panel-bordered panel-default" th:each="cv, stat : ${oldVersions}">
+                                    <!--Accordion title-->
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-parent="#accordion" data-toggle="collapse" th:href="@{#cv{id}(id=${stat.index})}" th:text="|Curriculum Vitae(${#dates.format(cv.createdDate, 'yyyy-MMM-dd')})|"></a>
+                                        </h4>
+                                    </div>
+                                    <div class="panel-collapse collapse" th:classappend="${stat.index == 0 ? 'in' : ''}" th:id="|cv${stat.index}|">
+                                        <div class="panel-body">
+                                            <div class="text-center">
+                                                <div th:utext="${cv.htmlContent}" class="pdf_content"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+    <!--Bootstrap Datepicker [ OPTIONAL ]-->
+    <!--    <script th:src="@{/static/default/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js}"></script>-->
+
+
+</th:block>
+
+</html>

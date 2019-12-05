@@ -30,7 +30,7 @@ public class FileUploadProperties {
     private String surveyUploadDir;
 
     // Digital Binder JD 업로드 경로
-    private String BinderJdUploadDir;
+    private String binderJdUploadDir;
 
     // Xdoc 관련 폴더
     private String xdocUploadDir;
@@ -54,11 +54,11 @@ public class FileUploadProperties {
     }
 
     public String getBinderJdUploadDir() {
-        return BinderJdUploadDir;
+        return binderJdUploadDir;
     }
 
     public void setBinderJdUploadDir(String binderJdUploadDir) {
-        BinderJdUploadDir = binderJdUploadDir;
+        this.binderJdUploadDir = binderJdUploadDir;
     }
 
     public String getSurveyUploadDir() {
