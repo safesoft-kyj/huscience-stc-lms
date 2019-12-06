@@ -55,7 +55,7 @@
                                     <!--Accordion title-->
                                     <div class="panel-heading">
                                         <h4 class="panel-title">
-                                            <a data-parent="#accordion" data-toggle="collapse" th:href="@{#cv{id}(id=${stat.index})}" th:text="|Curriculum Vitae(${#dates.format(cv.createdDate, 'yyyy-MMM-dd')})|"></a>
+                                            <a data-parent="#accordion" data-toggle="collapse" th:href="@{#cv{id}(id=${stat.index})}" th:text="|Curriculum Vitae - ${#dates.format(cv.createdDate, 'dd/MMM/yyyy')}|"></a>
                                         </h4>
                                     </div>
                                     <div class="panel-collapse collapse" th:classappend="${stat.index == 0 ? 'in' : ''}" th:id="|cv${stat.index}|">

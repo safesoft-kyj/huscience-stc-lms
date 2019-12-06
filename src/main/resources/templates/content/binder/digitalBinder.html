@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <style>
+        #page-content > div > ul > li {
+            width:250px;
+        }
+
+        .pdf_content {
+            padding:20px 0 0 20px;
+            background-color:gray;
+        }
+
+        .pdf_content svg {
+            background-color:#fff;
+        }
+    </style>
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!--Stacked Tabs Right-->
+            <!--===================================================-->
+            <div class="tab-base tab-stacked-right">
+
+                <!--Tabs Content-->
+                <div class="tab-content">
+                    <div id="cover" class="tab-pane fade active in">
+                        <p class="text-main text-semibold">Cover</p>
+                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
+                    </div>
+
+                    <div id="reviewHistory" class="tab-pane fade">
+                        <p class="text-main text-semibold">Curr</p>
+                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
+                    </div>
+
+                </div>
+
+                <!--Nav Tabs-->
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a data-toggle="tab" href="#cover">Cover</a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#reviewHistory">Training Record Review History</a>
+                    </li>
+                    <li>
+                        <a href="/binder/cv">Curriculum Vitae</a>
+                    </li>
+                    <li>
+                        <a href="/binder/jd">Job Description</a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#demo-stk-rgt-tab-4">Training Log(SOP)</a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#demo-stk-rgt-tab-5">Training Log(TM)</a>
+                    </li>
+                </ul>
+            </div>
+            <!--===================================================-->
+            <!--End Stacked Tabs Right-->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+</th:block>
+
+</html>
+
+

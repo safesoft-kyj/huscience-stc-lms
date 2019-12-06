@@ -126,6 +126,13 @@
 <!--                <li><a data-th-href="@{/mypage/myinfo}">사용자정보</a></li>-->
             </ul>
         </li>
+        <li>
+            <a href="/binder">
+                <i class="demo-pli-home"></i>
+                <span class="menu-title">Digital Binder</span>
+                <i class="arrow"></i>
+            </a>
+        </li>
         <th:block th:with="isManager = ${#authorization.getAuthentication().getPrincipal().isManager()}">
             <th:block th:if="${isManager == true}">
                 <li>

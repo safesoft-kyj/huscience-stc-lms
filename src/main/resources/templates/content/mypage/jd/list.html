@@ -19,6 +19,15 @@
             margin: 0;
             padding: 0;
         }
+
+        .pdf_content {
+            padding:20px 0 0 20px;
+            background-color:gray;
+        }
+
+        .pdf_content svg {
+            background-color:#fff;
+        }
     </style>
 </th:block>
 
@@ -124,7 +133,7 @@
 
                     <!--Modal body-->
                     <div class="modal-body">
-                        <div id="preview_cont" class="text-center"></div>
+                        <div id="preview_cont" class="text-center pdf_content"></div>
                     </div>
 
                     <!--Modal footer-->
@@ -150,7 +159,7 @@
 
                 <!--Modal body-->
                 <div class="modal-body">
-                    <div id="preview_jd_cont" class="text-center"></div>
+                    <div id="preview_jd_cont" class="text-center pdf_content"></div>
                 </div>
 
                 <!--Modal footer-->

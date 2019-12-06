@@ -19,6 +19,14 @@
             margin: 0;
             padding: 0;
         }
+        .pdf_content {
+            padding:20px 0 0 20px;
+            background-color:gray;
+        }
+
+        .pdf_content svg {
+            background-color:#fff;
+        }
     </style>
 </th:block>
 
@@ -80,6 +88,7 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <th:block th:if="${user.curriculumVitae.status.name() eq 'REVIEW'}">
+                                                        <input th:value="${user.curriculumVitae.htmlContent}" th:id="|cv_cont_${user.curriculumVitae.id}|" th:type="hidden">
                                                         <button class="btn btn-warning btn-xs" data-target="#approval-modal" th:attr="data-id=${user.curriculumVitae.id}" data-toggle="modal">Review</button>
                                                     </th:block>
                                                 </td>
@@ -101,21 +110,21 @@
     <!--Default Bootstrap Modal-->
     <!--===================================================-->
     <div class="modal fade" id="approval-modal" role="dialog" tabindex="-1" aria-labelledby="assign-modal" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <form name="f" id="approvalForm" method="post" th:action="@{/employees/cv/approval}">
                     <input type="hidden" id="id" name="id"/>
                     <!--Modal header-->
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
-                        <h4 class="modal-title">Curriculum Viate</h4>
+                        <h4 class="modal-title">CV 검토 완료 처리 하시겠습니까?</h4>
                     </div>
 
                     <!--Modal body-->
                     <div class="modal-body">
-                        <p>
-                            CV 검토 완료 처리 하시겠습니까?
-                        </p>
+                        <div id="preview_cv_cont" class="pdf_content text-center">
+
+                        </div>
                     </div>
 
                     <!--Modal footer-->
@@ -136,6 +145,7 @@
         $(document).ready(function() {
             $("#approval-modal").on('show.bs.modal', function(e) {
                 var id = $(e.relatedTarget).data('id');
+                $("#preview_cv_cont").html($("#cv_cont_" + id).val());
                 $("#id").val(id);
             });
 

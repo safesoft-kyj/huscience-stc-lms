@@ -10,6 +10,20 @@
 </th:block>
 
 <th:block layout:fragment="custom_css">
+    <style>
+        #page-content > div > ul > li {
+            width:250px;
+        }
+
+        .pdf_content {
+            padding:20px 0 0 20px;
+            background-color:gray;
+        }
+
+        .pdf_content svg {
+            background-color:#fff;
+        }
+    </style>
 </th:block>
 
 <th:block layout:fragment="content_body">
@@ -28,16 +42,83 @@
         <!--===================================================-->
         <div id="page-content">
 
-            <!-- Basic Data Tables -->
+            <!--Stacked Tabs Right-->
             <!--===================================================-->
-            <div class="panel">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Basic Data Tables with responsive plugin</h3>
+            <div class="tab-base tab-stacked-right">
+
+                <!--Tabs Content-->
+                <div class="tab-content">
+                    <div id="jd" class="tab-pane fade active in">
+                        <div th:switch="${jdList}">
+                            <div th:case="null">JD 정보가 존재 하지 않습니다.</div>
+                            <div th:case="*">
+                                <div class="panel-group accordion" id="jdlist">
+                                    <div class="panel" th:each="jd, stat : ${jdList}">
+                                        <!--Accordion title-->
+                                        <div class="panel-heading" style="border-bottom: 1px solid #eee;">
+                                            <h4 class="panel-title">
+                                                <a data-parent="#jdlist" data-toggle="collapse" th:href="@{#jd{id}(id=${stat.index})}">
+                                                    <span th:text="|Job Description - ${jd.jobDescriptionVersion.jobDescription.title}(${jd.jobDescriptionVersion.jobDescription.shortName}) v${jd.jobDescriptionVersion.version_no}|">"</span> <span class="label label-info">CURRENT</span>
+                                                </a>
+
+                                            </h4>
+                                        </div>
+                                        <div class="panel-collapse collapse" th:classappend="${stat.index == 0 ? 'in' : ''}" th:id="|jd${stat.index}|">
+                                            <div class="panel-body pdf_content">
+                                                <div class="text-center">
+                                                    <div th:utext="${jd.htmlContent}"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel" th:if="${oldJdList != null and oldJdList.size() > 0}" th:each="jd, stat : ${oldJdList}">
+                                        <!--Accordion title-->
+                                        <div class="panel-heading" style="border-bottom: 1px solid #eee;">
+                                            <h4 class="panel-title">
+                                                <a data-parent="#oldjdlist" data-toggle="collapse" th:href="@{#oldjd{id}(id=${stat.index})}">
+                                                    <span th:text="|Job Description - ${jd.jobDescriptionVersion.jobDescription.title}(${jd.jobDescriptionVersion.jobDescription.shortName}) v${jd.jobDescriptionVersion.version_no}|">"</span>
+                                                </a>
+
+                                            </h4>
+                                        </div>
+                                        <div class="panel-collapse collapse" th:id="|oldjd${stat.index}|">
+                                            <div class="panel-body pdf_content">
+                                                <div class="text-center">
+                                                    <div th:utext="${jd.htmlContent}"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="panel-body">
-                    <p th:text="${pageInfo.getPageTitle()}"></p>
-                </div><!--panel-body End -->
-            </div><!-- panel End -->
+
+                <!--Nav Tabs-->
+                <ul class="nav nav-tabs">
+                    <li>
+                        <a href="/binder/cover">Cover</a>
+                    </li>
+                    <li>
+                        <a href="/binder/history">Training Record Review History</a>
+                    </li>
+                    <li>
+                        <a href="/binder/cv">Curriculum Vitae</a>
+                    </li>
+                    <li class="active">
+                        <a href="/binder/jd">Job Description</a>
+                    </li>
+                    <li>
+                        <a href="/binder/trainingLog-sop">Training Log(SOP)</a>
+                    </li>
+                    <li>
+                        <a href="/binder/trainingLog-tm">Training Log(TM)</a>
+                    </li>
+                </ul>
+            </div>
+            <!--===================================================-->
+            <!--End Stacked Tabs Right-->
         </div><!-- Page content End -->
     </div><!-- Content container End -->
 </th:block>
@@ -46,3 +127,5 @@
 </th:block>
 
 </html>
+
+
