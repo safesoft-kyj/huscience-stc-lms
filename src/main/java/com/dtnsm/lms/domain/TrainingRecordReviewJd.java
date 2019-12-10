@@ -1,14 +1,12 @@
 package com.dtnsm.lms.domain;
 
-import com.dtnsm.common.entity.JobDescriptionVersion;
-import com.dtnsm.common.entity.TrainingRecord;
+import com.dtnsm.common.entity.UserJobDescription;
 import com.dtnsm.lms.auth.AuditorEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
 
 @Data
 @Entity
@@ -27,6 +25,6 @@ public class TrainingRecordReviewJd extends AuditorEntity<String> implements Ser
     private TrainingRecordReview trainingRecordReview;
 
     @ManyToOne
-    @JoinColumn(name = "jd_ver_id", referencedColumnName = "id")
-    private JobDescriptionVersion jobDescriptionVersion;
+    @JoinColumn(name = "user_jd_id", referencedColumnName = "id")
+    private UserJobDescription userJobDescription;
 }

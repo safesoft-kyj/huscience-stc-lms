@@ -51,7 +51,24 @@
                 <!--Tabs Content-->
                 <div class="tab-content">
                     <div id="cover" class="tab-pane fade active in">
-                        <button class="btn btn-primary"><i class="fa fa-send-o"></i> 검토 요청</button>
+                        <!--                        <div class="alert alert-info">-->
+                        <!--                            <strong>알림!</strong> CV, JD, Training Log 정보가 존재합니다. 매니저에게 <span class="label label-purple">검토</span> 요청을 진행해 주세요.-->
+                        <!--                        </div>-->
+                        <div class="alert alert-info" th:if="${trainingRecord == null || trainingRecord.sopFileName == null}">
+                            <strong>알림!</strong> Training Log(SOP) 정보가 존재 하지 않습니다. e-SOP 트레이닝 완료 후 Publish를 진행 해 주세요.
+                        </div>
+                        <div class="alert alert-info" th:if="${trainingRecord == null || trainingRecord.tmFileName == null}">
+                            <strong>알림!</strong> Training Log(TM) 정보가 존재 하지 않습니다. Publish 진행 해 주세요.
+                        </div>
+                        <div class="alert alert-danger" th:if="${cvList == null}">
+                            <strong>알림!</strong> Curriculum Vitae 를 작성해 주세요.
+                        </div>
+                        <div class="alert alert-danger" th:if="${jdList == null}">
+                            <strong>알림!</strong> Job Description 정보가 존재하지 않습니다.
+                        </div>
+                        <form method="post" th:action="@{/binder/review}">
+                        <button class="btn btn-primary" th:if="${jdList != null and cvList != null}"><i class="fa fa-send-o"></i> 검토 요청</button>
+                        </form>
                         <hr/>
                         <h3 class="text-center">Jeonghwan, Seo</h3>
                         <hr/>
@@ -88,15 +105,7 @@
                             </tbody>
                         </table>
 
-                        <div class="alert alert-info">
-                            <strong>알림!</strong> CV, JD, Training Log 정보가 존재합니다. 매니저에게 <span class="label label-purple">검토</span> 요청을 진행해 주세요.
-                        </div>
-                        <div class="alert alert-warning">
-                            <strong>알림!</strong> Training Log(SOP) 정보가 존재 하지 않습니다. e-SOP 트레이닝을 진해해 주세요.
-                        </div>
-                        <div class="alert alert-danger">
-                            <strong>알림!</strong> Curriculum Vitae 를 작성해 주세요.
-                        </div>
+
 
                         <p class="text-main text-semibold">Digital Binder</p>
                         <p>최초 모든(CV, JD, Log(SOP), Log(TM)) 완료 되면 검토 요청 가능!</p>
