@@ -16,7 +16,7 @@ spring:
     servlet:
       content-type: text/html
   datasource:
-    url: jdbc:sqlserver://localhost:1433;DatabaseName=elearning
+    url: jdbc:sqlserver://220.117.192.209:20170;DatabaseName=test_lms
     username: sa
     password: Dtncro@123##
 #    url: jdbc:sqlserver://localhost:1433;DatabaseName=lms_test_20191118
@@ -26,7 +26,7 @@ spring:
     initialization-mode: always
     data: classpath:/init-data/data.sql
     sql-script-encoding: UTF-8
-    continue-on-error: true
+    continue-on-error: false
   flyway:
 #      url: jdbc:sqlserver://localhost:1433;DatabaseName=elearning
 #      user: sa
@@ -96,6 +96,7 @@ file:
   survey-upload-dir: D://elearning//upload//survey//
   binder-jd-upload-dir: D://elearning//upload//binder//jd//
   xdoc-upload-dir: D://elearning//upload//xdoc//
+  certificate-upload-dir: D://elearning//upload//certificate//
 
 
 
