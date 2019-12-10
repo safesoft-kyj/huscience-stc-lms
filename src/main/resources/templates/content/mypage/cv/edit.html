@@ -31,18 +31,18 @@
             <div class="tab-base">
                 <ul class="nav nav-tabs">
                     <li class="active">
-                        <a data-toggle="tab" href="/mypage/cv/edit">CV 작성</a>
+                        <a href="/mypage/cv">Current</a>
                     </li>
                     <li>
-                        <a data-toggle="tab" href="/mypage/cv/current">Current</a>
-                    </li>
-                    <li>
-                        <a data-toggle="tab" href="/mypage/cv/old">Old Version</a>
+                        <a href="/mypage/cv/old">Old Version</a>
                     </li>
                 </ul>
                 <div class="tab-content">
                     <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/mypage/cv/edit}" th:object="${cv}" method="post">
                         <div class="panel">
+                            <div th:if="${cv.status != null && cv.status.name() eq 'REVIEW'}" class="alert alert-purple">
+                                <strong>알림!</strong> CV 검토 진행 중에는 수정 할 수 없습니다.
+                            </div>
                             <div class="panel-heading">
                                 <h1 class="panel-title text-center">
                                     <a th:href="@{/mypage/cv/view/{id}(id=${cv.id})}"><span sec:authentication="principal.user.engName"></span></a>
@@ -75,7 +75,7 @@
                                         <div th:each="edu, stat : *{educations}">
                                             <h5>
                                                 <span th:text="|No. ${stat.index + 1}|"></span>
-                                                <div class="pull-right" th:if="${stat.size gt 1}">
+                                                <div class="pull-right" th:if="${stat.size gt 1 and edu.readOnly eq false}">
                                                     <button class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|education:${stat.index}|"><i class="fa fa-trash-o"></i></button>
                                                 </div>
                                             </h5>
@@ -153,7 +153,7 @@
                                         <div th:each="edu, stat : *{careerHistories}">
                                             <h5>
                                                 <span th:text="|No. ${stat.index + 1}|"></span>
-                                                <div class="pull-right" th:if="${stat.size gt 1}">
+                                                <div class="pull-right" th:if="${stat.size gt 1 and edu.readOnly eq false}">
                                                     <button class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|careerHistory:${stat.index}|"><i class="fa fa-trash-o"></i></button>
                                                 </div>
                                             </h5>
@@ -247,7 +247,7 @@
                                                                 <tr>
                                                                     <td colspan="4" class="form-group" th:classappend="${#fields.hasErrors('licenses[__${stat.index}__].nameOfLicense')} ? 'has-error' : ''"><input type="text" class="form-control" placeholder="Name of License" th:field="*{licenses[__${stat.index}__].nameOfLicense}"></td>
                                                                     <td rowspan="2">
-                                                                        <button class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|license:${stat.index}|"><i class="fa fa-trash-o"></i></button>
+                                                                        <button th:if="${license.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|license:${stat.index}|"><i class="fa fa-trash-o"></i></button>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -288,7 +288,7 @@
                                                                         <input type="text" class="form-control issueDate" placeholder="Issue Date(MMM YYYY)" th:field="*{certifications[__${stat.index}__].issueDate}">
                                                                     </td>
                                                                     <td>
-                                                                        <button class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|certification:${stat.index}|"><i class="fa fa-trash-o"></i>
+                                                                        <button th:if="${certification.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|certification:${stat.index}|"><i class="fa fa-trash-o"></i>
                                                                         </button>
                                                                     </td>
                                                                 </tr>
@@ -350,7 +350,7 @@
                                                                         </div>
                                                                     </td>
                                                                     <td>
-                                                                        <button class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|membership:${stat.index}|"><i class="fa fa-trash-o"></i>
+                                                                        <button th:if="${membership.readOnly eq fasle}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|membership:${stat.index}|"><i class="fa fa-trash-o"></i>
                                                                         </button>
                                                                     </td>
                                                                 </tr>
@@ -402,7 +402,7 @@
                                                                         </select>
                                                                     </td>
                                                                     <td class="text-right">
-                                                                        <button class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|language:${stat.index}|"><i class="fa fa-trash-o"></i>
+                                                                        <button th:if="${language.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|language:${stat.index}|"><i class="fa fa-trash-o"></i>
                                                                         </button>
                                                                     </td>
                                                                 </tr>
@@ -415,7 +415,7 @@
                                                                                     <input type="text" class="form-control" placeholder="Certificate Program" th:field="*{languages[__${stat.index}__].languageCertifications[__${certStat.index}__].certificateProgram}">
                                                                                 </td>
                                                                                 <td>
-                                                                                    <button class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|languageCertification:${stat.index}.${certStat.index}|"><i class="fa fa-trash-o"></i>
+                                                                                    <button class="btn btn-xs btn-danger" th:if="${language.readOnly eq false}" type="submit" name="remove" th:value="|languageCertification:${stat.index}.${certStat.index}|"><i class="fa fa-trash-o"></i>
                                                                                     </button>
                                                                                 </td>
                                                                             </tr>
@@ -461,7 +461,7 @@
                                                                         </select>
                                                                     </td>
                                                                     <td class="text-right">
-                                                                        <button class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|computerKnowledge:${stat.index}|"><i class="fa fa-trash-o"></i>
+                                                                        <button th:if="${computerKnowledge.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|computerKnowledge:${stat.index}|"><i class="fa fa-trash-o"></i>
                                                                         </button>
                                                                     </td>
                                                                 </tr>
@@ -474,7 +474,7 @@
                                                                                     <input type="text" class="form-control" placeholder="Certificate Program" th:field="*{computerKnowledges[__${stat.index}__].computerCertifications[__${certStat.index}__].certificateProgram}">
                                                                                 </td>
                                                                                 <td>
-                                                                                    <button class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|computerCertification:${stat.index}.${certStat.index}|"><i class="fa fa-trash-o"></i>
+                                                                                    <button class="btn btn-xs btn-danger" th:if="${computerKnowledge.readOnly eq fasle}" type="submit" name="remove" th:value="|computerCertification:${stat.index}.${certStat.index}|"><i class="fa fa-trash-o"></i>
                                                                                     </button>
                                                                                 </td>
                                                                             </tr>
@@ -541,7 +541,7 @@
                                                                         </select>
                                                                     </div>
                                                                     <div class="col-xs-8 text-right">
-                                                                        <button class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|experience:${stat.index}|"><i class="fa fa-trash-o"></i>
+                                                                        <button th:if="${experience.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|experience:${stat.index}|"><i class="fa fa-trash-o"></i>
                                                                         </button>
                                                                     </div>
                                                                 </div>
@@ -572,15 +572,32 @@
                                 </div>
                             </div>
                             <div class="panel-footer text-right">
+                                <th:block th:if="${cv.status == null or cv.status.name() eq 'TEMP'}">
                                 <button class="btn btn-info" type="submit" name="_submit" value="temp">
                                     저장
                                 </button>
                                 <button class="btn btn-primary" name="_submit" value="review" type="submit" th:if="${cv.initial eq true and cv.id != null}">
-                                    검토 요청
+                                    저장 & 검토 요청
                                 </button>
-                                <button class="btn btn-primary" type="submit" name="_submit" value="publish" th:if="${cv.initial eq false}">
-                                    배포
+                                </th:block>
+
+                                <th:block th:if="${cv.status != null and cv.status.name() == 'NEW'}">
+                                <button class="btn btn-info" type="submit" name="_submit" value="new">
+                                    저장
                                 </button>
+                                </th:block>
+
+                                <th:block th:if="${cv.status != null and cv.status.name() eq 'TEMP' and cv.initial eq false}">
+                                <button class="btn btn-primary" type="submit" name="_submit" value="publish">
+                                    저장 & 배포
+                                </button>
+                                </th:block>
+
+                                <th:block th:if="${cv.status != null and cv.status.name() eq 'CURRENT'}">
+                                <a class="btn btn-primary" th:href="@{/mypage/cv/new?id={id}(id=${cv.id})}">
+                                    New CV
+                                </a>
+                                </th:block>
                                 <a th:href="@{/mypage/cv}" class="btn btn-success">
                                     <i class="fa fa-upload-cloud"></i> <span th:text="#{label.list}"></span>
                                 </a>
@@ -645,10 +662,17 @@
             });
 
             $(".edu-present, .career-present").trigger("change");
+
+
         });
     </script>
-
-
+    <th:block th:if="${cv.status != null && (cv.status.name() eq 'REVIEW' or cv.status.name() eq 'CURRENT')}">
+        <script>
+            var f = $("#boardFrm");
+            f.find("button").hide();
+            f.find("input, select").attr("disabled", "disabled");
+        </script>
+    </th:block>
 </th:block>
 
 </html>

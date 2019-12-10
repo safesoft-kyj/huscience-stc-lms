@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <style>
+        .pdf_content {
+            padding:20px 0 20px 0;
+            background-color:#fafafa;
+        }
+
+    .pdf_content svg {
+        background-color:#fff;
+        border:1px solid #333;
+        box-shadow: 5px 5px 5px;
+    }
+    </style>
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+            <div class="tab-base">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="/mypage/cv">Current</a>
+                    </li>
+                    <li>
+                        <a href="/mypage/cv/old">Old Version</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/mypage/cv/edit}" th:object="${cv}" method="post">
+                        <div class="panel">
+                            <div class="panel-body">
+                                <div class="text-center">
+                                    <div th:utext="${cv.htmlContent}" class="pdf_content"></div>
+                                </div>
+                            </div>
+                            <div class="panel-footer text-right">
+                                <th:block th:if="${cv.status != null and cv.status.name() eq 'CURRENT'}">
+                                    <a class="btn btn-primary" th:href="@{/mypage/cv/new?id={id}(id=${cv.id})}">
+                                        New CV
+                                    </a>
+                                </th:block>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+</th:block>
+</html>

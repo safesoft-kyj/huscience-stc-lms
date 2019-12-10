@@ -16,15 +16,14 @@ spring:
     servlet:
       content-type: text/html
   datasource:
-    url: jdbc:sqlserver://220.117.192.209:20170;DatabaseName=test_lms
+    url: jdbc:sqlserver://localhost:1433;DatabaseName=elearning
     username: sa
-    password: safe123!@#
-#    url: jdbc:sqlserver://localhost:1433;DatabaseName=test_lms
+    password: Dtncro@123##
+#    url: jdbc:sqlserver://localhost:1433;DatabaseName=lms_test_20191118
 #    username: sa
-#    password: safe123!@#
+#    password: Test1234!
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-#    initialization-mode: always
-    initialization-mode: never
+    initialization-mode: always
     data: classpath:/init-data/data.sql
     sql-script-encoding: UTF-8
     continue-on-error: true
@@ -35,7 +34,7 @@ spring:
     locations: classpath:/db/migration/local
     baseline-on-migrate: true
     encoding: UTF-8
-    enabled: false
+    enabled: true
   jpa:
     hibernate:
       ddl-auto: update
@@ -97,7 +96,8 @@ file:
   survey-upload-dir: D://elearning//upload//survey//
   binder-jd-upload-dir: D://elearning//upload//binder//jd//
   xdoc-upload-dir: D://elearning//upload//xdoc//
-  certificate-upload-dir: D://elearning//upload//certificate//
+
+
 
 image-file:
   matric: D://elearning//images//matrix//

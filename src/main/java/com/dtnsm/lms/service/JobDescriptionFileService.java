@@ -7,16 +7,27 @@ import com.dtnsm.lms.exception.FileUploadException;
 import com.dtnsm.lms.properties.FileUploadProperties;
 import com.dtnsm.lms.repository.JobDescriptionFileRepository;
 import com.dtnsm.lms.util.FileUtil;
+import com.spire.pdf.FileFormat;
+import com.spire.pdf.PdfDocument;
 import org.apache.commons.io.FilenameUtils;
+import org.docx4j.Docx4J;
+import org.docx4j.Docx4jProperties;
+import org.docx4j.convert.out.HTMLSettings;
+import org.docx4j.convert.out.html.SdtToListSdtTagHandler;
+import org.docx4j.convert.out.html.SdtWriter;
+import org.docx4j.fonts.IdentityPlusMapper;
+import org.docx4j.fonts.Mapper;
+import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.mail.javamail.ConfigurableMimeFileTypeMap;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -66,6 +77,28 @@ public class JobDescriptionFileService {
 
             JobDescriptionVersionFile borderFile = new JobDescriptionVersionFile(originName, saveName, file.getSize(), file.getContentType(), jobDescriptionVersion);
 
+            /* 사용자에게 Job Description 을 보여주기 위해서 PDF 파일로 변환한다.
+            *  해당 PDF파일을 사용자에게는 HTML로 변환하여 출력
+            */
+//            new Thread(() -> {
+                try {
+                    WordprocessingMLPackage wordMLPackage = Docx4J.load(file.getInputStream());
+//                    String outputPDF = fileLocation + "/" + file.getOriginalFilename().substring(0, saveName.lastIndexOf(".")) + ".pdf";
+//                    OutputStream os = new FileOutputStream(outputPDF);
+                    ByteArrayOutputStream os = new ByteArrayOutputStream();
+                    Docx4J.toPDF(wordMLPackage, os);
+
+                    PdfDocument pdf = new PdfDocument();
+                    pdf.loadFromBytes(os.toByteArray());
+                    borderFile.setPageCount(pdf.getPages().getCount());
+
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    pdf.saveToStream(stream, FileFormat.HTML);
+
+                    borderFile.setHtmlContent(stream.toString("UTF-8"));
+
+                } catch (Exception error) {System.err.println(error);}
+//            }).run();
 
             borderFileRepository.save(borderFile);
 

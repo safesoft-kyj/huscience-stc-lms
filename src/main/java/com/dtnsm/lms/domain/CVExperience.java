@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.io.Serializable;
 
+@SuppressWarnings("JpaDataSourceORMInspection")
 @Data
 @Entity
 @Table(name = "el_cv_experience")
@@ -41,7 +42,7 @@ public class CVExperience extends AuditorEntity<String> implements Serializable 
     @Column(name = "workingDetails")
     private String workingDetails;
 
-    @Transient
+    @Column(name = "readonly")
     private boolean readOnly;
 }
 

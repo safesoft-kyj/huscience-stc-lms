@@ -51,6 +51,6 @@ public class CVEducation extends AuditorEntity<String> implements Serializable {
     @Column(name = "name_of_supervisor")
     private String nameOfSupervisor;
 
-    @Transient
+    @Column(name = "readonly")
     private boolean readOnly;
 }
