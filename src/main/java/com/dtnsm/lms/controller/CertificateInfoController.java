@@ -90,7 +90,7 @@ public class CertificateInfoController {
         pageInfo.setPageId("m-course-edit");
         pageInfo.setPageTitle("수료증정보");
         model.addAttribute(pageInfo);
-        model.addAttribute("border", courseCertificateInfoRepository.getOne(id));
+        model.addAttribute("certiInfo", courseCertificateInfoRepository.getOne(id));
         model.addAttribute("managerList", userService.getAccountList());
 
         return "admin/certificate/info/edit";
@@ -100,7 +100,7 @@ public class CertificateInfoController {
     public String editPost(@PathVariable("id") int id, @Valid CourseCertificateInfo courseCertificateInfo, BindingResult result) {
         if(result.hasErrors()) {
             courseCertificateInfo.setId(id);
-            return "notice-edit";
+            return "admin/certificate/info/edit";
         }
 
         CourseCertificateInfo oldCourseCertificateInfo = courseCertificateInfoRepository.getOne(id);

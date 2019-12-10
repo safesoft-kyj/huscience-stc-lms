@@ -349,23 +349,23 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="panel panel-mint panel-colorful media middle pad-all">
-                            <div class="media-left">
-                                <div class="pad-hor">
-                                    <i class="demo-pli-list-view icon-3x"></i>
-                                </div>
-                            </div>
-                            <div class="media-body">
-                                <p class="text-2x mar-no text-semibold">
-                                    <a th:href="@{/approval/document/listApprProcess}" th:text="${documentApprCount}" style="color:white"></a>
-                                    /
-                                    <a th:href="@{/approval/document/listMyProcess}" th:text="${documentProcessCount}" style="color:white"></a>
-                                </p>
-                                <p class="mar-no">전자결재 미결 / 진행중</p>
-                            </div>
-                        </div>
-                    </div>
+<!--                    <div class="row">-->
+<!--                        <div class="panel panel-mint panel-colorful media middle pad-all">-->
+<!--                            <div class="media-left">-->
+<!--                                <div class="pad-hor">-->
+<!--                                    <i class="demo-pli-list-view icon-3x"></i>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="media-body">-->
+<!--                                <p class="text-2x mar-no text-semibold">-->
+<!--                                    <a th:href="@{/approval/document/listApprProcess}" th:text="${documentApprCount}" style="color:white"></a>-->
+<!--                                    /-->
+<!--                                    <a th:href="@{/approval/document/listMyProcess}" th:text="${documentProcessCount}" style="color:white"></a>-->
+<!--                                </p>-->
+<!--                                <p class="mar-no">전자결재 미결 / 진행중</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
                     <div class="row">
                         <div class="panel panel-info panel-colorful media middle pad-all">
                             <div class="media-left">
@@ -384,34 +384,33 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="panel height-fix-pannel">
-                            <div class="panel-body">
-                                <h5 class="col-md-6" th:text="#{label.title.customer}" style="padding-bottom: 10px">협약기관</h5>
-                                <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a th:href="@{/customer/list-page}">more ></a></small>
+                     <div class="row">
+                        <div class="col-md-6"></div>
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <h5 class="col-md-6" th:text="#{label.title.customer}" style="padding-bottom: 10px">협약기관</h5>
+                                    <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a th:href="@{/customer/list-page}">more ></a></small>
 
-                                <div th:switch="${customers}">
-                                    <h2 th:case="null">No customer yet!</h2>
-                                    <div th:case="*">
-                                        <table id="customer-list-page1" class="" cellspacing="0" width="100%">
-                                            <tbody>
-                                            <tr th:each="customer, index : ${customers}">
-                                                <td>
-                                                    <a th:href="@{/customer/view/{id}(id=${customer.getId()})}" th:text="${customer.getName()}"></a>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div><!--switch End -->
+                                    <div th:switch="${customers}">
+                                        <h2 th:case="null">No customer yet!</h2>
+                                        <div th:case="*">
+                                            <table id="customer-list-page1" class="" cellspacing="0" width="100%">
+                                                <tbody>
+                                                <tr th:each="customer, index : ${customers}">
+                                                    <td>
+                                                        <a th:href="@{/customer/view/{id}(id=${customer.getId()})}" th:text="${customer.getName()}"></a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div><!--switch End -->
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="text-center">
-                            <div id="custom-date-format"></div>
-                        </div>
-                    </div>
+                         <div class="col-md-6">
+                             <div id="custom-date-format"></div>
+                         </div>
+                     </div>
                 </div>
             </div>
         </div><!-- Page content End -->
