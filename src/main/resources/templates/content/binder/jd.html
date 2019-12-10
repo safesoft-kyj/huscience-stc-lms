@@ -16,12 +16,14 @@
         }
 
         .pdf_content {
-            padding:20px 0 0 20px;
-            background-color:gray;
+            padding:20px 0 20px 0;
+            background-color:#fafafa;
         }
 
         .pdf_content svg {
             background-color:#fff;
+            border:1px solid #333;
+            box-shadow: 5px 5px 5px;
         }
     </style>
 </th:block>
@@ -71,7 +73,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="panel" th:if="${oldJdList != null and oldJdList.size() > 0}" th:each="jd, stat : ${oldJdList}">
+                                    <div class="panel" th:if="${oldJdList != null}" th:each="jd, stat : ${oldJdList}">
                                         <!--Accordion title-->
                                         <div class="panel-heading" style="border-bottom: 1px solid #eee;">
                                             <h4 class="panel-title">
@@ -98,10 +100,7 @@
                 <!--Nav Tabs-->
                 <ul class="nav nav-tabs">
                     <li>
-                        <a href="/binder/cover">Cover</a>
-                    </li>
-                    <li>
-                        <a href="/binder/history">Training Record Review History</a>
+                        <a href="/binder">Training Record Review History</a>
                     </li>
                     <li>
                         <a href="/binder/cv">Curriculum Vitae</a>

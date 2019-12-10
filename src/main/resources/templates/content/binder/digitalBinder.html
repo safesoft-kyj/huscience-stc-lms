@@ -16,12 +16,14 @@
         }
 
         .pdf_content {
-            padding:20px 0 0 20px;
-            background-color:gray;
+            padding:20px 0 20px 0;
+            background-color:#fafafa;
         }
 
         .pdf_content svg {
             background-color:#fff;
+            border:1px solid #333;
+            box-shadow: 5px 5px 5px;
         }
     </style>
 </th:block>
@@ -49,24 +51,66 @@
                 <!--Tabs Content-->
                 <div class="tab-content">
                     <div id="cover" class="tab-pane fade active in">
-                        <p class="text-main text-semibold">Cover</p>
-                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
-                    </div>
+                        <button class="btn btn-primary"><i class="fa fa-send-o"></i> 검토 요청</button>
+                        <hr/>
+                        <h3 class="text-center">Jeonghwan, Seo</h3>
+                        <hr/>
+                        <table class="table table-bordered">
+                            <tbody>
+                            <tr>
+                                <th class="col-xs-2 bg-gray-light">Job Title</th><td class="col-xs-4">Clinical Research Associate(CRA)</td>
+                                <th class="col-xs-2 bg-gray-light">Date Started:</th><td class="col-xs-4"></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-gray-light">Department/Team</th><td></td>
+                                <th class="bg-gray-light">Employee No.:</th><td></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr class="bg-gray-light">
+                                <th rowspan="2">Date of Review<br/>(DD-MMM-YYYY)</th><th rowspan="2">Review Details</th>
+                                <th colspan="2">Reviewed by</th>
+                            </tr>
+                            <tr class="bg-gray-light">
+                                <th>Name</th>
+                                <th>Signature</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            </tbody>
+                        </table>
 
-                    <div id="reviewHistory" class="tab-pane fade">
-                        <p class="text-main text-semibold">Curr</p>
-                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
-                    </div>
+                        <div class="alert alert-info">
+                            <strong>알림!</strong> CV, JD, Training Log 정보가 존재합니다. 매니저에게 <span class="label label-purple">검토</span> 요청을 진행해 주세요.
+                        </div>
+                        <div class="alert alert-warning">
+                            <strong>알림!</strong> Training Log(SOP) 정보가 존재 하지 않습니다. e-SOP 트레이닝을 진해해 주세요.
+                        </div>
+                        <div class="alert alert-danger">
+                            <strong>알림!</strong> Curriculum Vitae 를 작성해 주세요.
+                        </div>
 
+                        <p class="text-main text-semibold">Digital Binder</p>
+                        <p>최초 모든(CV, JD, Log(SOP), Log(TM)) 완료 되면 검토 요청 가능!</p>
+                        <p>이후 입사 후 11개월 되는 시점 부터 검토 요청 가능</p>
+                        <p>Update 검토 인 경우는 변경된 항목(CV, JD...) 만 검토 하는지...</p>
+                        <p>예외) Audit 대응으로 SOP 트레이닝 이후 검토 요청?</p>
+
+                    </div>
                 </div>
 
                 <!--Nav Tabs-->
                 <ul class="nav nav-tabs">
                     <li class="active">
-                        <a data-toggle="tab" href="#cover">Cover</a>
-                    </li>
-                    <li>
-                        <a data-toggle="tab" href="#reviewHistory">Training Record Review History</a>
+                        <a>Training Record Review History</a>
                     </li>
                     <li>
                         <a href="/binder/cv">Curriculum Vitae</a>

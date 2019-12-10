@@ -36,18 +36,19 @@
                     <!--End Horizontal Form-->
                     <form class="form-horizontal" id="jobDescriptionForm" th:action="@{/admin/jd/add}" method="post" enctype="multipart/form-data">
                         <div class="form-group">
-                            <label class="col-sm-3 control-label" for="file">Job Description(<i class="fa fa-file-word-o text-info"></i>) </label>
+                            <label class="col-sm-3 control-label" for="file">Job Description </label>
                             <div class="col-sm-9">
                                 <!--Bootstrap Datepicker : Text Input-->
                                 <!--===================================================-->
                                 <div>
                                     <input type="file" name="file" id="file" placeholder="Job Description" accept=".docx" class="form-control" required>
+                                    <small class="text-info"><i class="fa fa-exclamation-circle"></i> Job Description(MS Word) 파일을 선택해 주세요.</small>
                                 </div>
                                 <!--===================================================-->
                             </div>
                         </div>
                         <div class="panel-footer text-right">
-                            <button class="btn btn-success" type="submit" th:text="#{label.save}">Submit</button>
+                            <button class="btn btn-success" type="submit">Upload</button>
                         </div>
                     </form>
                 </div><!--panel-body End -->

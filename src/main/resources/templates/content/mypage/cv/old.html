@@ -13,12 +13,14 @@
 <th:block layout:fragment="custom_css">
     <style>
         .pdf_content {
-            padding:20px 0 0 20px;
-            background-color:gray;
+            padding:20px 0 20px 0;
+            background-color:#fafafa;
         }
 
         .pdf_content svg {
             background-color:#fff;
+            border:1px solid #333;
+            box-shadow: 5px 5px 5px;
         }
     </style>
 </th:block>
@@ -51,9 +53,9 @@
                         <div th:case="null">CV 이력이 존재 하지 않습니다.</div>
                         <div th:case="*">
                             <div class="panel-group accordion" id="accordion">
-                                <div class="panel panel-bordered panel-default" th:each="cv, stat : ${oldVersions}">
+                                <div class="panel" th:each="cv, stat : ${oldVersions}">
                                     <!--Accordion title-->
-                                    <div class="panel-heading">
+                                    <div class="panel-heading" style="border-bottom: 1px solid #eee">
                                         <h4 class="panel-title">
                                             <a data-parent="#accordion" data-toggle="collapse" th:href="@{#cv{id}(id=${stat.index})}" th:text="|Curriculum Vitae - ${#dates.format(cv.createdDate, 'dd/MMM/yyyy')}|"></a>
                                         </h4>

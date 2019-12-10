@@ -2,41 +2,35 @@ package com.dtnsm.lms.controller;
 
 import com.dtnsm.common.entity.JobDescription;
 import com.dtnsm.common.entity.JobDescriptionVersion;
+import com.dtnsm.common.entity.QJobDescriptionVersion;
 import com.dtnsm.common.entity.constant.JobDescriptionVersionStatus;
+import com.dtnsm.common.repository.JobDescriptionVersionRepository;
 import com.dtnsm.lms.properties.FileUploadProperties;
-import com.dtnsm.lms.service.JobDescriptionFileService;
 import com.dtnsm.lms.service.JobDescriptionService;
 import com.dtnsm.lms.service.JobDescriptionVersionService;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.PageInfo;
+import com.querydsl.core.BooleanBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
-import org.docx4j.Docx4J;
-import org.docx4j.Docx4jProperties;
-import org.docx4j.convert.out.HTMLSettings;
-import org.docx4j.convert.out.html.SdtToListSdtTagHandler;
-import org.docx4j.convert.out.html.SdtWriter;
-import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,8 +46,11 @@ public class JobDescriptionController {
     @Autowired
     JobDescriptionVersionService jobDescriptionVersionService;
 
+//    @Autowired
+//    private JobDescriptionFileService jobDescriptionFileService;
+
     @Autowired
-    private JobDescriptionFileService jobDescriptionFileService;
+    private JobDescriptionVersionRepository jobDescriptionVersionRepository;
 
     @Autowired
     public FileUploadProperties prop;
@@ -67,13 +64,18 @@ public class JobDescriptionController {
     }
 
     @GetMapping("/list")
-    public String list(Model model) {
+    public String list(@RequestParam(value = "status", defaultValue = "CURRENT") String stringStatus, Model model) {
 
         pageInfo.setPageId("m-customer-list");
         pageInfo.setPageTitle(pageTitle + " List");
         model.addAttribute(pageInfo);
-        model.addAttribute("borders", jobDescriptionService.getList());
+//        model.addAttribute("borders", jobDescriptionService.getList());
 
+        QJobDescriptionVersion qJobDescriptionVersion = QJobDescriptionVersion.jobDescriptionVersion;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qJobDescriptionVersion.status.eq(JobDescriptionVersionStatus.valueOf(stringStatus)));
+        model.addAttribute("borders", jobDescriptionVersionRepository.findAll(builder, qJobDescriptionVersion.jobDescription.title.asc()));
+        model.addAttribute("status", stringStatus);
         return "admin/jd/list";
     }
 
@@ -87,7 +89,7 @@ public class JobDescriptionController {
 
     @PostMapping("/add")
     @Transactional
-    public String uploadJobDescription(@RequestParam("file") MultipartFile file, Model model) throws Exception {
+    public String uploadJobDescription(@RequestParam("file") MultipartFile file, RedirectAttributes attributes, Model model) throws Exception {
         pageInfo.setPageId("m-customer-add");
         pageInfo.setPageTitle(pageTitle + " Insert");
         model.addAttribute(pageInfo);
@@ -137,6 +139,7 @@ public class JobDescriptionController {
                     if(ObjectUtils.isEmpty(jobDescription.getId()) == false) {
                         Optional<JobDescriptionVersion> optionalJobDescriptionVersion = jobDescriptionVersionService.findByJobDescriptionVersion(jobDescriptionVersion);
                         if (optionalJobDescriptionVersion.isPresent()) {
+                            attributes.addFlashAttribute("returnMessage", "이미 등록 된 Job Description 정보가 존재 합니다.");
                             return "redirect:/admin/jd/list";
                         }
                     }
@@ -144,12 +147,15 @@ public class JobDescriptionController {
                     model.addAttribute("jobDescriptionVersion", jobDescriptionVersion);
                     return "admin/jd/add-info";
                 } else {
+                    attributes.addFlashAttribute("returnMessage", "Job Description 정보를 확인 할 수 없습니다.(1)");
                     return "redirect:/admin/jd/add";
                 }
             } else {
+                attributes.addFlashAttribute("returnMessage", "Job Description 정보를 확인 할 수 없습니다.(2)");
                 return "redirect:/admin/jd/add";
             }
         } else {
+            attributes.addFlashAttribute("returnMessage", "Job Description 정보를 확인 할 수 없습니다.(3)");
             return "redirect:/admin/jd/add";
         }
     }

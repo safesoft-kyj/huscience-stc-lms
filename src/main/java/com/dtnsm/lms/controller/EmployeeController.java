@@ -57,13 +57,13 @@ public class EmployeeController {
     private PageInfo pageInfo = new PageInfo();
 
 
-    @GetMapping("/employees")
-    public String getEmployees(Model model) {
+    @GetMapping("/employees/review")
+    public String getTrainingRecordReview(Model model) {
         pageInfo.setParentId("m-team-dept");
-        pageInfo.setParentTitle("Team/Dept");
+        pageInfo.setParentTitle("Team/Department");
 
         pageInfo.setPageId("m-emp");
-        pageInfo.setPageTitle("Employees");
+        pageInfo.setPageTitle("Training Record Review");
         model.addAttribute(pageInfo);
 
         Optional<List<Account>> optionalAccounts = userService.findByParentUserId(SessionUtil.getUserId());
