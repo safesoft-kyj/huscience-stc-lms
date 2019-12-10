@@ -50,26 +50,26 @@ public class InitialDataLoader implements
             return;
 
         // 기본 권한을 만든다
-        Privilege readPrivilege = createPrivilegeIfNotFound("READ_PRIVILEGE");
-        Privilege writePrivilege = createPrivilegeIfNotFound("WRITE_PRIVILEGE");
-        Privilege viewPrivilege = createPrivilegeIfNotFound("VIEW_PRIVILEGE");
-
-        // 기본 롤을 만든다
-        List<Privilege> adminPrivileges = Arrays.asList(readPrivilege, writePrivilege, viewPrivilege);
-        createRoleIfNotFound("ROLE_ADMIN", "ADMIN", adminPrivileges);
-        createRoleIfNotFound("ROLE_MANAGER", "관리자", adminPrivileges);
-        createRoleIfNotFound("ROLE_USER", "직원", Arrays.asList(readPrivilege, viewPrivilege));
-        createRoleIfNotFound("ROLE_OTHER", "외부사용자", Arrays.asList(viewPrivilege));
-
-        // admin 롤을 가져온다
-        Role adminRole = roleRepository.findByName("ROLE_ADMIN");
-        Role userRole = roleRepository.findByName("ROLE_USER");
-
-        // admin 계정이 없으면 만들고 Role을 부여한다
-        Account user = createAccountAdminIfNotFound("admin", adminRole);
-
-        // 개발자 계정이 없으면 만들고 Role을 부여한다
-        Account devUser = createAccountDevIfNotFound("pub147", adminRole);
+//        Privilege readPrivilege = createPrivilegeIfNotFound("READ_PRIVILEGE");
+//        Privilege writePrivilege = createPrivilegeIfNotFound("WRITE_PRIVILEGE");
+//        Privilege viewPrivilege = createPrivilegeIfNotFound("VIEW_PRIVILEGE");
+//
+//        // 기본 롤을 만든다
+//        List<Privilege> adminPrivileges = Arrays.asList(readPrivilege, writePrivilege, viewPrivilege);
+//        createRoleIfNotFound("ROLE_ADMIN", "ADMIN", adminPrivileges);
+//        createRoleIfNotFound("ROLE_MANAGER", "관리자", adminPrivileges);
+//        createRoleIfNotFound("ROLE_USER", "직원", Arrays.asList(readPrivilege, viewPrivilege));
+//        createRoleIfNotFound("ROLE_OTHER", "외부사용자", Arrays.asList(viewPrivilege));
+//
+//        // admin 롤을 가져온다
+//        Role adminRole = roleRepository.findByName("ROLE_ADMIN");
+//        Role userRole = roleRepository.findByName("ROLE_USER");
+//
+//        // admin 계정이 없으면 만들고 Role을 부여한다
+//        Account user = createAccountAdminIfNotFound("admin", adminRole);
+//
+//        // 개발자 계정이 없으면 만들고 Role을 부여한다
+//        Account devUser = createAccountDevIfNotFound("pub147", adminRole);
 
 
 //        // 그룹웨어 사용자 생성
