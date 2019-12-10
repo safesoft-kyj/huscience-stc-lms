@@ -3,6 +3,8 @@ package com.dtnsm.lms.service;
 import com.dtnsm.common.repository.SignatureRepository;
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.Account;
+import com.dtnsm.lms.domain.CourseAccount;
+import com.dtnsm.lms.domain.CourseSection;
 import com.dtnsm.lms.domain.CourseTrainingLog;
 import com.dtnsm.lms.domain.constant.TrainingType;
 import com.dtnsm.lms.mybatis.dto.UserVO;
@@ -53,6 +55,32 @@ public class BinderLogService {
             for (CourseTrainingLog courseTrainingLog : courseTrainingLogs) {
                 courseTrainingLogRepository.delete(courseTrainingLog);
             }
+        }
+    }
+
+    public void createTrainingLog(CourseAccount courseAccount) {
+
+        //  강의별로 로그를 생성시킨다.
+        for (CourseSection courseSection : courseAccount.getCourse().getSections()) {
+
+            CourseTrainingLog courseTrainingLog = new CourseTrainingLog();
+            courseTrainingLog.setAccount(courseAccount.getAccount());
+            courseTrainingLog.setCompleteDate(DateUtil.getTodayDate());
+            courseTrainingLog.setIsUpload("0");
+            courseTrainingLog.setTrainingTime(courseSection.getSecond());
+            courseTrainingLog.setCourseSectionAction(courseSection.getCourseSectionActions().get(0));
+            courseTrainingLog.setTrainingCourse(courseSection.getName() + courseSection.getDescription());
+
+            // Self training  이면
+            if (courseAccount.getCourse().getCourseMaster().getId().equals("BC0101")) {
+                courseTrainingLog.setType(TrainingType.SELF);
+                courseTrainingLog.setOrganization(TrainingType.SELF.getLabel());
+            } else {
+                courseTrainingLog.setType(TrainingType.OTHER);
+                courseTrainingLog.setOrganization(courseAccount.getCourse().getTeam());
+            }
+
+            binderLogService.saveLog(courseTrainingLog);
         }
     }
 

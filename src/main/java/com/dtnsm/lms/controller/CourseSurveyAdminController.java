@@ -47,7 +47,7 @@ public class CourseSurveyAdminController {
 
     public CourseSurveyAdminController() {
         pageInfo.setParentId("m-course");
-        pageInfo.setParentTitle("공지사항");
+        pageInfo.setParentTitle("교육과정");
     }
 
     @GetMapping("/list/{courseId}")
@@ -58,7 +58,7 @@ public class CourseSurveyAdminController {
         String isAdd = course.getIsSurvey();
 
         pageInfo.setPageId("m-course-list-page");
-        pageInfo.setPageTitle("설문조회");
+        pageInfo.setPageTitle("설문");
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courseSurveyService.getAllByCourseId(courseId));
         model.addAttribute("isAdd", isAdd);
@@ -74,7 +74,7 @@ public class CourseSurveyAdminController {
         CourseSurvey courseSurvey = new CourseSurvey();
         courseSurvey.setCourse(course);
 
-        pageInfo.setPageTitle(course.getTitle() + " 등록");
+        pageInfo.setPageTitle(course.getTitle());
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseSurvey", courseSurvey);
@@ -109,7 +109,7 @@ public class CourseSurveyAdminController {
 
         CourseSurvey courseSurvey = courseSurveyService.getCourseSurveyById(id);
 
-        pageInfo.setPageTitle(courseSurvey.getName() + " 수정");
+        pageInfo.setPageTitle(courseSurvey.getName());
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseSurvey", courseSurvey);

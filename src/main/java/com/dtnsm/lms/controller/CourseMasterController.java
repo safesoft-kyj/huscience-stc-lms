@@ -40,14 +40,14 @@ public class CourseMasterController {
 
     public CourseMasterController() {
         pageInfo.setParentId("m-course");
-        pageInfo.setParentTitle("교육과정유형");
+        pageInfo.setParentTitle("교육과정기준정보");
     }
 
     @GetMapping("/list")
     public String listPage(@PageableDefault Pageable pageable, Model model) {
 
         pageInfo.setPageId("m-course-list-page");
-        pageInfo.setPageTitle("교육과정유형조회");
+        pageInfo.setPageTitle("교육과정유형");
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courseMasterService.getPageList(pageable));
         // 교육신철일자 유형(1:상시, 2:기간)
@@ -64,7 +64,7 @@ public class CourseMasterController {
         CourseMaster oldCourse = courseMasterService.getById(id);
 
         pageInfo.setPageId("m-course-edit");
-        pageInfo.setPageTitle("교육과정유형수정");
+        pageInfo.setPageTitle("교육과정유형");
         model.addAttribute(pageInfo);
         model.addAttribute("course", courseMasterService.save(oldCourse));
 
@@ -78,7 +78,7 @@ public class CourseMasterController {
         courseMaster.setId(courseMasterService.getCourseMasterNumber());
 
         pageInfo.setPageId("m-course-add");
-        pageInfo.setPageTitle("교육과정등록");
+        pageInfo.setPageTitle("교육과정유형");
         model.addAttribute(pageInfo);
         model.addAttribute("course", courseMaster);
         model.addAttribute("minorList", courseMasterService.getTypeList());
@@ -104,7 +104,7 @@ public class CourseMasterController {
     public String noticeEdit(@PathVariable("id") String id, Model model) {
 
         pageInfo.setPageId("m-course-edit");
-        pageInfo.setPageTitle("교육과정수정");
+        pageInfo.setPageTitle("교육과정유형");
         model.addAttribute(pageInfo);
         model.addAttribute("course", courseMasterService.getById(id));
         model.addAttribute("minorList", courseMasterService.getTypeList());

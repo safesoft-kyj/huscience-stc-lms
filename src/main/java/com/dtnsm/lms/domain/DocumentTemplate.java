@@ -13,7 +13,7 @@ import java.util.List;
 @Table(name="el_document_template")
 public class DocumentTemplate extends AuditorCreateEntity<String> {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
 
     @NotEmpty(message = "No title")

@@ -95,7 +95,7 @@ public class CourseAdminController {
         //courseService.deleteBlankCourse();
 
         String courseName = courseMasterService.getById(typeId).getCourseName();
-        pageInfo.setPageTitle(courseName + "조회");
+        pageInfo.setPageTitle(courseName);
 
         Page<Course> courses;
         if(searchType.equals("all") && searchText.equals("")) {
@@ -159,13 +159,17 @@ public class CourseAdminController {
     @GetMapping("/addOnline/{typeId}")
     public String addOnLine(@PathVariable("typeId") String typeId, Model model) {
 
+        CourseMaster courseMaster = courseMasterService.getById(typeId);
+
         Course course = new Course();
-        course.setCourseMaster(courseMasterService.getById(typeId));
-//        course.setDay(1);
+
+        course.setCourseMaster(courseMaster);
+        course.setDay(courseMaster.getDay());
+        course.setHour(courseMaster.getHour());
 
         //Course course = courseService.save(new Course("", "", this.courseMaster));
 
-        pageInfo.setPageTitle(course.getCourseMaster().getCourseName() + " 등록");
+        pageInfo.setPageTitle(course.getCourseMaster().getCourseName());
 
         // 기본 설문을 가지고 온다.
         Survey survey = surveyService.getByIsActive(1);
@@ -182,13 +186,17 @@ public class CourseAdminController {
     @GetMapping("/addOffLine/{typeId}")
     public String addOffLine(@PathVariable("typeId") String typeId, Model model) {
 
+        CourseMaster courseMaster = courseMasterService.getById(typeId);
+
         Course course = new Course();
-        course.setCourseMaster(courseMasterService.getById(typeId));
-//        course.setDay(1);
+
+        course.setCourseMaster(courseMaster);
+        course.setDay(courseMaster.getDay());
+        course.setHour(courseMaster.getHour());
 
         //Course course = courseService.save(new Course("", "", this.courseMaster));
 
-        pageInfo.setPageTitle(course.getCourseMaster().getCourseName() + " 등록");
+        pageInfo.setPageTitle(course.getCourseMaster().getCourseName());
 
         // 기본 설문을 가지고 온다.
         Survey survey = surveyService.getByIsActive(1);
@@ -223,6 +231,11 @@ public class CourseAdminController {
             course.setRequestToDate("2999-12-31");
             course.setFromDate(DateUtil.getTodayString());
             course.setToDate("2999-12-31");
+        }
+
+        if(course.getPlace() == null || course.getTeam() == null) {
+            course.setPlace("");
+            course.setTeam("");
         }
 
         Course course1 = courseService.save(course);
@@ -358,6 +371,11 @@ public class CourseAdminController {
                 course.setFromDate(DateUtil.getTodayString());
                 course.setToDate("2999-12-31");
             }
+        }
+
+        if(course.getPlace() == null || course.getTeam() == null) {
+            course.setPlace("");
+            course.setTeam("");
         }
 
         course.setActive(oldCourse.getActive());

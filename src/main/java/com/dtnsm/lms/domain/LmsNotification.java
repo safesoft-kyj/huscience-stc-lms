@@ -1,46 +1,41 @@
 package com.dtnsm.lms.domain;
 
 import com.dtnsm.lms.auth.AuditorCreateEntity;
+import com.dtnsm.lms.domain.constant.LmsAlarmGubun;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Data
-@Table(name="el_notification")
+@NoArgsConstructor
+@Table(name="el_lms_notification")
 public class LmsNotification extends AuditorCreateEntity<String> {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
+
+    // 교육과정 진행 상태
+    @Column(length = 30)
+    @Enumerated(EnumType.STRING)
+    private LmsAlarmGubun alarmGubun;
+
 
     @Column(length = 255, nullable = false)
     private String title;
 
-    // Completion Date
-    @Column(length = 11, nullable = false)
-    private String applyDate;
+    @Column(length = 255, nullable = false)
+    private String content;
 
-    @Column(name="training_hr", columnDefinition = "numeric(5,2)")
-    private float trainingHr;
-
-    @Column(name="organization", length = 50)
-    private String Organization;
-
-    // Completion DateTime
-    private Date applyDateTime;
-
-    // Section Action Id
-    @ManyToOne
-    @JoinColumn(name = "sec_act_id")
-    private CourseSectionAction courseSectionAction;
-
-    //
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Account account;
 
-
-    
-
+    public LmsNotification(LmsAlarmGubun alarmGubun, String title, String content, Account account) {
+        this.alarmGubun = alarmGubun;
+        this.title = title;
+        this.content = content;
+        this.account = account;
+    }
 }

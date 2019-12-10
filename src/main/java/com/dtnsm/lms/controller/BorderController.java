@@ -55,7 +55,7 @@ public class BorderController {
 
     public BorderController() {
         pageInfo.setParentId("m-border");
-        pageInfo.setParentTitle("공지사항");
+        pageInfo.setParentTitle("학습지원");
     }
 
     @GetMapping("/list/{typeId}")
@@ -69,7 +69,7 @@ public class BorderController {
         //borderService.deleteBlankBorder();
 
         String borderName = borderMasterService.getById(typeId).getBorderName();
-        pageInfo.setPageTitle(borderName + "조회");
+        pageInfo.setPageTitle(borderName);
 
         Page<Border> borders;
 
@@ -100,7 +100,7 @@ public class BorderController {
 
         Border border= borderService.save(oldBorder);
 
-        pageInfo.setPageTitle(border.getBorderMaster().getBorderName() + " 상세");
+        pageInfo.setPageTitle(border.getBorderMaster().getBorderName());
 
         model.addAttribute(pageInfo);
         model.addAttribute("border", border);
@@ -123,16 +123,17 @@ public class BorderController {
 
 
         // Fallback to the default content type if type could not be determined
-        if(contentType.equals("")) {
-            contentType = "application/octet-stream";
-        }
+//        if(contentType.equals("")) {
+//            contentType = "application/octet-stream";
+//        }
 
         // 한글파일명 깨짐 현상 해소
         String newFileName = FileUtil.getNewFileName(request, borderFile.getFileName());
 
         return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + newFileName + "\"")
+                .contentType(MediaType.parseMediaType(contentType))
                 .body(resource);
+
     }
 }

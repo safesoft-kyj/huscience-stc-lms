@@ -51,7 +51,7 @@ public class InfoController {
     public String requestMonth(Model model) {
 
         pageInfo.setPageId("m-info-month");
-        pageInfo.setPageTitle("교육월간일정(신청일기준)");
+        pageInfo.setPageTitle("교육월간일정(신청일)");
         model.addAttribute(pageInfo);
 
         return "content/info/requestMonth";
@@ -61,10 +61,30 @@ public class InfoController {
     public String month(Model model) {
 
         pageInfo.setPageId("m-info-month");
-        pageInfo.setPageTitle("교육월간일정(교육일기준)");
+        pageInfo.setPageTitle("교육월간일정(교육일)");
         model.addAttribute(pageInfo);
 
         return "content/info/month";
+    }
+
+    @GetMapping("/requestMonthUser")
+    public String requestMonthUser(Model model) {
+
+        pageInfo.setPageId("m-info-month");
+        pageInfo.setPageTitle("나의월간일정(신청일)");
+        model.addAttribute(pageInfo);
+
+        return "content/info/requestMonthUser";
+    }
+
+    @GetMapping("/monthUser")
+    public String monthUser(Model model) {
+
+        pageInfo.setPageId("m-info-month");
+        pageInfo.setPageTitle("나의월간일정(교육일)");
+        model.addAttribute(pageInfo);
+
+        return "content/info/monthUser";
     }
 
     @GetMapping("/year/{sctype}")
@@ -151,11 +171,13 @@ public class InfoController {
         return "content/info/request";
     }
 
-    // 교육 신청
+    // employee metrix 보기
     @GetMapping("/matrix/pdfview/{id}")
     public String pdfView(@PathVariable("id") Long fileId, Model model) {
 
-        Schedule schedule =  scheduleService.getTop1BySctypeOrderByCreatedDateDesc(ScheduleType.MATRIX);
+//        Schedule schedule =  scheduleService.getTop1BySctypeOrderByCreatedDateDesc(ScheduleType.MATRIX);
+
+        Schedule schedule = scheduleService.getByIsActive(ScheduleType.MATRIX, 1);
 
         pageInfo.setPageId("m-mypage-myinfo");
         pageInfo.setPageTitle(schedule.getTitle());

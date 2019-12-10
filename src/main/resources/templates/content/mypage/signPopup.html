@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>설문완료</title>
+    <title>사인변경</title>
 
 
     <!--Css lib-->
@@ -115,9 +115,10 @@
                         sign : sign.toDataURL()
                     },
                     success : function(r){
-                         if (r) alert("저장완료");
-                         else  alert("저장하지 못함 : ");
+                         if (r) alert("사인 저장이 완료되었습니다.");
+                         else  alert("사인을 저장하지 못하였습니다.");
                         sign.clear();
+                        closeWindow();
                     },
                     error : function(res){
                         console.log(res);
@@ -126,8 +127,8 @@
             }
         }
 
-        location.reload();
-
+        //location.reload();
+        location.refresh();
     });
 
     function resizeCanvas(){

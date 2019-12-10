@@ -44,14 +44,14 @@ public class CertificateInfoController {
 
     public CertificateInfoController() {
         pageInfo.setParentId("m-course");
-        pageInfo.setParentTitle("수료증관리");
+        pageInfo.setParentTitle("교육과정기준정보");
     }
 
     @GetMapping("/list")
     public String list(Model model) {
 
         pageInfo.setPageId("m-course-list-page");
-        pageInfo.setPageTitle("수료증정보조회");
+        pageInfo.setPageTitle("수료증정보");
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courseCertificateInfoRepository.findAll());
 
@@ -62,7 +62,7 @@ public class CertificateInfoController {
     public String add(Model model) {
 
         pageInfo.setPageId("m-course-add");
-        pageInfo.setPageTitle("수료증정보 등록");
+        pageInfo.setPageTitle("수료증정보");
 
         CourseCertificateInfo courseCertificateInfo = new CourseCertificateInfo();
 
@@ -88,7 +88,7 @@ public class CertificateInfoController {
     public String edit(@PathVariable("id") int id, Model model) {
 
         pageInfo.setPageId("m-course-edit");
-        pageInfo.setPageTitle("수료증정보 수정");
+        pageInfo.setPageTitle("수료증정보");
         model.addAttribute(pageInfo);
         model.addAttribute("border", courseCertificateInfoRepository.getOne(id));
         model.addAttribute("managerList", userService.getAccountList());
@@ -102,6 +102,10 @@ public class CertificateInfoController {
             courseCertificateInfo.setId(id);
             return "notice-edit";
         }
+
+        CourseCertificateInfo oldCourseCertificateInfo = courseCertificateInfoRepository.getOne(id);
+        courseCertificateInfo.setIsActive(oldCourseCertificateInfo.getIsActive());
+
         courseCertificateInfoRepository.save(courseCertificateInfo);
 
         return "redirect:/admin/certificate/info/list";

@@ -1,7 +1,7 @@
 package com.dtnsm.lms.domain.constant;
 
 public enum CourseStepStatus {
-    none("none"),
+    none("신청대기"),
     request("신청중"),
     process("교육중"),
     reject("중지"),

@@ -59,7 +59,7 @@ public class CourseQuizActionAdminController {
 
     public CourseQuizActionAdminController() {
         pageInfo.setParentId("m-course");
-        pageInfo.setParentTitle("공지사항");
+        pageInfo.setParentTitle("교육과정");
     }
 
     @GetMapping("/add/{courseId}")
@@ -69,7 +69,7 @@ public class CourseQuizActionAdminController {
         CourseQuiz courseQuiz = new CourseQuiz();
         courseQuiz.setCourse(course);
 
-        pageInfo.setPageTitle(course.getTitle() + " 등록");
+        pageInfo.setPageTitle(course.getTitle());
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseQuiz", courseQuiz);
@@ -122,7 +122,7 @@ public class CourseQuizActionAdminController {
 
         CourseQuiz courseQuiz = quizService.getCourseQuizById(id);
 
-        pageInfo.setPageTitle(courseQuiz.getName() + " 수정");
+        pageInfo.setPageTitle(courseQuiz.getName());
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseQuiz", courseQuiz);

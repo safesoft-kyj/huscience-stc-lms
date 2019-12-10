@@ -46,6 +46,15 @@ public class CourseMaster extends AuditorCreateEntity<String> {
     @ColumnDefault("'N'")
     private String isCourseMangerApproval = "N" ;
 
+    // 기본교육일수
+    @ColumnDefault("0")
+    private int day = 0;
+
+    // 기본교육시간
+    @Column(name="hour", columnDefinition="numeric(5,2)")
+    @ColumnDefault("0")
+    private float hour = 0;
+
 //
 //    @Transient
 //    private String minorName;

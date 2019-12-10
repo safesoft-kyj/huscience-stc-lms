@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Table(name="el_course_certificate_info")
 public class CourseCertificateInfo extends AuditorCreateEntity<String> {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
     private String sopName;
@@ -24,6 +24,12 @@ public class CourseCertificateInfo extends AuditorCreateEntity<String> {
     @ManyToOne
     @JoinColumn(name = "cer_manager2",columnDefinition="VARCHAR(30)")
     private Account cerManager2;
+
+    // 강사 정보
+    private String cerManagerText1;
+
+    // 대표자 정보
+    private String cerManagerText2;
 
     // 1: 기본 수료증
     @ColumnDefault("0")

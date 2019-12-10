@@ -24,7 +24,7 @@ public class CustomerController {
 
     public CustomerController() {
         pageInfo.setParentId("m-customer");
-        pageInfo.setParentTitle("협약기관관리");
+        pageInfo.setParentTitle("협약기관");
     }
 
     @GetMapping("/list-page")
@@ -33,7 +33,7 @@ public class CustomerController {
         Page<Customer> customers = customerService.getCustomerPageList(pageable);
 
         pageInfo.setPageId("m-customer-list-page");
-        pageInfo.setPageTitle("조회");
+        pageInfo.setPageTitle("협약기관");
         model.addAttribute(pageInfo);
         model.addAttribute("customers", customers);
 
@@ -49,7 +49,7 @@ public class CustomerController {
 
         Customer customer= customerService.save(oldCustomer);
 
-        pageInfo.setPageTitle("협약기관 상세");
+        pageInfo.setPageTitle("협약기관");
 
         model.addAttribute(pageInfo);
         model.addAttribute("customer", customer);

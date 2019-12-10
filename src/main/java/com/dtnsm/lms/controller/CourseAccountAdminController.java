@@ -1,13 +1,13 @@
 package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.auth.UserServiceImpl;
-import com.dtnsm.lms.domain.Account;
-import com.dtnsm.lms.domain.Course;
-import com.dtnsm.lms.domain.CourseAccount;
+import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.CourseStepStatus;
+import com.dtnsm.lms.domain.constant.TrainingType;
 import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.PageInfo;
+import com.dtnsm.lms.util.SessionUtil;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -40,11 +41,14 @@ public class CourseAccountAdminController {
     @Autowired
     CourseService courseService;
 
+    @Autowired
+    BinderLogService binderLogService;
+
     private PageInfo pageInfo = new PageInfo();
 
     public CourseAccountAdminController() {
         pageInfo.setParentId("m-course");
-        pageInfo.setParentTitle("교육수강생");
+        pageInfo.setParentTitle("교육과정");
 
         //courseMaster = courseMasterService.getById("A01");
     }
@@ -66,10 +70,11 @@ public class CourseAccountAdminController {
     @GetMapping("/add/{courseId}")
     public String courseAccountAdd(@PathVariable("courseId") Long courseId, Model model) {
 
-        pageInfo.setPageTitle("수강생 등록");
+        pageInfo.setPageTitle("수강생");
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseId", courseId);
+        model.addAttribute("userId", SessionUtil.getUserId());
         model.addAttribute("mailList", userService.getAccountList());
 
         return "admin/course/account/add";
@@ -89,18 +94,32 @@ public class CourseAccountAdminController {
             // 등록되지 않은 사용자만 등록한다.
             if (tmpCourseAccount == null) {
 
+                // 결재 신청에 필요한 기본 검증을 진행한다.
+                // 0: 계정이 존재하지 않음
+                // 1: 상위결재권자가 지정되지 않음
+                // 2: 관리자가 지정되지 않음
+                // 9: 과정 신청 가능
+                int result = courseAccountService.accountVerification(userId);
                 Account account = userService.findByUserId(userId);
 
+                List<Account> accountList = new ArrayList<>();
 
-                // 요청 프로세서를 실행(요청 결재 및 강의를 생성한다)
-                // 교육 신청 처리(requestType 0:관리자 지정, 1:신청)
-                approvalCourseProcessService.courseRequestProcess(account, course, "0");
+                if (result == 9) {
+
+                    // 요청 프로세서를 실행(요청 결재 및 강의를 생성한다)
+                    // 교육 신청 처리(requestType 0:관리자 지정, 1:신청)
+                    approvalCourseProcessService.courseRequestProcess(account, course, "0");
+                } else {
+                    accountList.add(account);
+                }
+
+                // TODO : 과정신청 실패시 메세지 처리 필요
 //                approvalCourseProcessService.courseRequestProcess(account, course, "0", fromDate, toDate);
             }
         }
-
         return "redirect:/admin/course/account/list/" + courseId;
     }
+
 
     @GetMapping("/delete/{id}")
     public String noticeDelete(@PathVariable("id") long docId) {
@@ -128,16 +147,25 @@ public class CourseAccountAdminController {
                 courseAccount.setIsCommit("1");
 
                 // TODO : Training Log 발생
+
+                // 강의별로 로그를 생성시킨다.
+                binderLogService.createTrainingLog(courseAccount);
+
             } else if (courseAccount.getCourse().getCourseMaster().getId().equals("BC0102")) {   // Class 교육이면 시험, 설문, 수료증을 체크하여 종료 처리한다.
 
-                if(courseAccount.getCourse().getIsQuiz().equals("N") && courseAccount.getCourse().getIsQuiz().equals("N")) {
+                if(courseAccount.getCourse().getIsQuiz().equals("N") && courseAccount.getCourse().getIsSurvey().equals("N")) {
                     courseAccount.setCourseStatus(CourseStepStatus.complete);
                     courseAccount.setIsCommit("1");
 
-                    String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
-                    courseAccount.setCertificateNo(certificateNo);
+                    if (courseAccount.getCourse().getIsCerti().equals("Y")) {
+                        String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
+                        courseAccount.setCertificateNo(certificateNo);
+                    }
 
                     // TODO : Training Log 발생
+
+                    // 강의별로 로그를 생성시킨다.
+                    binderLogService.createTrainingLog(courseAccount);
                 }
             }
         }

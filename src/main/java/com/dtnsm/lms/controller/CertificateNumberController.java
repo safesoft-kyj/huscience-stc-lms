@@ -36,14 +36,14 @@ public class CertificateNumberController {
 
     public CertificateNumberController() {
         pageInfo.setParentId("m-course");
-        pageInfo.setParentTitle("수료증정보관리");
+        pageInfo.setParentTitle("교육과정기준정보");
     }
 
     @GetMapping("/list")
     public String list(Model model) {
 
         pageInfo.setPageId("m-course-list-page");
-        pageInfo.setPageTitle("수료증정보관리");
+        pageInfo.setPageTitle("수료증정보");
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courseCertificateNumberRepository.findAll());
 
@@ -54,7 +54,7 @@ public class CertificateNumberController {
     public String add(Model model) {
 
         pageInfo.setPageId("m-course-add");
-        pageInfo.setPageTitle("수료증정보 등록");
+        pageInfo.setPageTitle("수료증정보");
 
         CourseCertificateNumber courseCertificateNumber = new CourseCertificateNumber();
 
@@ -79,7 +79,7 @@ public class CertificateNumberController {
     public String edit(@PathVariable("id") int id, Model model) {
 
         pageInfo.setPageId("m-course-edit");
-        pageInfo.setPageTitle("수료증정보 수정");
+        pageInfo.setPageTitle("수료증정보");
         model.addAttribute(pageInfo);
         model.addAttribute("border", courseCertificateNumberRepository.getOne(id));
 

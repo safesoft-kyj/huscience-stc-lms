@@ -45,13 +45,19 @@ public class ScheduleController {
 
     public ScheduleController() {
         pageInfo.setParentId("m-basecode");
-        pageInfo.setParentTitle("연간일정");
+        pageInfo.setParentTitle("교육과정기준정보");
     }
 
     @GetMapping("/list/{sctype}")
     public String scList(@PathVariable("sctype") ScheduleType sctype, Model model) {
 
-        pageInfo.setPageTitle("연간일정조회");
+        if (sctype == ScheduleType.MATRIX) {
+            pageInfo.setPageTitle("Employee Matrix");
+        }
+        else if (sctype == ScheduleType.CALENDAR) {
+            pageInfo.setPageTitle("연간일정");
+        }
+
 
         List<Schedule> borders = scheduleService.getListBySctypeOrderByCreatedDateDesc(sctype);
         model.addAttribute(pageInfo);
@@ -71,7 +77,7 @@ public class ScheduleController {
 
         Schedule border1= scheduleService.save(schedule);
 
-        pageInfo.setPageTitle("연간일정상세");
+        pageInfo.setPageTitle("연간일정");
 
         model.addAttribute(pageInfo);
         model.addAttribute("border", border1);
@@ -105,7 +111,7 @@ public class ScheduleController {
         Calendar now = Calendar.getInstance();
         schedule.setYear(String.valueOf(now.get(Calendar.YEAR)));
 
-        pageInfo.setPageTitle("연간일정등록");
+        pageInfo.setPageTitle("연간일정");
 
         model.addAttribute(pageInfo);
         model.addAttribute("schedule", schedule);
@@ -139,7 +145,7 @@ public class ScheduleController {
             , Model model) {
 
         pageInfo.setPageId("m-border-edit");
-        pageInfo.setPageTitle("연간일정수정");
+        pageInfo.setPageTitle("연간일정");
 
         Schedule schedule = scheduleService.getById(id);
 
@@ -147,7 +153,7 @@ public class ScheduleController {
         model.addAttribute("yearList", DateUtil.getYearList());
         model.addAttribute("schedule", schedule);
 
-        return "/admin/schedule/edit";
+        return "admin/schedule/edit";
     }
 
     @PostMapping("/edit-post/{id}")
@@ -159,8 +165,10 @@ public class ScheduleController {
             return "notice-edit";
         }
 
-        List<ScheduleFile>  scheduleFiles= scheduleService.getById(id).getScheduleFiles();
+        Schedule oldSchedule = scheduleService.getById(id);
+        List<ScheduleFile>  scheduleFiles= oldSchedule.getScheduleFiles();
         schedule.setScheduleFiles(scheduleFiles);
+        schedule.setIsActive(oldSchedule.getIsActive());
 
         Schedule schedule1 = scheduleService.save(schedule);
 

@@ -187,8 +187,8 @@ public class MyPageController {
     @GetMapping("/courseTraingLog")
     public String lmsTraingLog(Model model, Pageable pageable) {
 
-        pageInfo.setPageId("m-training-log-upload");
-        pageInfo.setPageTitle("Training Log Upload");
+        pageInfo.setPageId("m-training-log");
+        pageInfo.setPageTitle("Training Log");
 
         Page<CourseTrainingLog> courseTrainingLogs = courseTraingLogService.getAllByAccount_UserId(SessionUtil.getUserId(), pageable);
 
@@ -279,12 +279,14 @@ public class MyPageController {
     }
 
     @GetMapping("/certificate/print/{id}")
-    public String certificatePrint(@PathVariable("id") Long courseId, Model model) {
+    public String certificatePrint(@PathVariable("id") Long docId, Model model) {
 
         pageInfo.setPageId("m-mypage-myinfo");
         pageInfo.setPageTitle("수료증발급");
 
-        CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserId(courseId, SessionUtil.getUserId());
+        CourseAccount courseAccount = courseAccountService.getById(docId);
+
+        CourseCertificateLog courseCertificateLog = courseCertificateService.getCourseCertificateLog(docId);
 
 //        Course course = courseService.getCourseById(courseId);
 
@@ -294,6 +296,7 @@ public class MyPageController {
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseAccount", courseAccount);
+        model.addAttribute("courseCertificateLog", courseCertificateLog);
 //        model.addAttribute("sign1", optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "");
 //        model.addAttribute("sign2", optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "");
 //        model.addAttribute("userName1", "Lim, Hyunjin");

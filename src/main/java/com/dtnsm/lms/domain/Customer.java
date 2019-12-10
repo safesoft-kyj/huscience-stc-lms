@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Table(name="el_customer")
 public class Customer extends AuditorEntity<String> {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
 
     @Column(length = 50, nullable = false)

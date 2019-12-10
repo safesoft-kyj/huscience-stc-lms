@@ -93,7 +93,9 @@
                                         </td>
                                         <td class="text-center">
                                             <th:block th:if="${border.getIsAttendance().equals('0')}">
-                                                <a th:href="@{/admin/course/account/updateAttendance/{id}(id=${border.getId()})}"><span class="badge badge-mint">참석처리</span></a>
+                                                <th:block th:if="${#strings.equalsIgnoreCase(border.getFStatus(), '1')}">
+                                                    <a th:href="@{/admin/course/account/updateAttendance/{id}(id=${border.getId()})}"><span class="badge badge-mint">참석처리</span></a>
+                                                </th:block>
                                             </th:block>
                                             <th:block th:if="${border.getIsAttendance().equals('1')}">
                                                 <span class="label label-success">완료</span>

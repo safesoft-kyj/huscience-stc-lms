@@ -25,14 +25,14 @@ public class CustomerAdminController {
 
     public CustomerAdminController() {
         pageInfo.setParentId("m-customer");
-        pageInfo.setParentTitle("협약기관관리");
+        pageInfo.setParentTitle("협약기관");
     }
 
     @GetMapping("/list")
     public String list(Model model) {
 
         pageInfo.setPageId("m-customer-list");
-        pageInfo.setPageTitle("협약기관조회");
+        pageInfo.setPageTitle("협약기관");
         model.addAttribute(pageInfo);
         model.addAttribute("customers", customerService.getCustomerList());
 
@@ -45,7 +45,7 @@ public class CustomerAdminController {
         Page<Customer> elcCustomers = customerService.getCustomerPageList(pageable);
 
         pageInfo.setPageId("m-customer-list-page");
-        pageInfo.setPageTitle("조회");
+        pageInfo.setPageTitle("협약기관");
         model.addAttribute(pageInfo);
         model.addAttribute("customers", elcCustomers);
 
@@ -56,7 +56,7 @@ public class CustomerAdminController {
     public String add(Customer customer, Model model) {
 
         pageInfo.setPageId("m-customer-add");
-        pageInfo.setPageTitle("협약기관등록");
+        pageInfo.setPageTitle("협약기관");
         model.addAttribute(pageInfo);
         //model.addAttribute("elCustomer", new ElCustomer());
 
@@ -81,7 +81,7 @@ public class CustomerAdminController {
                 .orElseThrow(()->new IllegalArgumentException("Invalid customer Id:" + id));
 
         pageInfo.setPageId("m-customer-edit");
-        pageInfo.setPageTitle("협약기관수정");
+        pageInfo.setPageTitle("협약기관");
         model.addAttribute(pageInfo);
         model.addAttribute("customer", elCustomer);
 

@@ -2,16 +2,16 @@ package com.dtnsm.lms.service;
 
 import com.dtnsm.common.entity.Signature;
 import com.dtnsm.common.repository.SignatureRepository;
-import com.dtnsm.lms.domain.*;
+import com.dtnsm.lms.domain.CourseAccount;
+import com.dtnsm.lms.domain.CourseCertificateInfo;
+import com.dtnsm.lms.domain.CourseCertificateLog;
+import com.dtnsm.lms.domain.CourseCertificateNumber;
 import com.dtnsm.lms.repository.CourseCertificateInfoRepository;
 import com.dtnsm.lms.repository.CourseCertificateLogRepository;
 import com.dtnsm.lms.repository.CourseCertificateNumberRepository;
 import com.dtnsm.lms.util.DateUtil;
-import com.dtnsm.lms.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class CourseCertificateService {
@@ -46,7 +46,7 @@ public class CourseCertificateService {
 
         courseCertificateNumber.setCerSeq(courseCertificateNumber.getCerSeq() + 1);
 
-        courseCertificateNumber.setFullNumber(String.format("%s-%s-%04d", courseCertificateNumber.getCerText()
+        courseCertificateNumber.setFullNumber(String.format("%s-%s-%03d", courseCertificateNumber.getCerText()
                 , courseCertificateNumber.getCerYear()
                 , courseCertificateNumber.getCerSeq()));
 
@@ -90,13 +90,23 @@ public class CourseCertificateService {
         courseCertificateLog.setCerManagerSign2(sign2);
         courseCertificateLog.setCerDate(DateUtil.getTodayDate());
         courseCertificateLog.setCourseAccount(courseAccount);
+        courseCertificateLog.setAccount(courseAccount.getAccount());
+        courseCertificateLog.setCerManagerText1(courseCertificateInfo.getCerManagerText1());
+        courseCertificateLog.setCerManagerText2(courseCertificateInfo.getCerManagerText2());
 
-        courseCertificateLog = courseCertificateLogRepository.save(courseCertificateLog);
+        CourseCertificateLog courseCertificateLog1 = courseCertificateLogRepository.save(courseCertificateLog);
 
         // 과정 사용자 정보에 수료증 정보를 업데이트 한다.
-        courseAccount.setCourseCertificateLog(courseCertificateLog);
+        courseAccount.setCourseCertificateLog(courseCertificateLog1);
         courseAccountService.save(courseAccount);
 
-        return courseCertificateLog;
+        return courseCertificateLog1;
+    }
+
+
+    //
+    public CourseCertificateLog getCourseCertificateLog(Long docId) {
+
+        return courseCertificateLogRepository.findByCourseAccount_Id(docId);
     }
 }

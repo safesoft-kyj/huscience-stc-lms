@@ -20,7 +20,7 @@ import java.util.Date;
 @Table(name="el_course_training_log")
 public class CourseTrainingLog extends AuditorCreateEntity<String> {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
 
     @Column(length = 1000, nullable = false)

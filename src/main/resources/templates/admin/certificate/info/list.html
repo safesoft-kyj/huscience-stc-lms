@@ -57,7 +57,9 @@
                                     <th th:text="#{label.certiInfo.sopname}">Sop Name</th>
                                     <th th:text="#{label.certiInfo.sopdate}">Sop Effective Date</th>
                                     <th th:text="#{label.certiInfo.cermanager1}">강사</th>
+                                    <th th:text="#{label.certiInfo.cermanagerText1}">강사 표시명</th>
                                     <th th:text="#{label.certiInfo.cermanager2}">대표자</th>
+                                    <th th:text="#{label.certiInfo.cermanagerText2}">대표자 표시명</th>
                                     <th>Edit</th>
                                 </tr>
                                 </thead>
@@ -70,8 +72,10 @@
                                         <span th:text="${certiInfo.getSopName()}"></span>
                                     </td>
                                     <td th:text="${certiInfo.getSopEffectiveDate()}"></td>
-                                    <td th:text="${certiInfo.getCerManager1().getEngName()}"></td>
-                                    <td th:text="${certiInfo.getCerManager2().getEngName()}"></td>
+                                    <td th:text="${certiInfo.getCerManager1().getName()}"></td>
+                                    <td th:text="${certiInfo.getCerManagerText1()}"></td>
+                                    <td th:text="${certiInfo.getCerManager2().getName()}"></td>
+                                    <td th:text="${certiInfo.getCerManagerText2()}"></td>
                                     <td>
                                         <div class="form-inline">
                                             <a th:text="#{label.active}" th:href="@{/admin/certificate/info/updateActive/{id}(id=${certiInfo.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Active" data-container="body"></a>

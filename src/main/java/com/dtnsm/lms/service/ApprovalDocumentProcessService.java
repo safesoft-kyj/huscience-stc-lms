@@ -8,6 +8,7 @@ import com.dtnsm.lms.domain.DocumentAccountOrder;
 import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import com.dtnsm.lms.domain.constant.MailSendType;
 import com.dtnsm.lms.util.DateUtil;
+import com.dtnsm.lms.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,8 +41,18 @@ public class ApprovalDocumentProcessService {
     @Autowired
     CourseCertificateService courseCertificateService;
 
+    @Autowired
+    BinderLogService binderLogService;
+
     // 기안 처리
-    public void documentRequestProcess(Account account, Document document) {
+    public boolean documentRequestProcess(Account account, Document document) {
+
+        // 결재 신청에 필요한 기본 검증을 진행한다.
+        // 0: 계정이 존재하지 않음
+        // 1: 상위결재권자가 지정되지 않음
+        // 2: 관리자가 지정되지 않음
+        // 9: 과정 신청 가능
+        if (courseAccountService.accountVerification(account.getUserId()) != 9) return false;
 
         // 팀장/부서장 승인여부
         String isAppr1 = document.getTemplate().getIsTeamMangerApproval();
@@ -119,6 +130,8 @@ public class ApprovalDocumentProcessService {
         }
 
         // 알림 등록
+
+        return true;
     }
 
     // 1차 승인 처리
@@ -144,8 +157,8 @@ public class ApprovalDocumentProcessService {
             Document document1 = documentService.save(document);
 
             // 교육참석보고서 이면 연결된 교육과정을 종결시킨다.
-            // TODO : 교육참석보고서 ID가 8에서 다르게 변경될 경우 수정 요함
-            if(document1.getTemplate().getId() == 8 && document1.getCourseAccount() != null) {
+            // TODO : 교육참석보고서 ID가 1에서 다르게 변경될 경우 수정 요함
+            if(document1.getTemplate().getId() == 1 && document1.getCourseAccount() != null) {
 
                 CourseAccount courseAccount = document1.getCourseAccount();
                 courseAccount.setCourseStatus(CourseStepStatus.complete);
@@ -158,6 +171,8 @@ public class ApprovalDocumentProcessService {
                 courseAccountService.save(courseAccount);
 
                 // TODO : Training Log 처리
+                // 강의별로 로그를 생성시킨다.
+                binderLogService.createTrainingLog(courseAccount);
             }
 
             // 최종 승인이면 기안자에게 메일 전송
@@ -223,8 +238,8 @@ public class ApprovalDocumentProcessService {
             Document document1 = documentService.save(document);
 
             // 교육참석보고서 이면 연결된 교육과정을 종결시킨다.
-            // TODO : 교육참석보고서 ID가 8에서 다르게 변경될 경우 수정 요함
-            if(document1.getTemplate().getId() == 8 && document1.getCourseAccount() != null) {
+            // TODO : 교육참석보고서 ID가 다르게 변경될 경우 수정 요함
+            if(document1.getTemplate().getId() == 1 && document1.getCourseAccount() != null) {
 
                 CourseAccount courseAccount = document1.getCourseAccount();
                 courseAccount.setCourseStatus(CourseStepStatus.complete);
@@ -236,6 +251,8 @@ public class ApprovalDocumentProcessService {
                 courseAccountService.save(courseAccount);
 
                 // TODO : Training Log 처리
+                // 강의별로 로그를 생성시킨다.
+                binderLogService.createTrainingLog(courseAccount);
             }
 
             // 최종 승인이면 기안자에게 메일 전송

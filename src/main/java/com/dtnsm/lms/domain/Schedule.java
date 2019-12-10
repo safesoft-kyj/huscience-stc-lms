@@ -14,7 +14,7 @@ import java.util.List;
 @Table(name="el_schedule")
 public class Schedule extends AuditorCreateEntity<String> {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
 
     // C: 교육연간일정, M:Employee training metrix

@@ -56,7 +56,7 @@ public class CourseController {
 
     public CourseController() {
         pageInfo.setParentId("m-course");
-        pageInfo.setParentTitle("공지사항");
+        pageInfo.setParentTitle("교육과정");
     }
 
     @GetMapping("/list/{typeId}")
@@ -164,18 +164,30 @@ public class CourseController {
         return "content/course/approvalAppr1";
     }
 
+
+    // 내부직원의 교육신청 처리
     @GetMapping("/request/{id}")
     public String request(@PathVariable("id") long id, Model model) {
 
         Course course = courseService.getCourseById(id);
         Account account = userService.getAccountByUserId(SessionUtil.getUserId());
 
-        List<CourseAccount> courseAccountList = courseService.getCourseById(id).getCourseAccountList();
-
         // 교육 신청 처리(requestType 0:관리자 지정, 1:신청)
         approvalCourseProcessService.courseRequestProcess(account, course, "1");
 
         return "redirect:/course/request/commit/" + id;
+    }
+
+    // 교육필수대상자로 지정된 사람에 대한 신청처리
+    @GetMapping("/request2/{id}")
+    public String request2(@PathVariable("id") long docId, Model model) {
+
+        CourseAccount courseAccount = courseAccountService.getById(docId);
+
+        // 교육 신청 처리(requestType 0:관리자 지정, 1:신청)
+        approvalCourseProcessService.courseRequestProcess(courseAccount.getAccount(), courseAccount.getCourse(), "1");
+
+        return "redirect:/mypage/main";
     }
 
     @GetMapping("/request/commit/{id}")

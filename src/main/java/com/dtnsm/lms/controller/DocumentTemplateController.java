@@ -75,7 +75,7 @@ public class DocumentTemplateController {
 
         DocumentTemplate template = templateService.getById(id);
 
-        pageInfo.setPageTitle("전자결재 상세");
+        pageInfo.setPageTitle("전자결재");
 
         model.addAttribute(pageInfo);
         model.addAttribute("border", template);
@@ -87,7 +87,7 @@ public class DocumentTemplateController {
     @GetMapping("/add")
     public String noticeAdd(DocumentTemplate template, Model model) {
 
-        pageInfo.setPageTitle("결재양식 등록");
+        pageInfo.setPageTitle("결재양식");
 
         model.addAttribute(pageInfo);
         model.addAttribute("border", template);
@@ -115,7 +115,7 @@ public class DocumentTemplateController {
 
         DocumentTemplate template = templateService.getById(id);
 
-        pageInfo.setPageTitle(template.getTitle() + " 수정");
+        pageInfo.setPageTitle(template.getTitle());
 
         model.addAttribute(pageInfo);
         model.addAttribute("border", template);

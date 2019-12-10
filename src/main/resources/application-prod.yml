@@ -16,7 +16,7 @@ spring:
     servlet:
       content-type: text/html
   datasource:
-    url: jdbc:sqlserver://localhost:20170;DatabaseName=test_lms
+    url: jdbc:sqlserver://localhost:20170;DatabaseName=test_lms_local
     username: sa
     password: safe123!@#
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
@@ -33,6 +33,10 @@ spring:
       ddl-auto: none
     generate-ddl: false
     show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
   servlet:
     multipart:
       enabled: true
@@ -77,7 +81,7 @@ file:
   survey-upload-dir: C://UploadFiles//lms//upload//survey//
   binder-jd-upload-dir: C://UploadFiles//lms//upload//binder//jd//
   xdoc-upload-dir: C://UploadFiles//lms//upload//xdoc//
-
+  certificate-upload-dir: C://UploadFiles/lms//upload//certificate//
 
 
 image-file:

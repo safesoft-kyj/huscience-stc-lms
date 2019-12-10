@@ -15,7 +15,7 @@ import java.util.Date;
 public class DocumentCourseAccount extends AuditorEntity<String> {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne

@@ -46,14 +46,13 @@ public class UserServiceImpl implements UserService {
     }
 
     public Account save(Account account) {
+
         account.setPassword(passwordEncoder.encode(account.getPassword()));
 
-        if(account.getRoles().size() == 0) {
+        if(account.getRoles() == null || account.getRoles().size() == 0) {
             Role role;
 
-            if (account.getUserType().equals("A")) {
-                role = roleRepository.findByName("ROLE_ADMIN");
-            } else if (account.getUserType().equals("U")) {
+            if (account.getUserType().equals("U")) {
                 role = roleRepository.findByName("ROLE_USER");
             } else {
                 role = roleRepository.findByName("ROLE_OTHER");
@@ -61,7 +60,7 @@ public class UserServiceImpl implements UserService {
             account.setRoles(Arrays.asList(role));
         }
 
-        // 사용자 구분 (A:admin, U:일반유저, O:외부유저)
+        // 사용자 구분 (U:일반유저, O:외부유저)
         //account.setUserType("O");
         return userRepository.save(account);
     }
@@ -196,7 +195,59 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    // 그룹웨어 사용자 정보로 Account 계정의 정보를 생성하거나 업데이트 한다.
+    public void updateAccountByGroupwareInfo(String userId) {
 
+        // 기존에 Account가 존재하는 확인
+        Account account = userRepository.findByUserId(userId);
+
+        // 그룹웨어 사용자 정보를 가지고 온다.
+        UserVO userVO = userMapperService.getUserById(userId);
+
+        // Account 가 없으면
+        if (account == null) {
+
+            // 그룹웨어 사용자 정보가 있으면 Account를 생성한다.
+            if (userVO != null) {
+                // 내부직원 기본 사용자롤 설정
+                Role userRole = roleRepository.findByName("ROLE_USER");
+
+                account = new Account();
+                account.setUserId(userVO.getUserId());
+                account.setName(userVO.getKorName());
+                account.setEngName(userVO.getEngName());
+                account.setComNum(userVO.getComNum());
+                account.setPassword(userVO.getPassword());
+                account.setEmail(userVO.getEmail());
+                account.setComJob(userVO.getComJob());
+                account.setComPosition(userVO.getComPosition());
+                account.setOrgDepart(userVO.getOrgDepart());
+                account.setIndate(userVO.getIndate());
+                account.setRoles(Arrays.asList(userRole));
+                // 사용자 구분 (U:내부직원, O:외부유저)
+                account.setUserType("U");
+                account.setEnabled(true);
+                userRepository.save(account);
+            }
+        } else {
+            if (userVO != null) {
+                account.setName(userVO.getKorName());
+                account.setEngName(userVO.getEngName());
+                account.setComNum(userVO.getComNum());
+                account.setPassword(userVO.getPassword());
+                account.setEmail(userVO.getEmail());
+                account.setComJob(userVO.getComJob());
+                account.setComPosition(userVO.getComPosition());
+                account.setOrgDepart(userVO.getOrgDepart());
+                account.setIndate(userVO.getIndate());
+//                account.setRoles(Arrays.asList(userRole));
+                // 사용자 구분 (U:내부직원, O:외부유저)
+//                account.setUserType("U");
+//                account.setEnabled(true);
+                userRepository.save(account);
+            }
+        }
+    }
 
 
     /*

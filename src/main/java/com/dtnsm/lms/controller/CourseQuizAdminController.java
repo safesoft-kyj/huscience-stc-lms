@@ -62,14 +62,14 @@ public class CourseQuizAdminController {
 
     public CourseQuizAdminController() {
         pageInfo.setParentId("m-course");
-        pageInfo.setParentTitle("과정시험정보");
+        pageInfo.setParentTitle("교육과정");
     }
 
     @GetMapping("/list/{courseId}")
     public String list(@PathVariable("courseId") Long courseId, Model model) {
 
         pageInfo.setPageId("m-course-list-page");
-        pageInfo.setPageTitle("시험조회");
+        pageInfo.setPageTitle("시험");
 
         course = courseService.getCourseById(courseId);
         // 설문조사 여부가 Y 인경우만 Add 버튼 활성화
@@ -90,7 +90,7 @@ public class CourseQuizAdminController {
         CourseQuiz courseQuiz = new CourseQuiz();
         courseQuiz.setCourse(course);
 
-        pageInfo.setPageTitle(course.getTitle() + " 등록");
+        pageInfo.setPageTitle(course.getTitle());
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseQuiz", courseQuiz);
@@ -148,7 +148,7 @@ public class CourseQuizAdminController {
 
         CourseQuiz courseQuiz = quizService.getCourseQuizById(id);
 
-        pageInfo.setPageTitle(courseQuiz.getName() + " 수정");
+        pageInfo.setPageTitle(courseQuiz.getName());
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseQuiz", courseQuiz);

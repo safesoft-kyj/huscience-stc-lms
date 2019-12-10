@@ -1,9 +1,13 @@
 package com.dtnsm.lms.controller.RestController;
 
 import com.dtnsm.lms.domain.Course;
+import com.dtnsm.lms.domain.CourseAccount;
+import com.dtnsm.lms.domain.constant.CourseStepStatus;
+import com.dtnsm.lms.service.CourseAccountService;
 import com.dtnsm.lms.service.CourseService;
 import com.dtnsm.lms.mybatis.dto.CalendarVO;
 import com.dtnsm.lms.util.DateUtil;
+import com.dtnsm.lms.util.SessionUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +29,9 @@ public class CalendarRestController {
 
     @Autowired
     CourseService courseService;
+
+    @Autowired
+    CourseAccountService courseAccountService;
 
     @GetMapping("/month/requestCalendar")
     public String monthRequestCalendar(@RequestParam("start") String start, @RequestParam("end") String end) {
@@ -80,6 +87,8 @@ public class CalendarRestController {
         return jsonMsg;
     }
 
+
+    // 교육일 기준
     @GetMapping("/month/calendar")
     public String monthCalendar(@RequestParam("start") String start, @RequestParam("end") String end) {
 
@@ -119,6 +128,116 @@ public class CalendarRestController {
                     event.setEnd(DateUtil.getStringDateAddDay(course.getToDate(), 1));
                 } else {
                     event.setEnd(course.getToDate());
+                }
+                event.setColor(color);
+                event.setUrl(url);
+                events.add(event);
+            }
+
+            // FullCalendar
+            ObjectMapper mapper = new ObjectMapper();
+            jsonMsg =  mapper.writerWithDefaultPrettyPrinter().writeValueAsString(events);
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return jsonMsg;
+    }
+
+    // 사용자 요청일 기준 칼렌더
+    @GetMapping("/month/requestCalendarUser")
+    public String monthRequestCalendarUser(@RequestParam("start") String start, @RequestParam("end") String end) {
+
+        String jsonMsg = null;
+        try {
+            List<CourseAccount> courseAccountList = courseAccountService.getCourseByUserAndRequestFromDateBetween(SessionUtil.getUserId(), start, end, CourseStepStatus.process);
+
+            List<CalendarVO> events = new ArrayList<CalendarVO>();
+
+            CalendarVO event;
+            String color, url;
+            for(CourseAccount courseAccount : courseAccountList) {
+
+                url = "/course/view/" + courseAccount.getCourse().getId();
+                switch (courseAccount.getCourse().getCourseMaster().getId()) {
+                    case "BC0101":  // self training
+                        color = "#FFA726";
+                        break;
+                    case "BC0102":  // class training
+                        color = "#8BC34A";
+                        break;
+                    case "BC0103":  // 부서별 교육
+                        color = "#26A69A";
+                        break;
+                    case "BC0104":  // 외부 교육
+                        color = "#BA68C8";
+                        break;
+                    default:
+                        color = "#ff0000";
+                }
+
+                event = new CalendarVO();
+                event.setTitle(courseAccount.getCourse().getTitle());
+                event.setStart(courseAccount.getRequestDate());
+                // allDay 가 true 인 경우 하루를 더해야 함
+                if (event.isAllDay()) {
+                    event.setEnd(DateUtil.getStringDateAddDay(courseAccount.getRequestDate(), 1));
+                } else {
+                    event.setEnd(courseAccount.getRequestDate());
+                }
+                event.setColor(color);
+                event.setUrl(url);
+                events.add(event);
+            }
+
+            // FullCalendar
+            ObjectMapper mapper = new ObjectMapper();
+            jsonMsg =  mapper.writerWithDefaultPrettyPrinter().writeValueAsString(events);
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return jsonMsg;
+    }
+
+    // 사용자 교육일 기준 칼렌더
+    @GetMapping("/month/calendarUser")
+    public String monthCalendarUser(@RequestParam("start") String start, @RequestParam("end") String end) {
+
+        String jsonMsg = null;
+        try {
+            List<CourseAccount> courseAccountList = courseAccountService.getCourseByUserAndFromDateBetween(SessionUtil.getUserId(), start, end, CourseStepStatus.process);
+
+            List<CalendarVO> events = new ArrayList<CalendarVO>();
+
+            CalendarVO event;
+            String color, url;
+            for(CourseAccount courseAccount : courseAccountList) {
+
+                url = "/course/view/" + courseAccount.getCourse().getId();
+                switch (courseAccount.getCourse().getCourseMaster().getId()) {
+                    case "BC0101":  // self training
+                        color = "#FFA726";
+                        break;
+                    case "BC0102":  // class training
+                        color = "#8BC34A";
+                        break;
+                    case "BC0103":  // 부서별 교육
+                        color = "#26A69A";
+                        break;
+                    case "BC0104":  // 외부 교육
+                        color = "#BA68C8";
+                        break;
+                    default:
+                        color = "#ff0000";
+                }
+
+                event = new CalendarVO();
+                event.setTitle(courseAccount.getCourse().getTitle());
+                event.setStart(courseAccount.getFromDate());
+                // allDay 가 true 인 경우 하루를 더해야 함
+                if (event.isAllDay()) {
+                    event.setEnd(DateUtil.getStringDateAddDay(courseAccount.getToDate(), 1));
+                } else {
+                    event.setEnd(courseAccount.getToDate());
                 }
                 event.setColor(color);
                 event.setUrl(url);

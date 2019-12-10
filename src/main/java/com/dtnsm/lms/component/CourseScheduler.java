@@ -4,11 +4,16 @@ import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.Account;
 import com.dtnsm.lms.domain.Course;
 import com.dtnsm.lms.domain.Role;
+import com.dtnsm.lms.domain.constant.LmsAlarmType;
 import com.dtnsm.lms.mybatis.dto.UserVO;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.repository.RoleRepository;
+import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.CourseService;
+import com.dtnsm.lms.service.LmsNotificationService;
+import com.dtnsm.lms.service.SignatureService;
 import com.dtnsm.lms.util.DateUtil;
+import com.dtnsm.lms.util.SessionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -35,6 +40,9 @@ public class CourseScheduler {
     CourseService courseService;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     UserMapperService userMapperService;
 
     @Autowired
@@ -42,6 +50,12 @@ public class CourseScheduler {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private LmsNotificationService lmsNotificationService;
+
+    @Autowired
+    private SignatureService signatureService;
 
 //    @Scheduled(cron = "10 * * * * *")
 //    public void run() {
@@ -51,6 +65,7 @@ public class CourseScheduler {
 
 //    @Scheduled(cron = "0 0/50 11 * * *")
 
+    // 8, 9, --- 18시에 실행한다.
     @Scheduled(cron = "0 0 8-18 * * *")
     public void updateStatus() {
 
@@ -100,7 +115,6 @@ public class CourseScheduler {
                 course = courseService.save(course);
             }
         }
-
     }
 
 
@@ -113,39 +127,34 @@ public class CourseScheduler {
     0 0 9-17 * * MON-FRI" = 오전 9시부터 오후 5시까지 주중(월~금)에 실행한다.
     0 0 0 25 12 ?" = every Christmas Day at midnight
  */
+    // 매일 오전 3시에 실행한다.
     // 그룹웨어 사용자를 추가한다.
     @Scheduled(cron = "0 0 3 * * *")
     public void updateGroupwareUser() {
 
-        Role userRole = roleRepository.findByName("ROLE_USER");
-
-        // 그룹웨어 사용자 생성
+        // 그룹웨어 사용자 정보로 Account 계정의 정보를 생성하거나 업데이트 한다.
         for(UserVO userVO : userMapperService.getUserAll()) {
+            userService.updateAccountByGroupwareInfo(userVO.getUserId());
+        }
+    }
 
-            Account account = userService.getAccountByUserId(userVO.getUserId());
+    // 매일 8, 9, 10시에 실행한다
+    // 상위결재권자나 사인 미지정자
+    @Scheduled(cron = "0 10 * * * *")
+    public void updateAlarm() {
 
-            // 새로운 그룹웨어 유저가 추가되었을때 Account 계정을 추가한다.(적용전에는 전체 업데이트)
-            if (account == null) {
+        for (Account account : userService.getAccountList()) {
 
-                account = new Account();
-                account.setUserId(userVO.getUserId());
-                account.setName(userVO.getKorName());
-                account.setEngName(userVO.getEngName());
-                account.setComNum(userVO.getComNum());
-                account.setPassword(userVO.getPassword());
-                account.setEmail(userVO.getEmail());
-                account.setComJob(userVO.getComJob());
-                account.setComPosition(userVO.getComPosition());
-                account.setOrgDepart(userVO.getOrgDepart());
-                account.setIndate(userVO.getIndate());
-                account.setRoles(Arrays.asList(userRole));
-                // 사용자 구분 (U:내부직원, O:외부유저)
-                account.setUserType("U");
-                account.setEnabled(true);
-                account.setComNum(userVO.getComNum());  //사번
-                userService.save(account);
+            if (account.getParentUserId() == null || account.getParentUserId().trim().isEmpty()) {
+
+                // 상위결재권자 미지정
+                lmsNotificationService.createAlarm(LmsAlarmType.ParentUser, account);
             }
 
+            if (signatureService.getSign(account.getUserId()).trim().isEmpty()) {
+                // 상위결재권자 미지정
+                lmsNotificationService.createAlarm(LmsAlarmType.Sign, account);
+            }
         }
     }
 }

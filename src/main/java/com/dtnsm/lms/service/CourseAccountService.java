@@ -1,14 +1,23 @@
 package com.dtnsm.lms.service;
 
-import com.dtnsm.lms.domain.CourseAccount;
+import com.dtnsm.common.entity.JobDescription;
+import com.dtnsm.common.entity.QJobDescription;
+import com.dtnsm.lms.auth.UserService;
+import com.dtnsm.lms.domain.*;
+import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import com.dtnsm.lms.repository.CourseAccountOrderRepository;
 import com.dtnsm.lms.repository.CourseAccountRepository;
+import com.dtnsm.lms.repository.CourseCertificateInfoRepository;
+import com.dtnsm.lms.util.SessionUtil;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +33,16 @@ public class CourseAccountService {
 
     @Autowired
     CourseAccountOrderService courseAccountOrderService;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    CourseManagerService courseManagerService;
+
+    @Autowired
+    CourseCertificateInfoRepository courseCertificateInfoRepository;
+
 
     public CourseAccount save(CourseAccount courseAccount){
         return courseAccountRepository.save(courseAccount);
@@ -50,8 +69,24 @@ public class CourseAccountService {
         return courseAccountRepository.findById(id);
     }
 
+
+    // 사용자별 월간 교육 일정
+    public List<CourseAccount> getCourseByUserAndFromDateBetween(String userId, String fromDate, String toDate, CourseStepStatus courseStepStatus) {
+        return courseAccountRepository.findByAccount_UserIdAndFromDateBetweenAndCourseStatus(userId, fromDate, toDate, courseStepStatus);
+    }
+
+    // 사용자별 월간 교육 신청 일정
+    public List<CourseAccount> getCourseByUserAndRequestFromDateBetween(String userId, String fromDate, String toDate, CourseStepStatus courseStepStatus) {
+        return courseAccountRepository.findByAccount_UserIdAndRequestDateBetweenAndCourseStatus(userId, fromDate, toDate, courseStepStatus);
+    }
+
+
     public CourseAccount getByCourseIdAndUserId(long courseId, String userId) {
         return courseAccountRepository.findByCourse_IdAndAccount_UserId(courseId, userId);
+    }
+
+    public CourseAccount getByCourseIdAndUserIdAndCourseStatus(long courseId, String userId, CourseStepStatus courseStepStatus) {
+        return courseAccountRepository.findByCourse_IdAndAccount_UserIdAndCourseStatus(courseId, userId, courseStepStatus);
     }
 
 
@@ -180,7 +215,29 @@ public class CourseAccountService {
     }
 
 
+    // 과정 신청에 필요한 기본 검증을 진행한다.
+    // 0: 계정이 존재하지 않음
+    // 1: 상위결재권자가 지정되지 않음
+    // 2: 관리자가 지정되지 않음
+    // 9: 과정 신청 가능
+    public int accountVerification(String userId) {
 
+        Account account = userService.findByUserId(userId);
+
+        // 계정이 존재하지 않으면
+        if(account == null) return 0;
+
+        // 상위결재권자가 지정되지 않았으면
+        if (account.getParentUserId().trim().isEmpty()) return 1;
+
+        // 과정 관리자가 등록되어 있지 않은 경우
+        if (courseManagerService.getCourseManager() == null || courseManagerService.getCourseManager().getUserId().isEmpty()) return 2;
+
+        //  수료증 기준정보가 등록되지 않은 경우
+        if (courseCertificateInfoRepository.findByIsActive(1) == null) return 3;
+
+        return 9;
+    }
 
 
     //    public CourseAccount getByCourseIdAndApprUserId1(long courseId, String userId) {

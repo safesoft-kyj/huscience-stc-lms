@@ -40,6 +40,62 @@
             <div class="panel">
                 <div class="panel-body">
                     <div class="row">
+                        <h5><strong class="text-warning"><i class="demo-pli-dot-vertical"></i> 신청대기 과정</strong></h5>
+                        <hr class="table-head">
+                        <table class="table" cellspacing="0" width="100%">
+                            <thead>
+                            <tr style="background: #FAFAFA;">
+                                <th class="text-center col-md-3" th:text="#{label.course.name}">과정명</th>
+                                <th class="text-center col-md-3" th:text="#{label.course.period}">기간</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.section}">강의</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.quiz}">시험</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.survey}">설문</th>
+                                <th class="text-center col-md-2" th:text="#{label.status}">상태</th>
+                                <th class="text-center" th:text="#{label.bigo}">비고</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <th:block th:each="courseAccount, index : ${courseAccountList}">
+                                <tr th:if="${courseAccount.getCourseStatus() == T(com.dtnsm.lms.domain.constant.CourseStepStatus).none}">
+                                    <td class="text-left">
+                                        <a th:href="@{/course/view/{id}(id=${courseAccount.getCourse().getId()})}">
+                                            <span th:text="${'['+courseAccount.getCourse().getCourseMaster().getCourseName()+']'}"></span>
+                                            <span th:text="${courseAccount.getCourse().getTitle()}"}></span>
+                                        </a>
+                                    </td>
+                                    <td class="text-center" th:text="${courseAccount.getFromDate() + '~' + courseAccount.getToDate()}"></td>
+                                    <td class="text-center">
+                                        <span class="badge badge-mint" th:text="${courseAccount.getCourse().getSections().size()}"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <th:block th:if="${courseAccount.getCourse().getIsQuiz().equals('Y')}">
+                                            <span class="badge badge-success" th:text="${courseAccount.getCourse().getQuizzes().size()}"></span>
+                                        </th:block>
+                                    </td>
+                                    <td class="text-center">
+                                        <th:block th:if="${courseAccount.getCourse().getIsSurvey().equals('Y')}">
+                                            <span class="badge badge-warning" th:text="${courseAccount.getCourse().getSurveys().size()}"></span>
+                                        </th:block>
+                                    </td>
+                                    <td class="text-center">
+                                        <form id="submit_form" th:action="@{/course/request2/{id}(id=${courseAccount.getId()})}" method="get">
+                                        <div th:switch="${courseAccount.getCourseStatus()}">
+                                            <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).none}" class="text-warning" th:text="${'신청대기'}"></span>
+                                            <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).request}" class="text-mint" th:text="${'신청완료'}"></span>
+                                        </div>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-info" th:href="|javascript:checkRequest('${courseAccount.getCourse().getId()}', '${courseAccount.getAccount().getUserId()}')|"><i class="demo-pli-inbox-into"></i> 교육신청</a>
+                                    </td>
+                                </tr>
+                            </th:block>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <br>
+                    <div class="row">
                         <h5><strong class="text-warning"><i class="demo-pli-dot-vertical"></i> 신청중인 과정</strong></h5>
                         <hr class="table-head">
                         <table class="table" cellspacing="0" width="100%">
@@ -66,7 +122,7 @@
                                     <span class="badge badge-mint" th:text="${courseAccount.getCourse().getSections().size()}"></span>
                                 </td>
                                 <td class="text-center">
-                                    <th:block th:if="${courseAccount.getCourse().getIsQuiz()}">
+                                    <th:block th:if="${courseAccount.getCourse().getIsQuiz().equals('Y')}">
                                     <span class="badge badge-success" th:text="${courseAccount.getCourse().getQuizzes().size()}"></span>
                                     </th:block>
                                 </td>
@@ -187,10 +243,17 @@
                                                   class="text-warning" th:text="${'진행중'}"></span>
                                         </div>
                                     </td>
-                                    <td class="text-center" th:if="${courseAccount.getCourse().getIsQuiz().equals('Y') or courseAccount.getCourse().getIsSurvey().equals('Y')}">
+                                    <td class="text-center">
                                         <form id="submit_form2" th:action="@{/mypage/classroom/view/{id}(id=${courseAccount.getId()})}" method="get">
-                                            <input type="text" th:value="${courseAccount.getId()}">
-                                            <a class="btn btn-info" th:onclick="|javascript:checkCoursePeriod('${courseAccount.getId()}','2')|"><i class="demo-pli-inbox-into"></i> 입장</a>
+                                            <th:block th:if="${courseAccount.getCourse().getIsQuiz().equals('Y') or courseAccount.getCourse().getIsSurvey().equals('Y')}">
+                                                <th:block th:if="${courseAccount.getIsAttendance().equals('1')}">
+                                                    <a class="btn btn-info" th:onclick="|javascript:checkCoursePeriod('${courseAccount.getId()}','2')|"><i class="demo-pli-inbox-into"></i> 입장</a>
+                                                </th:block>
+                                                <th:block th:unless="${courseAccount.getIsAttendance().equals('1')}">
+                                                    참석처리중
+<!--                                                    <a class="btn btn-info" th:onclick="|javascript:checkCoursePeriod('${courseAccount.getId()}','2')|"><i class="demo-pli-inbox-into"></i> 입장</a>-->
+                                                </th:block>
+                                            </th:block>
                                         </form>
                                     </td>
                                 </tr>
@@ -327,6 +390,47 @@
                     }
                 },
             });
+            return;
+        }
+
+        function checkRequest(courseId, userId) {
+
+            $.ajax({
+                type : 'POST',
+                url : '/api/courseAccount/isVerificationRequestWait',
+                dataType : 'json',
+                data : {
+                    'courseId': courseId,
+                    'userId': userId
+                },
+                error: function(xhr, status, error){
+                    alert(error);
+                },
+                success : function(data){
+
+                    if (data == 1) {
+                        alert('상위결재권자가 지정되지 않았습니다.');
+                        return false;
+                    }
+
+                    if (data == 2) {
+                        alert('교육과정 관리자가 지정되지 않았습니다.');
+                        return false;
+                    }
+
+                    if (data == 3) {
+                        alert('신청대기중인 과정이 없습니다..');
+                        return false;
+                    }
+
+                    if (data == 9) {
+                        $('#submit_form').submit();
+                        alert('교육 신청되었습니다.');
+                        return false;
+                    }
+                },
+            });
+
             return;
         }
     </script>

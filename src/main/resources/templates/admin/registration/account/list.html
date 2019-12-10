@@ -52,8 +52,8 @@
                         <div th:case="*">
                             <div class="row" style="margin-bottom: 5px;" >
                                 <div class="col-sm-12 text-right">
-                                    <a class="btn btn-purple" th:href="@{/admin/registration/account/gw-user-update}"><i class="demo-pli-upload-to-cloud"></i> 사용자 업데이트</a>
-                                    <a class="btn btn-purple" th:href="@{/admin/registration/account/add}"><i class="demo-pli-add"></i> Add</a>
+                                    <a class="btn btn-purple" th:href="@{/admin/registration/account/gw-user-update}"><i class="demo-pli-upload-to-cloud"></i> 내부직원 업데이트</a>
+                                    <a class="btn btn-purple" th:href="@{/admin/registration/account/add}"><i class="demo-pli-add"></i> 외부사용자 등록</a>
                                 </div>
                             </div>
                             <table id="demo-dt-basic" class="table table-striped table-bordered" cellspacing="0" width="100%">
@@ -74,7 +74,7 @@
                                     <td th:text="${account.getName()}"></td>
                                     <td th:text="${account.getEmail()}"></td>
                                     <td th:text="${account.getEnabled() ? 'Yes' : 'No'}" class="text-center"></td>
-                                    <td th:text="${account.getUserType().equals('S') ? '시스템관리자' : (account.getUserType().equals('U') ? '내부직원' : '외부사용자')  }"></td>
+                                    <td th:text="${account.getUserType().equals('U') ? '내부직원' : '외부사용자'}"></td>
                                     <td>
                                         <th:block th:each="role : ${account.getRoles()}">
                                             <span th:text="${role.getName()}"></span><br>
@@ -82,8 +82,14 @@
                                     </td>
                                     <td>
                                         <div class="form-inline">
-                                            <a th:text="#{label.edit}" th:href="@{/admin/registration/account/edit/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
-                                            <a th:text="#{label.delete}" th:href="@{/admin/registration/account/delete/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                            <th:block th:if="${#strings.equalsIgnoreCase(account.getUserType(), 'U')}">
+                                                <a th:text="권한변경" th:href="@{/admin/registration/account/editRole/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                            </th:block>
+                                            <th:block th:if="${#strings.equalsIgnoreCase(account.getUserType(), 'O')}">
+                                                <a th:text="권한변경" th:href="@{/admin/registration/account/editRole/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                                <a th:text="#{label.edit}" th:href="@{/admin/registration/account/edit/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                                <a th:text="#{label.delete}" th:href="@{/admin/registration/account/delete/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                            </th:block>
                                         </div>
                                     </td>
                                 </tr>

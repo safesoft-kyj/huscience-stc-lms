@@ -17,7 +17,7 @@ import java.util.List;
 public class CourseAccount extends AuditorEntity<String> {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
 
     // 교육과정

@@ -72,32 +72,32 @@ public class InitialDataLoader implements
         Account devUser = createAccountDevIfNotFound("pub147", adminRole);
 
 
-        // 그룹웨어 사용자 생성
-        for(UserVO userVO : userMapperService.getUserAll()) {
-
-            Account account = userRepository.findByUserId(userVO.getUserId());
-
-            // 새로운 그룹웨어 유저가 추가되었을때 Account 계정을 추가한다.(적용전에는 전체 업데이트)
-            if (account == null) {
-                account = new Account();
-                account.setUserId(userVO.getUserId());
-                account.setName(userVO.getKorName());
-                account.setEngName(userVO.getEngName());
-                account.setComNum(userVO.getComNum());
-                account.setPassword(userVO.getPassword());
-                account.setEmail(userVO.getEmail());
-                account.setComJob(userVO.getComJob());
-                account.setComPosition(userVO.getComPosition());
-                account.setOrgDepart(userVO.getOrgDepart());
-                account.setIndate(userVO.getIndate());
-                account.setRoles(Arrays.asList(userRole));
-                // 사용자 구분 (U:내부직원, O:외부유저)
-                account.setUserType("U");
-                account.setEnabled(true);
-                userRepository.save(account);
-            }
-
-        }
+//        // 그룹웨어 사용자 생성
+//        for(UserVO userVO : userMapperService.getUserAll()) {
+//
+//            Account account = userRepository.findByUserId(userVO.getUserId());
+//
+//            // 새로운 그룹웨어 유저가 추가되었을때 Account 계정을 추가한다.(적용전에는 전체 업데이트)
+//            if (account == null) {
+//                account = new Account();
+//                account.setUserId(userVO.getUserId());
+//                account.setName(userVO.getKorName());
+//                account.setEngName(userVO.getEngName());
+//                account.setComNum(userVO.getComNum());
+//                account.setPassword(userVO.getPassword());
+//                account.setEmail(userVO.getEmail());
+//                account.setComJob(userVO.getComJob());
+//                account.setComPosition(userVO.getComPosition());
+//                account.setOrgDepart(userVO.getOrgDepart());
+//                account.setIndate(userVO.getIndate());
+//                account.setRoles(Arrays.asList(userRole));
+//                // 사용자 구분 (U:내부직원, O:외부유저)
+//                account.setUserType("U");
+//                account.setEnabled(true);
+//                userRepository.save(account);
+//            }
+//
+//        }
 
         addIndication(1, "Ulcerative Colitis");
         addIndication(2, "Breast Cancer");
@@ -153,43 +153,55 @@ public class InitialDataLoader implements
     // 어드민 계정
     private Account createAccountAdminIfNotFound(String userId, Role adminRole) {
 
-        Account user = userRepository.findByUserId("admin");
+        Account account = userRepository.findByUserId("admin");
 
-        if(user == null){
-            user = new Account();
-            user.setUserId("admin");
-            user.setName("Admin");
-            user.setPassword(passwordEncoder.encode("admin"));
-            user.setEmail("pub147@naver.com");
-            user.setRoles(Arrays.asList(adminRole));
-            // 사용자 구분 (A:admin, U:일반유저, O:외부유저)
-            user.setUserType("A");
-            user.setEnabled(true);
-            userRepository.save(user);
+        if(account == null){
+            account = new Account();
+            account.setUserId("admin");
+            account.setName("Admin");
+            account.setEngName("Admin");
+            account.setComNum("S99999999");
+            account.setPassword(passwordEncoder.encode("admin"));
+            account.setEmail("ks.hwang@safesoft.co.kr");
+            account.setComJob("ComJob");
+            account.setComPosition("ComPosition");
+            account.setOrgDepart("ComDeprat");
+            account.setIndate("2019-12-01");
+            account.setRoles(Arrays.asList(adminRole));
+            // 사용자 구분 (U:내부직원, O:외부유저)
+            account.setUserType("S");
+            account.setEnabled(true);
+
+            userRepository.save(account);
         }
 
-        return user;
+        return account;
     }
 
     // 개발자 계정
     private Account createAccountDevIfNotFound(String userId, Role adminRole) {
 
-        Account user = userRepository.findByUserId(userId);
+        Account account = userRepository.findByUserId(userId);
 
-        if(user == null){
-            user = new Account();
-            user.setUserId(userId);
-            user.setName("DevAdmin");
-            user.setPassword(passwordEncoder.encode("admin"));
-            user.setEmail("pub147@safesoft.com");
-            user.setRoles(Arrays.asList(adminRole));
-            // 사용자 구분 (A:admin, U:일반유저, O:외부유저)
-            user.setUserType("A");
-            user.setEnabled(true);
-            userRepository.save(user);
+        if(account == null){
+            account = new Account();
+            account.setName("황강석");
+            account.setEngName("kang Seok Hwange");
+            account.setComNum("S11111111");
+            account.setPassword(passwordEncoder.encode("admin"));
+            account.setEmail("ks.hwang@safesoft.co.kr");
+            account.setComJob("ComJob");
+            account.setComPosition("ComPosition");
+            account.setOrgDepart("ComDeprat");
+            account.setIndate("2019-12-01");
+            account.setRoles(Arrays.asList(adminRole));
+            // 사용자 구분 (U:내부직원, O:외부유저)
+            account.setUserType("S");
+            account.setEnabled(true);
+            userRepository.save(account);
         }
 
-        return user;
+        return account;
     }
 
 }

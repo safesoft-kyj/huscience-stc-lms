@@ -21,9 +21,12 @@ public class Account {
 
     private String name;
 
-
+    @ColumnDefault("''")
     private String engName;
+
+    @ColumnDefault("''")
     private String email;
+
     private String password;
 
     // 사번

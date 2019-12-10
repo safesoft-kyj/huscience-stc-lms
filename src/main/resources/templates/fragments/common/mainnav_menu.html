@@ -115,13 +115,15 @@
 
             <!--Submenu-->
             <ul class="collapse">
-                <li><a data-th-href="@{/mypage/main}">메인</a></li>
+                <li><a data-th-href="@{/mypage/main}">교육현황</a></li>
+<!--                <li><a data-th-href="@{/info/monthUser}">나의월간일정</a></li>-->
                 <li><a data-th-href="@{/mypage/uploadTrainingLog}">Training Log Upload</a></li>
-                <li><a data-th-href="@{/mypage/courseTraingLog}">Training Log</a></li>
+                <li><a data-th-href="@{/mypage/courseTraingLog}">Employee Training Log</a></li>
+                <li><a data-th-href="@{/mypage/certificate/file/list}">수료증 Upload</a></li>
                 <li><a data-th-href="@{/mypage/certificate/view}">수료증발급</a></li>
-                <li><a data-th-href="@{/mypage/myInfo}">사용자정보</a></li>
                 <li><a data-th-href="@{/mypage/cv}">Curriculum Vitae</a></li>
                 <li><a data-th-href="@{/mypage/jd/approved}">Job Description</a></li>
+                <li><a data-th-href="@{/mypage/myInfo}">사용자정보</a></li>
 <!--                <li><a data-th-href="@{/mypage/quiz}">시험/시험결과/수료증발급</a></li>-->
 <!--                <li><a data-th-href="@{/mypage/myinfo}">사용자정보</a></li>-->
             </ul>
@@ -182,12 +184,12 @@
 
             <!--Submenu-->
             <ul class="collapse">
-                <li><a href="#" data-th-href="@{/admin/registration/courseManager/list}">교육관리자등록</a></li>
-                <li><a href="#" data-th-href="@{/admin/course-master/list}">교육유형등록</a></li>
-                <li><a href="#" data-th-href="@{/admin/survey/list}">설문등록</a></li>
-                <li><a href="#" data-th-href="@{/admin/certificate/number/list}">수료증채번등록</a></li>
-                <li><a href="#" data-th-href="@{/admin/certificate/info/list}">수료증정보등록</a></li>
-                <li><a href="#" data-th-href="@{/admin/schedule/list/{sctype}(sctype=${T(com.dtnsm.lms.domain.constant.ScheduleType).CALENDAR})}">연간일정등록</a></li>
+                <li><a href="#" data-th-href="@{/admin/registration/courseManager/list}">교육과정관리자</a></li>
+                <li><a href="#" data-th-href="@{/admin/course-master/list}">교육유형</a></li>
+                <li><a href="#" data-th-href="@{/admin/survey/list}">설문</a></li>
+                <li><a href="#" data-th-href="@{/admin/certificate/number/list}">수료증채번</a></li>
+                <li><a href="#" data-th-href="@{/admin/certificate/info/list}">수료증정보</a></li>
+                <li><a href="#" data-th-href="@{/admin/schedule/list/{sctype}(sctype=${T(com.dtnsm.lms.domain.constant.ScheduleType).CALENDAR})}">연간일정</a></li>
                 <li><a href="#" data-th-href="@{/admin/schedule/list/{sctype}(sctype=${T(com.dtnsm.lms.domain.constant.ScheduleType).MATRIX})}">Employee Matrix</a></li>
             </ul>
         </li>
@@ -268,7 +270,7 @@
 
             <!--Submenu-->
             <ul class="collapse">
-                <li><a href="#" data-th-href="@{/admin/customer/list}">협약기관등록</a></li>
+                <li><a href="#" data-th-href="@{/admin/customer/list}">협약기관</a></li>
             </ul>
         </li>
 
@@ -312,7 +314,7 @@
         <li>
             <a href="#">
                 <i class="demo-pli-file-html"></i>
-                <span class="menu-title">기준정보등록</span>
+                <span class="menu-title">기준정보관리</span>
                 <i class="arrow"></i>
             </a>
 
@@ -320,7 +322,7 @@
             <ul class="collapse">
                 <li><a data-th-href="@{/admin/code/major-list}">Major Code</a></li>
                 <li><a data-th-href="@{/admin/code/minor-list}">Minor Code</a></li>
-                <li><a href="#" data-th-href="@{/admin/border-master/list}">게시판등록</a></li>
+                <li><a href="#" data-th-href="@{/admin/border-master/list}">게시판</a></li>
             </ul>
         </li>
 
@@ -333,8 +335,8 @@
 
             <!--Submenu-->
             <ul class="collapse">
-                <li><a href="#" data-th-href="@{/admin/registration/account/list}">사용자관리</a></li>
-                <li><a href="#" data-th-href="@{/admin/registration/role/list}">Role관리</a></li>
+                <li><a href="#" data-th-href="@{/admin/registration/account/list}">사용자</a></li>
+                <li><a href="#" data-th-href="@{/admin/registration/role/list}">Role</a></li>
                 <!--                <li><a href="#" data-th-href="@{/admin/registration/accountRole/list}">사용자별Role관리</a></li>-->
 
             </ul>

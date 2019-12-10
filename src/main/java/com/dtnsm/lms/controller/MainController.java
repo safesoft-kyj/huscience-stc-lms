@@ -1,10 +1,9 @@
 package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.auth.UserServiceImpl;
-import com.dtnsm.lms.domain.CourseAccount;
-import com.dtnsm.lms.domain.CourseAccountOrder;
-import com.dtnsm.lms.domain.Document;
-import com.dtnsm.lms.domain.DocumentAccountOrder;
+import com.dtnsm.lms.domain.*;
+import com.dtnsm.lms.domain.constant.LmsAlarmGubun;
+import com.dtnsm.lms.domain.constant.LmsAlarmType;
 import com.dtnsm.lms.domain.constant.ScheduleType;
 import com.dtnsm.lms.mybatis.service.CourseMapperService;
 import com.dtnsm.lms.service.*;
@@ -55,6 +54,12 @@ public class MainController {
     @Autowired
     DocumentAccountOrderService documentAccountOrderService;
 
+    @Autowired
+    LmsNotificationService lmsNotificationService;
+
+    @Autowired
+    SignatureService signatureService;
+
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseAdminController.class);
 
     private PageInfo pageInfo = new PageInfo();
@@ -67,10 +72,13 @@ public class MainController {
     @GetMapping("/")
     public String root(Model model) {
 
+
         model.addAttribute(pageInfo);
         model.addAttribute("customers", customerService.getCustomerList());
         // 공지사항
         model.addAttribute("borders", borderService.getListTop5ByBorderMasterId("BA0101"));
+        // 법규/가이드라인
+        model.addAttribute("borders3", borderService.getListTop5ByBorderMasterId("BA0102"));
         // What's New
         model.addAttribute("borders2", borderService.getListTop5ByBorderMasterId("BA0104"));
 
@@ -136,6 +144,9 @@ public class MainController {
         model.addAttribute("courseCountVO", courseMapperService.getCourseCount());
 
         model.addAttribute(pageInfo);
+
+        model.addAttribute("alarmList", lmsNotificationService.getTop5ByUserNotification(SessionUtil.getUserId()));
+
 
         return "content/home";
     }

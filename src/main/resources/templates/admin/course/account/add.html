@@ -10,11 +10,6 @@
 </th:block>
 
 <th:block layout:fragment="custom_css">
-    <!--Dropzone [ OPTIONAL ]-->
-    <link th:href="@{/default/plugins/dropzone/dropzone.min.css}" rel="stylesheet">
-
-
-
 </th:block>
 
 <th:block layout:fragment="content_body">
@@ -54,18 +49,6 @@
                                 <a class="btn btn-primary" id="btnOrg" th:text="#{label.organization}">조직도</a>
                             </div>
                         </div>
-<!--                        <div class="form-group">-->
-<!--                            <label class="col-sm-2 control-label" for="fromDate" th:text="#{label.course.period}">교육기간</label>-->
-<!--                            <div class="col-sm-10">-->
-<!--                                <div id="demo-dp-range2">-->
-<!--                                    <div class="input-daterange input-group" id="datepicker2">-->
-<!--                                        <input type="text" id="fromDate" name="fromDate" placeholder="From" class="form-control">-->
-<!--                                        <span class="input-group-addon">to</span>-->
-<!--                                        <input type="text" id="toDate" name="toDate" placeholder="To" class="form-control">-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
                         <div class="panel-footer text-right">
                             <button class="btn btn-primary" type="submit" id="submit-all" th:text="#{label.save}">
                                 <i class="fa fa-upload-cloud"></i> 저장
@@ -81,63 +64,46 @@
 </th:block>
 
 <th:block layout:fragment="custom_js">
-    <!--Dropzone [ OPTIONAL ]-->
-<!--    <script th:src="@{/default/plugins/dropzone/dropzone.js}"></script>-->
 
+    <script th:inline="javascript">
+        /*<![CDATA[*/
 
-<!--    <script type="text/javascript" th:src="@{/editor/js/HuskyEZCreator.js}" charset="utf-8"></script>-->
-<!--    <script type="text/javascript" th:src="@{/default/js/custom/course-editor.js}" charset="utf-8"></script>-->
-
-<!--    <script type="text/javascript" th:src="@{/default/js/custom/course-file.js}" charset="utf-8"></script>-->
-
-<!--    <script type="text/javascript" th:src="@{/default/js/custom/course-add.js}" charset="utf-8"></script>-->
-
-
-
-<!--    <script th:src="@{/default/js/demo/form-component.js}"></script>-->
-
-    <script>
-        // $('#demo-dp-range .input-daterange').datepicker({
-        //     // format: "MM dd, yyyy",
-        //     format: "yyyy-mm-dd",
-        //     todayBtn: "linked",
-        //     autoclose: true,
-        //     todayHighlight: true
-        // });
-        //
-        // $('#demo-dp-range2 .input-daterange').datepicker({
-        //     // format: "MM dd, yyyy",
-        //     format: "yyyy-mm-dd",
-        //     todayBtn: "linked",
-        //     autoclose: true,
-        //     todayHighlight: true
-        // });
-        // $('#demo-dp-range2 .input-daterange').datepicker({
-        //     // format: "MM dd, yyyy",
-        //     format: "yyyy-mm-dd",
-        //     todayBtn: "linked",
-        //     autoclose: true,
-        //     todayHighlight: true
-        // });
+        var courseId = /*[[${courseId}]]*/;
 
         $('#mailList').chosen({width:'100%'});
 
-        $("#btnOrg").on("click", function() {
-            var url = "/admin/depart/treeView";
-            // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
-            var popupX = (window.screen.width / 2) - (800 / 2);
-            // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
-            var popupY= (window.screen.height / 2) - (550 / 2);
+        $(document ).ready(function() {
 
-            var name = "조직도";
-            var option = "width = 800, height = 550, top = 100, left = 200, menubar=no,directories=no, location = no, scrollbars=no, resizable=no"
-            option += ", left=" + popupX + ", top=" + popupY;
-            window.open(url, name, option);
+            $('#mailList').change(function() {
+
+                $('#mailList > option:selected').each(function() {
+                    checkRequest($(this).val());
+                });
+            });
+
+            $("#btnOrg").on("click", function() {
+                var url = "/admin/depart/treeView";
+                // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+                var popupX = (window.screen.width / 2) - (800 / 2);
+                // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
+                var popupY= (window.screen.height / 2) - (550 / 2);
+
+                var name = "조직도";
+                var option = "width = 800, height = 550, top = 100, left = 200, menubar=no,directories=no, location = no, scrollbars=no, resizable=no"
+                option += ", left=" + popupX + ", top=" + popupY;
+                window.open(url, name, option);
+            });
+
         });
-
 
         // 조직도에서 사용자 ID를 받아 온다(배열로 받아옴)
         function selectMailList(selectOptionArray) {
+            alert(selectOptionArray.length);
+            // var userList = selectOptionArray.split(',');
+
+            $.each(selectOptionArray, function(index, item){
+                checkRequest(item);
+            });
 
             // 싱글값 변경
             // $('#select-id').val("22").trigger('chosen:updated');
@@ -145,8 +111,53 @@
             $('#mailList').val(selectOptionArray).trigger('chosen:updated');
         }
 
-    </script>
 
+        // 사용자 지정이 가능한지에 대한 조건 검색
+        function checkRequest(userId) {
+
+                $.ajax({
+                type : 'POST',
+                url : '/api/courseAccount/isVerification',
+                dataType : 'json',
+                data : {
+                    'userId': userId,
+                    'courseId': courseId
+                },
+                error: function(xhr, status, error){
+                    alert(error);
+                },
+                success : function(data){
+
+                    if (data == 1) {
+                        alert('상위결재권자가 지정되지 않았습니다.');
+                        return false;
+                    }
+
+                    if (data == 2) {
+                        alert('교육과정 관리자가 지정되지 않았습니다.');
+                        return false;
+                    }
+
+                    if (data == 3) {
+                        alert('수료증 기준정보가 설정 되지 않았습니다.');
+                        return false;
+                    }
+
+                    if (data == 4) {
+                        alert('이미 신청한 내역이 있습니다..');
+                        return false;
+                    }
+
+                    if (data == 9) {
+                        $('#submit_form').submit();
+                    }
+                },
+            });
+
+            return;
+        }
+        /*]]>*/
+    </script>
 
 </th:block>
 

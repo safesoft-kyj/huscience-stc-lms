@@ -48,7 +48,8 @@
 
                         <!-- 외부교육참석보고서 -->
                         <!-- 외부교육 과정개설 신청후 외부교육을 참조한다. -->
-                        <th:block th:if="${border.getTemplate().getId() == 8}">
+                        <!-- TODO : 교육참석보고서 Template ID가 변경될 경우 수정 -->
+                        <th:block th:if="${border.getTemplate().getId() == 1}">
                             <div class="form-group">
                                 <label class="col-sm-2 control-label text-center" for="courseAccount">외부교육선택</label>
                                 <div class="col-sm-9">
@@ -63,19 +64,19 @@
                         </th:block>
 
                         <!-- 부서별 교육신청시 -->
-                        <th:block th:if="${border.getTemplate().getId() == 217}">
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label" for="mailList" th:text="#{label.course.account.add}">교육수강생</label>
-                                <div class="col-sm-9">
-                                    <select class="form-control" name="mailList" id="mailList" multiple="multiple">
-                                        <option th:each="user : ${mailList}" th:value="${user.getUserId()}" th:text="${user.getName()}"></option>
-                                    </select>
-                                </div>
-                                <div class="col-sm-1 pull-right">
-                                    <a class="btn btn-primary" id="btnOrg" th:text="#{label.organization}">조직도</a>
-                                </div>
-                            </div>
-                        </th:block>
+<!--                        <th:block th:if="${border.getTemplate().getId() == 217}">-->
+<!--                            <div class="form-group">-->
+<!--                                <label class="col-sm-2 control-label" for="mailList" th:text="#{label.course.account.add}">교육수강생</label>-->
+<!--                                <div class="col-sm-9">-->
+<!--                                    <select class="form-control" name="mailList" id="mailList" multiple="multiple">-->
+<!--                                        <option th:each="user : ${mailList}" th:value="${user.getUserId()}" th:text="${user.getName()}"></option>-->
+<!--                                    </select>-->
+<!--                                </div>-->
+<!--                                <div class="col-sm-1 pull-right">-->
+<!--                                    <a class="btn btn-primary" id="btnOrg" th:text="#{label.organization}">조직도</a>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </th:block>-->
 
                         <div id="editSection"></div>
 

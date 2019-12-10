@@ -31,6 +31,7 @@ public class SignatureService {
         // 사인정보 가져오기
         Signature signature = getSignature(userId);
 
-        return signature.getBase64signature();
+        if (signature == null) return "";
+        else return signature.getBase64signature();
     }
 }

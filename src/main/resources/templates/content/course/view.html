@@ -247,11 +247,9 @@
 
         function checkRequest() {
 
-
-
             $.ajax({
-                type : 'get',
-                url : '/api/courseAccount/isRequest',
+                type : 'POST',
+                url : '/api/courseAccount/isVerification',
                 dataType : 'json',
                 data : {
                     'courseId': courseId,
@@ -262,13 +260,60 @@
                 },
                 success : function(data){
 
-                    if(data == true) alert('이미 신청되었습니다.');
-                    else {
+                    if (data == 1) {
+                        alert('상위결재권자가 지정되지 않았습니다.');
+                        return false;
+                    }
+
+                    if (data == 2) {
+                        alert('교육과정 관리자가 지정되지 않았습니다.');
+                        return false;
+                    }
+
+                    if (data == 3) {
+                        alert('수료증 기준정보가 설정 되지 않았습니다.');
+                        return false;
+                    }
+
+                    if (data == 4) {
+                        alert('이미 신청한 내역이 있습니다.');
+                        return false;
+                    }
+
+                    if (data == 9) {
                         $('#submit_form').submit();
                         alert('교육 신청되었습니다.');
+                        return false;
                     }
                 },
             });
+
+
+
+
+
+            // $.ajax({
+            //     type : 'get',
+            //     url : '/api/courseAccount/isRequest',
+            //     dataType : 'json',
+            //     data : {
+            //         'courseId': courseId,
+            //         'userId': userId
+            //     },
+            //     error: function(xhr, status, error){
+            //         alert(error);
+            //     },
+            //     success : function(data){
+            //
+            //         if(data == true) alert('이미 신청되었습니다.');
+            //         else {
+            //             $('#submit_form').submit();
+            //             alert('교육 신청되었습니다.');
+            //         }
+            //     },
+            // });
+
+
             return;
         }
         /*]]>*/

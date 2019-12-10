@@ -17,7 +17,7 @@ import java.util.List;
 @ToString
 public class Course extends AuditorCreateEntity<String> {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
 
     // 과정명
@@ -84,18 +84,22 @@ public class Course extends AuditorCreateEntity<String> {
 
     // 교제 제공 여부
     @ColumnDefault("'N'")
+    @Column(length = 1)
     private String isBook = "N" ;
 
     // 시험 진행 여부
     @ColumnDefault("'N'")
+    @Column(length = 1)
     private String isQuiz = "N" ;
 
     // 설문 진행 여부
     @ColumnDefault("'N'")
+    @Column(length = 1)
     private String isSurvey = "N" ;
 
     // 수료증 발급 여부
     @ColumnDefault("'N'")
+    @Column(length = 1)
     private String isCerti = "N" ;
 
     @Column(length = 20)

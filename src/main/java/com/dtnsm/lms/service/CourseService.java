@@ -238,14 +238,17 @@ public class CourseService {
     }
 
 
+    // 회사 전체 월간 교육 일정
     public List<Course> getCourseByFromDateBetween(String fromDate, String toDate, int status) {
         return courseRepository.findByFromDateBetweenAndActiveGreaterThan(fromDate, toDate, status);
     }
 
+    // 회사 전체 월간 교육 신청 일정
     public List<Course> getCourseByRequestFromDateBetween(String fromDate, String toDate, int status) {
         return courseRepository.findByRequestFromDateBetweenAndActiveGreaterThan(fromDate, toDate, status);
     }
 
+    // 홈화면 일정 Top5
     public List<Course> getCourseTop5ByRequestFromDateBetween(String fromDate, String toDate, int status) {
         return courseRepository.findTop5ByRequestFromDateBetweenAndActiveGreaterThan(fromDate, toDate, status);
     }

@@ -26,7 +26,7 @@ public class ApprovalAdminDocumentController {
 
     public ApprovalAdminDocumentController() {
         pageInfo.setParentId("m-mypage");
-        pageInfo.setParentTitle("마이페이지");
+        pageInfo.setParentTitle("전자결재");
     }
 
     // 진행함

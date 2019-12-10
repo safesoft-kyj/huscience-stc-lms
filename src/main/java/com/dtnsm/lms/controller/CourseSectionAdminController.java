@@ -63,7 +63,7 @@ public class CourseSectionAdminController {
 
     public CourseSectionAdminController() {
         pageInfo.setParentId("m-course");
-        pageInfo.setParentTitle("강의");
+        pageInfo.setParentTitle("교육과정");
 
         //courseMaster = courseMasterService.getById("A01");
     }
@@ -74,7 +74,7 @@ public class CourseSectionAdminController {
         Course course = courseService.getCourseById(courseId);
 
         pageInfo.setPageId("m-course-list-page");
-        pageInfo.setPageTitle("강의조회");
+        pageInfo.setPageTitle("강의");
         model.addAttribute(pageInfo);
         model.addAttribute("borders", sectionService.getAllByCourseId(courseId));
         model.addAttribute("typeId", course.getCourseMaster().getId());
@@ -90,7 +90,7 @@ public class CourseSectionAdminController {
         CourseSection courseSection = new CourseSection();
         courseSection.setCourse(course);
 
-        pageInfo.setPageTitle(course.getTitle() + " 등록");
+        pageInfo.setPageTitle(course.getTitle());
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseSection", courseSection);
@@ -136,7 +136,7 @@ public class CourseSectionAdminController {
 
         CourseSection courseSection = sectionService.getCourseSectionById(id);
 
-        pageInfo.setPageTitle(courseSection.getName() + " 수정");
+        pageInfo.setPageTitle(courseSection.getName());
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseSection", courseSection);

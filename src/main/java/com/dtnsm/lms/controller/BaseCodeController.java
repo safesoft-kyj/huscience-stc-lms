@@ -24,7 +24,7 @@ public class BaseCodeController {
 
     public BaseCodeController() {
         pageInfo.setParentId("m-admincode");
-        pageInfo.setParentTitle("코드관리");
+        pageInfo.setParentTitle("기준정보관리");
     }
 
 
@@ -32,7 +32,7 @@ public class BaseCodeController {
     public String majorList(Model model) {
 
         pageInfo.setPageId("m-admincode-major-list");
-        pageInfo.setPageTitle("메이저코드조회");
+        pageInfo.setPageTitle("Major Code");
         model.addAttribute(pageInfo);
         model.addAttribute("elMajors", codeService.getMajorList());
 
@@ -43,7 +43,7 @@ public class BaseCodeController {
     public String majorAdd(ElMajor elbMajor, Model model) {
 
         pageInfo.setPageId("m-admincode-major-add");
-        pageInfo.setPageTitle("메이저코드추가");
+        pageInfo.setPageTitle("Major Code");
         model.addAttribute(pageInfo);
         model.addAttribute("codeType", codeService.getManualCodeType());
 
@@ -67,7 +67,7 @@ public class BaseCodeController {
         ElMajor elMajor = codeService.getMajorById(id);
 
         pageInfo.setPageId("m-admincode-major-edit");
-        pageInfo.setPageTitle("메이저코드수정");
+        pageInfo.setPageTitle("Major Code");
         model.addAttribute(pageInfo);
         model.addAttribute(elMajor);
         model.addAttribute("codeType", codeService.getManualCodeType());
@@ -107,7 +107,7 @@ public class BaseCodeController {
     public String minorList(Model model) {
 
         pageInfo.setPageId("m-admincode-minor-list");
-        pageInfo.setPageTitle("Minor Code 조회");
+        pageInfo.setPageTitle("Minor Code");
         model.addAttribute(pageInfo);
 
         List<ElMinor> elMinors = codeService.getMinorList();
@@ -120,7 +120,7 @@ public class BaseCodeController {
     public String minorAdd(ElMinor elMinor, Model model) {
 
         pageInfo.setPageId("m-admincode-minor-add");
-        pageInfo.setPageTitle("Minor Code 추가");
+        pageInfo.setPageTitle("Minor Code");
         model.addAttribute(pageInfo);
         model.addAttribute("majorList", codeService.getMajorList());
         //model.addAttribute("codeType", elCodeService.getManualCodeType());
@@ -149,7 +149,7 @@ public class BaseCodeController {
         ElMinor elMinor = codeService.getMinorById(minorCd);
 
         pageInfo.setPageId("m-admincode-major-edit");
-        pageInfo.setPageTitle("메이저코드수정");
+        pageInfo.setPageTitle("Minor Code");
         model.addAttribute(pageInfo);
         model.addAttribute(elMinor);
         model.addAttribute("majorList", codeService.getMajorList());

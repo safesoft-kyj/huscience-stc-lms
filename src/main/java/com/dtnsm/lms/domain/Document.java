@@ -14,7 +14,7 @@ import java.util.List;
 @Table(name="el_document")
 public class Document extends AuditorCreateEntity<String> {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
 
     //@NotEmpty(message = "No title")
@@ -51,9 +51,11 @@ public class Document extends AuditorCreateEntity<String> {
     private Date fWdate;
 
     // 총결재자 수
+    @ColumnDefault("0")
     private int fFinalCount = 0;
 
     // 현재결재자 순번
+    @ColumnDefault("0")
     private int fCurrSeq = 0;
 
     // 전자 결재 상태 : 0: 진행중, 1: 승인, 2:기각

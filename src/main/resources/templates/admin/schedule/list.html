@@ -45,7 +45,7 @@
                             총 <span th:text="${borders.size() + '건'}" class="text-danger"></span>의 연간일정이 등록되어 있습니다.
                         </div>
                         <div class="col-sm-6 text-right">
-                            <p><a th:href="@{/admin/schedule/add/{sctype}(sctype=${sctype})}" class="btn btn-success">Add new</a></p>
+                            <a class="btn btn-purple" th:href="@{/admin/schedule/add/{sctype}(sctype=${sctype})}"><i class="demo-pli-add"></i> Add</a>
                         </div>
                     </div>
                     <div th:switch="${borders}">

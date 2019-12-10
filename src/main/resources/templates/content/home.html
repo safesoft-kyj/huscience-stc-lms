@@ -147,29 +147,26 @@
                                 <div class="panel height-fix-pannel">
                                     <div class="panel-body">
                                         <h5 class="col-md-6" th:text="#{label.title.alarm}" style="padding-bottom: 10px">알림사항</h5>
-                                        <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="#">more ></a></small>
-                                        <table id="customer-list-page4" class="" cellspacing="0" width="100%">
-                                            <tbody>
-                                            <tr>
-                                                <td>&nbsp;</td>
-                                            </tr>
-<!--                                            <tr>-->
-<!--                                                <td><a href="#">테스트 알림사항</a></td>-->
-<!--                                            </tr>-->
-<!--                                            <tr>-->
-<!--                                                <td><a href="#">테스트 알림사항</a></td>-->
-<!--                                            </tr>-->
-<!--                                            <tr>-->
-<!--                                                <td><a href="#">테스트 알림사항</a></td>-->
-<!--                                            </tr>-->
-<!--                                            <tr>-->
-<!--                                                <td><a href="#">테스트 알림사항</a></td>-->
-<!--                                            </tr>-->
-<!--                                            <tr>-->
-<!--                                                <td><a href="#">테스트 알림사항</a></td>-->
-<!--                                            </tr>-->
-                                            </tbody>
-                                        </table>
+<!--                                        <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="#">more ></a></small>-->
+                                        <div th:switch="${alarmList}">
+                                            <h2 th:case="null"></h2>
+                                            <div th:case="*">
+                                                <table id="" class="" cellspacing="0" width="100%">
+                                                    <tbody>
+                                                    <tr th:each="border, index : ${alarmList}">
+                                                        <td class="text-left col-md-4" th:text="${#dates.format(border.getCreatedDate(), 'yyyy/MM/dd hh:mm')}">
+                                                        </td>
+<!--                                                        <td class="text-left col-md-2">-->
+<!--                                                            <span th:utext="${border.getAlarmGubun().getLabel()}"></span>-->
+<!--                                                        </td>-->
+                                                        <td class="text-left col-md-6">
+                                                            <span th:utext="${border.getTitle()}"></span>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div><!--switch End -->
                                     </div>
                                 </div>
                             </div>
@@ -270,20 +267,27 @@
                     <div class="row">
                         <div class="eq-height">
 
-                            <div class="col-md-6 col-lg-6 eq-box-lg">
+                            <div class="col-sm-6 col-lg-6 eq-box-lg">
                                 <div class="panel height-fix-pannel">
                                     <div class="panel-body">
-                                        <h5 class="col-md-6" th:text="#{label.title.customer}" style="padding-bottom: 10px">협약기관</h5>
-                                        <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a th:href="@{/customer/list-page}">more ></a></small>
+                                        <h5 class="col-md-6" th:text="#{label.title.guide}" style="padding-bottom: 10px">법규/가이드라인</h5>
+                                        <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="/border/list/BA0104">more ></a></small>
 
-                                        <div th:switch="${customers}">
-                                            <h2 th:case="null">No customer yet!</h2>
+                                        <div th:switch="${borders2}">
+                                            <h2 th:case="null"></h2>
                                             <div th:case="*">
-                                                <table id="customer-list-page1" class="" cellspacing="0" width="100%">
+                                                <table id="customer-list-page14" class="" cellspacing="0" width="100%">
                                                     <tbody>
-                                                    <tr th:each="customer, index : ${customers}">
+                                                    <tr th:each="border, index : ${borders3}">
                                                         <td>
-                                                            <a th:href="@{/customer/view/{id}(id=${customer.getId()})}" th:text="${customer.getName()}"></a>
+                                                            <a th:href="@{/border/view/{id}(id=${border.getId()})}">
+                                                                <th:block th:if="${#strings.length(border.getTitle()) > 30}">
+                                                                    <span th:text="${#strings.substring(border.getTitle(), 0, 30) + '...'}"></span>
+                                                                </th:block>
+                                                                <th:block th:unless="${#strings.length(border.getTitle()) > 30}">
+                                                                    <span th:text="${border.getTitle()}"></span>
+                                                                </th:block>
+                                                            </a>
                                                         </td>
                                                     </tr>
                                                     </tbody>
@@ -293,6 +297,8 @@
                                     </div>
                                 </div>
                             </div>
+
+
                             <div class="col-sm-6 col-lg-6 eq-box-lg">
                                 <div class="panel height-fix-pannel">
                                     <div class="panel-body">
@@ -347,7 +353,7 @@
                         <div class="panel panel-mint panel-colorful media middle pad-all">
                             <div class="media-left">
                                 <div class="pad-hor">
-                                    <i class="demo-pli-camera-2 icon-3x"></i>
+                                    <i class="demo-pli-list-view icon-3x"></i>
                                 </div>
                             </div>
                             <div class="media-body">
@@ -375,6 +381,29 @@
                                     </th:block>
                                 </p>
                                 <p class="mar-no">Employee training matrix</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="panel height-fix-pannel">
+                            <div class="panel-body">
+                                <h5 class="col-md-6" th:text="#{label.title.customer}" style="padding-bottom: 10px">협약기관</h5>
+                                <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a th:href="@{/customer/list-page}">more ></a></small>
+
+                                <div th:switch="${customers}">
+                                    <h2 th:case="null">No customer yet!</h2>
+                                    <div th:case="*">
+                                        <table id="customer-list-page1" class="" cellspacing="0" width="100%">
+                                            <tbody>
+                                            <tr th:each="customer, index : ${customers}">
+                                                <td>
+                                                    <a th:href="@{/customer/view/{id}(id=${customer.getId()})}" th:text="${customer.getName()}"></a>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div><!--switch End -->
                             </div>
                         </div>
                     </div>

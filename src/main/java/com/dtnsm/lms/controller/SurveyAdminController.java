@@ -41,14 +41,14 @@ public class SurveyAdminController {
 
     public SurveyAdminController() {
         pageInfo.setParentId("m-course");
-        pageInfo.setParentTitle("공지사항");
+        pageInfo.setParentTitle("교육과정기준정보");
     }
 
     @GetMapping("/list")
     public String list(Model model) {
 
         pageInfo.setPageId("m-survey-list");
-        pageInfo.setPageTitle("설문 조회");
+        pageInfo.setPageTitle("설문");
         model.addAttribute(pageInfo);
         model.addAttribute("surveyList", surveyService.getList());
 
@@ -61,7 +61,7 @@ public class SurveyAdminController {
 
         Survey survey = new Survey();
 
-        pageInfo.setPageTitle("설문 등록");
+        pageInfo.setPageTitle("설문");
 
         model.addAttribute(pageInfo);
         model.addAttribute("survey", survey);
@@ -110,7 +110,7 @@ public class SurveyAdminController {
 
         Survey survey = surveyService.getSurveyById(id);
 
-        pageInfo.setPageTitle("설문 수정");
+        pageInfo.setPageTitle("설문");
 
         model.addAttribute(pageInfo);
         model.addAttribute("survey", survey);

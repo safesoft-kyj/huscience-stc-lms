@@ -2,10 +2,7 @@ package com.dtnsm.lms.controller.RestController;
 
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.*;
-import com.dtnsm.lms.domain.constant.ApprovalStatusType;
-import com.dtnsm.lms.domain.constant.CourseStepStatus;
-import com.dtnsm.lms.domain.constant.QuizStatusType;
-import com.dtnsm.lms.domain.constant.SectionStatusType;
+import com.dtnsm.lms.domain.constant.*;
 import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.SessionUtil;
@@ -23,6 +20,9 @@ public class MypageRestController {
 
     @Autowired
     CourseSectionActionService courseSectionActionService;
+
+    @Autowired
+    CourseSurveyActionService courseSurveyActionService;
 
     @Autowired
     CourseSectionActionHistoryService courseSectionActionHistoryService;
@@ -45,6 +45,8 @@ public class MypageRestController {
     @Autowired
     CourseCertificateService courseCertificateService;
 
+    @Autowired
+    BinderLogService binderLogService;
 
 
     @Autowired
@@ -115,21 +117,38 @@ public class MypageRestController {
                         courseQuizActionService.saveQuizAction(courseQuizAction);
                     }
                 }
+            } else if (courseAccount.getCourse().getIsQuiz().equals("N") && courseAccount.getCourse().getIsSurvey().equals("Y")) {
+                for (CourseSectionAction courseSectionAction2 : courseAccount.getCourseSectionActions()) {
+                    if (courseSectionAction2.getStatus().equals(SectionStatusType.COMPLETE)) {
+                        completeCount++;
+                    }
+                }
+
+                // 2.  강의수와  COMPLETE 수가 같으면 다음 퀴즈를 ONGOING 상태로 변경한다.
+                if (courseAccount.getCourseSectionActions().size() == completeCount) {
+                    for (CourseSurveyAction courseSurveyAction : courseAccount.getCourseSurveyActions()) {
+                        courseSurveyAction.setStatus(SurveyStatusType.ONGOING);
+                        courseSurveyActionService.saveSurveyAction(courseSurveyAction);
+                    }
+                }
             } else {  // 시험여부가 N인 경우 CourseAccount 의 상태값을 완료로 변경하고 디지털 바인더 로그를 발생시킨다.
 
                 courseAccount.setCourseStatus(CourseStepStatus.complete);
                 courseAccount.setIsCommit("1");
 
-                String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
-                courseAccount.setCertificateNo(certificateNo);
+                // 수료증 처리
+                if(courseAccount.getCourse().getIsCerti().equals("Y") && !courseAccount.getCourse().getCertiHead().equals("")){
+                    String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
+                    courseAccount.setCertificateNo(certificateNo);
+                }
+
+                //
+                // TODO: 2019/11/12 Digital Binder Employee Training Log 처리 -ks Hwang
+                // 강의별로 로그를 생성시킨다.
+                binderLogService.createTrainingLog(courseAccount);
 
                 courseAccountService.save(courseAccount);
 
-                //
-                //
-                //
-                //
-                // TODO: 2019/11/12 Digital Binder Employee Training Log 처리 -ks Hwang
             }
         }
 

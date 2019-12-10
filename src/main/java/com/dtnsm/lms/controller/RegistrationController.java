@@ -1,5 +1,6 @@
 package com.dtnsm.lms.controller;
 
+import com.dtnsm.lms.auth.PasswordEncoding;
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.component.CourseScheduler;
 import com.dtnsm.lms.domain.Account;
@@ -8,10 +9,13 @@ import com.dtnsm.lms.domain.Role;
 import com.dtnsm.lms.domain.Schedule;
 import com.dtnsm.lms.mybatis.mapper.UserMapper;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
+import com.dtnsm.lms.repository.RoleRepository;
+import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.CourseManagerService;
 import com.dtnsm.lms.service.Mail;
 import com.dtnsm.lms.service.MailService;
 import com.dtnsm.lms.service.RoleService;
+import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +24,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -33,22 +38,28 @@ public class RegistrationController {
     private UserServiceImpl userService;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private RoleService roleService;
 
     @Autowired
     private CourseManagerService courseManagerService;
 
     @Autowired
-    private UserMapperService userMapperService;
+    CourseScheduler courseScheduler;
 
     @Autowired
-    CourseScheduler courseScheduler;
+    RoleRepository roleRepository;
+
+    @Autowired
+    private PasswordEncoding passwordEncoder;
 
     private PageInfo pageInfo = new PageInfo();
 
     public RegistrationController() {
         pageInfo.setParentId("m-registration");
-        pageInfo.setParentTitle("외부사용자등록");
+        pageInfo.setParentTitle("사용자관리");
     }
 
 //    @ModelAttribute("user")
@@ -57,15 +68,19 @@ public class RegistrationController {
 //    }
 
     @GetMapping("/account/add")
-    public String showRegistrationForm(Account account, Model model) {
+    public String showRegistrationForm(Model model) {
 
         pageInfo.setPageId("m-registration-add");
-        pageInfo.setPageTitle("사용자등록");
+        pageInfo.setPageTitle("사용자");
+
+        Account account = new Account();
+        account.setUserId("");
+        account.setPassword("");
+        account.setUserType("O");
 
         List<Role> roleList = roleService.getList();
         model.addAttribute(pageInfo);
-        model.addAttribute("roleList", roleList);
-        model.addAttribute("typeList", userService.getTypeList());
+        model.addAttribute("account", account);
 
         return "admin/registration/account/add";
     }
@@ -74,18 +89,13 @@ public class RegistrationController {
     public String registerUserAccount(@Valid Account account
                                         , BindingResult result) {
 
-
-        Account existing = userService.findByUserId(account.getUserId());
-        if (existing != null) {
-            result.rejectValue("userId", null, "There is already an account registered with that email");
-        }
-
         if (result.hasErrors()) {
             return "admin/registration/account/add";
         }
 
         String originPassword = account.getPassword();
 
+        // 초기 패스워드는 저장시 암호화 되며 Role은 사용자 타입에따라 자동 저장 됨
         Account account1 = userService.save(account);
 
         // 메일보내기(서비스 전까지는 메일 보내지 않음
@@ -96,7 +106,7 @@ public class RegistrationController {
         sb.append("PW:" + originPassword + "<br>");
         sb.append("사용자 등록이 완료되었습니다.<br>");
         sb.append("로그인후 패스워드를 변경하세요.<br>");
-        sb.append("<a href='http://localhost:8080/'>홈페이지</a><br>");
+        sb.append("<a href='http://lms.dtnsm.com'>LMS</a><br>");
 
         mail.setEmail(account1.getEmail());
         mail.setMessage(sb.toString());
@@ -104,14 +114,46 @@ public class RegistrationController {
 
         mailService.send(mail);
 
-        //return "redirect:/registration?success";
-        return "redirect:/home";
+        return "redirect:/admin/registration/account/list";
+    }
+
+
+    @GetMapping("/account/editRole/{id}")
+    public String editRole(@PathVariable("id") String id, Model model) {
+        Account account = userService.getAccountByUserId(id);
+
+        pageInfo.setPageId("m-registration-add");
+        pageInfo.setPageTitle("권한변경");
+
+        List<Role> roleList = roleService.getList();
+        model.addAttribute(pageInfo);
+        model.addAttribute("account", account);
+        model.addAttribute("roleList", roleList);
+
+        return "admin/registration/account/editRole";
+    }
+
+
+    @PostMapping("/account/editRole-post/{id}")
+    public String editRolePost(@PathVariable("id") String id
+            , @Valid Account account
+            , BindingResult result) {
+        if(result.hasErrors()) {
+            return "redirect:admin/registration/account/editRole/" + id;
+        }
+
+        Account oldAccount = userService.getAccountByUserId(id);
+        oldAccount.setRoles(account.getRoles());
+
+        Account saveAccount = userRepository.save(oldAccount);
+
+        return "redirect:/admin/registration/account/list";
     }
 
     @GetMapping("/account/list")
     public String accountList(Model model) {
 
-        pageInfo.setPageTitle("사용자 조회");
+        pageInfo.setPageTitle("사용자");
 
         List<Account> accounts = userService.getAccountList();
         model.addAttribute(pageInfo);
@@ -119,6 +161,7 @@ public class RegistrationController {
 
         return "admin/registration/account/list";
     }
+
 
     // 그룹웨어 사용자 업데이트
     @GetMapping("/account/gw-user-update")
@@ -136,7 +179,6 @@ public class RegistrationController {
     @GetMapping("/account/edit/{id}")
     public String accountUpdate(@PathVariable("id") String id, Model model) {
         Account account = userService.getAccountByUserId(id);
-
 
         pageInfo.setPageId("m-customer-edit");
         pageInfo.setPageTitle("Role 수정");
@@ -158,14 +200,20 @@ public class RegistrationController {
             return "admin/registration/role/update/" + id;
         }
 
-       Account oldAccount = userService.getAccountByUserId(id);
+        Account oldAccount = userService.getAccountByUserId(id);
 
-        // 내부사용자인 경우는 그룹웨어 패스워드로 업데이트 한다.
-        if (oldAccount.getUserType().equals("U")) {
-            account.setPassword(userMapperService.getUserById(id).getPassword());
+        if(!account.getPassword().equals(oldAccount.getPassword())) {
+            account.setPassword(passwordEncoder.encode(account.getPassword()));
         }
 
-        userService.save(account);
+        account.setRoles(oldAccount.getRoles());
+
+        Account saveAccount = userRepository.save(account);
+
+        // 내부직원인 경우 그룹웨어 정보를 업데이트 한다.
+        if (saveAccount.getUserType().equals("U")) {
+            userService.updateAccountByGroupwareInfo(saveAccount.getUserId());
+        }
 
         return "redirect:/admin/registration/account/list";
     }
@@ -189,7 +237,7 @@ public class RegistrationController {
     public String roleAdd(Role role, Model model) {
 
         pageInfo.setPageId("m-info-month");
-        pageInfo.setPageTitle("Role 추가");
+        pageInfo.setPageTitle("Role");
         model.addAttribute(pageInfo);
 
 
@@ -212,7 +260,7 @@ public class RegistrationController {
     public String list(Model model) {
 
         pageInfo.setPageId("m-info-month");
-        pageInfo.setPageTitle("Role 조회");
+        pageInfo.setPageTitle("Role");
 
         List<Role> roles = userService.getRoleList();
         model.addAttribute(pageInfo);
@@ -226,7 +274,7 @@ public class RegistrationController {
         Role role = roleService.getRoleById(id);
 
         pageInfo.setPageId("m-customer-edit");
-        pageInfo.setPageTitle("Role 수정");
+        pageInfo.setPageTitle("Role");
         model.addAttribute(pageInfo);
         model.addAttribute("role", role);
 
@@ -264,7 +312,7 @@ public class RegistrationController {
     public String accountRoleList(Model model) {
 
         pageInfo.setPageId("m-info-month");
-        pageInfo.setPageTitle("사용자별 Role 조회");
+        pageInfo.setPageTitle("사용자별 Role");
 
         List<Account> accounts = userService.getAccountList();
         model.addAttribute(pageInfo);
@@ -284,7 +332,7 @@ public class RegistrationController {
 
 
         pageInfo.setPageId("m-info-month");
-        pageInfo.setPageTitle("교육과정 관리자 등록");
+        pageInfo.setPageTitle("교육과정관리자");
 
         model.addAttribute(pageInfo);
         model.addAttribute("accountList", userService.getAccountList());
@@ -311,7 +359,7 @@ public class RegistrationController {
         CourseManager courseManager = courseManagerService.getByUserId(userId);
 
         pageInfo.setPageId("m-customer-edit");
-        pageInfo.setPageTitle("과정 관리자 수정");
+        pageInfo.setPageTitle("교육과정관리자");
         model.addAttribute(pageInfo);
         model.addAttribute("accountList", userService.getAccountList());
         model.addAttribute("courseManager", courseManager);
@@ -344,6 +392,8 @@ public class RegistrationController {
             return "content/registration/courseManager/edit" + userId;
         }
 
+        CourseManager oldCourseManager = courseManagerService.getByUserId(userId);
+        courseManager.setIsActive(oldCourseManager.getIsActive());
         courseManagerService.save(courseManager);
 
         return "redirect:/admin/registration/courseManager/list";
@@ -353,7 +403,7 @@ public class RegistrationController {
     public String courseManagerList(Model model) {
 
         pageInfo.setPageId("m-info-month");
-        pageInfo.setPageTitle("과정관리자 조회");
+        pageInfo.setPageTitle("교육과정관리자");
 
         List<CourseManager> managers = courseManagerService.getList();
 

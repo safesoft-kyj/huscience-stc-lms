@@ -88,7 +88,7 @@
                                             <span th:if="${#strings.equalsIgnoreCase(border.isNotice, '1')}">!</span>
                                             <div th:if="${border.getBorderFiles().size() > 0}" class="demo-icon"><i class="ion-paperclip"></i><span></span></div>
                                         </td>
-                                        <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy/MM/dd')} : ${border.getCreatedDate()}" class="text-center"></td>
+                                        <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy-MM-dd')} : ${border.getCreatedDate()}" class="text-center"></td>
                                         <td th:text="${border.getCreatedBy()}" class="text-center"></td>
                                         <td th:text="${border.getViewCnt()}" class="text-center"></td>
                                     </tr>

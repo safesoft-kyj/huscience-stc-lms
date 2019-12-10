@@ -41,7 +41,7 @@
                                 <th class="text-center">과정명</th>
                                 <th class="text-center">교육기간</th>
                                 <th class="text-center">상태</th>
-                                <th class="text-center">수료층출력</th>
+                                <th class="text-center">수료증발급</th>
                             </thead>
                             </tr>
                             <div th:switch="${borders}">
@@ -58,7 +58,7 @@
                                                 <th:block th:if="${#strings.equalsIgnoreCase(courseAccount.getIsCommit(), '1') && #strings.equalsIgnoreCase(courseAccount.getCourse().getIsCerti(), 'Y')}">
                                                     <th:block th:inline="text">
                                                         <a href="#" class="btn btn-info" id="popupBtn"
-                                                           th:onclick="|javascript:popupPdfView('${courseAccount.getCourse().getId()}');return false;|" target="_blank"><i class="fa fa-print"></i> 출력</a>
+                                                           th:onclick="|javascript:popupPdfView('${courseAccount.getId()}');return false;|" target="_blank"><i class="fa fa-print"></i> 발급</a>
                                                     </th:block>
                                                 </th:block>
                                                 <th:block th:unless="${#strings.equalsIgnoreCase(courseAccount.getIsCommit(), '1') && #strings.equalsIgnoreCase(courseAccount.getCourse().getIsCerti(), 'Y')}">

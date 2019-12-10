@@ -133,9 +133,7 @@
                             <button class="btn btn-primary" type="submit" id="submit-all" th:text="#{label.save}">
                                 <i class="fa fa-upload-cloud"></i> 저장
                             </button>
-                            <a th:href="@{/admin/course/list/{typeId}(typeId=${courseSection.getCourse().getCourseMaster().getId()})}" class="btn btn-success" th:text="#{label.list}">
-                                <i class="fa fa-upload-cloud"></i> 목록
-                            </a>
+                            <a class="btn btn-primary" th:href="@{/admin/course/section/list/{courseId}(courseId=${courseSection.getCourse().getId()})}"><i class="demo-pli-back"></i> Back</a>
                         </div>
                     </form>
                 </div><!--panel-body End -->

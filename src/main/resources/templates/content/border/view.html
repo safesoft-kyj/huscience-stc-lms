@@ -59,7 +59,7 @@
                             </tr>
                             <tr>
                                 <th><span th:text="#{label.createdate}"></span></th>
-                                <td th:text="${border.getCreatedDate()}"></td>
+                                <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy-MM-dd')} : ${border.getCreatedDate()}" class="text-left"></td>
                             </tr>
                             <tr>
                                 <th><span th:text="#{label.readcount}"></span></th>
@@ -69,7 +69,7 @@
                                 <th><span th:text="#{label.file}"></span></th>
                                 <td>
                                     <div th:each="uploadFile : ${border.getBorderFiles()}">
-                                        <a th:href="@{/border/download-file/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>
+                                        <a th:href="@{/border/download-file/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}" target="_blank"></a>
                                     </div>
                                 </td>
                             </tr>

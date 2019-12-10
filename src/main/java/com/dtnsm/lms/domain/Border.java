@@ -14,7 +14,7 @@ import java.util.List;
 @Table(name="el_border")
 public class Border extends AuditorEntity<String> {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
 
     //@NotEmpty(message = "No title")

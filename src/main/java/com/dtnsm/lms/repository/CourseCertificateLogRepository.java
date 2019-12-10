@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CourseCertificateLogRepository extends JpaRepository<CourseCertificateLog, Integer> {
 
+    CourseCertificateLog findByCourseAccount_Id(Long docId);
 }

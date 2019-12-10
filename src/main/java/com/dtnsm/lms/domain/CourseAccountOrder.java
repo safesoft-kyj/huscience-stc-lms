@@ -13,7 +13,7 @@ import java.util.Date;
 public class CourseAccountOrder extends AuditorEntity<String> {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
 
     // 컴멘트

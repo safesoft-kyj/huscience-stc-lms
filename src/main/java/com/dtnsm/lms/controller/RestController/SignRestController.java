@@ -32,8 +32,16 @@ public class SignRestController {
        if (!sign.isEmpty())  {
            Signature signature = signatureService.getSignature(SessionUtil.getUserId());
 
-           signature.setBase64signature(sign);
+           if(signature == null) {
+               signature = new Signature();
+               signature.setId(SessionUtil.getUserId());
+               signature.setBase64signature(sign);
+           } else {
+               signature.setBase64signature(sign);
+           }
+
            signatureRepository.save(signature);
+
            return true;
        }
         return false;

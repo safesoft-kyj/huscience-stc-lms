@@ -35,6 +35,17 @@ public class FileUploadProperties {
     // Xdoc 관련 폴더
     private String xdocUploadDir;
 
+    // 수료증 파일 업로드 경로
+    private String certificateUploadDir;
+
+    public String getCertificateUploadDir() {
+        return certificateUploadDir;
+    }
+
+    public void setCertificateUploadDir(String certificateUploadDir) {
+        this.certificateUploadDir = certificateUploadDir;
+    }
+
     public String getXdocUploadDir() {
         return xdocUploadDir;
     }

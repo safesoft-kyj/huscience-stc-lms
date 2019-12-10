@@ -194,7 +194,8 @@ public class DocumentController {
             return "redirect:/document/add/" + document.getTemplate().getId();
         }
 
-        if (document.getTemplate().getId() == 8) {
+        // TODO : 교육참석보고서 Template ID가 변경될 경우 수정
+        if (document.getTemplate().getId() == 1) {
             if (document.getCourseAccount().getId() == 0) return "redirect:/document/add/" + document.getTemplate().getId();
         }
 

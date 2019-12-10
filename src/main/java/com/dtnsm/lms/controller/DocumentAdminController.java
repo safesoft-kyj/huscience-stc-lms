@@ -62,14 +62,14 @@ public class DocumentAdminController {
         pageInfo.setParentTitle("전자결재");
     }
 
-    // region # 공지사항
+    // region # 전자결재
     @GetMapping("/list")
     public String listPage(@RequestParam(value = "searchType", defaultValue = "all") String searchType
             , @RequestParam(value = "searchText", defaultValue = "") String searchText
             , @PageableDefault Pageable pageable
             , Model model) {
 
-        pageInfo.setPageTitle("전자결재 조회");
+        pageInfo.setPageTitle("전자결재");
 
         Page<Document> documents;
 
@@ -98,7 +98,7 @@ public class DocumentAdminController {
 
         Document border= documentService.save(oldBorder);
 
-        pageInfo.setPageTitle("전자결재 상세");
+        pageInfo.setPageTitle("전자결재");
 
         model.addAttribute(pageInfo);
         model.addAttribute("border", border);
@@ -114,7 +114,7 @@ public class DocumentAdminController {
         Document border = new Document();
         border.setTemplate(template);
 
-        pageInfo.setPageTitle(template.getTitle() + " 등록");
+        pageInfo.setPageTitle(template.getTitle());
 
         model.addAttribute(pageInfo);
         model.addAttribute("border", border);
@@ -151,7 +151,7 @@ public class DocumentAdminController {
 
         Document document = documentService.getById(id);
 
-        pageInfo.setPageTitle(document.getTitle() + " 수정");
+        pageInfo.setPageTitle(document.getTitle());
 
         model.addAttribute(pageInfo);
         model.addAttribute("border", document);

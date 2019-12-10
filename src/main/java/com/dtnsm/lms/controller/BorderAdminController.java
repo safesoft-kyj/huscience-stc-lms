@@ -66,7 +66,7 @@ public class BorderAdminController {
 
     public BorderAdminController() {
         pageInfo.setParentId("m-border");
-        pageInfo.setParentTitle("공지사항");
+        pageInfo.setParentTitle("게시판");
     }
 
 
@@ -100,7 +100,7 @@ public class BorderAdminController {
         //borderService.deleteBlankBorder();
 
         String borderName = borderMasterService.getById(typeId).getBorderName();
-        pageInfo.setPageTitle(borderName + "조회");
+        pageInfo.setPageTitle(borderName);
 
         Page<Border> borders;
 
@@ -131,7 +131,7 @@ public class BorderAdminController {
 
         Border border= borderService.save(oldBorder);
 
-        pageInfo.setPageTitle(border.getBorderMaster().getBorderName() + " 상세");
+        pageInfo.setPageTitle(border.getBorderMaster().getBorderName());
 
         model.addAttribute(pageInfo);
         model.addAttribute("border", border);
@@ -148,7 +148,7 @@ public class BorderAdminController {
 
         //Border border = borderService.save(new Border("", "", this.borderMaster));
 
-        pageInfo.setPageTitle(borderMaster.getBorderName() + " 등록");
+        pageInfo.setPageTitle(borderMaster.getBorderName());
 
         model.addAttribute(pageInfo);
         model.addAttribute("border", border);
@@ -209,7 +209,7 @@ public class BorderAdminController {
 
         Border border = borderService.getBorderById(id);
 
-        pageInfo.setPageTitle(border.getBorderMaster().getBorderName() + " 수정");
+        pageInfo.setPageTitle(border.getBorderMaster().getBorderName());
 
         model.addAttribute(pageInfo);
         model.addAttribute("border", border);

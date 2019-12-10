@@ -32,7 +32,7 @@ public class BorderMasterController {
 
     public BorderMasterController() {
         pageInfo.setParentId("m-border");
-        pageInfo.setParentTitle("공지사항");
+        pageInfo.setParentTitle("기준정보관리");
 
     }
 
@@ -42,7 +42,7 @@ public class BorderMasterController {
         Page<BorderMaster> borders = borderMasterService.getPageList(pageable);
 
         pageInfo.setPageId("m-border-list-page");
-        pageInfo.setPageTitle("공지사항조회");
+        pageInfo.setPageTitle("게시판");
         model.addAttribute(pageInfo);
         model.addAttribute("borders", borders);
 
@@ -56,7 +56,7 @@ public class BorderMasterController {
         BorderMaster oldBorder = borderMasterService.getById(id);
 
         pageInfo.setPageId("m-border-edit");
-        pageInfo.setPageTitle("공지사항수정");
+        pageInfo.setPageTitle("게시판");
         model.addAttribute(pageInfo);
         model.addAttribute("border", borderMasterService.save(oldBorder));
 
@@ -70,7 +70,7 @@ public class BorderMasterController {
         borderMaster.setId(borderMasterService.getBorderNumber());
 
         pageInfo.setPageId("m-border-add");
-        pageInfo.setPageTitle("공지사항등록");
+        pageInfo.setPageTitle("게시판");
         model.addAttribute(pageInfo);
         model.addAttribute("border", borderMaster);
         model.addAttribute("minorList", borderMasterService.getTypeList());
@@ -94,7 +94,7 @@ public class BorderMasterController {
     public String noticeEdit(@PathVariable("id") String id, Model model) {
 
         pageInfo.setPageId("m-border-edit");
-        pageInfo.setPageTitle("공지사항수정");
+        pageInfo.setPageTitle("게시판");
         model.addAttribute(pageInfo);
         model.addAttribute("border", borderMasterService.getById(id));
         model.addAttribute("minorList", borderMasterService.getTypeList());

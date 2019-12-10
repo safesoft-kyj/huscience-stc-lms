@@ -34,8 +34,11 @@ public interface CourseRepository extends JpaRepository<Course, Long>, QuerydslP
 
     List<Course> findAllByTitleAndActiveGreaterThan(String title, int active);
 
+
+    // 회사 교육 일정
     List<Course> findByFromDateBetweenAndActiveGreaterThan(String fromDate, String toDate, int active);
 
+    // 회사 교육 신청 일정
     List<Course> findByRequestFromDateBetweenAndActiveGreaterThan(String fromDate, String toDate, int active);
 
     List<Course> findTop5ByRequestFromDateBetweenAndActiveGreaterThan(String fromDate, String toDate, int active);

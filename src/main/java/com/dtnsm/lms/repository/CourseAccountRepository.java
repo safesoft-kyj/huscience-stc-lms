@@ -1,16 +1,18 @@
 package com.dtnsm.lms.repository;
 
+import com.dtnsm.lms.domain.Course;
 import com.dtnsm.lms.domain.CourseAccount;
-import com.dtnsm.lms.domain.constant.ApprovalStatusType;
+import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import java.util.List;
 
 
-public interface CourseAccountRepository extends JpaRepository<CourseAccount, Long> {
+public interface CourseAccountRepository extends JpaRepository<CourseAccount, Long>, QuerydslPredicateExecutor<CourseAccount> {
+
 
     //  status 0:진행중, 1:최종승인, 2:최종기각
     List<CourseAccount> findByAccount_UserIdAndFStatus(String userId, String status);
@@ -25,8 +27,18 @@ public interface CourseAccountRepository extends JpaRepository<CourseAccount, Lo
 
     CourseAccount findByCourse_IdAndAccount_UserId(long courseId, String userId);
 
+    CourseAccount findByCourse_IdAndAccount_UserIdAndCourseStatus(long courseId, String userId, CourseStepStatus courseStepStatus);
+
     void deleteCourseAccountByAccount_UserId(String userId);
     void deleteCourseAccountByCourse_Id(long courseId);
+
+
+    // 사용자별 교육 일정
+    List<CourseAccount> findByAccount_UserIdAndFromDateBetweenAndCourseStatus(String userId, String fromDate, String toDate, CourseStepStatus courseStepStatus);
+
+    // 사용자별 교육 신청 일정
+    List<CourseAccount> findByAccount_UserIdAndRequestDateBetweenAndCourseStatus(String userId, String fromDate, String toDate, CourseStepStatus courseStepStatus);
+
 
     // 내신청함
     Page<CourseAccount> findByAccount_UserId(String userId, Pageable pageable);

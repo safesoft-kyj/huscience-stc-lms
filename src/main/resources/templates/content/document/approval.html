@@ -93,9 +93,16 @@
                                     <th:block th:each="border, index : ${document.getDocumentAccountOrders()}">
                                         <th:block th:if="${border.getFKind().equals('1')}">
                                             <td th:switch="${border.getFStatus()}" class="text-center" style="vertical-align: middle">
-                                                <span th:case="${'0'}" class="text-info" th:text="${''}"></span>
-                                                <img th:case="${'1'}" class="text-success sign" th:src="${border.getSignature()}"></img>
-                                                <span th:case="${'2'}" class="text-danger" th:text="${'반려'}"></span>
+                                                <div th:case="${'0'}" class="text-info sign" th:text="${''}"></div>
+                                                <th:block th:case="${'1'}">
+                                                    <th:block th:if="${#strings.isEmpty(border.getSignature())}">
+                                                        <div class="sign"><br><br>승인</div>
+                                                    </th:block>
+                                                    <th:block th:unless="${#strings.isEmpty(border.getSignature())}">
+                                                        <img class="text-success sign" th:src="${border.getSignature()}">
+                                                    </th:block>
+                                                </th:block>
+                                                <div th:case="${'2'}" class="text-danger sign" th:text="${'반려'}"></div>
                                             </td>
                                         </th:block>
                                     </th:block>
@@ -137,9 +144,16 @@
                                         <th:block th:each="border, index : ${document.getDocumentAccountOrders()}">
                                             <th:block th:if="${border.getFKind().equals('2')}">
                                                 <td th:switch="${border.getFStatus()}" class="text-center" style="vertical-align: middle">
-                                                    <div th:case="${'0'}" class="hide-div">&nbsp;</div>
-                                                    <img th:case="${'1'}" class="text-success sign" th:src="${border.getSignature()}"></img>
-                                                    <span th:case="${'2'}" class="text-danger" th:text="${'반려'}"></span>
+                                                    <div th:case="${'0'}" class="text-info sign" th:text="${''}"></div>
+                                                    <th:block th:case="${'1'}">
+                                                        <th:block th:if="${#strings.isEmpty(border.getSignature())}">
+                                                            <div class="sign"><br><br>승인</div>
+                                                        </th:block>
+                                                        <th:block th:unless="${#strings.isEmpty(border.getSignature())}">
+                                                            <img class="text-success sign" th:src="${border.getSignature()}">
+                                                        </th:block>
+                                                    </th:block>
+                                                    <div th:case="${'2'}" class="text-danger sign"><br><br>반려</div>
                                                 </td>
                                             </th:block>
                                         </th:block>

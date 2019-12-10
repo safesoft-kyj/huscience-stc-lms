@@ -56,7 +56,7 @@ public class ApprovalController {
 
     public ApprovalController() {
         pageInfo.setParentId("m-mypage");
-        pageInfo.setParentTitle("마이페이지");
+        pageInfo.setParentTitle("교육결재");
     }
 
     // 미결함

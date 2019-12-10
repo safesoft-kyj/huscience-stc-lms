@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Table(name="el_course_certificate_number", uniqueConstraints={@UniqueConstraint(columnNames={"cerText","cerYear"})})
 public class CourseCertificateNumber extends AuditorCreateEntity<String> {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
     @Column(length = 30 , nullable = false)

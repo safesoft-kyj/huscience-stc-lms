@@ -29,15 +29,12 @@
             <!-- Basic Data Tables -->
             <!--===================================================-->
             <div class="panel">
-                <div class="panel-heading">
-                    <h3 class="panel-title"></h3>
-                </div>
                 <div class="panel-body">
-
+                    <br>
                     <!--===================================================-->
                     <!--End Horizontal Form-->
                      <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/registration/account/add-post}" th:object="${account}" method="post" >
-
+                         <input type="hidden" th:field="*{userType}">
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="userId">User ID</label>
                             <div class="col-sm-10">
@@ -45,18 +42,6 @@
                             </div>
                             <span th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}"></span>
                         </div>
-
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="userType">사용자 유형</label>
-                            <div class="col-sm-10">
-                                <select th:field="*{userType}" class="form-control" id="userType" required>
-                                    <option value="">사용자 유형 선택</option>
-                                    <option th:each="minor, index : ${typeList}" th:value="${minor.getMinorCd()}" th:text="${minor.getMinorNm()}"></option>
-                                </select>
-                            </div>
-                            <span th:if="${#fields.hasErrors('userType')}" th:errors="*{userType}"></span>
-                        </div>
-
                          <div class="form-group">
                              <label class="col-sm-2 control-label" for="enabled">사용유무</label>
                              <div class="col-sm-10">
@@ -71,30 +56,70 @@
                             </div>
                             <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
                         </div>
-
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="email">E-mail</label>
+                         <div class="form-group">
+                             <label for="password" class="col-sm-2 control-label">Password</label>
+                             <div class="col-sm-10">
+                                 <input id="password" class="form-control" th:type="password" th:field="*{password}" required="required"/>
+                             </div>
+                             <span class="error-message"
+                                   th:each="error : ${#fields.errors('password')}"  th:text="${error}">Validation error</span>
+                         </div>
+                         <div class="form-group">
+                            <label class="col-sm-2 control-label" for="engName">English Name</label>
                             <div class="col-sm-10">
-                                <input type="text" th:field="*{email}" id="email" placeholder="E-mail" class="form-control" required="required">
+                                <input type="text" th:field="*{engName}" id="engName" placeholder="English Name" class="form-control" required="required">
                             </div>
-                            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="password" class="col-sm-2 control-label">Password</label>
-                            <div class="col-sm-10">
-                                <input id="password" class="form-control" th:type="password" th:field="*{password}" />
-                            </div>
-                            <span class="error-message"
-                               th:each="error : ${#fields.errors('password')}"  th:text="${error}">Validation error</span>
+                            <span th:if="${#fields.hasErrors('engName')}" th:errors="*{engName}"></span>
                         </div>
                          <div class="form-group">
-                             <label class="col-sm-2 control-label" for="roleList">권한</label>
+                             <label class="col-sm-2 control-label" for="email">E-mail</label>
                              <div class="col-sm-10">
-                                 <select class="form-control" th:field="*{roles}" id="roleList" multiple="multiple">
-                                     <option th:each="role : ${roleList}" th:value="${role.getId()}" th:text="${role.getName()}"></option>
-                                 </select>
+                                 <input type="text" th:field="*{email}" id="email" placeholder="E-mail" class="form-control" required="required">
                              </div>
+                             <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                         </div>
+
+                         <div class="form-group">
+                             <label class="col-sm-2 control-label" for="comJob">Job</label>
+                             <div class="col-sm-10">
+                                 <input type="text" th:field="*{comJob}" id="comJob" placeholder="Job" class="form-control" required="required">
+                             </div>
+                             <span th:if="${#fields.hasErrors('comJob')}" th:errors="*{comJob}"></span>
+                         </div>
+
+                         <div class="form-group">
+                             <label class="col-sm-2 control-label" for="comPosition">Position</label>
+                             <div class="col-sm-10">
+                                 <input type="text" th:field="*{comPosition}" id="comPosition" placeholder="Position" class="form-control" required="required">
+                             </div>
+                             <span th:if="${#fields.hasErrors('comPosition')}" th:errors="*{comPosition}"></span>
+                         </div>
+
+                         <div class="form-group">
+                             <label class="col-sm-2 control-label" for="indate">입사일</label>
+                             <div class="col-sm-10">
+                                 <div id="demo-dp-component">
+                                     <div class="input-group date">
+                                         <input type="text" th:field="*{indate}" id="indate" class="form-control">
+                                         <span class="input-group-addon"><i class="demo-pli-calendar-4"></i></span>
+                                     </div>
+                                     <span th:if="${#fields.hasErrors('indate')}" th:errors="*{indate}"></span>
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="form-group">
+                             <label class="col-sm-2 control-label" for="orgDepart">부서</label>
+                             <div class="col-sm-10">
+                                 <input type="text" th:field="*{orgDepart}" id="orgDepart" placeholder="부서" class="form-control" required="required">
+                             </div>
+                             <span th:if="${#fields.hasErrors('orgDepart')}" th:errors="*{orgDepart}"></span>
+                         </div>
+                         <div class="form-group">
+                             <label class="col-sm-2 control-label" for="comNum">사번</label>
+                             <div class="col-sm-10">
+                                 <input type="text" th:field="*{comNum}" id="comNum" placeholder="사번" class="form-control" required="required">
+                             </div>
+                             <span th:if="${#fields.hasErrors('comNum')}" th:errors="*{comNum}"></span>
                          </div>
                          <div class="panel-footer text-right">
                              <button class="btn btn-primary" type="submit" id="submit-all">
@@ -115,6 +140,14 @@
 
     <script>
         $('#roleList').chosen({width:'100%'});
+
+        $('#demo-dp-component .input-group.date').datepicker({
+            // format: "MM dd, yyyy",
+            format: "yyyy-mm-dd",
+            todayBtn: "linked",
+            autoclose: true,
+            todayHighlight: true
+        });
 
     </script>
 </th:block>

@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.Signature;
+
 @Service
 public class ApprovalCourseProcessService {
 
@@ -61,8 +63,9 @@ public class ApprovalCourseProcessService {
 //        courseAccountOrderService.save(courseAccountOrder2);
 //    }
 
-    // 교육 신청 처리
-    public void courseRequestProcess(Account account, Course course, String requestType) {
+    // 과정별 교육대상자 생성
+    public CourseAccount courseAccountProcess(Account account, Course course, String requestType) {
+
         String fromDate;
         String toDate;
 
@@ -78,9 +81,9 @@ public class ApprovalCourseProcessService {
         courseAccount.setRequestDate(DateUtil.getTodayString());
         courseAccount.setFWdate(DateUtil.getToday());
         courseAccount.setRequestType(requestType);        // 교육신청(0:관리자지정, 1:사용자 신청)
-        courseAccount.setCourseStatus(CourseStepStatus.request);
         courseAccount.setFStatus("0");
         courseAccount.setFCurrSeq(1);
+
 
         /*
         교육과정에 따른 교육 기간 설정
@@ -112,16 +115,67 @@ public class ApprovalCourseProcessService {
             courseAccount.setFFinalCount(0);
             courseAccount.setIsApproval("0");   // 전자결재유무 0:없음, 1:있음
             courseAccount.setFStatus("1");      // 전자결재가 없으면 완료한것으로 처리한다.
-
         }
 
-        // 교육 종결
+
+
+        // 교육 대상자 지정인 경우는 상태를 신청 대기상태로 만든다
+        if (requestType.equals("0"))
+            courseAccount.setCourseStatus(CourseStepStatus.none);
+        else {  // 교육 대상자 신청인 경우는 상태를 신청상태로 변경한다.
+            courseAccount.setCourseStatus(CourseStepStatus.request);
+        }
+
+        // 교육 신청인 경우 sleft 교육인 경우는 교육 참석유무를 참석으로 하고 교육상태를 진행상태로 변경한다.
         if (course.getCourseMaster().getId().equals("BC0101")) {  // self
             courseAccount.setIsAttendance("1"); // 교육참석유무(0:미참석, 1:참석) => 기본값 0
             courseAccount.setCourseStatus(CourseStepStatus.process);
+        } else if (course.getCourseMaster().getId().equals("BC0103")) {  // self
+            courseAccount.setCourseStatus(CourseStepStatus.process);
         }
 
-        CourseAccount saveCourseAccount = courseAccountService.save(courseAccount);
+        // 교육 종결
+        return courseAccountService.save(courseAccount);
+    }
+
+
+    // 교육 신청 처리
+    public boolean courseRequestProcess(Account account, Course course, String requestType) {
+        // 팀장/부서장 승인여부
+        String isAppr1 = course.getCourseMaster().getIsTeamMangerApproval();
+        // 관리자 승인여부
+        String isAppr2 = course.getCourseMaster().getIsCourseMangerApproval();
+
+        // 과정 신청에 필요한 기본 검증을 진행한다.
+        // 0: 계정이 존재하지 않음
+        // 1: 상위결재권자가 지정되지 않음
+        // 2: 관리자가 지정되지 않음
+        // 9: 과정 신청 가능
+
+        if (courseAccountService.accountVerification(account.getUserId()) != 9) return false;
+
+
+        CourseAccount saveCourseAccount = courseAccountService.getByCourseIdAndUserId(course.getId(), account.getUserId());
+
+        if (saveCourseAccount == null) {
+            // 과정별 사용자 생성
+            saveCourseAccount = courseAccountProcess(account, course, requestType);
+
+            // 과정 생성
+            // TODO : 교육신청시 교육과정 생성 유무
+
+
+            // Course 마스터에 의한 사용자별 교육과정 생성
+            createUserCourse(saveCourseAccount);
+
+        }
+
+
+        // 교육과정 대상자 지정인 경우는 대상자만 생성한후 프로세스를 종료한다.
+        if (requestType.equals("0") && !saveCourseAccount.getCourse().getCourseMaster().getId().equals("BC0101")) return true;
+
+
+
 
         // 전자결재가 있는 경우
         if(saveCourseAccount.getIsApproval().equals("1")) {
@@ -177,22 +231,31 @@ public class ApprovalCourseProcessService {
 
                 //courseAccount.addCourseAccountOrder(courseAccountOrderService.save(courseAccountOrder1));
             }
-        } else {    // self외 교육은 전자결재가 없는 경우 (시험, 설문, 수료증)이 없으면 교육을 종결시킨다.
-            if(course.getIsQuiz().equals("N") && course.getIsSurvey().equals("N") && course.getIsCerti().equals("N")) {
-                courseAccount.setCourseStatus(CourseStepStatus.complete);
+
+
+            if (saveCourseAccount.getCourse().getCourseMaster().getId().equals("BC0102") && saveCourseAccount.getCourseStatus() == CourseStepStatus.none) {
+                saveCourseAccount.setCourseStatus(CourseStepStatus.request);
+                courseAccountService.save(saveCourseAccount);
+                return true;
+            }
+
+        } else {
+
+
+            // self외 교육은 전자결재가 없는 경우 (시험, 설문, 수료증)이 없으면 교육을 종결시킨다.
+            if (course.getSections() == null & course.getIsQuiz().equals("N") && course.getIsSurvey().equals("N") && course.getIsCerti().equals("N")) {
+                saveCourseAccount.setCourseStatus(CourseStepStatus.complete);
+                courseAccountService.save(saveCourseAccount);
             } else {
-                courseAccount.setCourseStatus(CourseStepStatus.process);
+                saveCourseAccount.setCourseStatus(CourseStepStatus.process);
+                courseAccountService.save(saveCourseAccount);
             }
         }
 
        // 과정 결재 정보 생성
         //CourseAccount courseAccount1 = courseAccountService.save(courseAccount);
 
-        // 과정 생성
-        // TODO : 교육신청시 교육과정 생성 유무
 
-        // Course 마스터에 의한 사용자별 교육과정 생성
-        createUserCourse(saveCourseAccount);
 
         // 사용자별 과정 생성
         /*
@@ -218,6 +281,8 @@ public class ApprovalCourseProcessService {
 //                courseAccountService.save(saveCourseAccount);
 //            }
 //        }
+
+        return true;
     }
 
 
