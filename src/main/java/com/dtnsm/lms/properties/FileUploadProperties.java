@@ -70,7 +70,7 @@ public class FileUploadProperties {
     }
 
     public void setBinderJdUploadDir(String binderJdUploadDir) {
-        binderJdUploadDir = binderJdUploadDir;
+        this.binderJdUploadDir = binderJdUploadDir;
     }
 
     public String getSurveyUploadDir() {
