@@ -4,6 +4,7 @@ import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.CurriculumVitaeStatus;
 import com.dtnsm.lms.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -13,6 +14,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+
 public class CurriculumVitaeService {
     private final CurriculumVitaeRepository curriculumVitaeRepository;
     private final CVEducationRepository cvEducationRepository;
@@ -76,8 +78,6 @@ public class CurriculumVitaeService {
                     }
                 }
             }
-
-            cv.getExperiences();
         }
 
         if(!ObjectUtils.isEmpty(cv.getParentId())) {

@@ -363,6 +363,7 @@ public class MyPageCvJdController {
 
             CurriculumVitae savedCV = curriculumVitaeService.save(cv);
 
+            System.out.println("@CV Status : " + status);
             if (status == CurriculumVitaeStatus.REVIEW || status == CurriculumVitaeStatus.CURRENT) {
                 new Thread(() -> {
                     try {
@@ -452,7 +453,7 @@ public class MyPageCvJdController {
 
 
                     } catch (Exception e) {
-
+                        e.printStackTrace();
                     }
                 }).run();
             }
