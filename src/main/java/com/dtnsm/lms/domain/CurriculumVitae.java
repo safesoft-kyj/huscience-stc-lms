@@ -4,6 +4,7 @@ import com.dtnsm.lms.auth.AuditorEntity;
 import com.dtnsm.lms.domain.constant.CurriculumVitaeStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,6 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "el_curriculum_vitae")
 @NoArgsConstructor
+@ToString(of = {"id"})
 public class CurriculumVitae extends AuditorEntity<String> implements Serializable, Cloneable {
     private static final long serialVersionUID = -6522318781199162543L;
     @Id
