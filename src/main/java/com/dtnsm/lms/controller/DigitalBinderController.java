@@ -62,7 +62,8 @@ public class DigitalBinderController {
 
         QTrainingRecord qTrainingRecord = QTrainingRecord.trainingRecord;
         BooleanBuilder builder = new BooleanBuilder();
-        builder.and(qTrainingRecord.status.eq(TrainingRecordStatus.PUBLISHED_ALL));
+//        builder.and(qTrainingRecord.sopStatus.eq(TrainingRecordStatus.PUBLISHED_SOP));
+//        builder.and(qTrainingRecord.tmStatus.eq(TrainingRecordStatus.PUBLISHED_SOP));
         builder.and(qTrainingRecord.username.eq(userId));
         Optional<TrainingRecord> optionalTrainingRecord = trainingRecordRepository.findOne(builder);
         if(optionalTrainingRecord.isPresent()) {
@@ -92,7 +93,8 @@ public class DigitalBinderController {
         BooleanBuilder builder = new BooleanBuilder();
         QTrainingRecord qTrainingRecord = QTrainingRecord.trainingRecord;
         builder.and(qTrainingRecord.username.eq(userId));
-        builder.and(qTrainingRecord.status.eq(TrainingRecordStatus.PUBLISHED_ALL));
+        builder.and(qTrainingRecord.sopStatus.eq(TrainingRecordStatus.PUBLISHED_SOP));
+        builder.and(qTrainingRecord.tmStatus.eq(TrainingRecordStatus.PUBLISHED_TM));
         Optional<TrainingRecord> optionalTrainingRecord = trainingRecordRepository.findOne(builder);
         if(optionalTrainingRecord.isPresent()) {
             trainingRecordReview.setTrainingRecord(optionalTrainingRecord.get());
