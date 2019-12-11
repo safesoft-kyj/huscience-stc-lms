@@ -38,10 +38,11 @@
                             <thead>
                             <tr style="background: #FAFAFA;">
                                 <th class="text-center">No</th>
-                                <th class="text-center">과정명</th>
-                                <th class="text-center">교육기간</th>
-                                <th class="text-center">상태</th>
-                                <th class="text-center">수료증발급</th>
+                                <th class="text-center col-md-1">교육유형</th>
+                                <th class="text-center col-md-6">과정명</th>
+                                <th class="text-center col-md-2">교육기간</th>
+<!--                                <th class="text-center">상태</th>-->
+                                <th class="text-center col-md-2">수료증발급</th>
                             </thead>
                             </tr>
                             <div th:switch="${borders}">
@@ -51,18 +52,18 @@
                                     <th:block th:each="courseAccount, index : ${borders}">
                                         <tr>
                                             <td class="text-center" th:text="${index.count}"}></td>
+                                            <td class="text-left" th:text="${courseAccount.getCourse().getCourseMaster().getCourseName()}"></td>
                                             <td class="text-left" th:text="${courseAccount.getCourse().getTitle()}"}></td>
                                             <td class="text-center" th:text="${courseAccount.getFromDate() + ' ~ ' + courseAccount.getToDate()}"></td>
-                                            <td class="text-center" th:text="${courseAccount.getCourseStatus()}"></td>
+<!--                                            <td class="text-center" th:text="${courseAccount.getCourseStatus()}"></td>-->
                                             <td class="text-center">
-                                                <th:block th:if="${#strings.equalsIgnoreCase(courseAccount.getIsCommit(), '1') && #strings.equalsIgnoreCase(courseAccount.getCourse().getIsCerti(), 'Y')}">
-                                                    <th:block th:inline="text">
-                                                        <a href="#" class="btn btn-info" id="popupBtn"
-                                                           th:onclick="|javascript:popupPdfView('${courseAccount.getId()}');return false;|" target="_blank"><i class="fa fa-print"></i> 발급</a>
-                                                    </th:block>
+                                                <th:block th:if="${courseAccount.getCertificateBindDate() == null}">
+                                                    <a href="#" class="btn btn-info" id="popupBtn"
+                                                       th:onclick="|javascript:popupPdfView('${courseAccount.getId()}', '1');return false;|" target="_blank"><i class="fa fa-print"></i> 발급</a>
                                                 </th:block>
-                                                <th:block th:unless="${#strings.equalsIgnoreCase(courseAccount.getIsCommit(), '1') && #strings.equalsIgnoreCase(courseAccount.getCourse().getIsCerti(), 'Y')}">
-                                                    <span th:text="${courseAccount.getCourse().getIsCerti()}"></span>
+                                                <th:block th:unless="${courseAccount.getCertificateBindDate() == null}">
+                                                    <a href="#" class="btn btn-mint" id="popupBtn2"
+                                                       th:onclick="|javascript:popupPdfView('${courseAccount.getId()}', '2');return false;|" target="_blank"><i class="fa fa-print"></i> 보기</a>
                                                 </th:block>
                                             </td>
                                         </tr>
@@ -120,12 +121,17 @@
             alert('준비중입니다..');
         }
 
-        function popupPdfView(id) {
-           var width = 800;
-           var height = 680;  //1.414;
+        function popupPdfView(id, flag) {
+            var popupName;
+
+            if(flag == 1) popupName = "/mypage/certificate/print/";
+            else popupName = "/mypage/certificate/printView/";
+
+            var width = 800;
+            var height = 630;  //1.414;
 
             var title = "디티앤사노메딕스";
-            var url = "/mypage/certificate/print/" + id;
+            var url = popupName + id;
             // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
             var popupX = (window.screen.width / 2) - (width / 2);
             // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
@@ -136,6 +142,7 @@
 
             window.open(url, title, option);
         }
+
 
     </script>
 </th:block>

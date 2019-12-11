@@ -74,7 +74,7 @@ public class CourseSectionAdminController {
         Course course = courseService.getCourseById(courseId);
 
         pageInfo.setPageId("m-course-list-page");
-        pageInfo.setPageTitle("강의");
+        pageInfo.setPageTitle("<a href='/admin/course/list/" + course.getCourseMaster().getId() + "'>" + course.getCourseMaster().getCourseName() + "</a> > 강의");
         model.addAttribute(pageInfo);
         model.addAttribute("borders", sectionService.getAllByCourseId(courseId));
         model.addAttribute("typeId", course.getCourseMaster().getId());

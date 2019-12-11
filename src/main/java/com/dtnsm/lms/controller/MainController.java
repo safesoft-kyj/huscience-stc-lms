@@ -60,6 +60,9 @@ public class MainController {
     @Autowired
     SignatureService signatureService;
 
+    @Autowired
+    BorderMasterService borderMasterService;
+
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseAdminController.class);
 
     private PageInfo pageInfo = new PageInfo();
@@ -75,12 +78,21 @@ public class MainController {
 
         model.addAttribute(pageInfo);
         model.addAttribute("customers", customerService.getCustomerList());
+
+
         // 공지사항
         model.addAttribute("borders", borderService.getListTop5ByBorderMasterId("BA0101"));
+
+        model.addAttribute("borders_name", borderMasterService.getById("BA0101").getBorderName());
+
+
         // 법규/가이드라인
         model.addAttribute("borders3", borderService.getListTop5ByBorderMasterId("BA0102"));
+        model.addAttribute("borders3_name", borderMasterService.getById("BA0102").getBorderName());
+
         // What's New
         model.addAttribute("borders2", borderService.getListTop5ByBorderMasterId("BA0104"));
+        model.addAttribute("borders2_name", borderMasterService.getById("BA0104").getBorderName());
 
         String userId = SessionUtil.getUserId();
 

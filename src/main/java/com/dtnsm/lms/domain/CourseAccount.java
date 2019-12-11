@@ -67,13 +67,16 @@ public class CourseAccount extends AuditorEntity<String> {
     @ColumnDefault("'0'")
     private String isApproval = "0";
 
-    // 전자 결재 상태 : 0: 진행중, 1: 승인, 2:기각
+    // 전자 결재 상태 : 0: 진행중, 1: 승인, 2:기각, 9:미진행
     @Column(length = 1)
-    @ColumnDefault("'0'")
-    private String fStatus = "0";
+    @ColumnDefault("'9'")
+    private String fStatus = "9";
 
     @Column(length = 30)
     private String certificateNo;
+
+    // 수료증 발급일
+    private Date certificateBindDate;
 
     /*
     교육과정 참석 유무(0:미참석, 1:참석완료)

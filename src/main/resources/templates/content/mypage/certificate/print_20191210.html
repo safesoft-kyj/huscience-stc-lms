@@ -136,7 +136,7 @@
              // 캔버스를 이미지로 변환
             var imgData = canvas.toDataURL('image/png');
 
-            var imgWidth = 235; // 이미지 가로 길이(mm) A4 기준
+            var imgWidth = 260; // 이미지 가로 길이(mm) A4 기준
             // var pageHeight = imgWidth * 1.414;  // 출력 페이지 세로 길이 계산 A4 기준
             var pageHeight = imgWidth / 1.294117647;
             //var imgHeight = canvas.height * imgWidth / canvas.width;
@@ -149,8 +149,8 @@
                 'unit': 'mm',
                 'format': 'a4'
             });
-            var top = 14;
-            var left = 32;
+            var top = 10;
+            var left = 15;
 
             // 첫 페이지 출력
             doc.addImage(imgData, 'PNG', left, top, imgWidth, imgHeight);
@@ -165,7 +165,7 @@
             }
 
             // 파일 저장
-            // doc.save(name);
+            doc.save(name);
 
             var blob = doc.output('blob');
 
@@ -182,15 +182,6 @@
                     success: function(data){console.log(data)},
                     error: function(data){console.log(data)}
                 });
-
-            alert('수료증이 저장되었습니다.');
-
-            setTimeout(function() {
-                this.close();
-                opener.location.reload();
-            }, 1000);
-
-
         });
     }
 </script>

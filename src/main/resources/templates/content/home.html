@@ -22,7 +22,7 @@
 
         <style type="text/css">
             .height-fix-pannel {
-                min-height: 160px;
+                min-height: 190px;
             }
             .table-head {
                 background: #3A444E;
@@ -79,7 +79,7 @@
                             <div class="col-sm-6 col-lg-6 eq-box-lg">
                                 <div class="panel height-fix-pannel">
                                     <div class="panel-body">
-                                        <h5 class="col-md-6" th:text="#{label.title.notice}" style="padding-bottom: 10px">공지사항</h5>
+                                        <h5 class="col-md-6" th:text="${borders_name}" style="padding-bottom: 10px">공지사항</h5>
                                         <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="/border/list/BA0101">more ></a></small>
                                         <div class="row">
                                             <div class="col-md-12" th:switch="${borders}">
@@ -110,7 +110,7 @@
                             <div class="col-sm-6 col-lg-6 eq-box-lg">
                                 <div class="panel height-fix-pannel">
                                     <div class="panel-body">
-                                        <h5 class="col-md-6" th:text="#{label.title.news}" style="padding-bottom: 10px">What's New</h5>
+                                        <h5 class="col-md-6" th:text="${borders2_name}" style="padding-bottom: 10px">What's New</h5>
                                         <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="/border/list/BA0104">more ></a></small>
 
                                         <div th:switch="${borders2}">
@@ -270,8 +270,8 @@
                             <div class="col-sm-6 col-lg-6 eq-box-lg">
                                 <div class="panel height-fix-pannel">
                                     <div class="panel-body">
-                                        <h5 class="col-md-6" th:text="#{label.title.guide}" style="padding-bottom: 10px">법규/가이드라인</h5>
-                                        <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="/border/list/BA0104">more ></a></small>
+                                        <h5 class="col-md-6" th:text="${borders3_name}" style="padding-bottom: 10px">법규/가이드라인</h5>
+                                        <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="/border/list/BA0102">more ></a></small>
 
                                         <div th:switch="${borders2}">
                                             <h2 th:case="null"></h2>
@@ -349,23 +349,23 @@
                             </div>
                         </div>
                     </div>
-<!--                    <div class="row">-->
-<!--                        <div class="panel panel-mint panel-colorful media middle pad-all">-->
-<!--                            <div class="media-left">-->
-<!--                                <div class="pad-hor">-->
-<!--                                    <i class="demo-pli-list-view icon-3x"></i>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="media-body">-->
-<!--                                <p class="text-2x mar-no text-semibold">-->
-<!--                                    <a th:href="@{/approval/document/listApprProcess}" th:text="${documentApprCount}" style="color:white"></a>-->
-<!--                                    /-->
-<!--                                    <a th:href="@{/approval/document/listMyProcess}" th:text="${documentProcessCount}" style="color:white"></a>-->
-<!--                                </p>-->
-<!--                                <p class="mar-no">전자결재 미결 / 진행중</p>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
+                    <div class="row">
+                        <div class="panel panel-mint panel-colorful media middle pad-all">
+                            <div class="media-left">
+                                <div class="pad-hor">
+                                    <i class="demo-pli-list-view icon-3x"></i>
+                                </div>
+                            </div>
+                            <div class="media-body">
+                                <p class="text-2x mar-no text-semibold">
+                                    <a th:href="@{/approval/document/listApprProcess}" th:text="${documentApprCount}" style="color:white"></a>
+                                    /
+                                    <a th:href="@{/approval/document/listMyProcess}" th:text="${documentProcessCount}" style="color:white"></a>
+                                </p>
+                                <p class="mar-no">전자결재 미결 / 진행중</p>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="panel panel-info panel-colorful media middle pad-all">
                             <div class="media-left">

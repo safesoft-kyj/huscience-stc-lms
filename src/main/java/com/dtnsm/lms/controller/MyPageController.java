@@ -93,7 +93,7 @@ public class MyPageController {
     public String main(Model model) {
 
         pageInfo.setPageId("m-mypage-main");
-        pageInfo.setPageTitle("메인");
+        pageInfo.setPageTitle("교육현황");
 
         CustomUserDetails userDetails = SessionUtil.getUserDetail();
         Account account = userService.getAccountByUserId(userDetails.getUserId());
@@ -252,7 +252,11 @@ public class MyPageController {
 
         CourseAccount courseAccount = courseAccountService.getById(docId);
 
+        courseAccount.setCertificateBindDate(DateUtil.getTodayDate());
+        courseAccount = courseAccountService.save(courseAccount);
+
         CourseCertificateLog courseCertificateLog = courseCertificateService.getCourseCertificateLog(docId);
+
 
 //        Course course = courseService.getCourseById(courseId);
 
@@ -273,6 +277,25 @@ public class MyPageController {
 
         return "content/mypage/certificate/print";
     }
+
+    @GetMapping("/certificate/printView/{id}")
+    public String certificatePrintView(@PathVariable("id") Long docId, Model model) {
+
+        pageInfo.setPageId("m-mypage-myinfo");
+        pageInfo.setPageTitle("수료증발급");
+
+        CourseAccount courseAccount = courseAccountService.getById(docId);
+
+        CourseCertificateLog courseCertificateLog = courseCertificateService.getCourseCertificateLog(docId);
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("courseAccount", courseAccount);
+        model.addAttribute("courseCertificateLog", courseCertificateLog);
+
+
+        return "content/mypage/certificate/printView";
+    }
+
 
     @GetMapping("/classroom/view/{id}")
     public String myClassroomView(@PathVariable("id") Long docId, Model model) {
@@ -446,12 +469,14 @@ public class MyPageController {
                 courseAccount.setCourseStatus(CourseStepStatus.complete);
                 courseAccount.setIsAttendance("1");
                 courseAccount.setIsCommit("1");
-                String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
-                courseAccount.setCertificateNo(certificateNo);
 
-                courseAccountService.save(courseAccount);
+                if (courseAccount.getCourse().getIsCerti().equals("Y")) {
+                    String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
+                    courseAccount.setCertificateNo(certificateNo);
+                }
 
                 // TODO: 2019/11/12 Digital Binder Employee Training Log 처리 -ks Hwang
+                binderLogService.createTrainingLog(courseAccountService.save(courseAccount));
             }
         }
 
@@ -554,12 +579,14 @@ public class MyPageController {
             CourseAccount courseAccount1 = courseQuizAction1.getCourseAccount();
             courseAccount1.setCourseStatus(CourseStepStatus.complete);
             courseAccount1.setIsCommit("1");
-            String certificateNo = courseCertificateService.newCertificateNumber(courseAccount1.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount1).getFullNumber();
-            courseAccount1.setCertificateNo(certificateNo);
-            courseAccountService.save(courseAccount1);
 
+            if (courseAccount1.getCourse().getIsCerti().equals("Y")) {
+                String certificateNo = courseCertificateService.newCertificateNumber(courseAccount1.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount1).getFullNumber();
+                courseAccount1.setCertificateNo(certificateNo);
+            }
 
             // TODO: 2019/11/12 Digital Binder Employee Training Log 처리 -ks Hwang
+            binderLogService.createTrainingLog(courseAccountService.save(courseAccount1));
 
 //        }
 

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <style>
+        .table-head {
+            background: #3A444E;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-body">
+                    <div class="row">
+                        <h5><strong class="text-warning"><i class="demo-pli-dot-vertical"></i> 신청대기 과정</strong></h5>
+                        <hr class="table-head">
+                        <table class="table" cellspacing="0" width="100%">
+                            <thead>
+                            <tr style="background: #FAFAFA;">
+                                <th class="text-center col-md-3" th:text="#{label.course.name}">과정명</th>
+                                <th class="text-center col-md-3" th:text="#{label.course.period}">기간</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.section}">강의</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.quiz}">시험</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.survey}">설문</th>
+                                <th class="text-center col-md-2" th:text="#{label.status}">상태</th>
+                                <th class="text-center" th:text="#{label.bigo}">비고</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <th:block th:each="courseAccount, index : ${courseAccountList}">
+                                <tr th:if="${courseAccount.getCourseStatus() == T(com.dtnsm.lms.domain.constant.CourseStepStatus).none}">
+                                    <td class="text-left">
+                                        <a th:href="@{/course/view/{id}(id=${courseAccount.getCourse().getId()})}">
+                                            <span th:text="${'['+courseAccount.getCourse().getCourseMaster().getCourseName()+']'}"></span>
+                                            <span th:text="${courseAccount.getCourse().getTitle()}"}></span>
+                                        </a>
+                                    </td>
+                                    <td class="text-center" th:text="${courseAccount.getFromDate() + '~' + courseAccount.getToDate()}"></td>
+                                    <td class="text-center">
+                                        <span class="badge badge-mint" th:text="${courseAccount.getCourse().getSections().size()}"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <th:block th:if="${courseAccount.getCourse().getIsQuiz().equals('Y')}">
+                                            <span class="badge badge-success" th:text="${courseAccount.getCourse().getQuizzes().size()}"></span>
+                                        </th:block>
+                                    </td>
+                                    <td class="text-center">
+                                        <th:block th:if="${courseAccount.getCourse().getIsSurvey().equals('Y')}">
+                                            <span class="badge badge-warning" th:text="${courseAccount.getCourse().getSurveys().size()}"></span>
+                                        </th:block>
+                                    </td>
+                                    <td class="text-center">
+                                        <form id="submit_form" th:action="@{/course/request2/{id}(id=${courseAccount.getId()})}" method="get">
+                                        <div th:switch="${courseAccount.getCourseStatus()}">
+                                            <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).none}" class="text-warning" th:text="${'신청대기'}"></span>
+                                            <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).request}" class="text-mint" th:text="${'신청완료'}"></span>
+                                        </div>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-info" th:href="|javascript:checkRequest('${courseAccount.getCourse().getId()}', '${courseAccount.getAccount().getUserId()}')|"><i class="demo-pli-inbox-into"></i> 교육신청</a>
+                                    </td>
+                                </tr>
+                            </th:block>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <br>
+                    <div class="row">
+                        <h5><strong class="text-warning"><i class="demo-pli-dot-vertical"></i> 신청중인 과정</strong></h5>
+                        <hr class="table-head">
+                        <table class="table" cellspacing="0" width="100%">
+                            <thead>
+                            <tr style="background: #FAFAFA;">
+                                <th class="text-center col-md-3" th:text="#{label.course.name}">과정명</th>
+                                <th class="text-center col-md-3" th:text="#{label.course.period}">기간</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.section}">강의</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.quiz}">시험</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.survey}">설문</th>
+                                <th class="text-center col-md-2" th:text="#{label.status}">상태</th>
+                                <th class="text-center" th:text="#{label.bigo}">비고</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <th:block th:each="courseAccount, index : ${courseAccountList}">
+                            <tr th:if="${courseAccount.getCourseStatus() == T(com.dtnsm.lms.domain.constant.CourseStepStatus).request}">
+                                <td class="text-left">
+                                    <span th:text="${'['+courseAccount.getCourse().getCourseMaster().getCourseName()+']'}"></span>
+                                    <span th:text="${courseAccount.getCourse().getTitle()}"}></span>
+                                </td>
+                                <td class="text-center" th:text="${courseAccount.getFromDate() + '~' + courseAccount.getToDate()}"></td>
+                                <td class="text-center">
+                                    <span class="badge badge-mint" th:text="${courseAccount.getCourse().getSections().size()}"></span>
+                                </td>
+                                <td class="text-center">
+                                    <th:block th:if="${courseAccount.getCourse().getIsQuiz().equals('Y')}">
+                                    <span class="badge badge-success" th:text="${courseAccount.getCourse().getQuizzes().size()}"></span>
+                                    </th:block>
+                                </td>
+                                <td class="text-center">
+                                    <th:block th:if="${courseAccount.getCourse().getIsSurvey().equals('Y')}">
+                                    <span class="badge badge-warning" th:text="${courseAccount.getCourse().getSurveys().size()}"></span>
+                                    </th:block>
+                                </td>
+                                <td class="text-center">
+                                    <div th:switch="${courseAccount.getFStatus()}">
+                                        <span th:case="${'0'}" class="text-warning" th:text="${'결재 진행중'}"></span>
+                                        <span th:case="${'1'}" class="text-mint" th:text="${'승인'}"></span>
+                                        <span th:case="${'2'}" class="text-info" th:text="${'반려'}"></span>
+                                    </div>
+                                </td>
+                                <td>&nbsp;</td>
+                            </tr>
+                            </th:block>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <br>
+                    <div class="row">
+                        <h5><strong class="text-info"><i class="demo-pli-dot-vertical"></i> <span> 진행중인 온라인 과정</span></strong></h5>
+                        <hr class="table-head">
+                        <table class="table" cellspacing="0" width="100%">
+                            <thead>
+                            <tr style="background: #FAFAFA;">
+                                <th class="text-center col-md-3" th:text="#{label.course.name}">과정명</th>
+                                <th class="text-center col-md-3" th:text="#{label.course.period}">기간</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.section}">강의</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.quiz}">시험</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.survey}">설문</th>
+                                <th class="text-center col-md-2" th:text="#{label.status}">상태</th>
+                                <th class="text-center">강의실</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <th:block th:each="courseAccount, index : ${courseAccountList}">
+                                <tr th:if="${courseAccount.getCourseStatus() == T(com.dtnsm.lms.domain.constant.CourseStepStatus).process && courseAccount.getCourse().getCourseMaster().getCourseGubun().getMinorCd().equals('BC0101') }">
+                                    <td class="text-left">
+                                        <span th:text="${'['+courseAccount.getCourse().getCourseMaster().getCourseName()+']'}"></span>
+                                        <span th:text="${courseAccount.getCourse().getTitle()}"}></span>
+                                    </td>
+                                    <td class="text-center" th:text="${courseAccount.getFromDate() + '~' + courseAccount.getToDate()}"></td>
+                                    <td class="text-center">
+                                        <span class="badge badge-mint" th:text="${courseAccount.getCourse().getSections().size()}"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <th:block th:if="${courseAccount.getCourse().getIsQuiz().equals('Y')}">
+                                        <span class="badge badge-success" th:text="${courseAccount.getCourse().getQuizzes().size()}"></span>
+                                        </th:block>
+                                    </td>
+                                    <td class="text-center">
+                                        <th:block th:if="${courseAccount.getCourse().getIsSurvey().equals('Y')}">
+                                        <span class="badge badge-warning" th:text="${courseAccount.getCourse().getSurveys().size()}"></span>
+                                        </th:block>
+                                    </td>
+                                    <td class="text-center">
+                                        <div th:switch="${courseAccount.getCourseStatus()}">
+                                            <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).process}"
+                                              class="text-warning" th:text="${'진행중'}"></span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <form id="submit_form1" th:action="@{/mypage/classroom/view/{id}(id=${courseAccount.getId()})}" method="get">
+                                            <a class="btn btn-info" th:onclick="|javascript:checkCoursePeriod('${courseAccount.getId()}','1')|"><i class="demo-pli-inbox-into"></i> 입장</a>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </th:block>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <br>
+                    <div class="row">
+                        <h5><strong class="text-info"><i class="demo-pli-dot-vertical"></i> <span> 진행중인 오프라인 과정</span></strong></h5>
+                        <hr class="table-head">
+                        <table class="table" cellspacing="0" width="100%">
+                            <thead>
+                            <tr style="background: #FAFAFA;">
+                                <th class="text-center col-md-3" th:text="#{label.course.name}">과정명</th>
+                                <th class="text-center col-md-3" th:text="#{label.course.period}">기간</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.section}">강의</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.quiz}">시험</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.survey}">설문</th>
+                                <th class="text-center col-md-2" th:text="#{label.status}">상태</th>
+                                <th class="text-center">강의실</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <th:block th:each="courseAccount, index : ${courseAccountList}">
+                                <tr th:if="${courseAccount.getCourseStatus() == T(com.dtnsm.lms.domain.constant.CourseStepStatus).process && courseAccount.getCourse().getCourseMaster().getCourseGubun().getMinorCd().equals('BC0102') }">
+                                    <td class="text-left">
+                                        <span th:text="${'['+courseAccount.getCourse().getCourseMaster().getCourseName()+']'}"></span>
+                                        <span th:text="${courseAccount.getCourse().getTitle()}"}></span>
+                                    </td>
+                                    <td class="text-center" th:text="${courseAccount.getFromDate() + '~' + courseAccount.getToDate()}"></td>
+                                    <td class="text-center">
+                                        <span class="badge badge-mint" th:text="${courseAccount.getCourse().getSections().size()}"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <th:block th:if="${courseAccount.getCourse().getIsQuiz().equals('Y')}">
+                                            <span class="badge badge-success" th:text="${courseAccount.getCourse().getQuizzes().size()}"></span>
+                                        </th:block>
+                                    </td>
+                                    <td class="text-center">
+                                        <th:block th:if="${courseAccount.getCourse().getIsSurvey().equals('Y')}">
+                                            <span class="badge badge-warning" th:text="${courseAccount.getCourse().getSurveys().size()}"></span>
+                                        </th:block>
+                                    </td>
+                                    <td class="text-center">
+                                        <div th:switch="${courseAccount.getCourseStatus()}">
+                                            <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).process}"
+                                                  class="text-warning" th:text="${'진행중'}"></span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <form id="submit_form2" th:action="@{/mypage/classroom/view/{id}(id=${courseAccount.getId()})}" method="get">
+                                            <th:block th:if="${courseAccount.getCourse().getIsQuiz().equals('Y') or courseAccount.getCourse().getIsSurvey().equals('Y')}">
+                                                <th:block th:if="${courseAccount.getIsAttendance().equals('1')}">
+                                                    <a class="btn btn-info" th:onclick="|javascript:checkCoursePeriod('${courseAccount.getId()}','2')|"><i class="demo-pli-inbox-into"></i> 입장</a>
+                                                </th:block>
+                                                <th:block th:unless="${courseAccount.getIsAttendance().equals('1')}">
+                                                    참석처리중
+<!--                                                    <a class="btn btn-info" th:onclick="|javascript:checkCoursePeriod('${courseAccount.getId()}','2')|"><i class="demo-pli-inbox-into"></i> 입장</a>-->
+                                                </th:block>
+                                            </th:block>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </th:block>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <br>
+                    <div class="row">
+                        <h5><strong class="text-success"><i class="demo-pli-dot-vertical"></i> 교육완료 과정</strong></h5>
+                        <hr class="table-head">
+                        <table class="table" cellspacing="0" width="100%">
+                            <thead>
+                            <tr style="background: #FAFAFA;">
+                                <th class="text-center col-md-3" th:text="#{label.course.name}">과정명</th>
+                                <th class="text-center col-md-3" th:text="#{label.course.period}">기간</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.section}">강의</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.quiz}">시험</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.survey}">설문</th>
+                                <th class="text-center col-md-2" th:text="#{label.status}">상태</th>
+                                <th class="text-center" th:text="#{label.bigo}">비고</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <th:block th:each="courseAccount, index : ${courseAccountList}">
+                                <tr th:if="${courseAccount.getCourseStatus() == T(com.dtnsm.lms.domain.constant.CourseStepStatus).complete}">
+                                    <td class="text-left">
+                                        <span th:text="${'['+courseAccount.getCourse().getCourseMaster().getCourseName()+']'}"></span>
+                                        <span th:text="${courseAccount.getCourse().getTitle()}"}></span>
+                                    </td>
+                                    <td class="text-center" th:text="${courseAccount.getFromDate() + '~' + courseAccount.getToDate()}"></td>
+                                    <td class="text-center">
+                                        <span class="badge badge-mint" th:text="${courseAccount.getCourse().getSections().size()}"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <th:block th:if="${courseAccount.getCourse().getIsQuiz().equals('Y')}">
+                                        <span class="badge badge-success" th:text="${courseAccount.getCourse().getQuizzes().size()}"></span>
+                                        </th:block>
+                                    </td>
+                                    <td class="text-center">
+                                        <th:block th:if="${courseAccount.getCourse().getIsSurvey().equals('Y')}">
+                                        <span class="badge badge-warning" th:text="${courseAccount.getCourse().getSurveys().size()}"></span>
+                                        </th:block>
+                                    </td>
+                                    <td class="text-center">
+                                        <div th:switch="${courseAccount.getCourseStatus()}">
+                                            <span class="text-info">교육 완료</span>
+                                        </div>
+                                    </td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                            </th:block>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <br>
+                    <div class="row">
+                        <h5><strong class="text-success"><i class="demo-pli-dot-vertical"></i> Reject 과정</strong></h5>
+                        <hr class="table-head">
+                        <table class="table" cellspacing="0" width="100%">
+                            <thead>
+                            <tr style="background: #FAFAFA;">
+                                <th class="text-center col-md-3" th:text="#{label.course.name}">과정명</th>
+                                <th class="text-center col-md-3" th:text="#{label.course.period}">기간</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.section}">강의</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.quiz}">시험</th>
+                                <th class="text-center col-md-1" th:text="#{label.title.survey}">설문</th>
+                                <th class="text-center col-md-2" th:text="#{label.status}">상태</th>
+                                <th class="text-center" th:text="#{label.bigo}">비고</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <th:block th:each="courseAccount, index : ${courseAccountList}">
+                                <tr th:if="${courseAccount.getCourseStatus() == T(com.dtnsm.lms.domain.constant.CourseStepStatus).reject}">
+                                    <td class="text-left">
+                                        <span th:text="${'['+courseAccount.getCourse().getCourseMaster().getCourseName()+']'}"></span>
+                                        <span th:text="${courseAccount.getCourse().getTitle()}"}></span>
+                                    </td>
+                                    <td class="text-center" th:text="${courseAccount.getFromDate() + '~' + courseAccount.getToDate()}"></td>
+                                    <td class="text-center">
+                                        <span class="badge badge-mint" th:text="${courseAccount.getCourse().getSections().size()}"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <th:block th:if="${courseAccount.getCourse().getIsQuiz().equals('Y')}">
+                                        <span class="badge badge-success" th:text="${courseAccount.getCourse().getQuizzes().size()}"></span>
+                                        </th:block>
+                                    </td>
+                                    <td class="text-center">
+                                        <th:block th:if="${courseAccount.getCourse().getIsSurvey().equals('Y')}">
+                                        <span class="badge badge-warning" th:text="${courseAccount.getCourse().getSurveys().size()}"></span>
+                                        </th:block>
+                                    </td>
+                                    <td class="text-center">
+                                        <div th:switch="${courseAccount.getCourseStatus()}">
+                                            <span class="text-info">교육 완료</span>
+                                        </div>
+                                    </td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                            </th:block>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+
+    <script>
+
+        function checkCoursePeriod(docId, formId) {
+
+            $.ajax({
+                type : 'get',
+                url : '/api/courseAccount/isCoursePeriod',
+                dataType : 'json',
+                data : {
+                    'docId': docId
+                },
+                error: function(xhr, status, error){
+                    alert('Error');
+                },
+                success : function(data){
+
+                    if(data == false) alert('교육기간이 아닙니다.');
+                    else {
+                        $('#submit_form' + formId).submit();
+                    }
+                },
+            });
+            return;
+        }
+
+        function checkRequest(courseId, userId) {
+
+            $.ajax({
+                type : 'POST',
+                url : '/api/courseAccount/isVerificationRequestWait',
+                dataType : 'json',
+                data : {
+                    'courseId': courseId,
+                    'userId': userId
+                },
+                error: function(xhr, status, error){
+                    alert(error);
+                },
+                success : function(data){
+
+                    if (data == 1) {
+                        alert('상위결재권자가 지정되지 않았습니다.');
+                        return false;
+                    }
+
+                    if (data == 2) {
+                        alert('교육과정 관리자가 지정되지 않았습니다.');
+                        return false;
+                    }
+
+                    if (data == 3) {
+                        alert('신청대기중인 과정이 없습니다..');
+                        return false;
+                    }
+
+                    if (data == 9) {
+                        $('#submit_form').submit();
+                        alert('교육 신청되었습니다.');
+                        return false;
+                    }
+                },
+            });
+
+            return;
+        }
+    </script>
+
+</th:block>
+
+</html>

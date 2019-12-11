@@ -68,10 +68,11 @@ public class CourseQuizAdminController {
     @GetMapping("/list/{courseId}")
     public String list(@PathVariable("courseId") Long courseId, Model model) {
 
-        pageInfo.setPageId("m-course-list-page");
-        pageInfo.setPageTitle("시험");
-
         course = courseService.getCourseById(courseId);
+
+        pageInfo.setPageId("m-course-list-page");
+        pageInfo.setPageTitle("<a href='/admin/course/list/" + course.getCourseMaster().getId() + "'>" + course.getCourseMaster().getCourseName() + "</a> > 시험");
+
         // 설문조사 여부가 Y 인경우만 Add 버튼 활성화
         String isAdd = course.getIsQuiz();
 

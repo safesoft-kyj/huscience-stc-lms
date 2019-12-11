@@ -65,8 +65,8 @@
                                         <th class="text-center" th:text="#{label.course.account.requestType}">신청유형</th>
                                         <th class="text-center" th:text="#{label.course.account.apprStatus}">결재상태</th>
                                         <th class="text-center" th:text="#{label.course.account.courseStep}">교육상태</th>
-                                        <th class="text-center ">교육참석</th>
                                         <th class="text-center" th:text="#{label.status}">상태</th>
+                                        <th class="text-center ">참석등록</th>
                                         <th class="text-center" th:text="#{label.actions}">Edit</th>
                                     </tr>
                                     </thead>
@@ -82,25 +82,18 @@
                                             <span th:if="${#strings.equalsIgnoreCase(border.getRequestType(), '1')}">신청</span>
                                         </td>
                                         <td class="text-center">
+                                            <span class="label label-warning" th:if="${#strings.equalsIgnoreCase(border.getFStatus(), '9')}">미진행</span>
                                             <span class="label label-warning" th:if="${#strings.equalsIgnoreCase(border.getFStatus(), '0')}">진행중</span>
                                             <span class="label label-success" th:if="${#strings.equalsIgnoreCase(border.getFStatus(), '1')}">최종승인</span>
                                         </td>
                                         <td class="text-center">
+                                            <span th:if="${#strings.equalsIgnoreCase(border.getCourseStatus(), 'none')}" class="label label-info">신청대기</span>
                                             <span th:if="${#strings.equalsIgnoreCase(border.getCourseStatus(), 'request')}" class="label label-info" th:text="${border.getCourseStatus()}"></span>
                                             <span th:if="${#strings.equalsIgnoreCase(border.getCourseStatus(), 'process')}" class="label label-warning" th:text="${border.getCourseStatus()}"></span>
                                             <span th:if="${#strings.equalsIgnoreCase(border.getCourseStatus(), 'reject')}" class="label label-danger" th:text="${border.getCourseStatus()}"></span>
                                             <span th:if="${#strings.equalsIgnoreCase(border.getCourseStatus(), 'complete')}" class="label label-success" th:text="${border.getCourseStatus()}"></span>
                                         </td>
-                                        <td class="text-center">
-                                            <th:block th:if="${border.getIsAttendance().equals('0')}">
-                                                <th:block th:if="${#strings.equalsIgnoreCase(border.getFStatus(), '1')}">
-                                                    <a th:href="@{/admin/course/account/updateAttendance/{id}(id=${border.getId()})}"><span class="badge badge-mint">참석처리</span></a>
-                                                </th:block>
-                                            </th:block>
-                                            <th:block th:if="${border.getIsAttendance().equals('1')}">
-                                                <span class="label label-success">완료</span>
-                                            </th:block>
-                                        </td>
+
                                         <td class="text-center">
                                             <th:block th:if="${border.getIsCommit().equals('0')}">
                                                 <span class="label label-warning">진행중</span>
@@ -108,6 +101,16 @@
                                             <th:block th:if="${border.getIsCommit().equals('1')}">
                                                 <span class="label label-success">교육완료</span>
                                             </th:block>
+                                        </td>
+                                        <td class="text-center">
+                                            <th:block th:if="${border.getIsAttendance().equals('0')}">
+                                                <!--                                                <th:block th:if="${#strings.equalsIgnoreCase(border.getFStatus(), '1')}">-->
+                                                <a th:href="@{/admin/course/account/updateAttendance/{id}(id=${border.getId()})}"><span class="badge badge-mint">참석처리</span></a>
+                                                <!--                                                </th:block>-->
+                                            </th:block>
+                                            <!--                                            <th:block th:if="${border.getIsAttendance().equals('1') and #strings.equalsIgnoreCase(border.getCourse().getCourseMaster().getCourseGubun(), 'BC0102')}">-->
+                                            <!--                                                <span class="label label-success">참석</span>-->
+                                            <!--                                            </th:block>-->
                                         </td>
                                         <td class="text-center">
                                             <a th:text="#{label.delete}" th:href="@{/admin/course/account/delete/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>

@@ -66,7 +66,7 @@ public class CourseScheduler {
 //    @Scheduled(cron = "0 0/50 11 * * *")
 
     // 8, 9, --- 18시에 실행한다.
-    @Scheduled(cron = "0 0 8-18 * * *")
+//    @Scheduled(cron = "0 0 8-18 * * *")
     public void updateStatus() {
 
         log.info("================================================");
@@ -129,7 +129,7 @@ public class CourseScheduler {
  */
     // 매일 오전 3시에 실행한다.
     // 그룹웨어 사용자를 추가한다.
-    @Scheduled(cron = "0 0 3 * * *")
+//    @Scheduled(cron = "0 0 3 * * *")
     public void updateGroupwareUser() {
 
         // 그룹웨어 사용자 정보로 Account 계정의 정보를 생성하거나 업데이트 한다.
@@ -140,7 +140,7 @@ public class CourseScheduler {
 
     // 매일 8, 9, 10시에 실행한다
     // 상위결재권자나 사인 미지정자
-    @Scheduled(cron = "0 10 * * * *")
+    @Scheduled(cron = "0 0 3 * * *")
     public void updateAlarm() {
 
         for (Account account : userService.getAccountList()) {

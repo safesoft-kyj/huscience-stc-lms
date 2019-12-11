@@ -3,6 +3,8 @@ package com.dtnsm.lms.controller.RestController;
 import com.dtnsm.lms.domain.Course;
 import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.domain.constant.CourseStepStatus;
+import com.dtnsm.lms.mybatis.dto.CourseCalendarVO;
+import com.dtnsm.lms.mybatis.service.CourseMapperService;
 import com.dtnsm.lms.service.CourseAccountService;
 import com.dtnsm.lms.service.CourseService;
 import com.dtnsm.lms.mybatis.dto.CalendarVO;
@@ -33,21 +35,26 @@ public class CalendarRestController {
     @Autowired
     CourseAccountService courseAccountService;
 
+    @Autowired
+    CourseMapperService courseMapperService;
+
     @GetMapping("/month/requestCalendar")
     public String monthRequestCalendar(@RequestParam("start") String start, @RequestParam("end") String end) {
 
         String jsonMsg = null;
         try {
-            List<Course> courses = courseService.getCourseByRequestFromDateBetween(start, end, 0);
+//            List<Course> courses = courseService.getCourseByRequestFromDateBetween(start, end, 0);
+
+            List<CourseCalendarVO> courses = courseMapperService.getCourseCalenda1(start, end);
 
             List<CalendarVO> events = new ArrayList<CalendarVO>();
 
             CalendarVO event;
             String color, url;
-            for(Course course : courses) {
+            for(CourseCalendarVO course : courses) {
 
                 url = "/course/view/" + course.getId();
-                switch (course.getCourseMaster().getId()) {
+                switch (course.getTypeId()) {
                     case "BC0101":  // self training
                         color = "#FFA726";
                         break;
@@ -94,16 +101,18 @@ public class CalendarRestController {
 
         String jsonMsg = null;
         try {
-            List<Course> courses = courseService.getCourseByFromDateBetween(start, end, 0);
+            List<CourseCalendarVO> courses = courseMapperService.getCourseCalenda2(start, end);
+
+//            List<Course> courses = courseService.getCourseByFromDateBetween(start, end, 0);
 
             List<CalendarVO> events = new ArrayList<CalendarVO>();
 
             CalendarVO event;
             String color, url;
-            for(Course course : courses) {
+            for(CourseCalendarVO course : courses) {
 
                 url = "/course/view/" + course.getId();
-                switch (course.getCourseMaster().getId()) {
+                switch (course.getTypeId()) {
                     case "BC0101":  // self training
                         color = "#FFA726";
                         break;

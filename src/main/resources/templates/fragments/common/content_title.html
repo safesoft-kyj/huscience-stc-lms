@@ -7,7 +7,7 @@
     <!--Page Title-->
     <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
     <div id="page-title">
-        <h1 class="page-header text-overflow" th:text="${pageInfo.getPageTitle()}"></h1>
+        <h1 class="page-header text-overflow" th:utext="${pageInfo.getPageTitle()}"></h1>
     </div>
     <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
     <!--End page title-->
@@ -16,9 +16,9 @@
     <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
     <ol class="breadcrumb">
-        <li><a href="#"><i class="demo-pli-home"></i></a></li>
-        <li><a href="#" th:text="${pageInfo.getParentTitle()}"></a></li>
-        <li class="active" th:text="${pageInfo.getPageTitle()}"></li>
+        <li><a href="/"><i class="demo-pli-home"></i></a></li>
+        <li><span th:utext="${pageInfo.getParentTitle()}"></span></li>
+        <li class="active"><span th:utext="${pageInfo.getPageTitle()}"></span></li>
     </ol>
     <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
     <!--End breadcrumb-->

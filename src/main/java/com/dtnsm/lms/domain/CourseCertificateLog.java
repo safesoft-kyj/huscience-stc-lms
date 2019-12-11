@@ -23,13 +23,11 @@ public class CourseCertificateLog extends AuditorCreateEntity<String> {
     private String sopEffectiveDate;
     private Date CerDate;
 
-
     // 강사 정보
     private String cerManagerText1;
 
     // 대표자 정보
     private String cerManagerText2;
-
 
     @OneToOne
     @JoinColumn(name = "doc_id")
@@ -52,6 +50,6 @@ public class CourseCertificateLog extends AuditorCreateEntity<String> {
     private String cerManagerSign2;
 
     @ManyToOne
-    @JoinColumn(name = "user_id",columnDefinition="VARCHAR(30)")
+    @JoinColumn(name = "user_id", columnDefinition="VARCHAR(30)")
     private Account account;
 }

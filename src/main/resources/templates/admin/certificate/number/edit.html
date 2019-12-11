@@ -33,6 +33,7 @@
                     <!--===================================================-->
                     <!--End Horizontal Form-->
                     <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/certificate/number/edit-post/{id}(id=${border.getId()})}" th:object="${border}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" th:field="*{id}" id="id" name="id">
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="cerText" th:text="#{label.certi.text}">Text</label>
                             <div class="col-sm-10">

@@ -27,6 +27,8 @@ public interface CourseAccountRepository extends JpaRepository<CourseAccount, Lo
 
     CourseAccount findByCourse_IdAndAccount_UserId(long courseId, String userId);
 
+    CourseAccount findByCourse_IdAndAccount_UserIdAndRequestType(long courseId, String userId, String requestType);
+
     CourseAccount findByCourse_IdAndAccount_UserIdAndCourseStatus(long courseId, String userId, CourseStepStatus courseStepStatus);
 
     void deleteCourseAccountByAccount_UserId(String userId);

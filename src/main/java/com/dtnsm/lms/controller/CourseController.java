@@ -187,7 +187,7 @@ public class CourseController {
         // 교육 신청 처리(requestType 0:관리자 지정, 1:신청)
         approvalCourseProcessService.courseRequestProcess(courseAccount.getAccount(), courseAccount.getCourse(), "1");
 
-        return "redirect:/mypage/main";
+        return "redirect:/course/request/commit/" + courseAccount.getCourse().getId();
     }
 
     @GetMapping("/request/commit/{id}")

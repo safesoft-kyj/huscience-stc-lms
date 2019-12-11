@@ -46,7 +46,7 @@ public class CourseAccountRestController {
         // 2: 관리자가 지정되지 않음
         // 9: 과정 신청 가능
 
-        CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserId(courseId, userId);
+        CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserIdAndRequestType(courseId, userId, "1");
 
         // 이미 신청정보가 있는 경우는 리턴한다.
         if (courseAccount != null) return 4;
@@ -71,7 +71,7 @@ public class CourseAccountRestController {
     public boolean isRequest(@RequestParam("courseId") long courseId
             , @RequestParam String userId){
 
-        CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserId(courseId, userId);
+        CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserIdAndRequestType(courseId, userId, "1");
 
         return courseAccount == null ? false : true;
     }
@@ -81,7 +81,7 @@ public class CourseAccountRestController {
     public boolean isRequest2(@RequestParam("courseId") long courseId
             , @RequestParam String userId){
 
-        CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserId(courseId, userId);
+        CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserIdAndRequestType(courseId, userId, "1");
 
         return courseAccount == null ? false : true;
     }

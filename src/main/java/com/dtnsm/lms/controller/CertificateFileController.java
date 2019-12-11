@@ -7,6 +7,7 @@ import com.dtnsm.lms.service.CertificateFileService;
 import com.dtnsm.lms.service.MunjeBankService;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
+import com.dtnsm.lms.util.SessionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +65,7 @@ public class CertificateFileController {
         pageInfo.setPageTitle("수료증 업로드");
         model.addAttribute(pageInfo);
 
-        List<CertificateFile> fileList = fileService.getFileList();
+        List<CertificateFile> fileList = fileService.getAllByUserId(SessionUtil.getUserId());
         model.addAttribute("fileList", fileList);
 
         return "content/mypage/certificate/file/list";

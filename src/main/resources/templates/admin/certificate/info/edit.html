@@ -33,6 +33,7 @@
                     <!--===================================================-->
                     <!--End Horizontal Form-->
                     <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/certificate/info/edit-post/{id}(id=${certiInfo.getId()})}" th:object="${certiInfo}" method="post">
+                        <input type="hidden" th:field="*{id}" id="id" name="id">
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="sopName" th:text="#{label.certiInfo.sopname}">Text</label>
                             <div class="col-sm-10">
@@ -118,7 +119,7 @@
     </script>
 
     <!--Form File Upload [ SAMPLE ]-->
-<!--    <script th:src="@{/default/js/demo/form-file-upload.js}"></script>-->
+    <!--    <script th:src="@{/default/js/demo/form-file-upload.js}"></script>-->
 </th:block>
 
 </html>

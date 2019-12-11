@@ -49,6 +49,9 @@ public class ApprovalCourseProcessService {
     @Autowired
     SignatureService signatureService;
 
+    @Autowired
+    CourseCertificateService courseCertificateService;
+
 //    public void courseRequestProcess(Account account, Course course) {
 //        Account apprAccount = userService.getAccountByUserId(account.getParentUserId());
 //        CourseAccountOrder courseAccountOrder2 = new CourseAccountOrder();
@@ -62,6 +65,454 @@ public class ApprovalCourseProcessService {
 //
 //        courseAccountOrderService.save(courseAccountOrder2);
 //    }
+
+
+//
+//    // 1. Self 교육 신청
+//    public CourseAccount courseAccountSelfProcess(Account account, Course course, String requestType) {
+//
+//        String fromDate;
+//        String toDate;
+//
+//        // 팀장/부서장 승인여부
+//        String isAppr1 = course.getCourseMaster().getIsTeamMangerApproval();
+//        // 관리자 승인여부
+//        String isAppr2 = course.getCourseMaster().getIsCourseMangerApproval();
+//
+//        // 교육신청
+//        CourseAccount courseAccount = new CourseAccount();
+//        courseAccount.setCourse(course);
+//        courseAccount.setAccount(account);
+//        courseAccount.setRequestDate(DateUtil.getTodayString());
+//        courseAccount.setFWdate(DateUtil.getToday());
+//        courseAccount.setRequestType(requestType);        // 교육신청(0:관리자지정, 1:사용자 신청)
+//        courseAccount.setFStatus("0");
+//        courseAccount.setFCurrSeq(1);
+//
+//        /*
+//        교육과정에 따른 교육 기간 설정
+//            1. 상시 교육
+//                - 교육시작일자 : 신청일자
+//                - 교육종료일자 : 과정의 교육일수로 계산
+//            2. 상시교육이 아닌 경우
+//                - 교육시작일자 : 개설과정의 교육시작일
+//                - 교육종료일자 : 개설과정의 교육종료일
+//        */
+//        if (course.getIsAlways().equals("1")) {     // 상시교육일 경우
+//            fromDate = DateUtil.getTodayString();
+//            toDate = DateUtil.getStringDateAddDay(fromDate, course.getDay());
+//        } else {    // 상시교육이 아닌 경우
+//            fromDate = course.getFromDate();
+//            toDate = course.getToDate();
+//        }
+//        courseAccount.setFromDate(fromDate);
+//        courseAccount.setToDate(toDate);
+//
+//        // self 교육은 전자결재가 없음
+//        courseAccount.setFFinalCount(0);
+//        courseAccount.setIsApproval("0");   // 전자결재유무 0:없음, 1:있음
+//        courseAccount.setFStatus("1");      // 전자결재가 없으면 완료한것으로 처리한다.
+//        courseAccount.setIsAttendance("1"); // 교육참석유무(0:미참석, 1:참석) => 기본값 0
+//
+//        // 교육 대상자 지정인 경우는 상태를 신청 대기상태로 만든다
+//        if (requestType.equals("0"))
+//            courseAccount.setCourseStatus(CourseStepStatus.none);
+//        else {  // 교육 대상자 신청인 경우는 상태를 신청상태로 변경한다.
+//            courseAccount.setCourseStatus(CourseStepStatus.request);
+//        }
+//
+//        CourseAccount saveCourseAccount = courseAccountService.save(courseAccount);
+//
+//        // 과정 생성
+//        // TODO : 교육신청시 교육과정 생성 유무
+//
+//        // 강의 생성
+//        if(course.getSections().size() > 0) {
+//            for (CourseSection courseSection : course.getSections()) {
+//                CourseSectionAction courseSectionAction = new CourseSectionAction();
+//                courseSectionAction.setCourseAccount(saveCourseAccount);
+//                courseSectionAction.setAccount(account);
+//                courseSectionAction.setCourseSection(courseSection);
+//                courseSectionAction.setTotalUseSecond(0);
+//                courseSectionAction.setRunCount(0);
+//                courseSectionAction.setStatus(SectionStatusType.REQUEST);
+//                CourseSectionAction courseSectionAction1 = sectionActionService.save(courseSectionAction);
+//            }
+//        }
+//
+//        // 시험 생성
+//        if(course.getIsQuiz().equals("Y") && course.getQuizzes().size() > 0) {
+//            for (CourseQuiz courseQuiz : course.getQuizzes()) {
+//                CourseQuizAction courseQuizAction = new CourseQuizAction();
+//                courseQuizAction.setCourseAccount(saveCourseAccount);
+//                courseQuizAction.setAccount(account);
+//                courseQuizAction.setQuiz(courseQuiz);
+//                courseQuizAction.setTotalUseSecond(0);
+//                courseQuizAction.setRunCount(0);
+//                courseQuizAction.setQuestionCount(courseQuiz.getQuizQuestions().size());
+//                courseQuizAction.setStatus(QuizStatusType.REQUEST);
+//                quizActionService.saveQuizAction(courseQuizAction);
+//            }
+//        }
+//
+//        // 설문 생성
+//        if(course.getIsSurvey().equals("Y") && course.getSurveys().size() > 0) {
+//            for (CourseSurvey courseSurvey : course.getSurveys()) {
+//                CourseSurveyAction courseSurveyAction = new CourseSurveyAction();
+//                courseSurveyAction.setCourseAccount(saveCourseAccount);
+//                courseSurveyAction.setAccount(account);
+//                courseSurveyAction.setCourseSurvey(courseSurvey);
+//                courseSurveyAction.setQuestionCount(courseSurvey.getQuestions().size());
+//                courseSurveyAction.setStatus(SurveyStatusType.REQUEST);
+//                surveyActionService.saveSurveyAction(courseSurveyAction);
+//            }
+//        }
+//
+//
+//        return saveCourseAccount;
+//    }
+//
+//    // 2. Class 교육 신청
+//    public CourseAccount courseAccountClassProcess(Account account, Course course, String requestType) {
+//
+//        String fromDate;
+//        String toDate;
+//
+//        // 팀장/부서장 승인여부
+//        String isAppr1 = course.getCourseMaster().getIsTeamMangerApproval();
+//        // 관리자 승인여부
+//        String isAppr2 = course.getCourseMaster().getIsCourseMangerApproval();
+//
+//        // 교육신청
+//        CourseAccount courseAccount = new CourseAccount();
+//        courseAccount.setCourse(course);
+//        courseAccount.setAccount(account);
+//        courseAccount.setRequestDate(DateUtil.getTodayString());
+//        courseAccount.setFWdate(DateUtil.getToday());
+//        courseAccount.setRequestType(requestType);        // 교육신청(0:관리자지정, 1:사용자 신청)
+//        courseAccount.setFStatus("0");
+//        courseAccount.setFCurrSeq(1);
+//
+//
+//        /*
+//        교육과정에 따른 교육 기간 설정
+//            1. 상시 교육
+//                - 교육시작일자 : 신청일자
+//                - 교육종료일자 : 과정의 교육일수로 계산
+//            2. 상시교육이 아닌 경우
+//                - 교육시작일자 : 개설과정의 교육시작일
+//                - 교육종료일자 : 개설과정의 교육종료일
+//        */
+//        if (course.getIsAlways().equals("1")) {     // 상시교육일 경우
+//            fromDate = DateUtil.getTodayString();
+//            toDate = DateUtil.getStringDateAddDay(fromDate, course.getDay());
+//        } else {    // 상시교육이 아닌 경우
+//            fromDate = course.getFromDate();
+//            toDate = course.getToDate();
+//        }
+//        courseAccount.setFromDate(fromDate);
+//        courseAccount.setToDate(toDate);
+//
+//        // 결재자수 Max 설정
+//        if(isAppr1.equals("Y") && isAppr2.equals("Y")) {
+//            courseAccount.setFFinalCount(2);
+//            courseAccount.setIsApproval("1");   // 전자결재유무 0:없음, 1:있음
+//        } else if(isAppr1.equals("Y")) {
+//            courseAccount.setFFinalCount(1);
+//            courseAccount.setIsApproval("1");   // 전자결재유무 0:없음, 1:있음
+//        } else {
+//            courseAccount.setFFinalCount(0);
+//            courseAccount.setIsApproval("0");   // 전자결재유무 0:없음, 1:있음
+//            courseAccount.setFStatus("1");      // 전자결재가 없으면 완료한것으로 처리한다.
+//        }
+//
+//        // 교육 대상자 지정인 경우는 상태를 신청 대기상태로 만든다
+//        if (requestType.equals("0"))
+//            courseAccount.setCourseStatus(CourseStepStatus.none);
+//        else {  // 교육 대상자 신청인 경우는 상태를 신청상태로 변경한다.
+//            courseAccount.setCourseStatus(CourseStepStatus.request);
+//        }
+//
+//        // 과정 신청자 생성
+//        CourseAccount saveCourseAccount = courseAccountService.save(courseAccount);
+//
+//        // 과정 생성
+//        // TODO : 교육신청시 교육과정 생성 유무
+//
+//        // 강의 생성
+//        if(course.getSections().size() > 0) {
+//            for (CourseSection courseSection : course.getSections()) {
+//                CourseSectionAction courseSectionAction = new CourseSectionAction();
+//                courseSectionAction.setCourseAccount(saveCourseAccount);
+//                courseSectionAction.setAccount(account);
+//                courseSectionAction.setCourseSection(courseSection);
+//                courseSectionAction.setTotalUseSecond(0);
+//                courseSectionAction.setRunCount(0);
+//                courseSectionAction.setStatus(SectionStatusType.REQUEST);
+//                CourseSectionAction courseSectionAction1 = sectionActionService.save(courseSectionAction);
+//
+//                // class 교육은 offline 교육이므로 실제 강의를 종료시킨다.
+//                // sectionActionService.UpdateCourseSectionActionComplete(courseSectionAction1);
+//            }
+//        }
+//
+//        // 시험 생성
+//        if(course.getIsQuiz().equals("Y") && course.getQuizzes().size() > 0) {
+//            for (CourseQuiz courseQuiz : course.getQuizzes()) {
+//                CourseQuizAction courseQuizAction = new CourseQuizAction();
+//                courseQuizAction.setCourseAccount(saveCourseAccount);
+//                courseQuizAction.setAccount(account);
+//                courseQuizAction.setQuiz(courseQuiz);
+//                courseQuizAction.setTotalUseSecond(0);
+//                courseQuizAction.setRunCount(0);
+//                courseQuizAction.setQuestionCount(courseQuiz.getQuizQuestions().size());
+//                courseQuizAction.setStatus(QuizStatusType.REQUEST);
+//
+//                // self외에는 실제 강의가 없기 때문에 상태를 ongoing 상태로 변경한다.
+////                if (!courseAccount.getCourse().getCourseMaster().getId().equals("BC0101")) {
+////                    courseQuizAction.setStatus(QuizStatusType.ONGOING);
+////                }
+//
+//                quizActionService.saveQuizAction(courseQuizAction);
+//            }
+//        }
+//
+//        // 설문 생성
+//        if(course.getIsSurvey().equals("Y") && course.getSurveys().size() > 0) {
+//            for (CourseSurvey courseSurvey : course.getSurveys()) {
+//                CourseSurveyAction courseSurveyAction = new CourseSurveyAction();
+//                courseSurveyAction.setCourseAccount(saveCourseAccount);
+//                courseSurveyAction.setAccount(account);
+//                courseSurveyAction.setCourseSurvey(courseSurvey);
+//                courseSurveyAction.setQuestionCount(courseSurvey.getQuestions().size());
+//                courseSurveyAction.setStatus(SurveyStatusType.REQUEST);
+//
+//                // self외에는 시험이 없는 경우 onGoing 상태로 변경한다
+////                if (!courseAccount.getCourse().getCourseMaster().getId().equals("BC0101") && courseAccount.getCourse().getIsQuiz().equals("N")) {
+////                    courseSurveyAction.setStatus(SurveyStatusType.ONGOING);
+////                }
+//
+//                surveyActionService.saveSurveyAction(courseSurveyAction);
+//            }
+//        }
+//
+//        return saveCourseAccount;
+//    }
+//
+//
+//    // 3. 외부교육 신청
+//    public CourseAccount courseAccountOtherProcess(CourseAccount courseAccount) {
+//
+//        String fromDate;
+//        String toDate;
+//
+//        // 팀장/부서장 승인여부
+//        String isAppr1 = courseAccount.getCourse().getCourseMaster().getIsTeamMangerApproval();
+//        // 관리자 승인여부
+//        String isAppr2 = courseAccount.getCourse().getCourseMaster().getIsCourseMangerApproval();
+//
+//        // 교육신청
+//        CourseAccount courseAccount = new CourseAccount();
+//        courseAccount.setRequestDate(DateUtil.getTodayString());
+//        courseAccount.setFWdate(DateUtil.getToday());
+//        courseAccount.setRequestType(requestType);        // 교육신청(0:관리자지정, 1:사용자 신청)
+//        courseAccount.setFStatus("0");
+//        courseAccount.setFCurrSeq(1);
+//
+//
+//        /*
+//        교육과정에 따른 교육 기간 설정
+//            1. 상시 교육
+//                - 교육시작일자 : 신청일자
+//                - 교육종료일자 : 과정의 교육일수로 계산
+//            2. 상시교육이 아닌 경우
+//                - 교육시작일자 : 개설과정의 교육시작일
+//                - 교육종료일자 : 개설과정의 교육종료일
+//        */
+//        if (course.getIsAlways().equals("1")) {     // 상시교육일 경우
+//            fromDate = DateUtil.getTodayString();
+//            toDate = DateUtil.getStringDateAddDay(fromDate, course.getDay());
+//        } else {    // 상시교육이 아닌 경우
+//            fromDate = course.getFromDate();
+//            toDate = course.getToDate();
+//        }
+//        courseAccount.setFromDate(fromDate);
+//        courseAccount.setToDate(toDate);
+//
+//        // 결재자수 Max 설정
+//        if(isAppr1.equals("Y") && isAppr2.equals("Y")) {
+//            courseAccount.setFFinalCount(2);
+//            courseAccount.setIsApproval("1");   // 전자결재유무 0:없음, 1:있음
+//        } else if(isAppr1.equals("Y")) {
+//            courseAccount.setFFinalCount(1);
+//            courseAccount.setIsApproval("1");   // 전자결재유무 0:없음, 1:있음
+//        } else {
+//            courseAccount.setFFinalCount(0);
+//            courseAccount.setIsApproval("0");   // 전자결재유무 0:없음, 1:있음
+//            courseAccount.setFStatus("1");      // 전자결재가 없으면 완료한것으로 처리한다.
+//        }
+//
+//        // 교육 대상자 지정인 경우는 상태를 신청 대기상태로 만든다
+//        if (requestType.equals("0"))
+//            courseAccount.setCourseStatus(CourseStepStatus.none);
+//        else {  // 교육 대상자 신청인 경우는 상태를 신청상태로 변경한다.
+//            courseAccount.setCourseStatus(CourseStepStatus.request);
+//        }
+//
+//
+//        // 과정 신청자 생성
+//        CourseAccount saveCourseAccount = courseAccountService.save(courseAccount);
+//
+//        // 과정 생성
+//        // TODO : 교육신청시 교육과정 생성 유무
+//
+//        // 강의 생성
+//        if(courseAccount.getCourse().getSections().size() > 0) {
+//            for (CourseSection courseSection : courseAccount.getCourse().getSections()) {
+//                CourseSectionAction courseSectionAction = new CourseSectionAction();
+//                courseSectionAction.setCourseAccount(saveCourseAccount);
+//                courseSectionAction.setAccount(saveCourseAccount.getAccount());
+//                courseSectionAction.setCourseSection(courseSection);
+//                courseSectionAction.setTotalUseSecond(0);
+//                courseSectionAction.setRunCount(0);
+//                courseSectionAction.setStatus(SectionStatusType.REQUEST);
+//                CourseSectionAction courseSectionAction1 = sectionActionService.save(courseSectionAction);
+//            }
+//        }
+//
+//        // 시험 생성
+//        if(saveCourseAccount.getCourse().getIsQuiz().equals("Y") && saveCourseAccount.getCourse().getQuizzes().size() > 0) {
+//            for (CourseQuiz courseQuiz : saveCourseAccount.getCourse().getQuizzes()) {
+//                CourseQuizAction courseQuizAction = new CourseQuizAction();
+//                courseQuizAction.setCourseAccount(saveCourseAccount);
+//                courseQuizAction.setAccount(courseAccount.getAccount());
+//                courseQuizAction.setQuiz(courseQuiz);
+//                courseQuizAction.setTotalUseSecond(0);
+//                courseQuizAction.setRunCount(0);
+//                courseQuizAction.setQuestionCount(courseQuiz.getQuizQuestions().size());
+//                courseQuizAction.setStatus(QuizStatusType.REQUEST);
+//                quizActionService.saveQuizAction(courseQuizAction);
+//            }
+//        }
+//
+//        // 설문 생성
+//        if(saveCourseAccount.getCourse().getIsSurvey().equals("Y") && saveCourseAccount.getCourse().getSurveys().size() > 0) {
+//            for (CourseSurvey courseSurvey : saveCourseAccount.getCourse().getSurveys()) {
+//                CourseSurveyAction courseSurveyAction = new CourseSurveyAction();
+//                courseSurveyAction.setCourseAccount(saveCourseAccount);
+//                courseSurveyAction.setAccount(courseAccount.getAccount());
+//                courseSurveyAction.setCourseSurvey(courseSurvey);
+//                courseSurveyAction.setQuestionCount(courseSurvey.getQuestions().size());
+//                courseSurveyAction.setStatus(SurveyStatusType.REQUEST);
+//                surveyActionService.saveSurveyAction(courseSurveyAction);
+//            }
+//        }
+//
+//        return saveCourseAccount;
+//    }
+//
+//        // 4. 부서별 신청
+//    public CourseAccount courseAccountDeptProcess(CourseAccount courseAccount) {
+//
+//        String fromDate;
+//        String toDate;
+//
+//        // 팀장/부서장 승인여부
+//        String isAppr1 = courseAccount.getCourse().getCourseMaster().getIsTeamMangerApproval();
+//        // 관리자 승인여부
+//        String isAppr2 = courseAccount.getCourse().getCourseMaster().getIsCourseMangerApproval();
+//
+//        // 교육신청
+//        courseAccount.setFWdate(DateUtil.getToday());
+//        courseAccount.setFStatus("0");
+//        courseAccount.setFCurrSeq(1);
+//
+//
+//        /*
+//        교육과정에 따른 교육 기간 설정
+//            1. 상시 교육
+//                - 교육시작일자 : 신청일자
+//                - 교육종료일자 : 과정의 교육일수로 계산
+//            2. 상시교육이 아닌 경우
+//                - 교육시작일자 : 개설과정의 교육시작일
+//                - 교육종료일자 : 개설과정의 교육종료일
+//        */
+//        if (courseAccount.getCourse().getIsAlways().equals("1")) {     // 상시교육일 경우
+//            fromDate = DateUtil.getTodayString();
+//            toDate = DateUtil.getStringDateAddDay(fromDate, course.getDay());
+//        } else {    // 상시교육이 아닌 경우
+//            fromDate = courseAccount.getCourse().getFromDate();
+//            toDate = courseAccount.getCourse().getToDate();
+//        }
+//        courseAccount.setFromDate(fromDate);
+//        courseAccount.setToDate(toDate);
+//
+//        // 결재자수 Max 설정
+//        if(isAppr1.equals("Y") && isAppr2.equals("Y")) {
+//            courseAccount.setFFinalCount(2);
+//            courseAccount.setIsApproval("1");   // 전자결재유무 0:없음, 1:있음
+//        } else if(isAppr1.equals("Y")) {
+//            courseAccount.setFFinalCount(1);
+//            courseAccount.setIsApproval("1");   // 전자결재유무 0:없음, 1:있음
+//        } else {
+//            courseAccount.setFFinalCount(0);
+//            courseAccount.setIsApproval("0");   // 전자결재유무 0:없음, 1:있음
+//            courseAccount.setFStatus("1");      // 전자결재가 없으면 완료한것으로 처리한다.
+//        }
+//
+//        courseAccount.setCourseStatus(CourseStepStatus.request);
+//
+//        // 과정 신청자 생성
+//        CourseAccount saveCourseAccount = courseAccountService.save(courseAccount);
+//
+//        // 과정 생성
+//        // TODO : 교육신청시 교육과정 생성 유무
+//
+//        // 강의 생성
+//        if(courseAccount.getCourse().getSections().size() > 0) {
+//            for (CourseSection courseSection : courseAccount.getCourse().getSections()) {
+//                CourseSectionAction courseSectionAction = new CourseSectionAction();
+//                courseSectionAction.setCourseAccount(saveCourseAccount);
+//                courseSectionAction.setAccount(saveCourseAccount.getAccount());
+//                courseSectionAction.setCourseSection(courseSection);
+//                courseSectionAction.setTotalUseSecond(0);
+//                courseSectionAction.setRunCount(0);
+//                courseSectionAction.setStatus(SectionStatusType.REQUEST);
+//                CourseSectionAction courseSectionAction1 = sectionActionService.save(courseSectionAction);
+//            }
+//        }
+//
+//        // 시험 생성
+//        if(saveCourseAccount.getCourse().getIsQuiz().equals("Y") && saveCourseAccount.getCourse().getQuizzes().size() > 0) {
+//            for (CourseQuiz courseQuiz : saveCourseAccount.getCourse().getQuizzes()) {
+//                CourseQuizAction courseQuizAction = new CourseQuizAction();
+//                courseQuizAction.setCourseAccount(saveCourseAccount);
+//                courseQuizAction.setAccount(courseAccount.getAccount());
+//                courseQuizAction.setQuiz(courseQuiz);
+//                courseQuizAction.setTotalUseSecond(0);
+//                courseQuizAction.setRunCount(0);
+//                courseQuizAction.setQuestionCount(courseQuiz.getQuizQuestions().size());
+//                courseQuizAction.setStatus(QuizStatusType.REQUEST);
+//                quizActionService.saveQuizAction(courseQuizAction);
+//            }
+//        }
+//
+//        // 설문 생성
+//        if(saveCourseAccount.getCourse().getIsSurvey().equals("Y") && saveCourseAccount.getCourse().getSurveys().size() > 0) {
+//            for (CourseSurvey courseSurvey : saveCourseAccount.getCourse().getSurveys()) {
+//                CourseSurveyAction courseSurveyAction = new CourseSurveyAction();
+//                courseSurveyAction.setCourseAccount(saveCourseAccount);
+//                courseSurveyAction.setAccount(courseAccount.getAccount());
+//                courseSurveyAction.setCourseSurvey(courseSurvey);
+//                courseSurveyAction.setQuestionCount(courseSurvey.getQuestions().size());
+//                courseSurveyAction.setStatus(SurveyStatusType.REQUEST);
+//                surveyActionService.saveSurveyAction(courseSurveyAction);
+//            }
+//        }
+//
+//        return saveCourseAccount;
+//    }
+
 
     // 과정별 교육대상자 생성
     public CourseAccount courseAccountProcess(Account account, Course course, String requestType) {
@@ -117,20 +568,11 @@ public class ApprovalCourseProcessService {
             courseAccount.setFStatus("1");      // 전자결재가 없으면 완료한것으로 처리한다.
         }
 
+        // 교육 대상자 신청인 경우는 상태를 신청상태로 변경한다.
+        courseAccount.setCourseStatus(CourseStepStatus.request);
 
-
-        // 교육 대상자 지정인 경우는 상태를 신청 대기상태로 만든다
-        if (requestType.equals("0"))
-            courseAccount.setCourseStatus(CourseStepStatus.none);
-        else {  // 교육 대상자 신청인 경우는 상태를 신청상태로 변경한다.
-            courseAccount.setCourseStatus(CourseStepStatus.request);
-        }
-
-        // 교육 신청인 경우 sleft 교육인 경우는 교육 참석유무를 참석으로 하고 교육상태를 진행상태로 변경한다.
-        if (course.getCourseMaster().getId().equals("BC0101")) {  // self
-            courseAccount.setIsAttendance("1"); // 교육참석유무(0:미참석, 1:참석) => 기본값 0
-            courseAccount.setCourseStatus(CourseStepStatus.process);
-        } else if (course.getCourseMaster().getId().equals("BC0103")) {  // self
+        // self 교육 및 부서별 교육은 승인이 없음으로 신청시 교육상태로 변경한다.
+        if (course.getCourseMaster().getId().equals("BC0101") || course.getCourseMaster().getId().equals("BC0103")) {  // self
             courseAccount.setCourseStatus(CourseStepStatus.process);
         }
 
@@ -141,6 +583,7 @@ public class ApprovalCourseProcessService {
 
     // 교육 신청 처리
     public boolean courseRequestProcess(Account account, Course course, String requestType) {
+
         // 팀장/부서장 승인여부
         String isAppr1 = course.getCourseMaster().getIsTeamMangerApproval();
         // 관리자 승인여부
@@ -151,105 +594,163 @@ public class ApprovalCourseProcessService {
         // 1: 상위결재권자가 지정되지 않음
         // 2: 관리자가 지정되지 않음
         // 9: 과정 신청 가능
-
-        if (courseAccountService.accountVerification(account.getUserId()) != 9) return false;
-
-
-        CourseAccount saveCourseAccount = courseAccountService.getByCourseIdAndUserId(course.getId(), account.getUserId());
-
-        if (saveCourseAccount == null) {
-            // 과정별 사용자 생성
-            saveCourseAccount = courseAccountProcess(account, course, requestType);
-
-            // 과정 생성
-            // TODO : 교육신청시 교육과정 생성 유무
-
-
-            // Course 마스터에 의한 사용자별 교육과정 생성
-            createUserCourse(saveCourseAccount);
-
-        }
-
+//        if (courseAccountService.accountVerification(account.getUserId()) != 9) return false;
 
         // 교육과정 대상자 지정인 경우는 대상자만 생성한후 프로세스를 종료한다.
-        if (requestType.equals("0") && !saveCourseAccount.getCourse().getCourseMaster().getId().equals("BC0101")) return true;
+        if (requestType.equals("0")) {
+            String fromDate = "";
+            String toDate = "";
 
+            // 교육신청
+            CourseAccount courseAccount = new CourseAccount();
+            courseAccount.setCourse(course);
+            courseAccount.setAccount(account);
+            courseAccount.setRequestDate(DateUtil.getTodayString());
+            courseAccount.setRequestType(requestType);        // 교육신청(0:관리자지정, 1:사용자 신청)
+            courseAccount.setFStatus("9");
+            courseAccount.setFCurrSeq(1);
+            courseAccount.setCourseStatus(CourseStepStatus.none);
 
-
-
-        // 전자결재가 있는 경우
-        if(saveCourseAccount.getIsApproval().equals("1")) {
-
-            // 내결재사항을 추가한다.
-            CourseAccountOrder courseAccountOrder = new CourseAccountOrder();
-            courseAccountOrder.setFUser(account);
-            courseAccountOrder.setSignature(signatureService.getSign(account.getUserId()));
-            courseAccountOrder.setCourseAccount(saveCourseAccount);
-
-            // fKind : 0:초기, 1:결재(팀장), 2. 합의(관리자)
-            courseAccountOrder.setFKind("1");
-            courseAccountOrder.setFStatus("1");
-            courseAccountOrder.setFSeq(0);
-            courseAccountOrder.setFNext("0");
-            courseAccountOrder.setFDate(DateUtil.getToday());
-            courseAccountOrder.setFComment("");
-            courseAccountOrderService.save(courseAccountOrder);
-
-            //courseAccount.addCourseAccountOrder(courseAccountOrderService.save(courseAccountOrder1));
-
-            Account apprAccount;
-            if (isAppr1.equals("Y")) {
-                Account apprAccount2 = userService.getAccountByUserId(account.getParentUserId());
-                CourseAccountOrder courseAccountOrder2 = new CourseAccountOrder();
-                courseAccountOrder2.setFUser(apprAccount2);
-                courseAccountOrder2.setCourseAccount(saveCourseAccount);
-                // fKind : 0:초기, 1:결재(팀장), 2. 합의(관리자)
-                courseAccountOrder2.setFKind("1");
-                courseAccountOrder2.setFStatus("0");
-                courseAccountOrder2.setFSeq(1);
-                courseAccountOrder2.setFNext("1");
-
-                courseAccountOrderService.save(courseAccountOrder2);
-
-                //courseAccount.addCourseAccountOrder(courseAccountOrderService.save(courseAccountOrder1));
-
-                // 1차 결재자 메일 전송
-                sendMail(apprAccount2, course, MailSendType.REQUEST);
+            if (course.getIsAlways().equals("1")) {     // 상시교육일 경우
+                fromDate = DateUtil.getTodayString();
+                toDate = DateUtil.getStringDateAddDay(fromDate, course.getDay());
+            } else {    // 상시교육이 아닌 경우
+                fromDate = course.getFromDate();
+                toDate = course.getToDate();
             }
 
-            if (isAppr2.equals("Y")) {
-                Account apprAccount3 = userService.getAccountByUserId(courseManagerService.getCourseManager().getUserId());
-                CourseAccountOrder courseAccountOrder3 = new CourseAccountOrder();
-                courseAccountOrder3.setFUser(apprAccount3);
-                courseAccountOrder3.setCourseAccount(saveCourseAccount);
-                // fKind : 0:초기, 1:결재(팀장), 2. 합의(관리자)
-                courseAccountOrder3.setFKind("2");
-                courseAccountOrder3.setFStatus("0");
-                courseAccountOrder3.setFSeq(2);
-
-               courseAccountOrderService.save(courseAccountOrder3);
-
-                //courseAccount.addCourseAccountOrder(courseAccountOrderService.save(courseAccountOrder1));
+            // 결재자수 Max 설정
+            if(isAppr1.equals("Y") && isAppr2.equals("Y")) {
+                courseAccount.setFFinalCount(2);
+                courseAccount.setIsApproval("1");   // 전자결재유무 0:없음, 1:있음
+            } else if(isAppr1.equals("Y")) {
+                courseAccount.setFFinalCount(1);
+                courseAccount.setIsApproval("1");   // 전자결재유무 0:없음, 1:있음
+            } else {
+                courseAccount.setFFinalCount(0);
+                courseAccount.setIsApproval("0");   // 전자결재유무 0:없음, 1:있음
             }
 
+            courseAccount.setFStatus("9");      // 신청전까지는 미진행으로 처리
+            courseAccount.setFromDate(fromDate);
+            courseAccount.setToDate(toDate);
 
-            if (saveCourseAccount.getCourse().getCourseMaster().getId().equals("BC0102") && saveCourseAccount.getCourseStatus() == CourseStepStatus.none) {
-                saveCourseAccount.setCourseStatus(CourseStepStatus.request);
-                courseAccountService.save(saveCourseAccount);
-                return true;
+            // self 교육은 참석처리를 하지 않기 때문에 미리 처리한다.
+            // 외부교육은 교육참석보고서 승인시 참석처리를 자동으로 해야 한다.
+            // class 교육 및 부서별교육은 참석처리를 관리자가 직접 한다.
+            if (course.getCourseMaster().getId().equals("BC0101")) {  // self
+                courseAccount.setIsAttendance("1"); // 교육참석유무(0:미참석, 1:참석) => 기본값 0
             }
+
+//            courseAccount = courseAccountService.save(courseAccount);
+            // 교육 과정 생성
+            createUserCourse(courseAccountService.save(courseAccount));
 
         } else {
 
 
-            // self외 교육은 전자결재가 없는 경우 (시험, 설문, 수료증)이 없으면 교육을 종결시킨다.
-            if (course.getSections() == null & course.getIsQuiz().equals("N") && course.getIsSurvey().equals("N") && course.getIsCerti().equals("N")) {
-                saveCourseAccount.setCourseStatus(CourseStepStatus.complete);
-                courseAccountService.save(saveCourseAccount);
-            } else {
+            CourseAccount saveCourseAccount = courseAccountService.getByCourseIdAndUserId(course.getId(), account.getUserId());
+            if (saveCourseAccount == null) saveCourseAccount = courseAccountProcess(account, course, requestType);
+
+            saveCourseAccount.setFWdate(DateUtil.getTodayDate());
+            saveCourseAccount.setRequestDate(DateUtil.getTodayString());
+            saveCourseAccount.setRequestType(requestType);
+
+
+//            // 교육 신청인 경우 sleft 교육인 경우는 교육 참석유무를 참석으로 하고 교육상태를 진행상태로 변경한다.
+//            if (course.getCourseMaster().getId().equals("BC0101")) {  // self
+//                courseAccount = courseAccountSelfProcess(courseAccount);
+//            } else if (course.getCourseMaster().getId().equals("BC0102")) {  // class 교육
+//                courseAccount = courseAccountClassProcess(courseAccount);
+//            } else if (course.getCourseMaster().getId().equals("BC0103")) {  // 외부교육
+//                courseAccount = courseAccountOtherProcess(courseAccount);
+//            } else if (course.getCourseMaster().getId().equals("BC0104")) {  // 부서별교육
+//                courseAccount = courseAccountDeptProcess(courseAccount);
+//            }
+
+            // 전자결재가 있는 경우
+            if (saveCourseAccount.getIsApproval().equals("1")) {
+
+                // 전자결재가 있는경우 진행 상태로 변경한다.
+                saveCourseAccount.setFStatus("0");
+
+                // 내결재사항을 추가한다.
+                CourseAccountOrder courseAccountOrder = new CourseAccountOrder();
+                courseAccountOrder.setFUser(account);
+                courseAccountOrder.setSignature(signatureService.getSign(account.getUserId()));
+                courseAccountOrder.setCourseAccount(saveCourseAccount);
+
+                // fKind : 0:초기, 1:결재(팀장), 2. 합의(관리자)
+                courseAccountOrder.setFKind("1");
+                courseAccountOrder.setFStatus("1");
+                courseAccountOrder.setFSeq(0);
+                courseAccountOrder.setFNext("0");
+                courseAccountOrder.setFDate(DateUtil.getToday());
+                courseAccountOrder.setFComment("");
+                courseAccountOrderService.save(courseAccountOrder);
+
+                //courseAccount.addCourseAccountOrder(courseAccountOrderService.save(courseAccountOrder1));
+
+                Account apprAccount;
+                if (isAppr1.equals("Y")) {
+                    Account apprAccount2 = userService.getAccountByUserId(account.getParentUserId());
+                    CourseAccountOrder courseAccountOrder2 = new CourseAccountOrder();
+                    courseAccountOrder2.setFUser(apprAccount2);
+                    courseAccountOrder2.setCourseAccount(saveCourseAccount);
+                    // fKind : 0:초기, 1:결재(팀장), 2. 합의(관리자)
+                    courseAccountOrder2.setFKind("1");
+                    courseAccountOrder2.setFStatus("0");
+                    courseAccountOrder2.setFSeq(1);
+                    courseAccountOrder2.setFNext("1");
+
+                    courseAccountOrderService.save(courseAccountOrder2);
+
+                    //courseAccount.addCourseAccountOrder(courseAccountOrderService.save(courseAccountOrder1));
+
+                    // 1차 결재자 메일 전송
+                    sendMail(apprAccount2, course, MailSendType.REQUEST);
+                }
+
+                if (isAppr2.equals("Y")) {
+                    Account apprAccount3 = userService.getAccountByUserId(courseManagerService.getCourseManager().getUserId());
+                    CourseAccountOrder courseAccountOrder3 = new CourseAccountOrder();
+                    courseAccountOrder3.setFUser(apprAccount3);
+                    courseAccountOrder3.setCourseAccount(saveCourseAccount);
+                    // fKind : 0:초기, 1:결재(팀장), 2. 합의(관리자)
+                    courseAccountOrder3.setFKind("2");
+                    courseAccountOrder3.setFStatus("0");
+                    courseAccountOrder3.setFSeq(2);
+
+                    courseAccountOrderService.save(courseAccountOrder3);
+
+                    //courseAccount.addCourseAccountOrder(courseAccountOrderService.save(courseAccountOrder1));
+
+                }
+
+                // 전자결재가 있는 경우는 교육상태를 request 상태로 변경한다.
+                saveCourseAccount.setCourseStatus(CourseStepStatus.request);
+
+            } else {    // 전자결재가 없는 경우 교육을 진행상태로 변경한다.
                 saveCourseAccount.setCourseStatus(CourseStepStatus.process);
-                courseAccountService.save(saveCourseAccount);
+
+                // self 교육이고 전자결재가 없고 (시험, 설문)이 없으면 교육을 종결시킨다.
+//                if (course.getCourseMaster().getId().equals("BC0101") && course.getSections() != null && course.getIsQuiz().equals("N") && course.getIsSurvey().equals("N")) {
+//                    saveCourseAccount.setCourseStatus(CourseStepStatus.complete);
+//                    saveCourseAccount.setIsAttendance("1");
+//                    saveCourseAccount.setIsCommit("1");
+//
+//                    // 수료증 발급여부가 Y이면 발행한다.
+//                    if (course.getIsCerti().equals("Y")) {
+//                        String certificateNo = courseCertificateService.newCertificateNumber(saveCourseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), saveCourseAccount).getFullNumber();
+//                        saveCourseAccount.setCertificateNo(certificateNo);
+//                    }
+//                }
             }
+
+            courseAccountService.save(saveCourseAccount);
+
+
+
         }
 
        // 과정 결재 정보 생성

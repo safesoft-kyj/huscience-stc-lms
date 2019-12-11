@@ -58,7 +58,7 @@ public class CourseSurveyAdminController {
         String isAdd = course.getIsSurvey();
 
         pageInfo.setPageId("m-course-list-page");
-        pageInfo.setPageTitle("설문");
+        pageInfo.setPageTitle("<a href='/admin/course/list/" + course.getCourseMaster().getId() + "'>" + course.getCourseMaster().getCourseName() + "</a> > 설문");
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courseSurveyService.getAllByCourseId(courseId));
         model.addAttribute("isAdd", isAdd);

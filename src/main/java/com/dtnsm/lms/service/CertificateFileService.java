@@ -2,6 +2,7 @@ package com.dtnsm.lms.service;
 
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.Account;
+import com.dtnsm.lms.domain.Border;
 import com.dtnsm.lms.domain.CertificateFile;
 import com.dtnsm.lms.exception.FileDownloadException;
 import com.dtnsm.lms.exception.FileUploadException;
@@ -12,6 +13,10 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,6 +52,20 @@ public class CertificateFileService {
         }catch(Exception e) {
             throw new FileUploadException("파일을 업로드할 디렉토리를 생성하지 못했습니다.", e);
         }
+    }
+
+
+    public List<CertificateFile> getAllByUserId(String userId) {
+        return fileRepository.findAllByAccount_UserId(userId);
+    }
+
+    public Page<CertificateFile> getAllByUserId(String userId, Pageable pageable) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+
+        return fileRepository.findAllByAccount_UserId(userId, pageable);
     }
 
     public CertificateFile storeFile(MultipartFile file) {

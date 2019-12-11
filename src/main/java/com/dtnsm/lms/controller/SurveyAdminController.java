@@ -133,6 +133,7 @@ public class SurveyAdminController {
 
         survey.setSurveyFiles(oldSurvey.getSurveyFiles());
         survey.setSurveyQuestions(oldSurvey.getSurveyQuestions());
+        survey.setIsActive(oldSurvey.getIsActive());
 
         Survey survey1 = surveyService.saveSurvey(survey);
 

@@ -81,7 +81,7 @@ public class CertificateNumberController {
         pageInfo.setPageId("m-course-edit");
         pageInfo.setPageTitle("수료증정보");
         model.addAttribute(pageInfo);
-        model.addAttribute("border", courseCertificateNumberRepository.getOne(id));
+        model.addAttribute("border", courseCertificateNumberRepository.findById(id).get());
 
         return "admin/certificate/number/edit";
     }
@@ -100,7 +100,7 @@ public class CertificateNumberController {
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable("id") int id) {
 
-        CourseCertificateNumber courseCertificateNumber = courseCertificateNumberRepository.getOne(id);
+        CourseCertificateNumber courseCertificateNumber = courseCertificateNumberRepository.findById(id).get();
 
         courseCertificateNumberRepository.delete(courseCertificateNumber);
 

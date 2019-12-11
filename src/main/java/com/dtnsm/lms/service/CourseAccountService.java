@@ -85,6 +85,10 @@ public class CourseAccountService {
         return courseAccountRepository.findByCourse_IdAndAccount_UserId(courseId, userId);
     }
 
+    public CourseAccount getByCourseIdAndUserIdAndRequestType(long courseId, String userId, String requestType) {
+        return courseAccountRepository.findByCourse_IdAndAccount_UserIdAndRequestType(courseId, userId, requestType);
+    }
+
     public CourseAccount getByCourseIdAndUserIdAndCourseStatus(long courseId, String userId, CourseStepStatus courseStepStatus) {
         return courseAccountRepository.findByCourse_IdAndAccount_UserIdAndCourseStatus(courseId, userId, courseStepStatus);
     }

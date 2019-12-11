@@ -90,7 +90,7 @@ public class CertificateInfoController {
         pageInfo.setPageId("m-course-edit");
         pageInfo.setPageTitle("수료증정보");
         model.addAttribute(pageInfo);
-        model.addAttribute("certiInfo", courseCertificateInfoRepository.getOne(id));
+        model.addAttribute("certiInfo", courseCertificateInfoRepository.findById(id).get());
         model.addAttribute("managerList", userService.getAccountList());
 
         return "admin/certificate/info/edit";
@@ -103,10 +103,10 @@ public class CertificateInfoController {
             return "admin/certificate/info/edit";
         }
 
-        CourseCertificateInfo oldCourseCertificateInfo = courseCertificateInfoRepository.getOne(id);
+        CourseCertificateInfo oldCourseCertificateInfo = courseCertificateInfoRepository.findById(id).get();
         courseCertificateInfo.setIsActive(oldCourseCertificateInfo.getIsActive());
 
-        courseCertificateInfoRepository.save(courseCertificateInfo);
+        CourseCertificateInfo newCourseCertificateInfo1 = courseCertificateInfoRepository.save(courseCertificateInfo);
 
         return "redirect:/admin/certificate/info/list";
     }
@@ -114,7 +114,7 @@ public class CertificateInfoController {
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable("id") int id) {
 
-        CourseCertificateInfo courseCertificateInfo = courseCertificateInfoRepository.getOne(id);
+        CourseCertificateInfo courseCertificateInfo = courseCertificateInfoRepository.findById(id).get();
 
         courseCertificateInfoRepository.delete(courseCertificateInfo);
 
@@ -130,8 +130,8 @@ public class CertificateInfoController {
             courseCertificateInfoRepository.save(courseCertificateInfo);
         }
 
-        // 요청된 설문을 기본 설문으로 변경한다.
-        CourseCertificateInfo courseCertificateInfo = courseCertificateInfoRepository.getOne(id);
+        // 기본을 변경
+        CourseCertificateInfo courseCertificateInfo = courseCertificateInfoRepository.findById(id).get();
         courseCertificateInfo.setIsActive(1);
         courseCertificateInfoRepository.save(courseCertificateInfo);
 
