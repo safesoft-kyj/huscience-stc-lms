@@ -75,24 +75,31 @@
                                 <tr>
                                     <th class="text-center col-sm-1" th:text="#{label.no}">번호</th>
                                     <th class="text-center" th:text="#{label.subject}">제목</th>
-                                    <th class="text-center col-sm-1" th:text="#{label.notice}"></th>
+                                    <th class="text-center col-sm-1">! <i class="ion-paperclip"></i></th>
+                                    <th class="text-center col-sm-2" th:text="#{label.createby}">작성자</th>
                                     <th class="text-center col-sm-2" th:text="#{label.createdate}">등록일</th>
-                                    <th class="text-center col-sm-2" th:text="#{label.createby}">이름</th>
                                     <th class="text-center col-sm-1" th:text="#{label.readcount}">조회수</th>
                                     <th class="text-center col-sm-2" th:text="#{label.edit}"></th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="border, index : ${borders}">
-                                    <td th:text="${index.count}" class="text-center"></td>
-                                    <td><a th:href="@{/admin/border/view/{id}(id=${border.getId()})}" th:text="${border.getTitle()}">Edit</a></td>
+                                <tr th:each="border, index : ${borders}" th:class="${border.getIsNotice().equals('1')} ? 'text-success'">
+                                    <td th:text="${borders.getTotalElements() - index.index}" class="text-center"></td>
+                                    <td><a th:href="@{/admin/border/view/{id}(id=${border.getId()})}" th:text="${border.getTitle()}" th:class="${border.getIsNotice().equals('1')} ? 'text-success' : 'text-info'">Edit</a></td>
                                     <td  class="text-center">
-                                        <span th:if="${#strings.equalsIgnoreCase(border.isNotice, '1')}">!</span>
-                                        <div th:if="${border.getBorderFiles().size() > 0}" class="demo-icon"><i class="ion-paperclip"></i><span></span></div>
+                                        <span th:if="${#strings.equalsIgnoreCase(border.isNotice, '1')}" clsss="text-success">!</span>
+                                        <span th:if="${border.getBorderFiles().size() > 0}" class="demo-icon"><i class="ion-paperclip"></i><span></span></span>
                                     </td>
-                                    <td th:text="${border.getCreatedBy()}" class="text-center"></td>
-                                    <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy-MM-dd')} : ${border.getCreatedDate()}" class="text-center"></td>
-                                    <td th:text="${border.getViewCnt()}" class="text-center"></td>
+                                    <td th:text="${border.getAccount().getName()}" class="text-center"></td>
+                                    <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy-MM-dd HH:mm:ss')} : ${border.getCreatedDate()}" class="text-center"></td>
+                                    <td class="text-center">
+                                        <th:block th:if="${border.getViewCnt() > 0}">
+                                            <a href="#" th:onclick="|javascript:displayModel('${border.getId()}');|" id="modal-show"><span class="badge badge-default" th:text="${border.getViewCnt()}"></span></a>
+                                        </th:block>
+                                        <th:block th:unless="${border.getViewCnt() > 0}">
+                                            <span class="badge badge-default" th:text="${border.getViewCnt()}"></span>
+                                        </th:block>
+                                    </td>
                                     <td class="text-center">
                                         <a th:text="#{label.edit}" th:href="@{/admin/border/edit/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
                                         <a th:text="#{label.delete}" th:href="@{/admin/border/delete/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
@@ -106,12 +113,66 @@
 
                 </div><!--panel-body End -->
             </div><!-- panel End -->
+
+            <!--Default Bootstrap Modal-->
+            <!--===================================================-->
+            <div class="modal fade" id="demo-default-modal" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <!--Modal header-->
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                            <h4 class="modal-title">조회자 목록</h4>
+                        </div>
+
+                        <!--Modal body-->
+                        <div class="modal-body">
+                            <div id="borderViewList"></div>
+                        </div>
+
+                        <!--Modal footer-->
+                        <div class="modal-footer">
+                            <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+                            <!--                            <button class="btn btn-primary">Save changes</button>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div><!-- Page content End -->
     </div><!-- Content container End -->
 </th:block>
 
 <th:block layout:fragment="custom_js">
 
+    <script>
+        // 게시판 읽은 사람을 조회 한다.
+        function displayModel(borderId) {
+
+            var url = "/api/border/borderViewAccountList";
+
+            // View Account List
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {
+                    'borderId': borderId
+                },
+                // dataType: 'JSON',
+                async: false,
+                success: function (data) {
+
+                    $('#borderViewList').html(data);
+
+                    $("#demo-default-modal").modal()
+                },
+                error: function (e) {
+                }
+            });
+        }
+
+    </script>
 </th:block>
 
 </html>

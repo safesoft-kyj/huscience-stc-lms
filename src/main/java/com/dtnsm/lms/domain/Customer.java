@@ -29,4 +29,9 @@ public class Customer extends AuditorEntity<String> {
     @ColumnDefault("0")
     private int viewCnt;
 
+    // 작성자
+    @ManyToOne
+    @JoinColumn(name = "user_id",columnDefinition="VARCHAR(30)")
+    private Account account;
+
 }

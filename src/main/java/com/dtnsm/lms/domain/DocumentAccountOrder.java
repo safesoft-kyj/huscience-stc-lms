@@ -50,6 +50,6 @@ public class DocumentAccountOrder extends AuditorEntity<String> {
     private String fnStatus = "0";
 
     @ManyToOne
-    @JoinColumn(name = "doc_no")
+    @JoinColumn(name = "document_id")
     private Document document;
 }

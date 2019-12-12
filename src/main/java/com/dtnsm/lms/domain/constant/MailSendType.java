@@ -1,9 +1,9 @@
 package com.dtnsm.lms.domain.constant;
 
 public enum MailSendType {
+    ACCOUNT_ASSIGN("필수교육대상자지정"),    // 필수교육대상자 지정 메일
     REQUEST("신청 메일"),           // 신청메일
-    APPROVAL1("1차 승인 메일"),     // 1차승인메일
-    APPROVAL2("2차 승인 메일"),     // 2차승인메일
+    APPROVAL("승인 메일"),     // 승인메일
     REJECT("기각 메일");     // 기각 메일
 
     private String label;

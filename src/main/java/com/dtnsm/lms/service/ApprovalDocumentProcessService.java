@@ -6,8 +6,9 @@ import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.domain.Document;
 import com.dtnsm.lms.domain.DocumentAccountOrder;
 import com.dtnsm.lms.domain.constant.CourseStepStatus;
-import com.dtnsm.lms.domain.constant.MailSendType;
+import com.dtnsm.lms.domain.constant.LmsAlarmCourseType;
 import com.dtnsm.lms.util.DateUtil;
+import com.dtnsm.lms.util.MessageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -107,7 +108,7 @@ public class ApprovalDocumentProcessService {
             documentAccountOrderService.save(documentAccountOrder2);
 
             // 1차 결재자 메일 전송
-            sendMail(apprAccount2, document, MailSendType.REQUEST);
+            MessageUtil.sendMail(LmsAlarmCourseType.Request, apprAccount2, document);
         }
 
         if (isAppr2.equals("Y")) {
@@ -173,7 +174,9 @@ public class ApprovalDocumentProcessService {
             }
 
             // 최종 승인이면 기안자에게 메일 전송
-            sendMail(document.getAccount(), document1, MailSendType.APPROVAL1);
+            MessageUtil.sendMail(LmsAlarmCourseType.Approval, document.getAccount(), document1);
+
+
         } else {
             DocumentAccountOrder nextOrder = documentAccountOrderService.getByFnoAndSeq(documentAccountOrder.getDocument().getId(), documentAccountOrder.getFnSeq()+1);
             if (nextOrder != null) {
@@ -185,7 +188,7 @@ public class ApprovalDocumentProcessService {
                 document.setFnCurrSeq(nextOrder.getFnSeq());
                 documentService.save(document);
 
-                sendMail(nextOrder.getFnUser(), document, MailSendType.APPROVAL1);
+                MessageUtil.sendMail(LmsAlarmCourseType.Approval, nextOrder.getFnUser(), document);
             }
         }
     }
@@ -209,7 +212,7 @@ public class ApprovalDocumentProcessService {
         documentService.save(document);
 
         // 기안자에게 메일 전송
-        sendMail(document.getAccount(), document, MailSendType.REJECT);
+        MessageUtil.sendMail(LmsAlarmCourseType.Reject, document.getAccount(), document);
     }
 
     // 전자결재 2차 승인 처리
@@ -253,7 +256,9 @@ public class ApprovalDocumentProcessService {
             }
 
             // 최종 승인이면 기안자에게 메일 전송
-            sendMail(document.getAccount(), document1, MailSendType.APPROVAL2);
+            MessageUtil.sendMail(LmsAlarmCourseType.Approval, document.getAccount(), document1);
+
+
         } else {
             DocumentAccountOrder nextOrder = documentAccountOrderService.getByFnoAndSeq(documentAccountOrder.getDocument().getId(), documentAccountOrder.getFnSeq()+1);
             if (nextOrder != null) {
@@ -265,7 +270,8 @@ public class ApprovalDocumentProcessService {
                 document.setFnCurrSeq(nextOrder.getFnSeq());
                 documentService.save(document);
 
-                sendMail(nextOrder.getFnUser(), document, MailSendType.APPROVAL2);
+                // 알람 및 메일 전송
+                MessageUtil.sendMail(LmsAlarmCourseType.Approval, nextOrder.getFnUser(), document);
             }
         }
     }
@@ -289,17 +295,17 @@ public class ApprovalDocumentProcessService {
         documentService.save(document);
 
         // 기안자에게 메일 전송
-        sendMail(document.getAccount(), document, MailSendType.REJECT);
+        MessageUtil.sendMail(LmsAlarmCourseType.Reject, document.getAccount(), document);
     }
 
 
     // 전자결재 메일 전송
-    public void sendMail(Account account, Document document, MailSendType mailSendType) {
-
-        Mail mail = new Mail();
-        mail.setEmail(account.getEmail());      // Email
-        mail.setObject(document.getTitle());      // Subject
-        mail.setMessage(document.getContent());   // Content
-        mailService.send(mail, mailSendType);
-    }
+//    public void sendMail(Account account, Document document, MailSendType mailSendType) {
+//
+//        Mail mail = new Mail();
+//        mail.setEmail(account.getEmail());      // Email
+//        mail.setObject(document.getTitle());      // Subject
+//        mail.setMessage(document.getContent());   // Content
+//        mailService.send(mail, mailSendType);
+//    }
 }

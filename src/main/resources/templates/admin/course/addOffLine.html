@@ -61,6 +61,8 @@
                             <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
                         </div>
 
+                        <!-- 부서별교육 : BC0103, 외부교육: BC0104 은 신청기간이 없어 보이지 않게 처리 -->
+                        <th:block th:if="${#strings.equalsIgnoreCase(course.getCourseMaster().getId(), 'BC0102')}">
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="title" th:text="#{label.course.requesperiod}">신청기간</label>
                             <div class="col-sm-10">
@@ -75,6 +77,8 @@
                                 </div>
                             </div>
                         </div>
+                        </th:block>
+
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="title" th:text="#{label.course.period}">교육기간</label>
                             <div class="col-sm-10">
@@ -162,11 +166,15 @@
                             </div>
                             <span th:if="${#fields.hasErrors('isSurvey')}" th:errors="*{isSurvey}"></span>
                         </div>
-                        <th:block th:if="${survey != null}">
-                        <div class="form-group" style="display: none" id="survey-detail">
-                            <label class="col-sm-2 control-label text-info">설정 설문</label>
-                            <label class="col-sm-10 control-label text-warning text-left" th:text="${survey.getName()}"></label>
-                        </div>
+                        <th:block th:if="${surveys != null}">
+                            <div class="form-group" style="display: none" id="survey-detail">
+                                <label class="col-sm-2 control-label">설문선택</label>
+                                <div class="col-sm-10">
+                                    <select  class="form-control" name="activeSurvey">
+                                        <option th:each="survey : ${surveys}" th:value="${survey.getId()}" th:text="${survey.getName()}"></option>
+                                    </select>
+                                </div>
+                            </div>
                         </th:block>
                         <div class="form-group">
                             <label class="col-sm-2 control-label" th:text="#{label.course.iscerti}">수료증여부</label>

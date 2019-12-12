@@ -58,12 +58,19 @@
                             <td><span th:text="${border.getTitle()}"></span></td>
                         </tr>
                         <tr>
+                            <th><span th:text="#{label.createby}"></span></th>
+                            <td th:text="${border.getAccount().getName()}" class="text-left"></td>
+                        </tr>
+                        <tr>
                             <th><span th:text="#{label.createdate}"></span></th>
-                            <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy-MM-dd')} : ${border.getCreatedDate()}" class="text-left"></td>
+                            <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy-MM-dd HH:mm:ss')} : ${border.getCreatedDate()}" class="text-left"></td>
                         </tr>
                         <tr>
                             <th><span th:text="#{label.readcount}"></span></th>
-                            <td th:text="${border.getViewCnt()}"></td>
+                            <td class="text-left">
+                                <a href="#" th:onclick="|javascript:displayModel('${border.getId()}');|" id="modal-show"><span class="badge badge-default" th:text="${border.getViewCnt()}"></span></a>
+                            </td>
+
                         </tr>
                         <tr>
                             <th><span th:text="#{label.file}"></span></th>
@@ -88,13 +95,67 @@
                     </div>
                 </div><!--panel-body End -->
             </div><!-- panel End -->
+
+
+            <!--Default Bootstrap Modal-->
+            <!--===================================================-->
+            <div class="modal fade" id="demo-default-modal" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <!--Modal header-->
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                            <h4 class="modal-title">조회자 목록</h4>
+                        </div>
+
+                        <!--Modal body-->
+                        <div class="modal-body">
+                            <div id="borderViewList"></div>
+                        </div>
+
+                        <!--Modal footer-->
+                        <div class="modal-footer">
+                            <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+                            <!--                            <button class="btn btn-primary">Save changes</button>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div><!-- Page content End -->
     </div><!-- Content container End -->
 </th:block>
 
 <th:block layout:fragment="custom_js">
-</th:block>
 
+    <script>
+        // 게시판 읽은 사람을 조회 한다.
+        function displayModel(borderId) {
+
+            var url = "/api/border/borderViewAccountList";
+
+            // View Account List
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {
+                    'borderId': borderId
+                },
+                // dataType: 'JSON',
+                async: false,
+                success: function (data) {
+                    $('#borderViewList').html(data);
+
+                    $("#demo-default-modal").modal()
+                },
+                error: function (e) {
+                }
+            });
+        }
+
+    </script>
+</th:block>
 </html>
 
 

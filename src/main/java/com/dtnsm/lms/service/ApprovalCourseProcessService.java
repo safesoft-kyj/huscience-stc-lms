@@ -6,6 +6,7 @@ import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.*;
 import com.dtnsm.lms.repository.CourseAccountRepository;
 import com.dtnsm.lms.util.DateUtil;
+import com.dtnsm.lms.util.MessageUtil;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,9 @@ public class ApprovalCourseProcessService {
 
     @Autowired
     CourseCertificateService courseCertificateService;
+
+    @Autowired
+    private LmsNotificationService lmsNotificationService;
 
 //    public void courseRequestProcess(Account account, Course course) {
 //        Account apprAccount = userService.getAccountByUserId(account.getParentUserId());
@@ -644,8 +648,10 @@ public class ApprovalCourseProcessService {
             // 교육 과정 생성
             createUserCourse(courseAccountService.save(courseAccount));
 
-        } else {
+            // 알람 및 메세지 전송
+            MessageUtil.sendNotificationMessage(LmsAlarmCourseType.CourseAccountAssign, account, course, "<a href='/mypage/main'>교육현황 바로가기</a>");
 
+        } else {
 
             CourseAccount saveCourseAccount = courseAccountService.getByCourseIdAndUserId(course.getId(), account.getUserId());
             if (saveCourseAccount == null) saveCourseAccount = courseAccountProcess(account, course, requestType);
@@ -705,8 +711,8 @@ public class ApprovalCourseProcessService {
 
                     //courseAccount.addCourseAccountOrder(courseAccountOrderService.save(courseAccountOrder1));
 
-                    // 1차 결재자 메일 전송
-                    sendMail(apprAccount2, course, MailSendType.REQUEST);
+                    // 알람 및 메세지 전송
+                    MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Request, apprAccount2, course);
                 }
 
                 if (isAppr2.equals("Y")) {
@@ -720,9 +726,6 @@ public class ApprovalCourseProcessService {
                     courseAccountOrder3.setFnSeq(2);
 
                     courseAccountOrderService.save(courseAccountOrder3);
-
-                    //courseAccount.addCourseAccountOrder(courseAccountOrderService.save(courseAccountOrder1));
-
                 }
 
                 // 전자결재가 있는 경우는 교육상태를 request 상태로 변경한다.
@@ -746,9 +749,6 @@ public class ApprovalCourseProcessService {
             }
 
             courseAccountService.save(saveCourseAccount);
-
-
-
         }
 
        // 과정 결재 정보 생성
@@ -882,7 +882,8 @@ public class ApprovalCourseProcessService {
             courseAccountService.save(courseAccount);
 
             // 최종 승인이면 기안자에게 메일 전송
-            sendMail(courseAccount.getAccount(), courseAccount.getCourse(), MailSendType.APPROVAL1);
+            MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Approval, courseAccount.getAccount(), courseAccount.getCourse());
+
         } else {
             CourseAccountOrder nextOrder = courseAccountOrderService.getByFnoAndSeq(courseAccountOrder.getCourseAccount().getId(), courseAccountOrder.getFnSeq()+1);
             if (nextOrder != null) {
@@ -894,7 +895,8 @@ public class ApprovalCourseProcessService {
                 courseAccount.setFnCurrSeq(nextOrder.getFnSeq());
                 courseAccountService.save(courseAccount);
 
-                sendMail(nextOrder.getFnUser(), courseAccount.getCourse(), MailSendType.APPROVAL1);
+                // 알람 및 메세지 전송
+                MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Approval, nextOrder.getFnUser(), courseAccount.getCourse());
             }
         }
     }
@@ -919,9 +921,8 @@ public class ApprovalCourseProcessService {
 
         courseAccountService.save(courseAccount);
 
-        // 기안자에게 메일 전송
-        sendMail(courseAccount.getAccount(), courseAccount.getCourse(), MailSendType.REJECT);
-
+        // 알람 및 메세지 전송
+        MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Reject, courseAccount.getAccount(), courseAccount.getCourse());
 
 //        if(finalCount == 1) {   // 종결처리
 //            //  승인: 1, 기각 : 2
@@ -962,7 +963,8 @@ public class ApprovalCourseProcessService {
 
 
             // 최종 승인이면 기안자에게 메일 전송
-            sendMail(courseAccount.getAccount(), courseAccount.getCourse(), MailSendType.APPROVAL2);
+            MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Approval, courseAccount.getAccount(), courseAccount.getCourse());
+
         } else {
 
             CourseAccountOrder nextOrder = courseAccountOrderService.getByFnoAndSeq(courseAccountOrder.getCourseAccount().getId(), courseAccountOrder.getFnSeq()+1);
@@ -974,7 +976,8 @@ public class ApprovalCourseProcessService {
                 courseAccount.setFnCurrSeq(nextOrder.getFnSeq());
                 courseAccountService.save(courseAccount);
 
-                sendMail(nextOrder.getFnUser(), courseAccount.getCourse(), MailSendType.APPROVAL2);
+                // 알람 및 메세지 전송
+                MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Approval, nextOrder.getFnUser(), courseAccount.getCourse());
             }
         }
     }
@@ -999,8 +1002,9 @@ public class ApprovalCourseProcessService {
 
         courseAccountService.save(courseAccount);
 
-        // 기안자에게 메일 전송
-        sendMail(courseAccount.getAccount(), courseAccount.getCourse(), MailSendType.REJECT);
+        // 기안자에게 알람 및 메세지 전송
+        MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Reject, courseAccount.getAccount(), courseAccount.getCourse());
+
 
 //        if(finalCount == 2) {   // 종결처리
 //            //  승인: 1, 기각 : 2
@@ -1022,13 +1026,24 @@ public class ApprovalCourseProcessService {
 //        }
     }
 
-    // 교육과정 메일 전송
-    public void sendMail(Account account, Course course, MailSendType mailSendType) {
-        Mail mail = new Mail();
-        mail.setEmail(account.getEmail());      // Email
-        mail.setObject(course.getTitle());      // Subject
-        mail.setMessage(course.getContent());   // Content
-        mailService.send(mail, mailSendType);
 
-    }
+
+
+
+//    public void sendNotificate(Account account, Course course, LmsAlarmCourseType lmsAlarmCourseType) {
+//        Mail mail = new Mail();
+//        mail.setEmail(account.getEmail());      // Email
+//        mail.setObject(course.getTitle());      // Subject
+//        mail.setMessage(course.getContent());   // Content
+//        mailService.send(mail, lmsAlarmCourseType);
+//    }
+//
+//    // 교육과정 메일 전송
+//    public void sendMail(Account account, Course course, LmsAlarmCourseType lmsAlarmCourseType) {
+//        Mail mail = new Mail();
+//        mail.setEmail(account.getEmail());      // Email
+//        mail.setObject(course.getTitle());      // Subject
+//        mail.setMessage(course.getContent());   // Content
+//        mailService.send(mail, lmsAlarmCourseType);
+//    }
 }

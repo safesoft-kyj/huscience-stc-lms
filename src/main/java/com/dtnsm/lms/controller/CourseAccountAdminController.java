@@ -104,17 +104,21 @@ public class CourseAccountAdminController {
 
                 List<Account> accountList = new ArrayList<>();
 
+                // 과정 신청이 가능하면
                 if (result == 9) {
 
                     // 요청 프로세서를 실행(요청 결재 및 강의를 생성한다)
                     // 교육 신청 처리(requestType 0:관리자 지정, 1:신청)
                     approvalCourseProcessService.courseRequestProcess(account, course, "0");
+
+                    // 교육수강생으로 등록되 사용자에게 메일 및 알림 서비스 실행
+
+
                 } else {
+                    // TODO : 과정신청 실패시 메세지 처리 필요
+                    // 실패된 사용자에 대한 처리
                     accountList.add(account);
                 }
-
-                // TODO : 과정신청 실패시 메세지 처리 필요
-//                approvalCourseProcessService.courseRequestProcess(account, course, "0", fromDate, toDate);
             }
         }
         return "redirect:/admin/course/account/list/" + courseId;

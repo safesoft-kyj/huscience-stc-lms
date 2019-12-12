@@ -53,19 +53,19 @@
                                     <th th:text="#{label.customer.date}" class="min-tablet">협약체결일자</th>
                                     <th th:text="#{label.customer.condition}" class="min-desktop">협약 특혜</th>
                                     <th th:text="#{label.homepage}">홈페이지</th>
-<!--                                    <th th:text="#{label.createby}">등록자</th>-->
-<!--                                    <th th:text="#{label.createdate}">등록일</th>-->
+                                    <th th:text="#{label.createby}">작성자</th>
+                                    <th th:text="#{label.createdate}">작성일</th>
                                     <th th:text="#{label.edit}">Edit</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="customer : ${customers}">
-                                    <td th:text="${customer.getName()}"></td>
+                                    <td><a th:href="@{/customer/view/{id}(id=${customer.getId()})}" th:text="${customer.getName()}"></a></td>
                                     <td th:text="${customer.getCondate()}"></td>
                                     <td th:text="${customer.getCondition()}"></td>
                                     <td><a th:href="${customer.homepage}" target="_blank"><span th:text="${customer.homepage}"></span></a></td>
-<!--                                    <td th:text="${customer.getCreatedBy()}"></td>-->
-<!--                                    <td th:text="${customer.getCreatedDate()} ? ${#dates.format(customer.getCreatedDate(), 'yyyy/MM/dd HH:mm')} : ${customer.getCreatedDate()}"></td>-->
+                                    <td th:text="${customer.getAccount().getName()}"></td>
+                                    <td th:text="${customer.getCreatedDate()} ? ${#dates.format(customer.getCreatedDate(), 'yyyy/MM/dd HH:mm:ss')} : ${customer.getCreatedDate()}"></td>
                                     <td>
                                         <div class="form-inline">
                                             <a th:text="#{label.edit}" th:href="@{/admin/customer/edit/{id}(id=${customer.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>

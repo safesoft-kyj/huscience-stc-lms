@@ -9,6 +9,7 @@ import com.dtnsm.lms.service.BorderService;
 import com.dtnsm.lms.service.FileService;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
+import com.dtnsm.lms.util.SessionUtil;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -94,11 +95,8 @@ public class BorderController {
     @GetMapping("/view/{id}")
     public String viewPage(@PathVariable("id") long id, Model model) {
 
-        oldBorder = borderService.getBorderById(id);
-
-        oldBorder.setViewCnt(oldBorder.getViewCnt() + 1);
-
-        Border border= borderService.save(oldBorder);
+        Border border = borderService.getBorderById(id);
+        borderService.updateViewCnt(id, SessionUtil.getUserId());
 
         pageInfo.setPageTitle(border.getBorderMaster().getBorderName());
 

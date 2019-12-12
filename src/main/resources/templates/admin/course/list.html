@@ -68,9 +68,11 @@
                                     <tr style="background: #FAFAFA;">
                                         <th class="text-center" th:text="#{label.no}">번호</th>
                                         <th class="text-center" th:text="#{label.subject}">제목</th>
-                                        <th class="text-center col-sm-1">신청기간</th>
+                                        <th:block th:if="${#strings.equalsIgnoreCase(typeId, 'BC0101') or #strings.equalsIgnoreCase(typeId, 'BC0102')}">
+                                            <th class="text-center col-sm-1" th:text="#{label.status}">상태</th>
+                                            <th class="text-center col-sm-1">신청기간</th>
+                                        </th:block>
                                         <th class="text-center col-sm-1">교육기간</th>
-                                        <th class="text-center col-sm-1" th:text="#{label.status}">상태</th>
                                         <th class="text-center col-sm-1" th:text="#{label.title.section}">강의</th>
                                         <th class="text-center col-sm-1" th:text="#{label.title.quiz}">시험</th>
                                         <th class="text-center col-sm-1" th:text="#{label.title.survey}">설문</th>
@@ -88,20 +90,33 @@
                                             <a th:href="@{/admin/course/view/{id}(id=${border.getId()})}" th:text="${border.getTitle()}"></a>
                                         </td>
 
-                                        <td class="text-center">
-                                            <th:block th:if="${#strings.equalsIgnoreCase(border.getIsAlways(), '1')}">
-                                                <span class="text-success">상시</span>
-                                            </th:block>
-                                            <th:block th:unless="${#strings.equalsIgnoreCase(border.getIsAlways(), '1')}">
-                                                <th:block th:if="${#strings.equalsIgnoreCase(border.getRequestFromDate(), border.getRequestToDate())}">
-                                                    <span th:text="${border.getRequestFromDate()}"></span>
+                                        <!-- 신청기간은 Self와 Class 교육만 있음 -->
+                                        <th:block th:if="${#strings.equalsIgnoreCase(typeId, 'BC0101') or #strings.equalsIgnoreCase(typeId, 'BC0102')}">
+                                            <td th:switch="${border.getStatus()}" class="text-center">
+                                                <span th:case="0" class="label label-primary">초기</span>
+                                                <span th:case="1" class="label label-primary">신청대기</span>
+                                                <span th:case="2" class="label label-warning">교육신청</span>
+                                                <span th:case="3" class="label label-purple">교육대기</span>
+                                                <span th:case="4" class="label label-mint">교육중</span>
+                                                <span th:case="5" class="label label-dark">교육종료</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <th:block th:if="${#strings.equalsIgnoreCase(border.getIsAlways(), '1')}">
+                                                    <span class="text-success">상시</span>
                                                 </th:block>
-                                                <th:block th:unless="${#strings.equalsIgnoreCase(border.getRequestFromDate(), border.getRequestToDate())}">
-                                                    <span th:text="${border.getRequestFromDate()}"></span><br>
-                                                    <span th:text="${'~' + border.getRequestToDate()}"></span>
+                                                <th:block th:unless="${#strings.equalsIgnoreCase(border.getIsAlways(), '1')}">
+
+                                                        <th:block th:if="${#strings.equalsIgnoreCase(border.getRequestFromDate(), border.getRequestToDate())}">
+                                                            <span th:text="${border.getRequestFromDate()}"></span>
+                                                        </th:block>
+                                                        <th:block th:unless="${#strings.equalsIgnoreCase(border.getRequestFromDate(), border.getRequestToDate())}">
+                                                            <span th:text="${border.getRequestFromDate()}"></span><br>
+                                                            <span th:text="${'~' + border.getRequestToDate()}"></span>
+                                                        </th:block>
+
                                                 </th:block>
-                                            </th:block>
-                                        </td>
+                                            </td>
+                                        </th:block>
                                         <td class="text-center">
                                             <th:block th:if="${#strings.equalsIgnoreCase(border.getIsAlways(), '1')}">
                                                 <span class="text-success">상시</span>
@@ -116,14 +131,7 @@
                                                 </th:block>
                                             </th:block>
                                         </td>
-                                        <td th:switch="${border.getStatus()}" class="text-center">
-                                            <span th:case="0" class="label label-primary">초기</span>
-                                            <span th:case="1" class="label label-primary">신청대기</span>
-                                            <span th:case="2" class="label label-warning">교육신청</span>
-                                            <span th:case="3" class="label label-purple">교육대기</span>
-                                            <span th:case="4" class="label label-mint">교육중</span>
-                                            <span th:case="5" class="label label-dark">교육종료</span>
-                                        </td>
+
                                         <td class="text-center">
                                             <a th:href="@{/admin/course/section/list/{courseId}(courseId=${border.getId()})}"><span class="badge badge-mint" th:text="${border.getSections().size()}"></span></a>
 <!--                                            <a class="label label-warning" th:href="@{/admin/course/section/add/{id}(id=${border.getId()})}" th:text="#{label.course.add}">강의등록</a>-->

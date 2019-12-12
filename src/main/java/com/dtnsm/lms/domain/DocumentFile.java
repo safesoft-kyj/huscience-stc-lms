@@ -34,7 +34,7 @@ public class DocumentFile extends AuditorCreateEntity<String> {
 
     // Parent 필드 추가
     @ManyToOne
-    @JoinColumn(name = "doc_id")
+    @JoinColumn(name = "document_id")
     private Document document;
 
     public DocumentFile() {

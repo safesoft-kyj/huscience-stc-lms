@@ -25,6 +25,7 @@ import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -112,6 +113,8 @@ public class CourseAdminController {
         model.addAttribute("borders", courses);
         model.addAttribute("typeId", typeId);
 
+
+
         return "admin/course/list";
     }
 
@@ -172,12 +175,12 @@ public class CourseAdminController {
         pageInfo.setPageTitle(course.getCourseMaster().getCourseName());
 
         // 기본 설문을 가지고 온다.
-        Survey survey = surveyService.getByIsActive(1);
+        List<Survey> surveys = surveyService.getAllByIsActive(1);
 
         model.addAttribute(pageInfo);
         model.addAttribute("course", course);
         model.addAttribute("id", typeId);
-        model.addAttribute("survey", survey);
+        model.addAttribute("surveys", surveys);
 
         return "admin/course/addOnLine";
     }
@@ -199,12 +202,12 @@ public class CourseAdminController {
         pageInfo.setPageTitle(course.getCourseMaster().getCourseName());
 
         // 기본 설문을 가지고 온다.
-        Survey survey = surveyService.getByIsActive(1);
+        List<Survey> surveys = surveyService.getAllByIsActive(1);
 
         model.addAttribute(pageInfo);
         model.addAttribute("course", course);
         model.addAttribute("id", typeId);
-        model.addAttribute("survey", survey);
+        model.addAttribute("surveys", surveys);
 
         return "admin/course/addOffLine";
     }
@@ -212,6 +215,7 @@ public class CourseAdminController {
 
     @PostMapping("/add-post")
     public String noticeAddPost(@Valid Course course
+            , @RequestParam(value = "activeSurvey", required = false, defaultValue = "") Long surveyId
             , @RequestParam(value = "documentId", required = false, defaultValue = "0") long documentId
             , @RequestParam(value = "passCount", required = false, defaultValue = "0") int passCount
             , @RequestParam(value = "examHour", required = false, defaultValue = "0") float examHour
@@ -233,6 +237,13 @@ public class CourseAdminController {
             course.setToDate("2999-12-31");
         }
 
+        // 부서별 교육(BC0103), 외부교육(BC0104) 은 신청기간이 없음으로 1900-01-01 로 설정한다.
+        if(course.getCourseMaster().getId().equalsIgnoreCase("BC0103") || course.getCourseMaster().getId().equalsIgnoreCase("BC0104")) {
+            course.setRequestFromDate("1900-01-01");
+            course.setRequestToDate("1900-01-01");
+        }
+
+
         if(course.getPlace() == null || course.getTeam() == null) {
             course.setPlace("");
             course.setTeam("");
@@ -247,7 +258,7 @@ public class CourseAdminController {
         courseQuizService.CreateAutoQuiz(course1, quiz_file, passCount, examHour);
 
         // 기본적인 설문 1개 생성한다.(course의 isSurve가 Y인 경우만 생성된다)
-        courseSurveyService.CreateAutoSurvey(course1);
+        courseSurveyService.CreateAutoSurvey(course1, surveyId);
 
 
         Arrays.asList(files)
@@ -320,15 +331,24 @@ public class CourseAdminController {
     public String editOnLine(@PathVariable("id") long id, Model model) {
 
         Course course = courseService.getCourseById(id);
-        pageInfo.setPageTitle(course.getCourseMaster().getCourseName() + " 수정");
+        pageInfo.setPageTitle(course.getCourseMaster().getCourseName());
+
+        // isAlways : 1:상시, 2:기간 => 상시인 경우 오늘부터 최대일자로 기간을 설정한다.
+        if(course.getIsAlways().equals("1")) {
+            course.setRequestFromDate(DateUtil.getTodayString());
+            course.setRequestToDate("2999-12-31");
+            course.setFromDate(DateUtil.getTodayString());
+            course.setToDate("2999-12-31");
+        }
+
 
         // 기본 설문을 가지고 온다.
-        Survey survey = surveyService.getByIsActive(1);
+        List<Survey> surveys = surveyService.getAllByIsActive(1);
 
         model.addAttribute(pageInfo);
         model.addAttribute("course", course);
         model.addAttribute("id", course.getId());
-        model.addAttribute("survey", survey);
+        model.addAttribute("surveys", surveys);
 
         String typeId = course.getCourseMaster().getId();
 
@@ -339,7 +359,7 @@ public class CourseAdminController {
     public String editOffLine(@PathVariable("id") long id, Model model) {
 
         Course course = courseService.getCourseById(id);
-        pageInfo.setPageTitle(course.getCourseMaster().getCourseName() + " 수정");
+        pageInfo.setPageTitle(course.getCourseMaster().getCourseName());
 
         model.addAttribute(pageInfo);
         model.addAttribute("course", course);

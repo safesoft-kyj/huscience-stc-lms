@@ -46,6 +46,11 @@ public class Border extends AuditorEntity<String> {
     @JoinColumn(name = "type_id")
     private BorderMaster borderMaster;
 
+    // 작성자
+    @ManyToOne
+    @JoinColumn(name = "user_id",columnDefinition="VARCHAR(30)")
+    private Account account;
+
     @OneToMany(mappedBy = "border", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BorderFile> borderFiles = new ArrayList<>();
 

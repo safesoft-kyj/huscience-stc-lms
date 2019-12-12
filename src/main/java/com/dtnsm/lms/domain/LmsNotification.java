@@ -21,6 +21,10 @@ public class LmsNotification extends AuditorCreateEntity<String> {
     @Enumerated(EnumType.STRING)
     private LmsAlarmGubun alarmGubun;
 
+    // C:과정, D:전자결재
+    @Column(length = 1, nullable = false)
+    private String gubun;
+
 
     @Column(length = 255, nullable = false)
     private String title;
@@ -31,6 +35,14 @@ public class LmsNotification extends AuditorCreateEntity<String> {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Account account;
+
+    @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course;
+
+    @ManyToOne
+    @JoinColumn(name = "document_id")
+    private Document document;
 
     public LmsNotification(LmsAlarmGubun alarmGubun, String title, String content, Account account) {
         this.alarmGubun = alarmGubun;

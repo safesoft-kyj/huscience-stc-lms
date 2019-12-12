@@ -39,16 +39,16 @@ INSERT [dbo].[account] ([user_id], [email], [enabled], [name], [password], [toke
 INSERT [dbo].[account_roles] ([user_id], [role_id]) VALUES (N'admin', 1)
 
 -- 과정 유형 등록
-INSERT [dbo].[el_course_master] ([id], [insert_user_id], [insert_dt], [course_name], [is_course_manger_approval], [is_team_manger_approval], [minor_cd], [day], [hour]) VALUES (N'BC0101', N'admin', CAST(N'2019-10-13T16:29:50.1190000' AS DateTime2), N'self-training', N'N', N'N', N'BC0101', 30, CAST(1.00 AS Numeric(5, 2)))
-INSERT [dbo].[el_course_master] ([id], [insert_user_id], [insert_dt], [course_name], [is_course_manger_approval], [is_team_manger_approval], [minor_cd], [day], [hour]) VALUES (N'BC0102', N'admin', CAST(N'2019-10-13T16:29:59.2190000' AS DateTime2), N'class training', N'Y', N'Y', N'BC0102', 0, CAST(0.00 AS Numeric(5, 2)))
+INSERT [dbo].[el_course_master] ([id], [insert_user_id], [insert_dt], [course_name], [is_course_manger_approval], [is_team_manger_approval], [minor_cd], [day], [hour]) VALUES (N'BC0101', N'admin', CAST(N'2019-10-13T16:29:50.1190000' AS DateTime2), N'Self-training', N'N', N'N', N'BC0101', 30, CAST(1.00 AS Numeric(5, 2)))
+INSERT [dbo].[el_course_master] ([id], [insert_user_id], [insert_dt], [course_name], [is_course_manger_approval], [is_team_manger_approval], [minor_cd], [day], [hour]) VALUES (N'BC0102', N'admin', CAST(N'2019-10-13T16:29:59.2190000' AS DateTime2), N'Class training', N'Y', N'Y', N'BC0102', 0, CAST(0.00 AS Numeric(5, 2)))
 INSERT [dbo].[el_course_master] ([id], [insert_user_id], [insert_dt], [course_name], [is_course_manger_approval], [is_team_manger_approval], [minor_cd], [day], [hour]) VALUES (N'BC0103', N'admin', CAST(N'2019-10-13T16:30:08.9090000' AS DateTime2), N'부서별 교육', N'N', N'N', N'BC0102', 0, CAST(0.00 AS Numeric(5, 2)))
 INSERT [dbo].[el_course_master] ([id], [insert_user_id], [insert_dt], [course_name], [is_course_manger_approval], [is_team_manger_approval], [minor_cd], [day], [hour]) VALUES (N'BC0104', N'admin', CAST(N'2019-10-13T16:30:18.6840000' AS DateTime2), N'외부 교육', N'N', N'Y', N'BC0102', 0, CAST(0.00 AS Numeric(5, 2)))
 
 -- 게시판 등록
 INSERT [dbo].[el_border_master] ([id], [insert_user_id], [insert_dt], [border_name], [is_mail], [minor_cd]) VALUES (N'BA0101', N'admin', CAST(N'2019-10-11T10:38:55.4760000' AS DateTime2), N'공지사항', N'N', N'BA0101')
-INSERT [dbo].[el_border_master] ([id], [insert_user_id], [insert_dt], [border_name], [is_mail], [minor_cd]) VALUES (N'BA0102', N'admin', CAST(N'2019-10-11T10:39:16.6510000' AS DateTime2), N'법규/가이드라인', N'N', N'BA0102')
-INSERT [dbo].[el_border_master] ([id], [insert_user_id], [insert_dt], [border_name], [is_mail], [minor_cd]) VALUES (N'BA0103', N'admin', CAST(N'2019-10-11T10:39:33.8600000' AS DateTime2), N'자료실', N'N', N'BA0103')
-INSERT [dbo].[el_border_master] ([id], [insert_user_id], [insert_dt], [border_name], [is_mail], [minor_cd]) VALUES (N'BA0104', N'admin', CAST(N'2019-10-16T15:54:13.4920000' AS DateTime2), N'What''s New', N'N', N'BA0102')
+INSERT [dbo].[el_border_master] ([id], [insert_user_id], [insert_dt], [border_name], [is_mail], [minor_cd]) VALUES (N'BA0102', N'admin', CAST(N'2019-10-11T10:39:16.6510000' AS DateTime2), N'법령정보', N'N', N'BA0102')
+INSERT [dbo].[el_border_master] ([id], [insert_user_id], [insert_dt], [border_name], [is_mail], [minor_cd]) VALUES (N'BA0103', N'admin', CAST(N'2019-10-11T10:39:33.8600000' AS DateTime2), N'가이드라인', N'N', N'BA0103')
+INSERT [dbo].[el_border_master] ([id], [insert_user_id], [insert_dt], [border_name], [is_mail], [minor_cd]) VALUES (N'BA0104', N'admin', CAST(N'2019-10-16T15:54:13.4920000' AS DateTime2), N'자료실', N'N', N'BA0102')
 
 -- 전자결재 교육참석보고서 등록
 INSERT [dbo].[el_document_template] ([insert_user_id], [insert_dt], [content], [is_course_manger_approval], [is_team_manger_approval], [title]) VALUES (N'admin', CAST(N'2019-11-19T13:43:50.7860000' AS DateTime2), N'<p><span style="font-family: 맑은 고딕; font-size: 10pt;"><strong><span style="font-size: 12pt;">1. 교육개요</span></strong></span></p>

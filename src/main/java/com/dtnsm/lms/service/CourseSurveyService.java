@@ -68,14 +68,18 @@ public class CourseSurveyService {
     }
 
     // 교육과정의 첫번재 설문을 등록한다.
-    public void CreateAutoSurvey(Course course) {
+    public void CreateAutoSurvey(Course course, Long surveyId) {
 
         if (course.getIsSurvey().equals("Y")) {
+
+            Survey survey = surveyService.getSurveyById(surveyId);
+
+            if (survey == null) return;
 
             CourseSurvey courseSurvey = new CourseSurvey();
             courseSurvey.setName("[설문] " + course.getTitle());
             courseSurvey.setCourse(course);
-            courseSurvey.setSurvey(surveyService.getByIsActive(1));
+            courseSurvey.setSurvey(survey);
             CourseSurvey courseSurvey1 = saveSurvey(courseSurvey);
 
             // 문제를 복사한다.

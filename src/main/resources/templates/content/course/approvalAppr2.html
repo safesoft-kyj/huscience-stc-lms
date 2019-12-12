@@ -46,7 +46,7 @@
             <div class="panel">
                 <div class="panel-body">
                     <div class="row">
-                        <div class="row" th:if="${#strings.equalsIgnoreCase(courseAccountOrder.getFUser().getUserId(), userId) and #strings.equalsIgnoreCase(courseAccountOrder.getFNext(), '1') and #strings.equalsIgnoreCase(courseAccountOrder.getFStatus(), '0')}">
+                        <div class="row" th:if="${#strings.equalsIgnoreCase(courseAccountOrder.getFnUser().getUserId(), userId) and #strings.equalsIgnoreCase(courseAccountOrder.getFnNext(), '1') and #strings.equalsIgnoreCase(courseAccountOrder.getFnStatus(), '0')}">
                             <div class="col-sm-12 input-group pull-right">
                                 <p class="pull-right">
                                     <a th:href="@{/approval/successAppr2/{courseId}/{userId}(courseId=${course.getId()}, userId=${courseAccount.getAccount().getUserId()})}" class="btn btn-primary"><i class="demo-pli-check"></i> 승인</a>
@@ -63,7 +63,7 @@
                                 <tbody>
                                 <tr>
                                     <td class="text-center" style="background: #FAFAFA;">신청일자</td>
-                                    <td th:text="${courseAccount.getFWdate()} ? ${#dates.format(courseAccount.getFWdate(), 'yyyy-MMM-dd')} : ${courseAccount.getFWdate()}"></td>
+                                    <td th:text="${courseAccount.getFWdate()} ? ${#dates.format(courseAccount.getFWdate(), 'yyyy-MM-dd')} : ${courseAccount.getFWdate()}"></td>
                                 </tr>
                                 <tr>
                                     <td class="text-center" style="background: #FAFAFA;">신청부서</td>
@@ -94,7 +94,7 @@
                                     </td>
                                     <th:block th:each="border, index : ${courseAccount.getCourseAccountOrders()}">
                                         <th:block th:if="${border.getFKind().equals('1')}">
-                                            <td th:text="${border.getFUser().getName()}" class="text-center">
+                                            <td th:text="${border.getFnUser().getName()}" class="text-center">
                                             </td>
                                         </th:block>
                                     </th:block>
@@ -120,7 +120,7 @@
                                 <tr>
                                     <th:block th:each="border, index : ${courseAccount.getCourseAccountOrders()}">
                                         <th:block th:if="${border.getFKind().equals('1')}">
-                                            <td th:text="${border.getFDate()} ? ${#dates.format(border.getFDate(), 'yyyy/MMM/dd')} : ${border.getFDate()}" class="text-center"></td>
+                                            <td th:text="${border.getFDate()} ? ${#dates.format(border.getFDate(), 'yyyy-MM-dd')} : ${border.getFDate()}" class="text-center"></td>
                                             </td>
                                         </th:block>
                                     </th:block>
@@ -145,7 +145,7 @@
 
                                         <th:block th:each="border, index : ${courseAccount.getCourseAccountOrders()}">
                                             <th:block th:if="${border.getFKind().equals('2')}">
-                                                <td th:text="${border.getFUser().getName()}" class="text-center">
+                                                <td th:text="${border.getFnUser().getName()}" class="text-center">
                                                 </td>
                                             </th:block>
                                         </th:block>
@@ -171,7 +171,7 @@
                                     <tr>
                                         <th:block th:each="border, index : ${courseAccount.getCourseAccountOrders()}">
                                             <th:block th:if="${border.getFKind().equals('2')}">
-                                                <td th:text="${border.getFDate()} ? ${#dates.format(border.getFDate(), 'yyyy/MMM/dd')} : ${'&nbsp;'}" class="text-center"></td>
+                                                <td th:text="${border.getFDate()} ? ${#dates.format(border.getFDate(), 'yyyy-MM-dd')} : ${'&nbsp;'}" class="text-center"></td>
                                                 </td>
                                             </th:block>
                                         </th:block>

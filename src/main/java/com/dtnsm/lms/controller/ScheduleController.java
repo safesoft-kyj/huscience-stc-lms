@@ -88,7 +88,7 @@ public class ScheduleController {
     @GetMapping("/updateActive/{id}")
     public String updateActive(@PathVariable("id") long id) {
 
-        // 모든 설문을 초기화 한다.
+        // 일정을 초기화 한다.
         for(Schedule schedule : scheduleService.getList()) {
             schedule.setIsActive(0);
             scheduleService.save(schedule);

@@ -213,14 +213,21 @@ public class SurveyAdminController {
     public String updateActive(@PathVariable("id") long id) {
 
         // 모든 설문을 초기화 한다.
-        for(Survey survey1 : surveyService.getList()) {
-            survey1.setIsActive(0);
-            surveyService.saveSurvey(survey1);
-        }
+//        for(Survey survey1 : surveyService.getList()) {
+//            survey1.setIsActive(0);
+//            surveyService.saveSurvey(survey1);
+//        }
 
         // 요청된 설문을 기본 설문으로 변경한다.
         Survey survey = surveyService.getSurveyById(id);
-        survey.setIsActive(1);
+
+        if (survey.getIsActive() == 0) {
+            // 교육과정을 신청할 수 있는 상태로 변경한다.
+            survey.setIsActive(1);
+        } else if (survey.getIsActive() == 1) {
+            survey.setIsActive(0);
+        }
+
         surveyService.saveSurvey(survey);
 
         return "redirect:/admin/survey/list/";

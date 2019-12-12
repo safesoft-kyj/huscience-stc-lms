@@ -1,20 +1,20 @@
 package com.dtnsm.lms.service;
 
 import com.dtnsm.lms.auth.UserService;
-import com.dtnsm.lms.domain.Account;
-import com.dtnsm.lms.domain.LmsNotification;
-import com.dtnsm.lms.domain.Role;
+import com.dtnsm.lms.domain.*;
+import com.dtnsm.lms.domain.constant.LmsAlarmCourseType;
 import com.dtnsm.lms.domain.constant.LmsAlarmGubun;
 import com.dtnsm.lms.domain.constant.LmsAlarmType;
 import com.dtnsm.lms.repository.LmsNotificationRepository;
 import com.dtnsm.lms.repository.RoleRepository;
 import com.dtnsm.lms.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+@Component
 public class LmsNotificationService {
 
     @Autowired
@@ -41,7 +41,8 @@ public class LmsNotificationService {
     }
 
 
-    public void createAlarm(LmsAlarmType lmsAlarmType, Account account) {
+    // 시스템 기본 정보에 대한 알람 메세지
+    public void sendAlarm(LmsAlarmType lmsAlarmType, Account account) {
 
         LmsNotification lmsNotification = new LmsNotification();
 
@@ -54,6 +55,7 @@ public class LmsNotificationService {
             lmsNotification.setAlarmGubun(LmsAlarmGubun.INFO);
             lmsNotification.setTitle("<a class='text-info' href='/mypage/myInfo'>사인 미등록<a>");
             lmsNotification.setContent("사인이 미등록 되었습니다.");
+
         } else if (lmsAlarmType == LmsAlarmType.Manager) {
             lmsNotification.setAlarmGubun(LmsAlarmGubun.WARNING);
             lmsNotification.setTitle("과정 관리자 미등록");
@@ -61,6 +63,78 @@ public class LmsNotificationService {
         }
 
         lmsNotification.setAccount(account);
+        // C:과정, D:전자결재
+        lmsNotification.setGubun("C");
+        lmsNotificationRepository.save(lmsNotification);
+    }
+
+    // 교육 프로세스 관련 메세지
+    public void sendMessage(LmsAlarmCourseType lmsAlarmCourseType, Account account, Course course, String message) {
+
+        LmsNotification lmsNotification = new LmsNotification();
+
+        switch (lmsAlarmCourseType) {
+            case CourseAccountAssign:
+                lmsNotification.setAlarmGubun(LmsAlarmGubun.INFO);
+                lmsNotification.setTitle(course.getTitle() +  "과정 교육 대상자로 지정되셨습니다.");
+                lmsNotification.setContent(message);
+                break;
+            case Request:
+                lmsNotification.setAlarmGubun(LmsAlarmGubun.INFO);
+                lmsNotification.setTitle(course.getTitle() +  "과정 교육 신청 처리 되었습니다..");
+                lmsNotification.setContent(message);
+                break;
+
+            case Approval:
+                lmsNotification.setAlarmGubun(LmsAlarmGubun.INFO);
+                lmsNotification.setTitle(course.getTitle() +  "과정 승인 처리 되었습니다.");
+                lmsNotification.setContent(message);
+                break;
+            case Reject:
+                lmsNotification.setAlarmGubun(LmsAlarmGubun.INFO);
+                lmsNotification.setTitle(course.getTitle() +  "과정 반려 처리 되었습니다.");
+                lmsNotification.setContent(message);
+                break;
+        }
+
+        lmsNotification.setAccount(account);
+        lmsNotification.setCourse(course);
+        lmsNotification.setGubun("C");
+        lmsNotificationRepository.save(lmsNotification);
+    }
+
+    // 교육 프로세스 관련 메세지
+    public void sendMessage(LmsAlarmCourseType lmsAlarmCourseType, Account account, Document document, String message) {
+
+        LmsNotification lmsNotification = new LmsNotification();
+
+        switch (lmsAlarmCourseType) {
+            case CourseAccountAssign:
+                lmsNotification.setAlarmGubun(LmsAlarmGubun.INFO);
+                lmsNotification.setTitle(document.getTitle() +  " 교육 대상자로 지정되셨습니다.");
+                lmsNotification.setContent(message);
+                break;
+            case Request:
+                lmsNotification.setAlarmGubun(LmsAlarmGubun.INFO);
+                lmsNotification.setTitle(document.getTitle() +  " 교육 신청 처리 되었습니다..");
+                lmsNotification.setContent(message);
+                break;
+
+            case Approval:
+                lmsNotification.setAlarmGubun(LmsAlarmGubun.INFO);
+                lmsNotification.setTitle(document.getTitle() +  " 승인 처리 되었습니다.");
+                lmsNotification.setContent(message);
+                break;
+            case Reject:
+                lmsNotification.setAlarmGubun(LmsAlarmGubun.INFO);
+                lmsNotification.setTitle(document.getTitle() +  " 반려 처리 되었습니다.");
+                lmsNotification.setContent(message);
+                break;
+        }
+
+        lmsNotification.setAccount(account);
+        lmsNotification.setDocument(document);
+        lmsNotification.setGubun("D");
         lmsNotificationRepository.save(lmsNotification);
     }
 }

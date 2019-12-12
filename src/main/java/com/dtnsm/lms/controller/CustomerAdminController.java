@@ -1,8 +1,10 @@
 package com.dtnsm.lms.controller;
 
+import com.dtnsm.lms.auth.UserService;
 import com.dtnsm.lms.domain.Customer;
 import com.dtnsm.lms.service.CustomerService;
 import com.dtnsm.lms.util.PageInfo;
+import com.dtnsm.lms.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,9 @@ public class CustomerAdminController {
 
     @Autowired
     CustomerService customerService;
+
+    @Autowired
+    UserService userService;
 
     private PageInfo pageInfo = new PageInfo();
 
@@ -69,6 +74,8 @@ public class CustomerAdminController {
             return "admin/customer/add";
         }
 
+        customer.setAccount(userService.findByUserId(SessionUtil.getUserId()));
+
         customerService.save(customer);
 
         return "redirect:/admin/customer/list";
@@ -95,6 +102,7 @@ public class CustomerAdminController {
             return "content/customer/update";
         }
 
+        customer.setAccount(userService.findByUserId(SessionUtil.getUserId()));
         customerService.save(customer);
 
         return "redirect:/admin/customer/list";

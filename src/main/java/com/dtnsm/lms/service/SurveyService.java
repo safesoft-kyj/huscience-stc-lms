@@ -57,8 +57,8 @@ public class SurveyService {
         return surveyRepository.findById(id).get();
     }
 
-    public Survey getByIsActive(int id) {
-        return surveyRepository.findByIsActive(id);
+    public List<Survey> getAllByIsActive(int id) {
+        return surveyRepository.findAllByIsActive(id);
     }
 
     /*

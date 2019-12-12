@@ -29,9 +29,9 @@
             <!-- Basic Data Tables -->
             <!--===================================================-->
             <div class="panel">
-                <div class="panel-heading">
-                    <h3 class="panel-title">공지사항 수정</h3>
-                </div>
+<!--                <div class="panel-heading">-->
+<!--                    <h3 class="panel-title">공지사항 수정</h3>-->
+<!--                </div>-->
                 <div class="panel-body">
                     <!--===================================================-->
                     <!--End Horizontal Form-->
@@ -51,6 +51,9 @@
                             </div>
                             <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
                         </div>
+
+                        <!-- 부서별교육 : BC0103, 외부교육: BC0104 은 신청기간이 없어 보이지 않게 처리 -->
+                        <th:block th:if="${#strings.equalsIgnoreCase(course.getCourseMaster().getId(), 'BC0102')}">
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="title" th:text="#{label.course.requesperiod}">신청기간</label>
                             <div class="col-sm-10">
@@ -65,6 +68,8 @@
                                 </div>
                             </div>
                         </div>
+                        </th:block>
+
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="title" th:text="#{label.course.period}">교육기간</label>
                             <div class="col-sm-10">

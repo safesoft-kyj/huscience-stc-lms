@@ -29,9 +29,9 @@
             <!-- Basic Data Tables -->
             <!--===================================================-->
             <div class="panel">
-                <div class="panel-heading">
-                    <h3 class="panel-title">공지사항 수정</h3>
-                </div>
+<!--                <div class="panel-heading">-->
+<!--                    <h3 class="panel-title">공지사항 수정</h3>-->
+<!--                </div>-->
                 <div class="panel-body">
                     <!--===================================================-->
                     <!--End Horizontal Form-->
@@ -352,9 +352,13 @@
             });
 
             // self 교육등록시에는 상시를 활성화시키고 기간을 숨긴다.
-            $("#isAlways").prop("checked", true);
-            $('#always-detail1').hide();
-            $('#always-detail2').hide();
+            if($("#isAlways").is(":checked")){
+                $('#always-detail1').hide();
+                $('#always-detail2').hide();
+            }else{
+                $('#always-detail1').show();
+                $('#always-detail2').show();
+            }
 
         });
 

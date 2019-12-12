@@ -72,7 +72,13 @@
                                     <td th:text="${survey.getCreatedDate()} ? ${#dates.format(survey.getCreatedDate(), 'yyyy/MM/dd HH:mm')} : ${survey.getCreatedDate()}"></td>
                                     <td>
                                         <div class="form-inline">
-                                            <a th:text="#{label.active}" th:href="@{/admin/survey/updateActive/{id}(id=${survey.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Active" data-container="body"></a>
+                                            <th:block th:if="${survey.getIsActive() == 1}">
+                                                <a th:text="#{label.noActive}" th:href="@{/admin/survey/updateActive/{id}(id=${survey.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Active" data-container="body"></a>
+                                            </th:block>
+                                            <th:block th:if="${survey.getIsActive() == 0}">
+                                                <a th:text="#{label.active}" th:href="@{/admin/survey/updateActive/{id}(id=${survey.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Active" data-container="body"></a>
+                                            </th:block>
+<!--                                            <a th:text="#{label.active}" th:href="@{/admin/survey/updateActive/{id}(id=${survey.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Active" data-container="body"></a>-->
                                             <a th:text="#{label.edit}" th:href="@{/admin/survey/edit/{id}(id=${survey.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
                                             <a th:text="#{label.delete}" th:href="@{/admin/survey/delete/{id}(id=${survey.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
                                         </div>

@@ -1,27 +1,35 @@
 package com.dtnsm.lms.service;
 
+import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.controller.BorderController;
+import com.dtnsm.lms.domain.Account;
 import com.dtnsm.lms.domain.Border;
+import com.dtnsm.lms.domain.BorderViewAccount;
 import com.dtnsm.lms.domain.BorderFile;
-import com.dtnsm.lms.domain.Course;
+import com.dtnsm.lms.repository.BorderViewAccountRepository;
 import com.dtnsm.lms.repository.BorderRepository;
 import com.dtnsm.lms.util.DateUtil;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class BorderService {
 
+    @Autowired
     BorderRepository borderRepository;
+
+    @Autowired
+    BorderViewAccountRepository borderViewAccountRepository;
+
+    @Autowired
+    UserServiceImpl userService;
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(BorderController.class);
 
@@ -116,10 +124,24 @@ public class BorderService {
     }
 
     // 게시판 조회수 증가
-    public void updateViewCnt(Long id) {
-        Border border = getBorderById(id);
+    public void updateViewCnt(long borderId, String userId) {
+
+        List<BorderViewAccount> borderAccounts = borderViewAccountRepository.findAllByBorder_IdAndAccount_UserId(borderId, userId);
+
+
+        // 최초 읽음수만 증가 시킨다.
+        if(borderAccounts.size() > 0) return;
+
+
+        Border border = getBorderById(borderId);
+        Account account = userService.getAccountByUserId(userId);
+
+        if (account == null || border == null) return;
+        borderViewAccountRepository.save(new BorderViewAccount(border, account));
+
         border.setViewCnt(border.getViewCnt() + 1);
         borderRepository.save(border);
+
     }
 
     private List<Border> getBlankBorder() {
@@ -149,6 +171,12 @@ public class BorderService {
         }
 
         return borders.size();
+    }
+
+
+    public List<BorderViewAccount> getAllBorderAccountByBorderId(long borderId) {
+        List<BorderViewAccount> borderAccounts = borderViewAccountRepository.findAllByBorder_IdOrderByCreatedByDesc(borderId);
+        return borderAccounts;
     }
 
 }

@@ -58,7 +58,7 @@
                                 <tbody>
                                 <tr>
                                     <td>신청일자</td>
-                                    <td th:text="${document.getFnWdate()} ? ${#dates.format(document.getFnWdate(), 'yyyy-MMM-dd')} : ${document.getFnWdate()}" class="text-center"></td>
+                                    <td th:text="${document.getFnWdate()} ? ${#dates.format(document.getFnWdate(), 'yyyy-MM-dd')} : ${document.getFnWdate()}" class="text-center"></td>
                                 </tr>
                                 <tr>
                                     <td>신청부서</td>
@@ -115,7 +115,7 @@
                                 <tr>
                                     <th:block th:each="border, index : ${document.getDocumentAccountOrders()}">
                                         <th:block th:if="${border.getFnKind().equals('1')}">
-                                            <td th:text="${border.getFnDate()} ? ${#dates.format(border.getFnDate(), 'yyyy/MMM/dd')} : ${border.getFnDate()}" class="text-center"></td>
+                                            <td th:text="${border.getFnDate()} ? ${#dates.format(border.getFnDate(), 'yyyy-MM-dd')} : ${border.getFnDate()}" class="text-center"></td>
                                             </td>
                                         </th:block>
                                     </th:block>
@@ -166,7 +166,7 @@
                                     <tr>
                                         <th:block th:each="border, index : ${document.getDocumentAccountOrders()}">
                                             <th:block th:if="${border.getFnKind().equals('2')}">
-                                                <td th:text="${border.getFnDate()} ? ${#dates.format(border.getFnDate(), 'yyyy/MMM/dd')} : ${'&nbsp;'}" class="text-center"></td>
+                                                <td th:text="${border.getFnDate()} ? ${#dates.format(border.getFnDate(), 'yyyy-MM-dd')} : ${'&nbsp;'}" class="text-center"></td>
                                                 </td>
                                             </th:block>
                                         </th:block>

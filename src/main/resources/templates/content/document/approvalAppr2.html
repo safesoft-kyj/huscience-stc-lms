@@ -44,7 +44,7 @@
                     <h3 class="panel-title"></h3>
                 </div>
                 <div class="panel-body">
-                    <div class="row" th:if="${#strings.equalsIgnoreCase(documentAccountOrder.getFUser().getUserId(), userId) and #strings.equalsIgnoreCase(documentAccountOrder.getFNext(), '1') and #strings.equalsIgnoreCase(documentAccountOrder.getFStatus(), '0')}">
+                    <div class="row" th:if="${#strings.equalsIgnoreCase(documentAccountOrder.getFnUser().getUserId(), userId) and #strings.equalsIgnoreCase(documentAccountOrder.getFnNext(), '1') and #strings.equalsIgnoreCase(documentAccountOrder.getFnStatus(), '0')}">
                         <div class="col-sm-12 input-group pull-right">
                             <p class="pull-right">
                                 <a th:href="@{/approval/document/successAppr1/{orderId}(orderId=${documentAccountOrder.getId()})}" class="btn btn-primary"><i class="demo-pli-check"></i> 승인</a>
@@ -60,7 +60,7 @@
                                 <tbody>
                                 <tr>
                                     <td>신청일자</td>
-                                    <td th:text="${document.getFnWdate()} ? ${#dates.format(document.getFnWdate(), 'yyyy-MMM-dd')} : ${document.getFnWdate()}" class="text-center"></td>
+                                    <td th:text="${document.getFnWdate()} ? ${#dates.format(document.getFnWdate(), 'yyyy-MM-dd')} : ${document.getFnWdate()}" class="text-center"></td>
                                 </tr>
                                 <tr>
                                     <td>신청부서</td>
@@ -117,7 +117,7 @@
                                 <tr>
                                     <th:block th:each="border, index : ${document.getDocumentAccountOrders()}">
                                         <th:block th:if="${border.getFnKind().equals('1')}">
-                                            <td th:text="${border.getFnDate()} ? ${#dates.format(border.getFnDate(), 'yyyy/MMM/dd')} : ${border.getFnDate()}" class="text-center"></td>
+                                            <td th:text="${border.getFnDate()} ? ${#dates.format(border.getFnDate(), 'yyyy-MM-dd')} : ${border.getFnDate()}" class="text-center"></td>
                                             </td>
                                         </th:block>
                                     </th:block>
@@ -168,7 +168,7 @@
                                     <tr>
                                         <th:block th:each="border, index : ${document.getDocumentAccountOrders()}">
                                             <th:block th:if="${border.getFnKind().equals('2')}">
-                                                <td th:text="${border.getFnDate()} ? ${#dates.format(border.getFnDate(), 'yyyy/MMM/dd')} : ${'&nbsp;'}" class="text-center"></td>
+                                                <td th:text="${border.getFnDate()} ? ${#dates.format(border.getFnDate(), 'yyyy-MM-dd')} : ${'&nbsp;'}" class="text-center"></td>
                                                 </td>
                                             </th:block>
                                         </th:block>

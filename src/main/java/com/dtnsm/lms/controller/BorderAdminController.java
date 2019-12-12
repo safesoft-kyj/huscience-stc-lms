@@ -1,8 +1,11 @@
 package com.dtnsm.lms.controller;
 
+import com.dtnsm.lms.auth.UserService;
 import com.dtnsm.lms.domain.Border;
 import com.dtnsm.lms.domain.BorderFile;
 import com.dtnsm.lms.domain.BorderMaster;
+import com.dtnsm.lms.domain.BorderViewAccount;
+import com.dtnsm.lms.repository.BorderViewAccountRepository;
 import com.dtnsm.lms.service.BorderFileService;
 import com.dtnsm.lms.service.BorderMasterService;
 import com.dtnsm.lms.service.BorderService;
@@ -12,6 +15,7 @@ import com.dtnsm.lms.service.MailService;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
+import com.dtnsm.lms.util.SessionUtil;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -54,6 +58,12 @@ public class BorderAdminController {
 
     @Autowired
     private BorderFileService borderFileService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private BorderViewAccountRepository borderViewAccountRepository;
 
     @Autowired
     private FileService fileService;
@@ -126,10 +136,7 @@ public class BorderAdminController {
     @GetMapping("/view/{id}")
     public String noticeView(@PathVariable("id") long id, Model model) {
 
-        Border oldBorder = borderService.getBorderById(id);
-        oldBorder.setViewCnt(oldBorder.getViewCnt() + 1);
-
-        Border border= borderService.save(oldBorder);
+        Border border = borderService.getBorderById(id);
 
         pageInfo.setPageTitle(border.getBorderMaster().getBorderName());
 
@@ -172,6 +179,7 @@ public class BorderAdminController {
             border.setFromDate(DateUtil.getTodayString());
         }
 
+        border.setAccount(userService.findByUserId(SessionUtil.getUserId()));
         Border border1 = borderService.save(border);
 
         Arrays.asList(files)
@@ -233,6 +241,8 @@ public class BorderAdminController {
             border.setFromDate(DateUtil.getTodayString());
         }
 
+        border.setAccount(userService.findByUserId(SessionUtil.getUserId()));
+
         border.setBorderFiles(borderFiles);
 
         Border border1 = borderService.save(border);
@@ -248,8 +258,14 @@ public class BorderAdminController {
     @GetMapping("/delete/{id}")
     public String noticeDelete(@PathVariable("id") long id) {
 
-        Border border = borderService.getBorderById(id);
+        List<BorderViewAccount> borderViewAccounts = borderService.getAllBorderAccountByBorderId(id);
 
+        // 게시물 조회자를 먼저 삭제한다.
+        for(BorderViewAccount borderViewAccount : borderViewAccounts) {
+            borderViewAccountRepository.delete(borderViewAccount);
+        }
+
+        Border border = borderService.getBorderById(id);
         String borderMastId = border.getBorderMaster().getId();
 
         borderService.delete(border);
