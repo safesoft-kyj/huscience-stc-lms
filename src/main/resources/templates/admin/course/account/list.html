@@ -82,9 +82,9 @@
                                             <span th:if="${#strings.equalsIgnoreCase(border.getRequestType(), '1')}">신청</span>
                                         </td>
                                         <td class="text-center">
-                                            <span class="label label-warning" th:if="${#strings.equalsIgnoreCase(border.getFStatus(), '9')}">미진행</span>
-                                            <span class="label label-warning" th:if="${#strings.equalsIgnoreCase(border.getFStatus(), '0')}">진행중</span>
-                                            <span class="label label-success" th:if="${#strings.equalsIgnoreCase(border.getFStatus(), '1')}">최종승인</span>
+                                            <span class="label label-warning" th:if="${#strings.equalsIgnoreCase(border.getFnStatus(), '9')}">미진행</span>
+                                            <span class="label label-warning" th:if="${#strings.equalsIgnoreCase(border.getFnStatus(), '0')}">진행중</span>
+                                            <span class="label label-success" th:if="${#strings.equalsIgnoreCase(border.getFnStatus(), '1')}">최종승인</span>
                                         </td>
                                         <td class="text-center">
                                             <span th:if="${#strings.equalsIgnoreCase(border.getCourseStatus(), 'none')}" class="label label-info">신청대기</span>

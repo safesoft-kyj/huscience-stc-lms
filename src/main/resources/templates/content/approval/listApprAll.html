@@ -74,7 +74,7 @@
                                         <td th:text="${border.getCourseAccount().getAccount().getName()}" class="text-center"></td>
                                         <td class="text-center">
                                             <th:block th:if="${#strings.equalsIgnoreCase(border.getCourseAccount().getIsApproval(), '1')}">
-                                                <div th:switch="${border.getCourseAccount().getFStatus()}">
+                                                <div th:switch="${border.getCourseAccount().getFnStatus()}">
                                                     <span th:case="${'0'}" class="text-info" th:text="${'진행중'}"></span>
                                                     <span th:case="${'1'}" class="text-success" th:text="${'최종승인'}"></span>
                                                     <span th:case="${'2'}" class="text-danger" th:text="${'반려'}"></span>

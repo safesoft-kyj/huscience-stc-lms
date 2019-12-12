@@ -26,7 +26,7 @@ public class DocumentTemplateService {
     public Page<DocumentTemplate> getPageList(Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.ASC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.ASC, "createdDate"));
 
         return templateRepository.findAll(pageable);
     }

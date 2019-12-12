@@ -38,8 +38,8 @@
             <!--Submenu-->
             <ul class="collapse">
                 <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0101')}" th:text="#{label.title.notice}">공지사항</a></li>
-                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0104')}" th:text="#{label.title.news}">What's New</a></li>
-                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0102')}" th:text="#{label.title.guide}">법규/가이드라인</a></li>
+                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0104')}" th:text="#{label.title.news}">법령정보</a></li>
+                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0102')}" th:text="#{label.title.guide}">가이드라인</a></li>
                 <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0103')}" th:text="#{label.title.pds}">자료실</a></li>
             </ul>
         </li>
@@ -119,10 +119,12 @@
 <!--                <li><a data-th-href="@{/info/monthUser}">나의월간일정</a></li>-->
                 <li><a data-th-href="@{/mypage/uploadTrainingLog}">Training Log Upload</a></li>
                 <li><a data-th-href="@{/mypage/courseTraingLog}">Employee Training Log</a></li>
+                <li class="list-divider"></li>
                 <li><a data-th-href="@{/mypage/certificate/file/list}">수료증 Upload</a></li>
                 <li><a data-th-href="@{/mypage/certificate/view}">수료증발급</a></li>
                 <li><a data-th-href="@{/mypage/cv}">Curriculum Vitae</a></li>
                 <li><a data-th-href="@{/mypage/jd/approved}">Job Description</a></li>
+                <li class="list-divider"></li>
                 <li><a data-th-href="@{/mypage/myInfo}">사용자정보</a></li>
 <!--                <li><a data-th-href="@{/mypage/quiz}">시험/시험결과/수료증발급</a></li>-->
 <!--                <li><a data-th-href="@{/mypage/myinfo}">사용자정보</a></li>-->
@@ -245,10 +247,10 @@
 
             <!--Submenu-->
             <ul class="collapse">
-                <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0101')}">공지사항</a></li>
-                <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0104')}">What's New</a></li>
-                <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0102')}">법규/가이드라인</a></li>
-                <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0103')}">자료실</a></li>
+                <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0101')}" th:text="#{label.title.notice}">공지사항</a></li>
+                <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0104')}" th:text="#{label.title.news}">법령정보</a></li>
+                <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0102')}" th:text="#{label.title.guide}">가이드라인</a></li>
+                <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0103')}" th:text="#{label.title.pds}">자료실</a></li>
             </ul>
         </li>
 

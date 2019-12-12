@@ -89,7 +89,7 @@ public class CourseService {
     public Page<Course> getPageList(int active, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         Page<Course> courses = courseRepository.findAllByActiveGreaterThan(active, pageable);
 //
@@ -103,7 +103,7 @@ public class CourseService {
     public Page<Course> getPageLisByTypeId(String typeId, int active, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         Page<Course> courses = courseRepository.findAllByCourseMaster_IdAndActiveGreaterThan(typeId, active, pageable);
 
@@ -117,7 +117,7 @@ public class CourseService {
     public Page<Course> getPageLisByTypeId(String typeId, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         Page<Course> courses = courseRepository.findAllByCourseMaster_Id(typeId, pageable);
 
@@ -131,7 +131,7 @@ public class CourseService {
     public Page<Course> getPageLisByTypeIdAndTitleLike(String typeId, String title, int active, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         Page<Course> courses = courseRepository.findAllByCourseMaster_IdAndTitleLikeAndActiveGreaterThan(typeId, '%' + title + '%', active, pageable);
 
@@ -145,7 +145,7 @@ public class CourseService {
     public Page<Course> getPageListByTitleLike(String title, int active, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         Page<Course> courses = courseRepository.findAllByTitleLikeAndActiveGreaterThan('%' + title + '%', active, pageable);
 
@@ -159,7 +159,7 @@ public class CourseService {
     public Page<Course> getPageList(String typeId, int active, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         return courseRepository.findAllByCourseMaster_IdAndActiveGreaterThan(typeId, active, pageable);
     }
@@ -168,7 +168,7 @@ public class CourseService {
     public Page<Course> getPageListByTitleLikeOrContentLike(String typeId, String title, String content, int active, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         return courseRepository.findAllByCourseMaster_IdAndTitleLikeOrContentLikeAndActiveGreaterThan(typeId,"%" + title + "%", "%" + content + "%", active, pageable);
     }
@@ -177,7 +177,7 @@ public class CourseService {
     public Page<Course> getPageListByTitleLike(String typeId, String title, int active, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         return courseRepository.findAllByCourseMaster_IdAndTitleLikeAndActiveGreaterThan(typeId, "%" + title + "%", active, pageable);
     }
@@ -186,7 +186,7 @@ public class CourseService {
     public Page<Course> getPageListByContentLike(String typeId, String content, int active, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         return courseRepository.findAllByCourseMaster_IdAndContentLikeAndActiveGreaterThan(typeId, "%" + content + "%", active, pageable);
     }
@@ -257,7 +257,7 @@ public class CourseService {
     public Page<Course> getAllByIsNewEmpCourse(String isNewEmpCourse, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         return courseRepository.findAllByIsNewEmpCourse(isNewEmpCourse, pageable);
     }
@@ -280,7 +280,7 @@ public class CourseService {
     public Page<Course> getAllByUserRequest(String gubunId, String typeId, String title, int active, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         return findAllByUserRequest(gubunId + "%", typeId + "%", "%" + title + "%", active, pageable);
     }

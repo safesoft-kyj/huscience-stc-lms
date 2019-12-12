@@ -3,7 +3,6 @@ package com.dtnsm.lms.service;
 import com.dtnsm.lms.domain.Document;
 import com.dtnsm.lms.domain.DocumentFile;
 import com.dtnsm.lms.repository.DocumentRepository;
-import com.dtnsm.lms.repository.DocumentTemplateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,7 +31,7 @@ public class DocumentService {
     public Page<Document> getPageListByUserId(String userId, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         return documentRepository.findAllByAccount_UserId(userId, pageable);
     }
@@ -41,7 +40,7 @@ public class DocumentService {
     public Page<Document> getPageListByAccount_UserIdAndTitleLikeOrContentLike(String userId, String title, String content, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         return documentRepository.findAllByAccount_UserIdAndTitleLikeOrContentLike(userId, "%" + title + "%", "%" + content + "%", pageable);
     }
@@ -50,7 +49,7 @@ public class DocumentService {
     public Page<Document> getPageListByUserIdAndTitleLike(String userId, String title, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         return documentRepository.findAllByAccount_UserIdAndTitleLike(userId, "%" + title + "%", pageable);
     }
@@ -59,7 +58,7 @@ public class DocumentService {
     public Page<Document> getPageListByUserIdAndContentLike(String userId, String content, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         return documentRepository.findAllByAccount_UserIdAndContentLike(userId, "%" + content + "%", pageable);
     }
@@ -80,7 +79,7 @@ public class DocumentService {
     public Page<Document> getPageList(Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         return documentRepository.findAll(pageable);
     }
@@ -88,7 +87,7 @@ public class DocumentService {
     public Page<Document> getPageList(String templateId, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         return documentRepository.findAllByTemplate_Id(templateId, pageable);
     }
@@ -97,7 +96,7 @@ public class DocumentService {
     public Page<Document> getPageListByTitleLikeOrContentLike(String title, String content, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         return documentRepository.findAllByTitleLikeOrContentLike("%" + title + "%", "%" + content + "%", pageable);
     }
@@ -106,7 +105,7 @@ public class DocumentService {
     public Page<Document> getPageListByTitleLike(String title, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         return documentRepository.findAllByTitleLike("%" + title + "%", pageable);
     }
@@ -115,7 +114,7 @@ public class DocumentService {
     public Page<Document> getPageListByContentLike(String content, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         return documentRepository.findAllByContentLike("%" + content + "%", pageable);
     }
@@ -166,7 +165,7 @@ public class DocumentService {
     // 상태별 신청 조회
     public List<Document> getAllByStatus(String status) {
 
-        return documentRepository.findByFStatus(status);
+        return documentRepository.findByFnStatus(status);
     }
 
     // 상태별 신청 조회
@@ -174,9 +173,9 @@ public class DocumentService {
 
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
-        return documentRepository.findByFStatus(status, pageable);
+        return documentRepository.findByFnStatus(status, pageable);
     }
 
     // 최종 완결(신청결재, 교육)
@@ -189,7 +188,7 @@ public class DocumentService {
 
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         return documentRepository.findByAccount_UserId(userId, pageable);
     }
@@ -199,14 +198,14 @@ public class DocumentService {
 
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
-        return documentRepository.findByAccount_UserIdAndFStatus(userId, status, pageable);
+        return documentRepository.findByAccount_UserIdAndFnStatus(userId, status, pageable);
     }
 
     //진행중 문서
     public List<Document> getAllByStatus(String userId, String status) {
-        return documentRepository.findByAccount_UserIdAndFStatus(userId, status);
+        return documentRepository.findByAccount_UserIdAndFnStatus(userId, status);
     }
 
 
@@ -215,15 +214,15 @@ public class DocumentService {
 
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
-        return documentRepository.findByAccount_UserIdAndFStatus(userId, "1", pageable);
+        return documentRepository.findByAccount_UserIdAndFnStatus(userId, "1", pageable);
     }
 
 
     public List<Document> getCustomListByUserIdAndIsCommit(String userId, String isCommit) {
 
-        return documentRepository.findByAccount_UserIdAndFStatus(userId, isCommit);
+        return documentRepository.findByAccount_UserIdAndFnStatus(userId, isCommit);
     }
 
     // 2차결재자(과정 관리자) 미결, 완결 구분
@@ -231,9 +230,9 @@ public class DocumentService {
 
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
-        return documentRepository.findByAccount_UserIdAndFStatus(userId, status, pageable);
+        return documentRepository.findByAccount_UserIdAndFnStatus(userId, status, pageable);
     }
 
     // 과정유형, 사용자, 완결여부로 가져오기(과정 팦업창에서 사용)
@@ -246,7 +245,7 @@ public class DocumentService {
 
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         return documentRepository.findAllByTemplate_IdAndIsCommit(templateId, isCommit, pageable);
     }

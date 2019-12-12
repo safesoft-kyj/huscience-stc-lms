@@ -48,20 +48,20 @@ public class Document extends AuditorCreateEntity<String> {
     private String requestDate;
 
     // 신청일
-    private Date fWdate;
+    private Date fnWdate;
 
     // 총결재자 수
     @ColumnDefault("0")
-    private int fFinalCount = 0;
+    private int fnFinalCount = 0;
 
     // 현재결재자 순번
     @ColumnDefault("0")
-    private int fCurrSeq = 0;
+    private int fnCurrSeq = 0;
 
     // 전자 결재 상태 : 0: 진행중, 1: 승인, 2:기각
     @Column(length = 1)
     @ColumnDefault("'0'")
-    private String fStatus = "0";
+    private String fnStatus = "0";
 
     // 최종 종결 유무
     @Column(length = 1)

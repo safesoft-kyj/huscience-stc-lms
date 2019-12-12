@@ -53,7 +53,7 @@
                                 <tbody>
                                 <tr>
                                     <td>신청일자</td>
-                                    <td th:text="${document.getFWdate()} ? ${#dates.format(document.getFWdate(), 'yyyy-MMM-dd')} : ${document.getFWdate()}" class="text-center"></td>
+                                    <td th:text="${document.getFnWdate()} ? ${#dates.format(document.getFnWdate(), 'yyyy-MMM-dd')} : ${document.getFnWdate()}" class="text-center"></td>
                                 </tr>
                                 <tr>
                                     <td>신청부서</td>
@@ -66,7 +66,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <th:block th:if="${document.getFFinalCount() < 2}">
+                        <th:block th:if="${document.getFnFinalCount() < 2}">
                             <div class="col-sm-3"></div>
                         </th:block>
                         <div class="col-sm-5">
@@ -83,16 +83,16 @@
                                         <div>결<br/><br/>재</div>
                                     </td>
                                     <th:block th:each="border, index : ${document.getDocumentAccountOrders()}">
-                                        <th:block th:if="${border.getFKind().equals('1')}">
-                                            <td th:text="${border.getFUser().getName()}" class="text-center">
+                                        <th:block th:if="${border.getFnKind().equals('1')}">
+                                            <td th:text="${border.getFnUser().getName()}" class="text-center">
                                             </td>
                                         </th:block>
                                     </th:block>
                                 </tr>
                                 <tr>
                                     <th:block th:each="border, index : ${document.getDocumentAccountOrders()}">
-                                        <th:block th:if="${border.getFKind().equals('1')}">
-                                            <td th:switch="${border.getFStatus()}" class="text-center" style="vertical-align: middle">
+                                        <th:block th:if="${border.getFnKind().equals('1')}">
+                                            <td th:switch="${border.getFnStatus()}" class="text-center" style="vertical-align: middle">
                                                 <div th:case="${'0'}" class="text-info sign" th:text="${''}"></div>
                                                 <th:block th:case="${'1'}">
                                                     <th:block th:if="${#strings.isEmpty(border.getSignature())}">
@@ -109,8 +109,8 @@
                                 </tr>
                                 <tr>
                                     <th:block th:each="border, index : ${document.getDocumentAccountOrders()}">
-                                        <th:block th:if="${border.getFKind().equals('1')}">
-                                            <td th:text="${border.getFDate()} ? ${#dates.format(border.getFDate(), 'yyyy/MMM/dd')} : ${border.getFDate()}" class="text-center"></td>
+                                        <th:block th:if="${border.getFnKind().equals('1')}">
+                                            <td th:text="${border.getFnDate()} ? ${#dates.format(border.getFnDate(), 'yyyy/MMM/dd')} : ${border.getFnDate()}" class="text-center"></td>
                                             </td>
                                         </th:block>
                                     </th:block>
@@ -119,7 +119,7 @@
                             </table>
                         </div>
                         <div class="col-sm-3">
-                            <th:block th:if="${document.getFFinalCount() >= 2}">
+                            <th:block th:if="${document.getFnFinalCount() >= 2}">
                                 <table class="table table-bordered col-sm-4" cellspacing="0" width="100%">
                                     <colgroup>
                                         <col width="10%">
@@ -134,16 +134,16 @@
                                         </td>
 
                                         <th:block th:each="border, index : ${document.getDocumentAccountOrders()}">
-                                            <th:block th:if="${border.getFKind().equals('2')}">
-                                                <td th:text="${border.getFUser().getName()}" class="text-center">
+                                            <th:block th:if="${border.getFnKind().equals('2')}">
+                                                <td th:text="${border.getFnUser().getName()}" class="text-center">
                                                 </td>
                                             </th:block>
                                         </th:block>
                                     </tr>
                                     <tr>
                                         <th:block th:each="border, index : ${document.getDocumentAccountOrders()}">
-                                            <th:block th:if="${border.getFKind().equals('2')}">
-                                                <td th:switch="${border.getFStatus()}" class="text-center" style="vertical-align: middle">
+                                            <th:block th:if="${border.getFnKind().equals('2')}">
+                                                <td th:switch="${border.getFnStatus()}" class="text-center" style="vertical-align: middle">
                                                     <div th:case="${'0'}" class="text-info sign" th:text="${''}"></div>
                                                     <th:block th:case="${'1'}">
                                                         <th:block th:if="${#strings.isEmpty(border.getSignature())}">
@@ -160,8 +160,8 @@
                                     </tr>
                                     <tr>
                                         <th:block th:each="border, index : ${document.getDocumentAccountOrders()}">
-                                            <th:block th:if="${border.getFKind().equals('2')}">
-                                                <td th:text="${border.getFDate()} ? ${#dates.format(border.getFDate(), 'yyyy/MMM/dd')} : ${'&nbsp;'}" class="text-center"></td>
+                                            <th:block th:if="${border.getFnKind().equals('2')}">
+                                                <td th:text="${border.getFnDate()} ? ${#dates.format(border.getFnDate(), 'yyyy/MMM/dd')} : ${'&nbsp;'}" class="text-center"></td>
                                                 </td>
                                             </th:block>
                                         </th:block>

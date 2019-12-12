@@ -35,9 +35,9 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
 
 
     //  status 0:진행중, 1:최종승인, 2:최종기각
-    List<Document> findByAccount_UserIdAndFStatus(String userId, String status);
+    List<Document> findByAccount_UserIdAndFnStatus(String userId, String status);
 
-    Page<Document> findByAccount_UserIdAndFStatus(String userId, String status, Pageable pageable);
+    Page<Document> findByAccount_UserIdAndFnStatus(String userId, String status, Pageable pageable);
 
     List<Document> findByAccount_UserId(String userId);
 
@@ -52,9 +52,9 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
     void deleteByAccount_UserId(String userId);
 
     // 상태별 신청 조회
-    List<Document> findByFStatus(String status);
+    List<Document> findByFnStatus(String status);
 
-    Page<Document> findByFStatus(String status, Pageable pageable);
+    Page<Document> findByFnStatus(String status, Pageable pageable);
 
 
     Document findByIdAndAccount_UserId(long docId, String userId);

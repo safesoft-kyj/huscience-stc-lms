@@ -36,7 +36,7 @@ public class CourseMasterService {
     public Page<CourseMaster> getPageList(Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.ASC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.ASC, "createdDate"));
 
         return courseMasterRepository.findAll(pageable);
     }

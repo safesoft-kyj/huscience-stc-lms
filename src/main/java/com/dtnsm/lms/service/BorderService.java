@@ -48,7 +48,7 @@ public class BorderService {
     public Page<Border> getPageList(Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         return borderRepository.findAll(pageable);
     }
@@ -62,7 +62,7 @@ public class BorderService {
 //        List<Sort> sorts = new ArrayList<>();
 //        sorts.add(new Sort(Sort.Direction.DESC, "createdDate"));
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "isNotice", "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "isNotice", "createdDate"));
 
 
         return borderRepository.findAllByBorderMaster_Id(typeId, pageable);
@@ -72,7 +72,7 @@ public class BorderService {
     public Page<Border> getPageListByTitleLikeOrContentLike(String typeId, String title, String content, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "isNotice", "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "isNotice", "createdDate"));
 
         return borderRepository.findAllByBorderMaster_IdAndTitleLikeOrContentLike(typeId,"%" + title + "%", "%" + content + "%", pageable);
     }
@@ -81,7 +81,7 @@ public class BorderService {
     public Page<Border> getPageListByTitleLike(String typeId, String title, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "isNotice", "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "isNotice", "createdDate"));
 
         return borderRepository.findAllByBorderMaster_IdAndTitleLike(typeId, "%" + title + "%", pageable);
     }
@@ -90,7 +90,7 @@ public class BorderService {
     public Page<Border> getPageListByContentLike(String typeId, String content, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "isNotice", "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "isNotice", "createdDate"));
 
         return borderRepository.findAllByBorderMaster_IdAndContentLike(typeId, "%" + content + "%", pageable);
     }

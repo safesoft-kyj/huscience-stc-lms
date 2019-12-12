@@ -1,23 +1,17 @@
 package com.dtnsm.lms.service;
 
-import com.dtnsm.common.entity.JobDescription;
-import com.dtnsm.common.entity.QJobDescription;
 import com.dtnsm.lms.auth.UserService;
 import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import com.dtnsm.lms.repository.CourseAccountOrderRepository;
 import com.dtnsm.lms.repository.CourseAccountRepository;
 import com.dtnsm.lms.repository.CourseCertificateInfoRepository;
-import com.dtnsm.lms.util.SessionUtil;
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -105,7 +99,7 @@ public class CourseAccountService {
     // 상태별 신청 조회
     public List<CourseAccount> getAllByStatus(String status) {
 
-        return courseAccountRepository.findByFStatus(status);
+        return courseAccountRepository.findByFnStatus(status);
     }
 
     // 상태별 신청 조회
@@ -113,9 +107,9 @@ public class CourseAccountService {
 
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
-        return courseAccountRepository.findByFStatus(status, pageable);
+        return courseAccountRepository.findByFnStatus(status, pageable);
     }
 
     // 최종 완결(신청결재, 교육)
@@ -128,7 +122,7 @@ public class CourseAccountService {
 
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         return courseAccountRepository.findByAccount_UserId(userId, pageable);
     }
@@ -138,13 +132,13 @@ public class CourseAccountService {
 
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
-        return courseAccountRepository.findByAccount_UserIdAndFStatus(userId, status, pageable);
+        return courseAccountRepository.findByAccount_UserIdAndFnStatus(userId, status, pageable);
     }
     //진행중 문서
     public List<CourseAccount> getAllByStatus(String userId, String status) {
-        return courseAccountRepository.findByAccount_UserIdAndFStatus(userId, status);
+        return courseAccountRepository.findByAccount_UserIdAndFnStatus(userId, status);
     }
 
 
@@ -153,15 +147,15 @@ public class CourseAccountService {
 
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
-        return courseAccountRepository.findByAccount_UserIdAndFStatus(userId, "1", pageable);
+        return courseAccountRepository.findByAccount_UserIdAndFnStatus(userId, "1", pageable);
     }
 
 
     public List<CourseAccount> getCustomListByUserIdAndIsCommit(String userId, String isCommit) {
 
-        return courseAccountRepository.findByAccount_UserIdAndFStatus(userId, isCommit);
+        return courseAccountRepository.findByAccount_UserIdAndFnStatus(userId, isCommit);
     }
 
     // 2차결재자(과정 관리자) 미결, 완결 구분
@@ -169,9 +163,9 @@ public class CourseAccountService {
 
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
-        return courseAccountRepository.findByAccount_UserIdAndFStatus(userId, status, pageable);
+        return courseAccountRepository.findByAccount_UserIdAndFnStatus(userId, status, pageable);
     }
 
 
@@ -180,7 +174,7 @@ public class CourseAccountService {
 
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         return courseAccountRepository.findAllByAccount_UserIdAndIsCommitAndCourse_IsCerti(userId, isCommit, isCerti, pageable);
     }
@@ -197,7 +191,7 @@ public class CourseAccountService {
 
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         return courseAccountRepository.findAllByCourse_CourseMaster_IdAndAccount_UserIdAndIsCommit(typeId, userId, isCommit, pageable);
     }
@@ -205,7 +199,7 @@ public class CourseAccountService {
 
     // 과정유형, 사용자, 완결여부로 가져오기(전자결재 팦업창에서 사용)
     public List<CourseAccount> getAllByCourse_CourseMaster_IdAndAccount_UserIdAndFStatusAndIsCommit(String typeId, String userId, String fStatus, String isCommit) {
-        return courseAccountRepository.findAllByCourse_CourseMaster_IdAndAccount_UserIdAndFStatusAndIsCommit(typeId, userId, fStatus, isCommit);
+        return courseAccountRepository.findAllByCourse_CourseMaster_IdAndAccount_UserIdAndFnStatusAndIsCommit(typeId, userId, fStatus, isCommit);
     }
 
     // 과정유형, 사용자, 완결여부로 가져오기(전자결재 팦업창에서 사용)
@@ -213,9 +207,9 @@ public class CourseAccountService {
 
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, new Sort(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
-        return courseAccountRepository.findAllByCourse_CourseMaster_IdAndAccount_UserIdAndFStatusAndIsCommit(typeId, userId, fStatus, isCommit, pageable);
+        return courseAccountRepository.findAllByCourse_CourseMaster_IdAndAccount_UserIdAndFnStatusAndIsCommit(typeId, userId, fStatus, isCommit, pageable);
     }
 
 

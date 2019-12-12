@@ -46,12 +46,12 @@
 
                             <div id="demo-external-events">
                                 <p class="text-muted text-sm text-uppercase">일자선택</p>
-                                <a href="#" th:href="@{/info/requestMonth}" class="fc-event fc-list" data-class="success">신청일 보기</a>
+                                <a href="#" th:href="@{/info/requestMonth}" class="fc-event fc-list fa-calendar-check-o" data-class="warning">신청일 보기</a>
                                 <a href="#" th:href="@{/info/month}"  class="fc-event fc-list" data-class="success">교육일 보기</a>
                                 <hr>
                                 <p class="text-muted text-sm text-uppercase">Training</p>
                                 <hr>
-                                <div class="fc-event" data-class="warning">Self-training</div>
+<!--                                <div class="fc-event" data-class="warning">Self-training</div>-->
                                 <div class="fc-event" data-class="success">Class training</div>
                                 <div class="fc-event" data-class="mint">부서별교육</div>
                                 <div class="fc-event" data-class="purple">외부교육</div>
@@ -72,12 +72,14 @@
         </div><!-- Page content End -->
     </div><!-- Content container End -->
 </th:block>
+<div class="calendar" id="calendarList">aaaaaaaaaaaaaaaaaaaa</div>
 
 <th:block layout:fragment="custom_js">
     <!--Full Calendar [ OPTIONAL ]-->
     <script th:src="@{/default/plugins/fullcalendar/lib/moment.min.js}"></script>
     <script th:src="@{/default/plugins/fullcalendar/lib/jquery-ui.custom.min.js}"></script>
     <script th:src="@{/default/plugins/fullcalendar/fullcalendar.min.js}"></script>
+    <script th:src="@{/default/plugins/fullcalendar/lang-all.js}"></script>
 
     <!--Full Calendar [ SAMPLE ]-->
     <script>
@@ -85,26 +87,39 @@
         $(document).on('nifty.ready', function() {
 
             $('#calendar').fullCalendar({
+                // plugins: [ 'list' ],
+                lang : "ko",
+                // buttonText: {
+                //     listMonth: 'listMonth',
+                //     listYear: 'List Year',
+                //     listWeek: 'List Week',
+                //     listDay: 'List Day'
+                // },
                 header: {
                     left: 'today, prevYear, nextYear, viewWeekends',
                     center: 'prev, title, next',
-                    right: 'month,agendaWeek,agendaDay,listWeek'
+                    // right: 'month'
+                    // right: 'month, listMonth'
                 },
                 views: {
                     month: {
                         columnFormat: 'dddd'
                     },
-                    agendaWeek: {
-                        columnFormat: 'M/D ddd',
-                        titleFormat: 'YYYY년 M월 D일',
-                        eventLimit: false
-                    },
-                    agendaDay: {
-                        columnFormat: 'dddd',
-                        eventLimit: false
-                    },
-                    listWeek: {
-                        columnFormat: ''
+                    // agendaWeek: {
+                    //     columnFormat: 'M/D ddd',
+                    //     titleFormat: 'YYYY년 M월 D일',
+                    //     eventLimit: false
+                    // },
+                    // agendaDay: {
+                    //     columnFormat: 'dddd',
+                    //     eventLimit: false
+                    // },
+                    // listWeek: {
+                    //     columnFormat: ''
+                    // },
+                    listMonth: {
+                        buttonText: 'listMonth',
+                        displayEventTime: true
                     }
                 },
                 // monthNames: ["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"],
@@ -112,9 +127,9 @@
                 editable: true,
                 //locale: 'ko',
                 droppable: true, // this allows things to be dropped onto the calendar
-                 // eventLimit: true,
-                 // minTime: '10:00:00',
-                 // maxTime: '24:00:00',
+                 eventLimit: true,
+                 minTime: '08:00:00',
+                 maxTime: '21:00:00',
                 // timeFormat: 'H(:mm)',
                 allDayDefault: true,
                 drop: function() {
@@ -125,10 +140,23 @@
                     }
                 },
                // defaultDate: '2019-10-08',
-                //eventLimit: true, // allow "more" link when too many events
+                eventLimit: true, // allow "more" link when too many events
                 events: {
                     url : "/info/api/month/requestCalendar"
                 }
+            });
+
+
+            $('#calendarList').fullCalendar({
+                //Options for Calendar View
+                defaultView: 'listMonth',
+                events: [
+                    {
+                        title: 'My Birthday',
+                        start  : '2019-12-01',
+                        end    : '2019-12-31'
+                    }
+                ],
             });
         });
 

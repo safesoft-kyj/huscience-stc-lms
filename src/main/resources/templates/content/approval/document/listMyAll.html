@@ -72,7 +72,7 @@
                                         <td th:text="${border.getRequestDate()}" class="text-center"></td>
                                         <td th:text="${border.getAccount().getName()}" class="text-center"></td>
                                         <td class="text-center">
-                                            <div th:switch="${border.getFStatus()}">
+                                            <div th:switch="${border.getFnStatus()}">
                                                 <span th:case="${'0'}" class="text-info" th:text="${'진행중'}"></span>
                                                 <span th:case="${'1'}" class="text-success" th:text="${'최종승인'}"></span>
                                                 <span th:case="${'2'}" class="text-danger" th:text="${'기각'}"></span>

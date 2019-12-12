@@ -12,32 +12,32 @@ public interface DocumentAccountOrderRepository extends JpaRepository<DocumentAc
 
     DocumentAccountOrder findById(long id);
 
-    DocumentAccountOrder findByDocumentAccount_IdAndFSeq(long fNo, int seq);
+    DocumentAccountOrder findByDocumentAccount_IdAndFnSeq(long fNo, int seq);
 
     // 사용자가 결재한 모든 문서
-    Page<DocumentAccountOrder> findAllByFUser_UserIdAndFSeqGreaterThan(String userId, int seq, Pageable pageable);
+    Page<DocumentAccountOrder> findAllByFnUser_UserIdAndFnSeqGreaterThan(String userId, int seq, Pageable pageable);
 
     // 사용자가 결재한 모든 문서
-    List<DocumentAccountOrder> findAllByFUser_UserIdAndFSeqGreaterThan(String userId, int seq);
+    List<DocumentAccountOrder> findAllByFnUser_UserIdAndFnSeqGreaterThan(String userId, int seq);
 
     // 사용자별 진행문서(fStatus = '0')
-    Page<DocumentAccountOrder> findAllByFUser_UserIdAndFStatus(String userId, String fStatus, Pageable pageable);
+    Page<DocumentAccountOrder> findAllByFnUser_UserIdAndFnStatus(String userId, String fStatus, Pageable pageable);
 
     // 사용자별 미결문서(fStatus = '0')
-    List<DocumentAccountOrder> findAllByFUser_UserIdAndFStatus(String userId, String fStatus);
+    List<DocumentAccountOrder> findAllByFnUser_UserIdAndFnStatus(String userId, String fStatus);
 
     // 사용자별 미결문서(fNext = '1', fStatus = '0')
-    Page<DocumentAccountOrder> findAllByFUser_UserIdAndFNextAndFStatus(String userId, String fNext, String fStatus, Pageable pageable);
+    Page<DocumentAccountOrder> findAllByFnUser_UserIdAndFnNextAndFnStatus(String userId, String fNext, String fStatus, Pageable pageable);
 
     // 사용자별 미결문서(fNext = '1', fStatus = '0')
-    List<DocumentAccountOrder> findAllByFUser_UserIdAndFNextAndFStatus(String userId, String fNext, String fStatus);
+    List<DocumentAccountOrder> findAllByFnUser_UserIdAndFnNextAndFnStatus(String userId, String fNext, String fStatus);
 
 
     // 결재 차수의 미결문서(fNext = '1', fStatus = '0', fSeq = 1 or 2)
-    Page<DocumentAccountOrder> findAllByFUser_UserIdAndFNextAndFStatusAndFSeq(String userId, String fNext, String fStatus, int fSeq, Pageable pageable);
+    Page<DocumentAccountOrder> findAllByFnUser_UserIdAndFnNextAndFnStatusAndFnSeq(String userId, String fNext, String fStatus, int fSeq, Pageable pageable);
 
     // 결재 차수의 미결문서(fNext = '1', fStatus = '0', fSeq = 1 or 2)
-    List<DocumentAccountOrder> findAllByFUser_UserIdAndFNextAndFStatusAndFSeq(String userId, String fNext, String fStatus, int fSeq);
+    List<DocumentAccountOrder> findAllByFnUser_UserIdAndFnNextAndFnStatusAndFnSeq(String userId, String fNext, String fStatus, int fSeq);
 
 
 

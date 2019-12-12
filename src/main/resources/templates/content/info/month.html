@@ -46,12 +46,12 @@
 
                             <div id="demo-external-events">
                                 <p class="text-muted text-sm text-uppercase">일자선택</p>
-                                <a href="#" th:href="@{/info/requestMonth}" class="fc-event fc-list" data-class="success">신청일 보기</a>
-                                <a href="#" th:href="@{/info/month}"  class="fc-event fc-list" data-class="success">교육일 보기</a>
+                                <a href="#" th:href="@{/info/requestMonth}" class="fc-event fc-list active" data-class="warning">신청일 보기</a>
+                                <string><a href="#" th:href="@{/info/month}"  class="fc-event fc-list" data-class="success">교육일 보기</a></string>
                                 <hr>
                                 <p class="text-muted text-sm text-uppercase">Training</p>
                                 <hr>
-                                <div class="fc-event" data-class="warning">Self-training</div>
+<!--                                <div class="fc-event" data-class="warning">Self-training</div>-->
                                 <div class="fc-event" data-class="success">Class training</div>
                                 <div class="fc-event" data-class="mint">부서별교육</div>
                                 <div class="fc-event" data-class="purple">외부교육</div>
@@ -78,6 +78,7 @@
     <script th:src="@{/default/plugins/fullcalendar/lib/moment.min.js}"></script>
     <script th:src="@{/default/plugins/fullcalendar/lib/jquery-ui.custom.min.js}"></script>
     <script th:src="@{/default/plugins/fullcalendar/fullcalendar.min.js}"></script>
+    <script th:src="@{/default/plugins/fullcalendar/lang-all.js}"></script>
 
     <!--Full Calendar [ SAMPLE ]-->
     <script>
@@ -85,10 +86,13 @@
         $(document).on('nifty.ready', function() {
 
             $('#calendar').fullCalendar({
+                // plugins: [ 'list' ],
+                lang : "ko",
                 header: {
                     left: 'today, prevYear, nextYear, viewWeekends',
                     center: 'prev, title, next',
-                    right: 'month,agendaWeek,agendaDay,listWeek'
+                    // right: 'month,listMonth'
+                    // right: 'month,agendaWeek,agendaDay,listWeek'
                 },
                 views: {
                     month: {
@@ -112,9 +116,11 @@
                 editable: true,
                 //locale: 'ko',
                 droppable: true, // this allows things to be dropped onto the calendar
-                 // eventLimit: true,
-                 // minTime: '10:00:00',
-                 // maxTime: '24:00:00',
+                 eventLimit: true,
+                 minTime: '08:00:00',
+                 maxTime: '21:00:00',
+                // dayNames: ["일요일","월요일","화요일","수요일","목요일","금요일","토요일"],
+                // dayNamesShort: ["일","월","화","수","목","금","토"],
                 // timeFormat: 'H(:mm)',
                 allDayDefault: true,
                 drop: function() {

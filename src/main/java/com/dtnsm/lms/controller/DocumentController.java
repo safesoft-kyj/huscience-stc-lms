@@ -300,7 +300,7 @@ public class DocumentController {
             document.setDocumentCourseAccountList(oldDocument.getDocumentCourseAccountList());
 
             // 다음결재자가 결재를 하지 않은 경우는 수정한다.
-            if (oldDocument.getFCurrSeq() <= 1) {
+            if (oldDocument.getFnCurrSeq() <= 1) {
 
                 Document document1 = documentService.save(document);
 
@@ -323,7 +323,7 @@ public class DocumentController {
         // 다음결재자가 결재를 하지 않은 경우는 삭제한다.
         if (document != null) {
 
-            if (document.getFCurrSeq() <= 1) {
+            if (document.getFnCurrSeq() <= 1) {
 
                 documentService.delete(document);
 

@@ -8,11 +8,8 @@ import com.dtnsm.lms.domain.DocumentAccountOrder;
 import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import com.dtnsm.lms.domain.constant.MailSendType;
 import com.dtnsm.lms.util.DateUtil;
-import com.dtnsm.lms.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 @Service
 public class ApprovalDocumentProcessService {
@@ -63,18 +60,18 @@ public class ApprovalDocumentProcessService {
         // 기안
         document.setAccount(account);
         document.setRequestDate(DateUtil.getTodayString());
-        document.setFWdate(DateUtil.getToday());
-        document.setFStatus("0");
-        document.setFCurrSeq(1);
+        document.setFnWdate(DateUtil.getToday());
+        document.setFnStatus("0");
+        document.setFnCurrSeq(1);
 
         // 결재자수 Max 설정
         if(isAppr1.equals("Y") && isAppr2.equals("Y")) {
-            document.setFFinalCount(2);
+            document.setFnFinalCount(2);
         } else if(isAppr1.equals("Y")) {
-            document.setFFinalCount(1);
+            document.setFnFinalCount(1);
         } else {
-            document.setFFinalCount(0);
-            document.setFStatus("1");      // 전자결재가 없으면 완료한것으로 처리한다.
+            document.setFnFinalCount(0);
+            document.setFnStatus("1");      // 전자결재가 없으면 완료한것으로 처리한다.
         }
 
         Document saveDocument = documentService.save(document);
@@ -82,30 +79,30 @@ public class ApprovalDocumentProcessService {
 
         // 내결재사항을 추가한다.
         DocumentAccountOrder documentAccountOrder = new DocumentAccountOrder();
-        documentAccountOrder.setFUser(account);
+        documentAccountOrder.setFnUser(account);
         documentAccountOrder.setSignature(signatureService.getSign(account.getUserId()));
         documentAccountOrder.setDocument(saveDocument);
 
         // fKind : 0:초기, 1:결재(팀장), 2. 합의(관리자)
-        documentAccountOrder.setFKind("1");
-        documentAccountOrder.setFStatus("1");
-        documentAccountOrder.setFSeq(0);
-        documentAccountOrder.setFNext("0");
-        documentAccountOrder.setFDate(DateUtil.getToday());
-        documentAccountOrder.setFComment("");
+        documentAccountOrder.setFnKind("1");
+        documentAccountOrder.setFnStatus("1");
+        documentAccountOrder.setFnSeq(0);
+        documentAccountOrder.setFnNext("0");
+        documentAccountOrder.setFnDate(DateUtil.getToday());
+        documentAccountOrder.setFnComment("");
         documentAccountOrderService.save(documentAccountOrder);
 
 
         if (isAppr1.equals("Y")) {
             Account apprAccount2 = userService.getAccountByUserId(account.getParentUserId());
             DocumentAccountOrder documentAccountOrder2 = new DocumentAccountOrder();
-            documentAccountOrder2.setFUser(apprAccount2);
+            documentAccountOrder2.setFnUser(apprAccount2);
             documentAccountOrder2.setDocument(saveDocument);
             // fKind : 0:초기, 1:결재(팀장), 2. 합의(관리자)
-            documentAccountOrder2.setFKind("1");
-            documentAccountOrder2.setFStatus("0");
-            documentAccountOrder2.setFSeq(1);
-            documentAccountOrder2.setFNext("1");
+            documentAccountOrder2.setFnKind("1");
+            documentAccountOrder2.setFnStatus("0");
+            documentAccountOrder2.setFnSeq(1);
+            documentAccountOrder2.setFnNext("1");
 
             documentAccountOrderService.save(documentAccountOrder2);
 
@@ -116,12 +113,12 @@ public class ApprovalDocumentProcessService {
         if (isAppr2.equals("Y")) {
             Account apprAccount3 = userService.getAccountByUserId(courseManagerService.getCourseManager().getUserId());
             DocumentAccountOrder documentAccountOrder3 = new DocumentAccountOrder();
-            documentAccountOrder3.setFUser(apprAccount3);
+            documentAccountOrder3.setFnUser(apprAccount3);
             documentAccountOrder3.setDocument(saveDocument);
             // fKind : 0:초기, 1:결재(팀장), 2. 합의(관리자)
-            documentAccountOrder3.setFKind("2");
-            documentAccountOrder3.setFStatus("0");
-            documentAccountOrder3.setFSeq(2);
+            documentAccountOrder3.setFnKind("2");
+            documentAccountOrder3.setFnStatus("0");
+            documentAccountOrder3.setFnSeq(2);
 
             documentAccountOrderService.save(documentAccountOrder3);
 
@@ -137,21 +134,21 @@ public class ApprovalDocumentProcessService {
     // 1차 승인 처리
     public void documentApproval1Proces(DocumentAccountOrder documentAccountOrder) {
 
-        int finalCount = documentAccountOrder.getDocument().getFFinalCount();
+        int finalCount = documentAccountOrder.getDocument().getFnFinalCount();
 
-        documentAccountOrder.setSignature(signatureService.getSign(documentAccountOrder.getFUser().getUserId()));
-        documentAccountOrder.setFDate(DateUtil.getToday());
-        documentAccountOrder.setFNext("0");
-        documentAccountOrder.setFStatus("1");
-        documentAccountOrder.setFComment("");
+        documentAccountOrder.setSignature(signatureService.getSign(documentAccountOrder.getFnUser().getUserId()));
+        documentAccountOrder.setFnDate(DateUtil.getToday());
+        documentAccountOrder.setFnNext("0");
+        documentAccountOrder.setFnStatus("1");
+        documentAccountOrder.setFnComment("");
 
         documentAccountOrder = documentAccountOrderService.save(documentAccountOrder);
 
         Document document = documentAccountOrder.getDocument();
 
-        if(finalCount == documentAccountOrder.getFSeq()) {   // 종결처리
+        if(finalCount == documentAccountOrder.getFnSeq()) {   // 종결처리
             //  승인: 1, 기각 : 2
-            document.setFStatus("1");    // 0 진행중, 1:승인, 2:기각
+            document.setFnStatus("1");    // 0 진행중, 1:승인, 2:기각
             document.setIsCommit("1");   // 0 진행중 1:종결
 
             Document document1 = documentService.save(document);
@@ -178,17 +175,17 @@ public class ApprovalDocumentProcessService {
             // 최종 승인이면 기안자에게 메일 전송
             sendMail(document.getAccount(), document1, MailSendType.APPROVAL1);
         } else {
-            DocumentAccountOrder nextOrder = documentAccountOrderService.getByFnoAndSeq(documentAccountOrder.getDocument().getId(), documentAccountOrder.getFSeq()+1);
+            DocumentAccountOrder nextOrder = documentAccountOrderService.getByFnoAndSeq(documentAccountOrder.getDocument().getId(), documentAccountOrder.getFnSeq()+1);
             if (nextOrder != null) {
 
-                nextOrder.setFNext("1");
+                nextOrder.setFnNext("1");
                 nextOrder = documentAccountOrderService.save(nextOrder);
 
                 // 마스터에 다음 결재자 순번을 업데이트 한다.
-                document.setFCurrSeq(nextOrder.getFSeq());
+                document.setFnCurrSeq(nextOrder.getFnSeq());
                 documentService.save(document);
 
-                sendMail(nextOrder.getFUser(), document, MailSendType.APPROVAL1);
+                sendMail(nextOrder.getFnUser(), document, MailSendType.APPROVAL1);
             }
         }
     }
@@ -196,18 +193,18 @@ public class ApprovalDocumentProcessService {
     // 전자결재 1차 기각 처리
     public void documentReject1Proces(DocumentAccountOrder documentAccountOrder) {
 
-        int finalCount = documentAccountOrder.getDocument().getFFinalCount();
+        int finalCount = documentAccountOrder.getDocument().getFnFinalCount();
 
-        documentAccountOrder.setSignature(signatureService.getSign(documentAccountOrder.getFUser().getUserId()));
-        documentAccountOrder.setFDate(DateUtil.getToday());
-        documentAccountOrder.setFNext("0");
-        documentAccountOrder.setFStatus("2");
+        documentAccountOrder.setSignature(signatureService.getSign(documentAccountOrder.getFnUser().getUserId()));
+        documentAccountOrder.setFnDate(DateUtil.getToday());
+        documentAccountOrder.setFnNext("0");
+        documentAccountOrder.setFnStatus("2");
 
         documentAccountOrder = documentAccountOrderService.save(documentAccountOrder);
 
         Document document = documentAccountOrder.getDocument();
 
-        document.setFStatus("2");
+        document.setFnStatus("2");
 
         documentService.save(document);
 
@@ -218,21 +215,21 @@ public class ApprovalDocumentProcessService {
     // 전자결재 2차 승인 처리
     public void documentApproval2Proces(DocumentAccountOrder documentAccountOrder) {
 
-        int finalCount = documentAccountOrder.getDocument().getFFinalCount();
+        int finalCount = documentAccountOrder.getDocument().getFnFinalCount();
 
-        documentAccountOrder.setSignature(signatureService.getSign(documentAccountOrder.getFUser().getUserId()));
-        documentAccountOrder.setFDate(DateUtil.getToday());
-        documentAccountOrder.setFNext("0");
-        documentAccountOrder.setFStatus("1");
-        documentAccountOrder.setFComment("");
+        documentAccountOrder.setSignature(signatureService.getSign(documentAccountOrder.getFnUser().getUserId()));
+        documentAccountOrder.setFnDate(DateUtil.getToday());
+        documentAccountOrder.setFnNext("0");
+        documentAccountOrder.setFnStatus("1");
+        documentAccountOrder.setFnComment("");
 
         documentAccountOrder = documentAccountOrderService.save(documentAccountOrder);
 
         Document document = documentAccountOrder.getDocument();
 
-        if(finalCount == documentAccountOrder.getFSeq()) {   // 종결처리
+        if(finalCount == documentAccountOrder.getFnSeq()) {   // 종결처리
             //  승인: 1, 기각 : 2
-            document.setFStatus("1");
+            document.setFnStatus("1");
             document.setIsCommit("1");   // 0 진행중 1:종결
 
             Document document1 = documentService.save(document);
@@ -258,17 +255,17 @@ public class ApprovalDocumentProcessService {
             // 최종 승인이면 기안자에게 메일 전송
             sendMail(document.getAccount(), document1, MailSendType.APPROVAL2);
         } else {
-            DocumentAccountOrder nextOrder = documentAccountOrderService.getByFnoAndSeq(documentAccountOrder.getDocument().getId(), documentAccountOrder.getFSeq()+1);
+            DocumentAccountOrder nextOrder = documentAccountOrderService.getByFnoAndSeq(documentAccountOrder.getDocument().getId(), documentAccountOrder.getFnSeq()+1);
             if (nextOrder != null) {
 
-                nextOrder.setFNext("1");
+                nextOrder.setFnNext("1");
                 nextOrder = documentAccountOrderService.save(nextOrder);
 
                 // 마스터에 다음 결재자 순번을 업데이트 한다.
-                document.setFCurrSeq(nextOrder.getFSeq());
+                document.setFnCurrSeq(nextOrder.getFnSeq());
                 documentService.save(document);
 
-                sendMail(nextOrder.getFUser(), document, MailSendType.APPROVAL2);
+                sendMail(nextOrder.getFnUser(), document, MailSendType.APPROVAL2);
             }
         }
     }
@@ -276,18 +273,18 @@ public class ApprovalDocumentProcessService {
     // 전자결재 2차 기각 처리
     public void documentReject2Proces(DocumentAccountOrder documentAccountOrder) {
 
-        int finalCount = documentAccountOrder.getDocument().getFFinalCount();
+        int finalCount = documentAccountOrder.getDocument().getFnFinalCount();
 
-        documentAccountOrder.setSignature(signatureService.getSign(documentAccountOrder.getFUser().getUserId()));
-        documentAccountOrder.setFDate(DateUtil.getToday());
-        documentAccountOrder.setFNext("0");
-        documentAccountOrder.setFStatus("2");
+        documentAccountOrder.setSignature(signatureService.getSign(documentAccountOrder.getFnUser().getUserId()));
+        documentAccountOrder.setFnDate(DateUtil.getToday());
+        documentAccountOrder.setFnNext("0");
+        documentAccountOrder.setFnStatus("2");
 
         documentAccountOrder = documentAccountOrderService.save(documentAccountOrder);
 
         Document document = documentAccountOrder.getDocument();
 
-        document.setFStatus("2");
+        document.setFnStatus("2");
 
         documentService.save(document);
 

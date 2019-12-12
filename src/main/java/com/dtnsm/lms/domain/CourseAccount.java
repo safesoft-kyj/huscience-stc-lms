@@ -48,7 +48,7 @@ public class CourseAccount extends AuditorEntity<String> {
     private String requestDate;
 
     // 신청일
-    private Date fWdate;
+    private Date fnWdate;
 
     // 교육과정 진행 상태
     @Column(length = 10)
@@ -56,10 +56,12 @@ public class CourseAccount extends AuditorEntity<String> {
     private CourseStepStatus courseStatus = CourseStepStatus.none;
 
     // 총결재자 수
-    private int fFinalCount = 0;
+    @ColumnDefault("0")
+    private int fnFinalCount = 0;
 
     // 현재결재자 순번
-    private int fCurrSeq = 0;
+    @ColumnDefault("0")
+    private int fnCurrSeq = 0;
 
     // 전자결재 진행여부(팀장/부서장 결재가 Y이면) => 과정개설시 설정
     // 0: 진행안함, 1: 전자결재 진행
@@ -70,7 +72,7 @@ public class CourseAccount extends AuditorEntity<String> {
     // 전자 결재 상태 : 0: 진행중, 1: 승인, 2:기각, 9:미진행
     @Column(length = 1)
     @ColumnDefault("'9'")
-    private String fStatus = "9";
+    private String fnStatus = "9";
 
     @Column(length = 30)
     private String certificateNo;

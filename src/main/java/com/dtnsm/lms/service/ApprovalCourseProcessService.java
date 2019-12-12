@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.security.Signature;
-
 @Service
 public class ApprovalCourseProcessService {
 
@@ -530,10 +528,10 @@ public class ApprovalCourseProcessService {
         courseAccount.setCourse(course);
         courseAccount.setAccount(account);
         courseAccount.setRequestDate(DateUtil.getTodayString());
-        courseAccount.setFWdate(DateUtil.getToday());
+        courseAccount.setFnWdate(DateUtil.getToday());
         courseAccount.setRequestType(requestType);        // 교육신청(0:관리자지정, 1:사용자 신청)
-        courseAccount.setFStatus("0");
-        courseAccount.setFCurrSeq(1);
+        courseAccount.setFnStatus("0");
+        courseAccount.setFnCurrSeq(1);
 
 
         /*
@@ -557,15 +555,15 @@ public class ApprovalCourseProcessService {
 
         // 결재자수 Max 설정
         if(isAppr1.equals("Y") && isAppr2.equals("Y")) {
-            courseAccount.setFFinalCount(2);
+            courseAccount.setFnFinalCount(2);
             courseAccount.setIsApproval("1");   // 전자결재유무 0:없음, 1:있음
         } else if(isAppr1.equals("Y")) {
-            courseAccount.setFFinalCount(1);
+            courseAccount.setFnFinalCount(1);
             courseAccount.setIsApproval("1");   // 전자결재유무 0:없음, 1:있음
         } else {
-            courseAccount.setFFinalCount(0);
+            courseAccount.setFnFinalCount(0);
             courseAccount.setIsApproval("0");   // 전자결재유무 0:없음, 1:있음
-            courseAccount.setFStatus("1");      // 전자결재가 없으면 완료한것으로 처리한다.
+            courseAccount.setFnStatus("1");      // 전자결재가 없으면 완료한것으로 처리한다.
         }
 
         // 교육 대상자 신청인 경우는 상태를 신청상태로 변경한다.
@@ -607,8 +605,8 @@ public class ApprovalCourseProcessService {
             courseAccount.setAccount(account);
             courseAccount.setRequestDate(DateUtil.getTodayString());
             courseAccount.setRequestType(requestType);        // 교육신청(0:관리자지정, 1:사용자 신청)
-            courseAccount.setFStatus("9");
-            courseAccount.setFCurrSeq(1);
+            courseAccount.setFnStatus("9");
+            courseAccount.setFnCurrSeq(1);
             courseAccount.setCourseStatus(CourseStepStatus.none);
 
             if (course.getIsAlways().equals("1")) {     // 상시교육일 경우
@@ -621,17 +619,17 @@ public class ApprovalCourseProcessService {
 
             // 결재자수 Max 설정
             if(isAppr1.equals("Y") && isAppr2.equals("Y")) {
-                courseAccount.setFFinalCount(2);
+                courseAccount.setFnFinalCount(2);
                 courseAccount.setIsApproval("1");   // 전자결재유무 0:없음, 1:있음
             } else if(isAppr1.equals("Y")) {
-                courseAccount.setFFinalCount(1);
+                courseAccount.setFnFinalCount(1);
                 courseAccount.setIsApproval("1");   // 전자결재유무 0:없음, 1:있음
             } else {
-                courseAccount.setFFinalCount(0);
+                courseAccount.setFnFinalCount(0);
                 courseAccount.setIsApproval("0");   // 전자결재유무 0:없음, 1:있음
             }
 
-            courseAccount.setFStatus("9");      // 신청전까지는 미진행으로 처리
+            courseAccount.setFnStatus("9");      // 신청전까지는 미진행으로 처리
             courseAccount.setFromDate(fromDate);
             courseAccount.setToDate(toDate);
 
@@ -652,7 +650,7 @@ public class ApprovalCourseProcessService {
             CourseAccount saveCourseAccount = courseAccountService.getByCourseIdAndUserId(course.getId(), account.getUserId());
             if (saveCourseAccount == null) saveCourseAccount = courseAccountProcess(account, course, requestType);
 
-            saveCourseAccount.setFWdate(DateUtil.getTodayDate());
+            saveCourseAccount.setFnWdate(DateUtil.getTodayDate());
             saveCourseAccount.setRequestDate(DateUtil.getTodayString());
             saveCourseAccount.setRequestType(requestType);
 
@@ -672,21 +670,21 @@ public class ApprovalCourseProcessService {
             if (saveCourseAccount.getIsApproval().equals("1")) {
 
                 // 전자결재가 있는경우 진행 상태로 변경한다.
-                saveCourseAccount.setFStatus("0");
+                saveCourseAccount.setFnStatus("0");
 
                 // 내결재사항을 추가한다.
                 CourseAccountOrder courseAccountOrder = new CourseAccountOrder();
-                courseAccountOrder.setFUser(account);
+                courseAccountOrder.setFnUser(account);
                 courseAccountOrder.setSignature(signatureService.getSign(account.getUserId()));
                 courseAccountOrder.setCourseAccount(saveCourseAccount);
 
                 // fKind : 0:초기, 1:결재(팀장), 2. 합의(관리자)
-                courseAccountOrder.setFKind("1");
-                courseAccountOrder.setFStatus("1");
-                courseAccountOrder.setFSeq(0);
-                courseAccountOrder.setFNext("0");
-                courseAccountOrder.setFDate(DateUtil.getToday());
-                courseAccountOrder.setFComment("");
+                courseAccountOrder.setFnKind("1");
+                courseAccountOrder.setFnStatus("1");
+                courseAccountOrder.setFnSeq(0);
+                courseAccountOrder.setFnNext("0");
+                courseAccountOrder.setFnDate(DateUtil.getToday());
+                courseAccountOrder.setFnComment("");
                 courseAccountOrderService.save(courseAccountOrder);
 
                 //courseAccount.addCourseAccountOrder(courseAccountOrderService.save(courseAccountOrder1));
@@ -695,13 +693,13 @@ public class ApprovalCourseProcessService {
                 if (isAppr1.equals("Y")) {
                     Account apprAccount2 = userService.getAccountByUserId(account.getParentUserId());
                     CourseAccountOrder courseAccountOrder2 = new CourseAccountOrder();
-                    courseAccountOrder2.setFUser(apprAccount2);
+                    courseAccountOrder2.setFnUser(apprAccount2);
                     courseAccountOrder2.setCourseAccount(saveCourseAccount);
                     // fKind : 0:초기, 1:결재(팀장), 2. 합의(관리자)
-                    courseAccountOrder2.setFKind("1");
-                    courseAccountOrder2.setFStatus("0");
-                    courseAccountOrder2.setFSeq(1);
-                    courseAccountOrder2.setFNext("1");
+                    courseAccountOrder2.setFnKind("1");
+                    courseAccountOrder2.setFnStatus("0");
+                    courseAccountOrder2.setFnSeq(1);
+                    courseAccountOrder2.setFnNext("1");
 
                     courseAccountOrderService.save(courseAccountOrder2);
 
@@ -714,12 +712,12 @@ public class ApprovalCourseProcessService {
                 if (isAppr2.equals("Y")) {
                     Account apprAccount3 = userService.getAccountByUserId(courseManagerService.getCourseManager().getUserId());
                     CourseAccountOrder courseAccountOrder3 = new CourseAccountOrder();
-                    courseAccountOrder3.setFUser(apprAccount3);
+                    courseAccountOrder3.setFnUser(apprAccount3);
                     courseAccountOrder3.setCourseAccount(saveCourseAccount);
                     // fKind : 0:초기, 1:결재(팀장), 2. 합의(관리자)
-                    courseAccountOrder3.setFKind("2");
-                    courseAccountOrder3.setFStatus("0");
-                    courseAccountOrder3.setFSeq(2);
+                    courseAccountOrder3.setFnKind("2");
+                    courseAccountOrder3.setFnStatus("0");
+                    courseAccountOrder3.setFnSeq(2);
 
                     courseAccountOrderService.save(courseAccountOrder3);
 
@@ -864,21 +862,21 @@ public class ApprovalCourseProcessService {
     // 교육 1차 승인 처리
     public void courseApproval1Proces(CourseAccountOrder courseAccountOrder) {
 
-        int finalCount = courseAccountOrder.getCourseAccount().getFFinalCount();
+        int finalCount = courseAccountOrder.getCourseAccount().getFnFinalCount();
 
-        courseAccountOrder.setSignature(signatureService.getSign(courseAccountOrder.getFUser().getUserId()));
-        courseAccountOrder.setFDate(DateUtil.getToday());
-        courseAccountOrder.setFNext("0");
-        courseAccountOrder.setFStatus("1");
-        courseAccountOrder.setFComment("");
+        courseAccountOrder.setSignature(signatureService.getSign(courseAccountOrder.getFnUser().getUserId()));
+        courseAccountOrder.setFnDate(DateUtil.getToday());
+        courseAccountOrder.setFnNext("0");
+        courseAccountOrder.setFnStatus("1");
+        courseAccountOrder.setFnComment("");
 
         courseAccountOrder = courseAccountOrderService.save(courseAccountOrder);
 
         CourseAccount courseAccount = courseAccountOrder.getCourseAccount();
 
-        if(finalCount == courseAccountOrder.getFSeq()) {   // 종결처리
+        if(finalCount == courseAccountOrder.getFnSeq()) {   // 종결처리
             //  승인: 1, 기각 : 2
-            courseAccount.setFStatus("1");
+            courseAccount.setFnStatus("1");
             courseAccount.setCourseStatus(CourseStepStatus.process);
 
             courseAccountService.save(courseAccount);
@@ -886,17 +884,17 @@ public class ApprovalCourseProcessService {
             // 최종 승인이면 기안자에게 메일 전송
             sendMail(courseAccount.getAccount(), courseAccount.getCourse(), MailSendType.APPROVAL1);
         } else {
-            CourseAccountOrder nextOrder = courseAccountOrderService.getByFnoAndSeq(courseAccountOrder.getCourseAccount().getId(), courseAccountOrder.getFSeq()+1);
+            CourseAccountOrder nextOrder = courseAccountOrderService.getByFnoAndSeq(courseAccountOrder.getCourseAccount().getId(), courseAccountOrder.getFnSeq()+1);
             if (nextOrder != null) {
 
-                nextOrder.setFNext("1");
+                nextOrder.setFnNext("1");
                 nextOrder = courseAccountOrderService.save(nextOrder);
 
                 // 마스터에 다음 결재자 순번을 업데이트 한다.
-                courseAccount.setFCurrSeq(nextOrder.getFSeq());
+                courseAccount.setFnCurrSeq(nextOrder.getFnSeq());
                 courseAccountService.save(courseAccount);
 
-                sendMail(nextOrder.getFUser(), courseAccount.getCourse(), MailSendType.APPROVAL1);
+                sendMail(nextOrder.getFnUser(), courseAccount.getCourse(), MailSendType.APPROVAL1);
             }
         }
     }
@@ -904,18 +902,18 @@ public class ApprovalCourseProcessService {
     // 교육 1차 기각 처리
     public void courseReject1Proces(CourseAccountOrder courseAccountOrder) {
 
-        int finalCount = courseAccountOrder.getCourseAccount().getFFinalCount();
+        int finalCount = courseAccountOrder.getCourseAccount().getFnFinalCount();
 
-        courseAccountOrder.setSignature(signatureService.getSign(courseAccountOrder.getFUser().getUserId()));
-        courseAccountOrder.setFDate(DateUtil.getToday());
-        courseAccountOrder.setFNext("0");
-        courseAccountOrder.setFStatus("2");
+        courseAccountOrder.setSignature(signatureService.getSign(courseAccountOrder.getFnUser().getUserId()));
+        courseAccountOrder.setFnDate(DateUtil.getToday());
+        courseAccountOrder.setFnNext("0");
+        courseAccountOrder.setFnStatus("2");
 
         courseAccountOrder = courseAccountOrderService.save(courseAccountOrder);
 
         CourseAccount courseAccount = courseAccountOrder.getCourseAccount();
 
-        courseAccount.setFStatus("2");
+        courseAccount.setFnStatus("2");
         courseAccount.setCourseStatus(CourseStepStatus.reject);
         courseAccount.setIsCommit("1");
 
@@ -943,21 +941,21 @@ public class ApprovalCourseProcessService {
     // 교육 2차 승인 처리
     public void courseApproval2Proces(CourseAccountOrder courseAccountOrder) {
 
-        int finalCount = courseAccountOrder.getCourseAccount().getFFinalCount();
+        int finalCount = courseAccountOrder.getCourseAccount().getFnFinalCount();
 
-        courseAccountOrder.setSignature(signatureService.getSign(courseAccountOrder.getFUser().getUserId()));
-        courseAccountOrder.setFDate(DateUtil.getToday());
-        courseAccountOrder.setFNext("0");
-        courseAccountOrder.setFStatus("1");
-        courseAccountOrder.setFComment("");
+        courseAccountOrder.setSignature(signatureService.getSign(courseAccountOrder.getFnUser().getUserId()));
+        courseAccountOrder.setFnDate(DateUtil.getToday());
+        courseAccountOrder.setFnNext("0");
+        courseAccountOrder.setFnStatus("1");
+        courseAccountOrder.setFnComment("");
 
         courseAccountOrder = courseAccountOrderService.save(courseAccountOrder);
 
         CourseAccount courseAccount = courseAccountOrder.getCourseAccount();
 
-        if(finalCount == courseAccountOrder.getFSeq()) {   // 종결처리
+        if(finalCount == courseAccountOrder.getFnSeq()) {   // 종결처리
             //  승인: 1, 기각 : 2
-            courseAccount.setFStatus("1");
+            courseAccount.setFnStatus("1");
             courseAccount.setCourseStatus(CourseStepStatus.process);
 
             courseAccount = courseAccountService.save(courseAccount);
@@ -967,16 +965,16 @@ public class ApprovalCourseProcessService {
             sendMail(courseAccount.getAccount(), courseAccount.getCourse(), MailSendType.APPROVAL2);
         } else {
 
-            CourseAccountOrder nextOrder = courseAccountOrderService.getByFnoAndSeq(courseAccountOrder.getCourseAccount().getId(), courseAccountOrder.getFSeq()+1);
+            CourseAccountOrder nextOrder = courseAccountOrderService.getByFnoAndSeq(courseAccountOrder.getCourseAccount().getId(), courseAccountOrder.getFnSeq()+1);
             if (nextOrder != null) {
-                nextOrder.setFNext("1");
+                nextOrder.setFnNext("1");
                 nextOrder = courseAccountOrderService.save(nextOrder);
 
                 // 마스터에 다음 결재자 순번을 업데이트 한다.
-                courseAccount.setFCurrSeq(nextOrder.getFSeq());
+                courseAccount.setFnCurrSeq(nextOrder.getFnSeq());
                 courseAccountService.save(courseAccount);
 
-                sendMail(nextOrder.getFUser(), courseAccount.getCourse(), MailSendType.APPROVAL2);
+                sendMail(nextOrder.getFnUser(), courseAccount.getCourse(), MailSendType.APPROVAL2);
             }
         }
     }
@@ -984,18 +982,18 @@ public class ApprovalCourseProcessService {
     // 교육 2차 기각 처리
     public void courseReject2Proces(CourseAccountOrder courseAccountOrder) {
 
-        int finalCount = courseAccountOrder.getCourseAccount().getFFinalCount();
+        int finalCount = courseAccountOrder.getCourseAccount().getFnFinalCount();
 
-        courseAccountOrder.setSignature(signatureService.getSign(courseAccountOrder.getFUser().getUserId()));
-        courseAccountOrder.setFDate(DateUtil.getToday());
-        courseAccountOrder.setFNext("0");
-        courseAccountOrder.setFStatus("2");
+        courseAccountOrder.setSignature(signatureService.getSign(courseAccountOrder.getFnUser().getUserId()));
+        courseAccountOrder.setFnDate(DateUtil.getToday());
+        courseAccountOrder.setFnNext("0");
+        courseAccountOrder.setFnStatus("2");
 
         courseAccountOrder = courseAccountOrderService.save(courseAccountOrder);
 
         CourseAccount courseAccount = courseAccountOrder.getCourseAccount();
 
-        courseAccount.setFStatus("2");
+        courseAccount.setFnStatus("2");
         courseAccount.setCourseStatus(CourseStepStatus.reject);
         courseAccount.setIsCommit("1");
 

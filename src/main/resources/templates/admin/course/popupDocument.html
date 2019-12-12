@@ -54,10 +54,10 @@
                                 <tr th:each="border, index : ${completeList}">
                                     <td class="text-center" th:text="${border.getId()}" th:id="${'documentId' + index.count}"></td>
                                     <td th:text="${border.getTitle()}" th:id="${'documentNme' + index.count}"></td>
-                                    <th:block th:if="${#strings.equalsIgnoreCase(border.getFStatus(), '0')}">
+                                    <th:block th:if="${#strings.equalsIgnoreCase(border.getFnStatus(), '0')}">
                                         <td class="text-center">진행중</td>
                                     </th:block>
-                                    <th:block th:if="${#strings.equalsIgnoreCase(border.getFStatus(), '1')}">
+                                    <th:block th:if="${#strings.equalsIgnoreCase(border.getFnStatus(), '1')}">
                                         <td class="text-center">결재완료</td>
                                     </th:block>
                                     <td class="text-center">

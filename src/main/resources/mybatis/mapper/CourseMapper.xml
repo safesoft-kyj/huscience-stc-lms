@@ -24,18 +24,30 @@
     </select>
 
 
-    <select id="selectCourseCalenda1" parameterType="String" resultType="com.dtnsm.lms.domain.CourseCalendarVO">
-        select id, title, content, request_from_date, request_to_date, from_date, to_date, status, active, type_id
+    <select id="selectCourseCalenda1" parameterType="String" resultType="com.dtnsm.lms.mybatis.dto.CourseCalendarVO">
+        select id, title, request_from_date, request_to_date, from_date, to_date, status, active, type_id
         from el_course
-        WHERE from_date between #{start} and #{end}
+        WHERE request_from_date between #{start} and #{end}
+        and type_id not in ('BC0101')
+        and active  = 1
+        union
+        select id, title, request_from_date, request_to_date, from_date, to_date, status, active, type_id
+        from el_course
+        WHERE request_to_date between #{start} and #{end}
         and type_id not in ('BC0101')
         and active  = 1
     </select>
 
-    <select id="selectCourseCalenda2" parameterType="String" resultType="com.dtnsm.lms.domain.CourseCalendarVO">
-        select id, title, content, request_from_date, request_to_date, from_date, to_date, status, active, type_id
+    <select id="selectCourseCalenda2" parameterType="String" resultType="com.dtnsm.lms.mybatis.dto.CourseCalendarVO">
+        select id, title, request_from_date, request_to_date, from_date, to_date, status, active, type_id
         from el_course
-        WHERE request_from_date between #{start} and #{end}
+        WHERE from_date between #{start} and #{end}
+        and type_id not in ('BC0101')
+        and active  = 1
+        union
+        select id, title, request_from_date, request_to_date, from_date, to_date, status, active, type_id
+        from el_course
+        WHERE to_date between #{start} and #{end}
         and type_id not in ('BC0101')
         and active  = 1
     </select>

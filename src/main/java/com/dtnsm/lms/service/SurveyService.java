@@ -1,6 +1,5 @@
 package com.dtnsm.lms.service;
 
-import com.dtnsm.lms.domain.BorderFile;
 import com.dtnsm.lms.domain.Survey;
 import com.dtnsm.lms.domain.SurveyFile;
 import com.dtnsm.lms.domain.SurveyQuestion;
@@ -29,12 +28,12 @@ public class SurveyService {
      */
 
      public List<Survey> getList() {
-         return surveyRepository.findAll(sortByIdAsc());
+         return surveyRepository.findAll();
      }
 
-     private Sort sortByIdAsc() {
-         return new Sort(Sort.Direction.ASC, "id");
-     }
+//     private Sort sortByIdAsc() {
+//         return admin(Sort.Direction.ASC, "id");
+//     }
 
     public Survey saveSurvey(Survey survey){
         return surveyRepository.save(survey);

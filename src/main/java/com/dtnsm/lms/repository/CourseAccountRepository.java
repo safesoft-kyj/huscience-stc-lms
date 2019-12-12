@@ -1,6 +1,5 @@
 package com.dtnsm.lms.repository;
 
-import com.dtnsm.lms.domain.Course;
 import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import org.springframework.data.domain.Page;
@@ -15,9 +14,9 @@ public interface CourseAccountRepository extends JpaRepository<CourseAccount, Lo
 
 
     //  status 0:진행중, 1:최종승인, 2:최종기각
-    List<CourseAccount> findByAccount_UserIdAndFStatus(String userId, String status);
+    List<CourseAccount> findByAccount_UserIdAndFnStatus(String userId, String status);
 
-    Page<CourseAccount> findByAccount_UserIdAndFStatus(String userId, String status, Pageable pageable);
+    Page<CourseAccount> findByAccount_UserIdAndFnStatus(String userId, String status, Pageable pageable);
 
     List<CourseAccount> findByAccount_UserId(String userId);
 
@@ -47,15 +46,15 @@ public interface CourseAccountRepository extends JpaRepository<CourseAccount, Lo
 
 
     // 상태별 신청 조회
-    List<CourseAccount> findByFStatus(String status);
+    List<CourseAccount> findByFnStatus(String status);
 
-    Page<CourseAccount> findByFStatus(String status, Pageable pageable);
+    Page<CourseAccount> findByFnStatus(String status, Pageable pageable);
 
 
     // 과정유형, 사용자, 완결여부로 가져오기(전자결재 팦업창에서 사용)
-    Page<CourseAccount> findAllByCourse_CourseMaster_IdAndAccount_UserIdAndFStatusAndIsCommit(String typeId, String userId, String fStatus, String isCommit, Pageable pageable);
+    Page<CourseAccount> findAllByCourse_CourseMaster_IdAndAccount_UserIdAndFnStatusAndIsCommit(String typeId, String userId, String fStatus, String isCommit, Pageable pageable);
 
-    List<CourseAccount> findAllByCourse_CourseMaster_IdAndAccount_UserIdAndFStatusAndIsCommit(String typeId, String userId, String fStatus, String isCommit);
+    List<CourseAccount> findAllByCourse_CourseMaster_IdAndAccount_UserIdAndFnStatusAndIsCommit(String typeId, String userId, String fStatus, String isCommit);
 
     Page<CourseAccount> findAllByCourse_CourseMaster_IdAndAccount_UserIdAndIsCommit(String typeId, String userId, String isCommit, Pageable pageable);
 

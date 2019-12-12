@@ -11,9 +11,6 @@ public class CourseCalendarVO {
     // 과정명
     private String title;
 
-    // 과정소개
-    private String content;
-
     // 신청시작일
     private String requestFromDate;
 
