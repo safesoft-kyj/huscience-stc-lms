@@ -28,582 +28,86 @@
         <!--Page content-->
         <!--===================================================-->
         <div id="page-content">
-            <div class="tab-base">
-                <ul class="nav nav-tabs">
-                    <li class="active">
-                        <a href="/mypage/cv">Current</a>
-                    </li>
-                    <li>
-                        <a href="/mypage/cv/old">Old Version</a>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/mypage/cv/edit}" th:object="${cv}" method="post">
-                        <div class="panel">
-                            <div th:if="${cv.status != null && cv.status.name() eq 'REVIEW'}" class="alert alert-purple">
-                                <strong>알림!</strong> CV 검토 진행 중에는 수정 할 수 없습니다.
-                            </div>
-                            <div class="panel-heading">
-                                <h1 class="panel-title text-center">
-                                    <a th:href="@{/mypage/cv/view/{id}(id=${cv.id})}"><span sec:authentication="principal.user.engName"></span></a>
-                                </h1>
-                            </div>
-                            <div class="panel-body">
-                                <div class="panel">
-                                    <div class="panel-body">
-                                        <table class="table table-bordered">
-                                            <tbody>
-                                            <tr>
-                                                <th class="col-xs-2 bg-gray-light">Initial</th>
-                                                <td class="form-group" th:classappend="${#fields.hasErrors('initialName')} ? 'has-error' : ''">
-                                                    <input type="text" placeholder="Initial" class="form-control" th:field="*{initialName}"/>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <!-- EDUCATION -->
-                                <div class="panel">
-                                    <div class="panel-heading">
-                                        <h3 class="panel-title">EDUCATION</h3>
-                                    </div>
-                                    <div class="panel-body">
-                                        <a name="education"></a>
-                                        <!--===================================================-->
-                                        <!--End Horizontal Form-->
-                                        <div th:each="edu, stat : *{educations}">
-                                            <h5>
-                                                <span th:text="|No. ${stat.index + 1}|"></span>
-                                                <div class="pull-right" th:if="${stat.size gt 1 and edu.readOnly eq false}">
-                                                    <button class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|education:${stat.index}|"><i class="fa fa-trash-o"></i></button>
-                                                </div>
-                                            </h5>
 
-                                            <table class="table table-bordered">
-                                                <tbody>
-                                                <tr>
-                                                    <td class="col-xs-2 text-bold bg-gray-light">Period</td>
-                                                    <td class="col-xs-10" colspan="2">
+            <div class="panel">
+                <div class="panel-body">
 
-                                                        <div class="row">
-                                                            <div class="col-xs-8">
-                                                                <div class="input-daterange input-group" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].startDate') or #fields.hasErrors('educations[__${stat.index}__].endDate')} ? 'has-error' : ''">
-                                                                    <input class="form-control" type="text" th:field="*{educations[__${stat.index}__].startDate}"/>
-                                                                    <span class="input-group-addon">~</span>
-                                                                    <input type="text" class="form-control" th:field="*{educations[__${stat.index}__].endDate}" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-xs-4">
+            <!-- Main Form Wizard -->
+            <!--===================================================-->
+                    <div id="demo-main-wz">
 
-                                                                <div class="checkbox" th:if="${stat.first}">
-                                                                    <label><input type="checkbox" class="edu-present" th:attr="data-index=${stat.index}" th:field="*{educations[__${stat.index}__].present}"> Present</label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-xs-2 text-bold bg-gray-light">Institute</td>
-                                                    <td class="col-xs-6 form-group" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].nameOfUniversity')} ? 'has-error' : ''">
-                                                        <input type="text" placeholder="Name of University" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].nameOfUniversity}">
-                                                    </td>
-                                                    <td class="col-xs-4 form-group" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].cityCountry')} ? 'has-error' : ''"><input type="text" placeholder="City, Country" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].cityCountry}"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-bold bg-gray-light">Degree</td>
-                                                    <td colspan="2" class="form-group" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].degree')} ? 'has-error' : ''"><input type="text" placeholder="Degree description, concentration listing" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].degree}"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-bold bg-gray-light">Thesis Title<br/>(if applicable)</td>
-                                                    <td colspan="2">
-                                                        <div class="row">
-                                                            <div class="col-xs-6">
-                                                                <input type="text" placeholder="Thesis Title" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].thesisTitle}">
-                                                            </div>
-                                                            <div class="col-xs-6">
-                                                                <input type="text" placeholder="Name of Supervisor" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].nameOfSupervisor}">
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div class="pull-right">
-                                            <button class="btn btn-info" name="add" value="education">
-                                                <i class="fa fa-plus"></i> Education
-                                            </button>
-                                        </div>
-                                    </div><!--panel-body End -->
-
-                                </div><!-- panel End -->
-
-
-                                <!-- Career History -->
-                                <div class="panel">
-                                    <div class="panel-heading">
-                                        <h3 class="panel-title">CAREER HISTORY</h3>
-                                    </div>
-                                    <div class="panel-body">
-                                        <!--===================================================-->
-                                        <!--End Horizontal Form-->
-                                        <a name="careerHistory"></a>
-                                        <div th:each="edu, stat : *{careerHistories}">
-                                            <h5>
-                                                <span th:text="|No. ${stat.index + 1}|"></span>
-                                                <div class="pull-right" th:if="${stat.size gt 1 and edu.readOnly eq false}">
-                                                    <button class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|careerHistory:${stat.index}|"><i class="fa fa-trash-o"></i></button>
-                                                </div>
-                                            </h5>
-
-                                            <table class="table table-bordered">
-                                                <tbody>
-                                                <tr>
-                                                    <td class="col-xs-2 text-bold bg-gray-light">Company Name</td>
-                                                    <td class="col-xs-6 form-group" th:classappend="${#fields.hasErrors('careerHistories[__${stat.index}__].companyName')} ? 'has-error' : ''">
-                                                        <input type="text" placeholder="Company Name" class="form-control col-sm-10" th:field="*{careerHistories[__${stat.index}__].companyName}"></td>
-                                                    <td class="col-xs-4 form-group" th:classappend="${#fields.hasErrors('careerHistories[__${stat.index}__].cityCountry')} ? 'has-error' : ''">
-                                                        <input type="text" placeholder="City, Country" class="form-control col-sm-10" th:field="*{careerHistories[__${stat.index}__].cityCountry}"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-xs-2 text-bold bg-gray-light">Period</td>
-                                                    <td class="col-xs-10" colspan="2">
-
-                                                        <div class="row">
-                                                            <div class="col-xs-8">
-
-                                                                <div class="input-daterange input-group" th:classappend="${#fields.hasErrors('careerHistories[__${stat.index}__].startDate') or #fields.hasErrors('careerHistories[__${stat.index}__].endDate')} ? 'has-error' : ''">
-                                                                    <input class="form-control" type="text" th:field="*{careerHistories[__${stat.index}__].startDate}"/>
-                                                                    <span class="input-group-addon">~</span>
-                                                                    <input type="text" class="form-control" th:field="*{careerHistories[__${stat.index}__].endDate}" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-xs-4">
-
-                                                                <div class="checkbox" th:if="${stat.first}">
-                                                                    <label><input type="checkbox" class="career-present" th:attr="data-index=${stat.index}" th:field="*{careerHistories[__${stat.index}__].present}"> Present</label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                    </td>
-                                                </tr>
-
-                                                <tr>
-                                                    <td class="text-bold bg-gray-light">Position</td>
-                                                    <td colspan="2" class="form-group" th:classappend="${#fields.hasErrors('careerHistories[__${stat.index}__].position')} ? 'has-error' : ''">
-                                                        <input type="text" placeholder="Position" class="form-control col-sm-10" th:field="*{careerHistories[__${stat.index}__].position}"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-bold bg-gray-light">Team/Department</td>
-                                                    <td colspan="2" class="from-group" th:classappend="${#fields.hasErrors('careerHistories[__${stat.index}__].teamDepartment')} ? 'has-error' : ''">
-                                                        <input type="text" placeholder="Team/Department" class="form-control col-sm-10" th:field="*{careerHistories[__${stat.index}__].teamDepartment}">
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-bold bg-gray-light">Clinical Trial Experience</td>
-                                                    <td colspan="2">
-                                                        <div class="checkbox">
-                                                            <label>
-                                                                <input type="checkbox" th:field="*{careerHistories[__${stat.index}__].clinicalTrialExperience}">
-                                                                Clinical Trial Experience
-                                                            </label>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-xs-12 text-right">
-                                                <button class="btn btn-info" name="add" value="careerHistory">
-                                                    <i class="fa fa-plus"></i> Career History
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div><!--panel-body End -->
-
-                                </div><!-- panel End -->
-
-
-                                <!-- Licenses & Certification -->
-                                <div class="panel">
-                                    <div class="panel-heading">
-                                        <h3 class="panel-title">LICENSES & CERTIFICATION</h3>
-                                    </div>
-                                    <div class="panel-body">
-                                        <table class="table table-bordered">
-                                            <tbody>
-                                            <tr>
-                                                <th class="col-xs-2 bg-gray-light">Licenses</th>
-                                                <td>
-                                                    <div class="row">
-                                                        <div class="col-xs-12">
-                                                            <a name="license"></a>
-                                                            <table class="table table-bordered" th:each="license, stat : *{licenses}">
-                                                                <tbody>
-                                                                <tr>
-                                                                    <td colspan="4" class="form-group" th:classappend="${#fields.hasErrors('licenses[__${stat.index}__].nameOfLicense')} ? 'has-error' : ''"><input type="text" class="form-control" placeholder="Name of License" th:field="*{licenses[__${stat.index}__].nameOfLicense}"></td>
-                                                                    <td rowspan="2">
-                                                                        <button th:if="${license.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|license:${stat.index}|"><i class="fa fa-trash-o"></i></button>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="text-bold col-xs-2 bg-gray-light">License No.</td>
-                                                                    <td class="col-xs-4 form-group" th:classappend="${#fields.hasErrors('licenses[__${stat.index}__].licenseNo')} ? 'has-error' : ''"><input type="text" placeholder="License No" class="form-control" th:field="*{licenses[__${stat.index}__].licenseNo}"></td>
-                                                                    <td class="text-bold col-xs-2 bg-gray-light form-group" th:classappend="${#fields.hasErrors('licenses[__${stat.index}__].licenseInCountry')} ? 'has-error' : ''">License in Country</td>
-                                                                    <td class="col-xs-4"><input type="text" class="form-control" placeholder="License in Country" th:field="*{licenses[__${stat.index}__].licenseInCountry}"></td>
-                                                                </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-xs-12">
-                                                            <div class="text-right">
-                                                                <button class="btn btn-info" name="add" value="license"><i class="fa fa-plus"></i> License</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th class="bg-gray-light">Certifications</th>
-                                                <td>
-                                                    <div class="row">
-                                                        <div class="col-xs-12">
-                                                            <a name="certification"></a>
-                                                            <table class="table table-bordered">
-                                                                <tbody>
-                                                                <tr th:each="certification, stat : *{certifications}">
-                                                                    <td class="form-group col-xs-4" th:classappend="${#fields.hasErrors('certifications[__${stat.index}__].nameOfCertification')} ? 'has-error' : ''">
-                                                                        <input type="text" class="form-control" placeholder="Name of Certification" th:field="*{certifications[__${stat.index}__].nameOfCertification}">
-                                                                    </td>
-                                                                    <td class="form-group col-xs-4" th:classappend="${#fields.hasErrors('certifications[__${stat.index}__].organizers')} ? 'has-error' : ''">
-                                                                        <input type="text" class="form-control" placeholder="Name of License" th:field="*{certifications[__${stat.index}__].organizers}">
-                                                                    </td>
-                                                                    <td class="form-group" th:classappend="${#fields.hasErrors('certifications[__${stat.index}__].issueDate')} ? 'has-error' : ''">
-                                                                        <input type="text" class="form-control issueDate" placeholder="Issue Date(MMM YYYY)" th:field="*{certifications[__${stat.index}__].issueDate}">
-                                                                    </td>
-                                                                    <td>
-                                                                        <button th:if="${certification.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|certification:${stat.index}|"><i class="fa fa-trash-o"></i>
-                                                                        </button>
-                                                                    </td>
-                                                                </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-xs-12">
-                                                            <div class="text-right">
-
-                                                                <button class="btn btn-info" name="add" value="certification"><i class="fa fa-plus"></i> Certification</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div><!--panel-body End -->
-                                </div><!-- panel End -->
-
-                                <div class="panel">
-                                    <div class="panel-heading">
-                                        <h3 class="panel-title">PROFESSIONAL AFFILIATIONS</h3>
-
-                                    </div>
-                                    <div class="panel-body">
-                                        <table class="table table-bordered">
-                                            <tbody>
-                                            <tr>
-                                                <th class="bg-gray-light col-xs-2">Membership</th>
-                                                <td class="col-xs-10">
-                                                    <div class="row">
-                                                        <div class="col-xs-12">
-                                                            <a name="membership"></a>
-                                                            <table class="table table-bordered">
-                                                                <tbody>
-                                                                <tr th:each="membership, stat : *{memberships}">
-                                                                    <td class="form-group col-xs-5" th:classappend="${#fields.hasErrors('memberships[__${stat.index}__].membershipName')} ? 'has-error' : ''">
-                                                                        <input type="text" class="form-control" placeholder="Name of Certification" th:field="*{memberships[__${stat.index}__].membershipName}">
-                                                                    </td>
-                                                                    <td class="form-group col-xs-2" th:classappend="${#fields.hasErrors('memberships[__${stat.index}__].startYear')} ? 'has-error' : ''">
-                                                                        <input type="text" class="form-control membershipDate" placeholder="Start Year(YYYY)" th:field="*{memberships[__${stat.index}__].startYear}">
-                                                                    </td>
-                                                                    <td class="form-group col-xs-4" th:classappend="${#fields.hasErrors('memberships[__${stat.index}__].endYear')} ? 'has-error' : ''">
-                                                                        <div class="row">
-                                                                            <div class="col-xs-6">
-                                                                                <input type="text" class="form-control membershipDate" placeholder="End Year(YYYY)" th:field="*{memberships[__${stat.index}__].endYear}">
-                                                                            </div>
-                                                                            <div class="col-xs-6">
-                                                                                <div class="checkbox-inline">
-                                                                                    <label>
-                                                                                        <input type="checkbox" th:field="*{memberships[__${stat.index}__].present}">
-                                                                                        Present
-                                                                                    </label>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <button th:if="${membership.readOnly eq fasle}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|membership:${stat.index}|"><i class="fa fa-trash-o"></i>
-                                                                        </button>
-                                                                    </td>
-                                                                </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-xs-12">
-                                                            <div class="text-right">
-
-                                                                <button class="btn btn-info" name="add" value="membership"><i class="fa fa-plus"></i> Membership</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div><!--panel-body End -->
-                                </div><!-- panel End -->
-
-                                <!-- Skils -->
-                                <div class="panel">
-                                    <div class="panel-heading">
-                                        <h3 class="panel-title">SKILLS</h3>
-                                    </div>
-                                    <div class="panel-body">
-                                        <table class="table table-bordered">
-                                            <tbody>
-                                            <tr>
-                                                <th class="bg-gray-light col-xs-2">Languages</th>
-                                                <td class="col-xs-10">
-                                                    <div class="row">
-                                                        <div class="col-xs-12">
-                                                            <a name="language"></a>
-                                                            <a name="languageCertification"></a>
-                                                            <table class="table table-bordered" th:each="language, stat : *{languages}">
-                                                                <tbody>
-                                                                <tr>
-                                                                    <td class="form-group col-xs-6" th:classappend="${#fields.hasErrors('languages[__${stat.index}__].language')} ? 'has-error' : ''">
-                                                                        <input type="text" class="form-control" placeholder="Name of Certification" th:field="*{languages[__${stat.index}__].language}">
-                                                                    </td>
-                                                                    <td class="form-group col-xs-2" th:classappend="${#fields.hasErrors('languages[__${stat.index}__].level')} ? 'has-error' : ''">
-                                                                        <select class="form-control" th:field="*{languages[__${stat.index}__].level}">
-                                                                            <option value="BEGINNER">Beginner</option>
-                                                                            <option value="INTERMEDIATE">Intermediate</option>
-                                                                            <option value="ADVANCED">Advanced</option>
-                                                                        </select>
-                                                                    </td>
-                                                                    <td class="text-right">
-                                                                        <button th:if="${language.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|language:${stat.index}|"><i class="fa fa-trash-o"></i>
-                                                                        </button>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td colspan="4">
-                                                                        <table class="table">
-                                                                            <tbody>
-                                                                            <tr th:each="languageCertification, certStat : *{languages[__${stat.index}__].languageCertifications}">
-                                                                                <td>
-                                                                                    <input type="text" class="form-control" placeholder="Certificate Program" th:field="*{languages[__${stat.index}__].languageCertifications[__${certStat.index}__].certificateProgram}">
-                                                                                </td>
-                                                                                <td>
-                                                                                    <button class="btn btn-xs btn-danger" th:if="${language.readOnly eq false}" type="submit" name="remove" th:value="|languageCertification:${stat.index}.${certStat.index}|"><i class="fa fa-trash-o"></i>
-                                                                                    </button>
-                                                                                </td>
-                                                                            </tr>
-                                                                            </tbody>
-                                                                        </table>
-                                                                        <button class="btn btn-xs btn-info" type="submit" name="add" th:value="|languageCertification:${stat.index}|"><i class="fa fa-plus"></i> Certification
-                                                                        </button>
-                                                                    </td>
-                                                                </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-xs-12">
-                                                            <div class="text-right">
-
-                                                                <button class="btn btn-info" name="add" value="language"><i class="fa fa-plus"></i> Language</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <th class="bg-gray-light col-xs-2">Computer Knowledge</th>
-                                                <td class="col-xs-10">
-                                                    <div class="row">
-                                                        <div class="col-xs-12">
-                                                            <a name="computerKnowledge"></a>
-                                                            <a name="computerCertification"></a>
-                                                            <table class="table table-bordered" th:each="computerKnowledge, stat : *{computerKnowledges}">
-                                                                <tbody>
-                                                                <tr>
-                                                                    <td class="form-group col-xs-6" th:classappend="${#fields.hasErrors('computerKnowledges[__${stat.index}__].programName')} ? 'has-error' : ''">
-                                                                        <input type="text" class="form-control" placeholder="Program Name" th:field="*{computerKnowledges[__${stat.index}__].programName}">
-                                                                    </td>
-                                                                    <td class="form-group col-xs-2" th:classappend="${#fields.hasErrors('computerKnowledges[__${stat.index}__].level')} ? 'has-error' : ''">
-                                                                        <select class="form-control" th:field="*{computerKnowledges[__${stat.index}__].level}">
-                                                                            <option value="BEGINNER">Beginner</option>
-                                                                            <option value="INTERMEDIATE">Intermediate</option>
-                                                                            <option value="ADVANCED">Advanced</option>
-                                                                        </select>
-                                                                    </td>
-                                                                    <td class="text-right">
-                                                                        <button th:if="${computerKnowledge.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|computerKnowledge:${stat.index}|"><i class="fa fa-trash-o"></i>
-                                                                        </button>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td colspan="4">
-                                                                        <table class="table">
-                                                                            <tbody>
-                                                                            <tr th:each="languageCertification, certStat : *{computerKnowledges[__${stat.index}__].computerCertifications}">
-                                                                                <td>
-                                                                                    <input type="text" class="form-control" placeholder="Certificate Program" th:field="*{computerKnowledges[__${stat.index}__].computerCertifications[__${certStat.index}__].certificateProgram}">
-                                                                                </td>
-                                                                                <td>
-                                                                                    <button class="btn btn-xs btn-danger" th:if="${computerKnowledge.readOnly eq fasle}" type="submit" name="remove" th:value="|computerCertification:${stat.index}.${certStat.index}|"><i class="fa fa-trash-o"></i>
-                                                                                    </button>
-                                                                                </td>
-                                                                            </tr>
-                                                                            </tbody>
-
-                                                                        </table>
-                                                                        <button class="btn btn-xs btn-info" type="submit" name="add" th:value="|computerCertification:${stat.index}|"><i class="fa fa-plus"></i> Certification
-                                                                        </button>
-                                                                    </td>
-                                                                </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-xs-12">
-                                                            <div class="text-right">
-
-                                                                <button class="btn btn-info" name="add" value="computerKnowledge"><i class="fa fa-plus"></i> Computer Knowledge</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div><!--panel-body End -->
-                                </div><!-- panel End -->
-                                <!-- Experience -->
-                                <div class="panel">
-                                    <div class="panel-heading">
-                                        <h3 class="panel-title col-md-11">EXPERIENCE</h3>
-                                    </div>
-                                    <div class="panel-body">
-                                        <!--===================================================-->
-                                        <table class="table">
-                                            <thead>
-                                            <tr>
-                                                <th>CLINICAL TRIAL EXPERIENCE</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr>
-                                                <td>
-                                                    <table class="table table-bordered" th:each="experience, stat : *{experiences}">
-                                                        <tbody>
-                                                        <tr>
-                                                            <td class="col-xs-2 bg-gray-light" rowspan="3"  th:classappend="${#fields.hasErrors('experiences[__${stat.index}__].indication')} ? 'has-error' : ''">
-                                                                <select class="form-control" th:field="*{experiences[__${stat.index}__].indication}">
-                                                                    <option th:each="indication : ${indicationList}" th:value="${indication.id}" th:text="${indication.indication}"></option>
-                                                                </select>
-                                                            </td>
-                                                            <td>
-                                                                <div class="row">
-                                                                    <div class="col-xs-2">
-                                                                        <select class="form-control" th:field="*{experiences[__${stat.index}__].phase}">
-                                                                            <option th:each="phase : ${phaseList}" th:value="${phase.id}" th:text="${phase.phase}"></option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <div class="col-xs-2">
-                                                                        <select class="form-control" th:field="*{experiences[__${stat.index}__].globalOrLocal}">
-                                                                            <option value="GLOBAL">Global Study</option>
-                                                                            <option value="LOCAL">Local Study</option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <div class="col-xs-8 text-right">
-                                                                        <button th:if="${experience.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|experience:${stat.index}|"><i class="fa fa-trash-o"></i>
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><input type="text" class="form-control" placeholder="Role" th:field="*{experiences[__${stat.index}__].role}"></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><input type="text" class="form-control" placeholder="Working Details(Responsibilities)" th:field="*{experiences[__${stat.index}__].workingDetails}"></td>
-                                                        </tr>
-                                                        </tbody>
-                                                    </table>
-                                                    <div class="row">
-                                                        <div class="col-xs-12">
-                                                            <div class="text-right">
-                                                                <a name="experience"></a>
-                                                                <button class="btn btn-info" name="add" value="experience"><i class="fa fa-plus"></i> Experience</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="panel-footer text-right">
-                                <th:block th:if="${cv.status == null or cv.status.name() eq 'TEMP'}">
-                                <button class="btn btn-info" type="submit" name="_submit" value="temp">
-                                    저장
-                                </button>
-                                <button class="btn btn-primary" name="_submit" value="review" type="submit" th:if="${cv.initial eq true and cv.id != null}">
-                                    저장 & 검토 요청
-                                </button>
-                                </th:block>
-
-                                <th:block th:if="${cv.status != null and cv.status.name() == 'NEW'}">
-                                <button class="btn btn-info" type="submit" name="_submit" value="new">
-                                    저장
-                                </button>
-                                </th:block>
-
-                                <th:block th:if="${cv.status != null and cv.status.name() eq 'TEMP' and cv.initial eq false}">
-                                <button class="btn btn-primary" type="submit" name="_submit" value="publish">
-                                    저장 & 배포
-                                </button>
-                                </th:block>
-
-                                <th:block th:if="${cv.status != null and cv.status.name() eq 'CURRENT'}">
-                                <a class="btn btn-primary" th:href="@{/mypage/cv/new?id={id}(id=${cv.id})}">
-                                    New CV
+                        <!--nav-->
+                        <ul class="row wz-steps wz-icon-bw wz-nav-off mar-top">
+                            <li class="col-xs-2" th:classappend="${cv.pos == 0 ? 'active' : ''}">
+                                <a data-toggle="tab" href="#demo-main-tab1">
+                                    <span class="text-danger"><i class="demo-pli-information icon-2x"></i></span>
+                                    <h5 class="mar-no">EDUCATION</h5>
                                 </a>
-                                </th:block>
-                                <a th:href="@{/mypage/cv}" class="btn btn-success">
-                                    <i class="fa fa-upload-cloud"></i> <span th:text="#{label.list}"></span>
+                            </li>
+                            <li class="col-xs-2" th:classappend="${cv.pos == 1 ? 'active' : ''}">
+                                <a data-toggle="tab">
+                                    <span class="text-warning"><i class="demo-pli-male icon-2x"></i></span>
+                                    <h5 class="mar-no">CAREER HISTORY</h5>
                                 </a>
-                            </div>
+                            </li>
+                            <li class="col-xs-2" th:classappend="${cv.pos == 2 ? 'active' : ''}">
+                                <a data-toggle="tab" href="#demo-main-tab3" aria-expanded=true>
+                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>
+                                    <h5 class="mar-no">LICENSES & CERTIFICATION</h5>
+                                </a>
+                            </li>
+                            <li class="col-xs-2" th:classappend="${cv.pos == 3 ? 'active' : ''}">
+                                <a data-toggle="tab" href="#demo-main-tab3">
+                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>
+                                    <h5 class="mar-no">PROFESSIONAL AFFILIATIONS
+                                    </h5>
+                                </a>
+                            </li>
+                            <li class="col-xs-2" th:classappend="${cv.pos == 4 ? 'active' : ''}">
+                                <a data-toggle="tab" href="#demo-main-tab3">
+                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>
+                                    <h5 class="mar-no">SKILLS</h5>
+                                </a>
+                            </li>
+                            <li class="col-xs-2" th:classappend="${cv.pos == 5 ? 'active' : ''}">
+                                <a data-toggle="tab" href="#demo-main-tab3">
+                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>
+                                    <h5 class="mar-no">EXPERIENCE</h5>
+                                </a>
+                            </li>
+                        </ul>
+
+                        <!--progress bar-->
+                        <div class="progress progress-xs">
+                            <div class="progress-bar progress-bar-primary"></div>
                         </div>
-                    </form>
+
+
+                        <!--form-->
+                        <form class="form-horizontal" id="boardFrm2" action="#" th:action="@{/mypage/cv/edit}" th:object="${cv}" method="post">
+                            <div class="panel-body">
+                                <!-- wz form -->
+                                <div th:include="fragments/cv/education"></div>
+                                <div th:include="fragments/cv/careerHistory"></div>
+                                <div th:include="fragments/cv/license"></div>
+                                <div th:include="fragments/cv/professional"></div>
+                                <div th:include="fragments/cv/skills"></div>
+                                <div th:include="fragments/cv/experience"></div>
+                                <!-- end wz-form-->
+                            </div>
+
+
+                            <!--Footer buttons-->
+                            <div class="pull-right pad-rgt mar-btm">
+                                <button type="submit" name="prev" class="previous btn btn-primary" th:disabled="${cv.pos == 0}">Previous</button>
+                                <button type="submit" name="next" class="next btn btn-primary" th:disabled="${cv.pos == 5}">Next</button>
+                                <button type="button" class="finish btn btn-success" th:disabled="${cv.pos != 5}">Finish</button>
+                            </div>
+
+                        </form>
+                    </div>
+            <!--===================================================-->
+            <!-- End of Main Form Wizard -->
                 </div>
             </div>
         </div><!-- Page content End -->
@@ -620,8 +124,8 @@
 </th:block>
 
 <th:block layout:fragment="custom_js">
-    <!--Bootstrap Datepicker [ OPTIONAL ]-->
-    <!--    <script th:src="@{/static/default/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js}"></script>-->
+    <!--Bootstrap Wizard [ OPTIONAL ]-->
+<!--    <script th:src="@{/default/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js}"></script>-->
     <script>
         $(document).ready(function() {
             $('.input-daterange').datepicker({
@@ -665,14 +169,13 @@
 
 
         });
+
+        /*<![CDATA[*/
+        var progress = [[${cv.progress}]];
+        /*]]>*/
+        $('#demo-main-wz').find('.progress-bar').css({width:progress + '%',left:"0%", 'position':'relative', 'transition':'all .5s'});
     </script>
-    <th:block th:if="${cv.status != null && (cv.status.name() eq 'REVIEW' or cv.status.name() eq 'CURRENT')}">
-        <script>
-            var f = $("#boardFrm");
-            f.find("button").hide();
-            f.find("input, select").attr("disabled", "disabled");
-        </script>
-    </th:block>
+
 </th:block>
 
 </html>

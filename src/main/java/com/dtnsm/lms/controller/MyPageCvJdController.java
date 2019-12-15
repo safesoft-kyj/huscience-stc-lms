@@ -19,13 +19,12 @@ import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 import com.dtnsm.lms.validator.CurriculumVitaeValidator;
-import com.dtnsm.lms.xdocreport.CurriculumVitaeReportService;
+import com.dtnsm.lms.validator.EducationValidator;
 import com.dtnsm.lms.xdocreport.dto.*;
 import com.querydsl.core.BooleanBuilder;
 import fr.opensagres.xdocreport.document.images.ByteArrayImageProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -43,11 +42,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+
+//import com.dtnsm.lms.xdocreport.CurriculumVitaeReportService;
 
 @Controller
 @RequestMapping("/mypage")
@@ -58,11 +56,12 @@ public class MyPageCvJdController {
     private final UserJobDescriptionRepository userJobDescriptionRepository;
     private final CurriculumVitaeRepository curriculumVitaeRepository;
     private final CurriculumVitaeValidator curriculumVitaeValidator;
+    private final EducationValidator educationValidator;
     private final CurriculumVitaeService curriculumVitaeService;
     private final CVIndicationRepository indicationRepository;
     private final CVPhaseRepository phaseRepository;
     private final SignatureRepository signatureRepository;
-    private final CurriculumVitaeReportService curriculumVitaeReportService;
+//    private final CurriculumVitaeReportService curriculumVitaeReportService;
     private final FileUploadProperties prop;
     private PageInfo pageInfo = new PageInfo();
 
@@ -118,7 +117,7 @@ public class MyPageCvJdController {
         model.addAttribute("indicationList", indicationRepository.findAll(QCVIndication.cVIndication.indication.asc()));
         model.addAttribute("phaseList", phaseRepository.findAll(QCVPhase.cVPhase.phase.asc()));
 
-        CurriculumVitae orgCV = curriculumVitaeRepository.getOne(id);
+        CurriculumVitae orgCV = curriculumVitaeRepository.findById(id).get();
         CurriculumVitae cv = (CurriculumVitae)orgCV.clone();
         cv.setParentId(orgCV.getId());
         cv.setId(null);
@@ -129,7 +128,17 @@ public class MyPageCvJdController {
         cv.getLicenses().forEach(i -> i.setReadOnly(true));
         cv.getCertifications().forEach(i -> i.setReadOnly(true));
         cv.getMemberships().forEach(i -> i.setReadOnly(true));
+        cv.setLanguages(List.copyOf(orgCV.getLanguages()));
         cv.getLanguages().forEach(i -> i.setReadOnly(true));
+//        for(int i = 0; i < cv.getLanguages().size(); i ++) {
+//            log.info("language deep copy[{}]", i);
+//            CVLanguage lang = cv.getLanguages().get(i);
+//            lang.setReadOnly(true);
+//            lang.setLanguageCertifications(orgCV.getLanguages().get(i).getLanguageCertifications());
+//            orgCV.getLanguages().get(i).getLanguageCertifications().
+//        }
+
+
         cv.getComputerKnowledges().forEach(i -> i.setReadOnly(true));
         cv.getExperiences().forEach(i -> i.setReadOnly(true));
 
@@ -138,51 +147,93 @@ public class MyPageCvJdController {
         return "content/mypage/cv/edit";
     }
 
-    @GetMapping("/cv/edit")
-    public String cv(@RequestParam(value = "id", required = false) Integer id, Model model) {
-        pageInfo.setPageId("m-mypage-cv");
-        pageInfo.setPageTitle("Curriculum Vitae");
-
-        model.addAttribute(pageInfo);
-
-        model.addAttribute("indicationList", indicationRepository.findAll(QCVIndication.cVIndication.indication.asc()));
-        model.addAttribute("phaseList", phaseRepository.findAll(QCVPhase.cVPhase.phase.asc()));
-        CurriculumVitae cv;
-        if(ObjectUtils.isEmpty(id)) {
-            cv = new CurriculumVitae();
-            cv.setInitial(true);
-            cv.getEducations().add(new CVEducation());
-
-            CVCareerHistory history = new CVCareerHistory();
-            history.setPresent(true);
-            history.setCityCountry("Seoul, Korea");
-            history.setClinicalTrialExperience(true);
-            history.setCompanyName("Dt&SanoMedics");
-            Account account = SessionUtil.getUserDetail().getUser();
-            if(!ObjectUtils.isEmpty(account.getIndate())) {
-                history.setStartDate(DateUtil.getStringToDate(account.getIndate()));
-            }
-            cv.getCareerHistories().add(history);
-            cv.getLicenses().add(new CVLicense());
-            cv.getCertifications().add(new CVCertification());
-            cv.getMemberships().add(new CVMembership());
-            cv.getLanguages().add(new CVLanguage());
-            cv.getComputerKnowledges().add(new CVComputerKnowledge());
-            cv.getExperiences().add(new CVExperience());
-        } else {
-            cv = getCV(id).get();
-        }
-
-        model.addAttribute("cv", cv);
-
-        return "content/mypage/cv/edit";
-    }
+//    @GetMapping("/cv/edit")
+//    public String cv(@RequestParam(value = "id", required = false) Integer id, Model model) throws Exception {
+//        pageInfo.setPageId("m-mypage-cv");
+//        pageInfo.setPageTitle("Curriculum Vitae");
+//
+//        model.addAttribute(pageInfo);
+//
+//        model.addAttribute("indicationList", indicationRepository.findAll(QCVIndication.cVIndication.indication.asc()));
+//        model.addAttribute("phaseList", phaseRepository.findAll(QCVPhase.cVPhase.phase.asc()));
+//        CurriculumVitae cv;
+//        if(ObjectUtils.isEmpty(id)) {
+//            cv = new CurriculumVitae();
+//            cv.setInitial(true);
+//            cv.getEducations().add(new CVEducation());
+//
+//            CVCareerHistory history = new CVCareerHistory();
+//            history.setPresent(true);
+//            history.setCityCountry("Seoul, Korea");
+//            history.setClinicalTrialExperience(true);
+//            history.setCompanyName("Dt&SanoMedics");
+//            Account account = SessionUtil.getUserDetail().getUser();
+//            if(!ObjectUtils.isEmpty(account.getIndate())) {
+//                history.setStartDate(DateUtil.getStringToDate(account.getIndate()));
+//            }
+//            cv.getCareerHistories().add(history);
+//            cv.getLicenses().add(new CVLicense());
+//            cv.getCertifications().add(new CVCertification());
+//            cv.getMemberships().add(new CVMembership());
+//            cv.getLanguages().add(new CVLanguage());
+//            cv.getComputerKnowledges().add(new CVComputerKnowledge());
+//            cv.getExperiences().add(new CVExperience());
+//        } else {
+//            CurriculumVitae savedCV = getCV(id).get();
+//
+//            cv = (CurriculumVitae)savedCV.clone();
+//
+//            for (CVLanguage language : cv.getLanguages()) {
+//                System.out.println("@Language => " + language);
+//                language.getLanguageCertifications().forEach(c -> {
+//                    System.out.println("@Program : " + c.getCertificateProgram());
+//                });
+//            }
+//
+//
+////            for(int i = 0; i < savedCV.getLanguages().size(); i ++) {
+////                for(int k = 0; k < savedCV.getLanguages().get(i).getLanguageCertifications().size(); k ++) {
+////                    cv.getLanguages().get(i).getLanguageCertifications().set(k, savedCV.getLanguages().get(i).getLanguageCertifications().get(k));
+////                }
+////            }
+//            //LazyInitializationException 발생 하지 않도록..
+////            cv.getLanguages().forEach(lang -> lang.getLanguageCertifications());
+////            cv.getComputerKnowledges().forEach(com -> com.getComputerCertifications());
+//        }
+//
+//        model.addAttribute("cv", cv);
+//
+//        return "content/mypage/cv/edit";
+//    }
 
     @Transactional
     @PostMapping("/cv/edit")
-    public String cv(@ModelAttribute("cv") CurriculumVitae cv, BindingResult result, SessionStatus sessionStatus, HttpServletRequest request, Model model) throws Exception {
+    public String cv(@ModelAttribute("cv") CurriculumVitae cv, BindingResult result,
+                     SessionStatus sessionStatus, HttpServletRequest request, Model model) throws Exception {
         boolean isAdd = WebUtils.hasSubmitParameter(request, "add");
         boolean isRemove = WebUtils.hasSubmitParameter(request, "remove");
+        boolean isPrev = WebUtils.hasSubmitParameter(request, "prev");
+        boolean isNext = WebUtils.hasSubmitParameter(request, "next");
+
+        if(isPrev) {
+            if(cv.getPos() > 0) {
+                cv.setPos(cv.getPos() - 1);
+            }
+            return "content/mypage/cv/edit";
+        } else if(isNext) {
+            if(cv.getPos() == 0) {
+                educationValidator.validate(cv, result);
+                if(result.hasErrors()) {
+                    return "content/mypage/cv/edit";
+                }
+            } else if(cv.getPos() == 1) {
+
+            }
+            if(cv.getPos() < 5) {
+                cv.setPos(cv.getPos() + 1);
+            }
+            return "content/mypage/cv/edit";
+        }
 
         log.debug("@CV.id : {}", cv.getId());
         if(isAdd) {
@@ -363,7 +414,6 @@ public class MyPageCvJdController {
 
             CurriculumVitae savedCV = curriculumVitaeService.save(cv);
 
-            System.out.println("@CV Status : " + status);
             if (status == CurriculumVitaeStatus.REVIEW || status == CurriculumVitaeStatus.CURRENT) {
                 new Thread(() -> {
                     try {
@@ -449,8 +499,8 @@ public class MyPageCvJdController {
 //                    response.setContentType("application/pdf");
                         String outputFileName = "CV_"+savedCV.getId()+"_" + SessionUtil.getUserId() + ".docx";
                         Files.createDirectories(Paths.get(prop.getCvUploadDir()).toAbsolutePath().normalize());
-                        curriculumVitaeReportService.generateReport(dto, prop.getCvUploadDir() + outputFileName, savedCV.getId());
-
+//                        curriculumVitaeReportService.generateReport(dto, prop.getCvUploadDir() + outputFileName, savedCV.getId());
+//TODO 222222222222 변환
 
                     } catch (Exception e) {
                         e.printStackTrace();

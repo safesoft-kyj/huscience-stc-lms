@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<div th:styleappend="${cv.pos == 3 ? '' : 'display:none'}">
+<table class="table table-bordered" >
+    <tbody>
+    <tr>
+        <th class="bg-gray-light col-xs-2">Membership</th>
+        <td class="col-xs-10">
+            <div class="row">
+                <div class="col-xs-12">
+                    <a name="membership"></a>
+                    <table class="table table-bordered">
+                        <tbody>
+                        <tr th:each="membership, stat : *{memberships}">
+                            <td class="form-group col-xs-5" th:classappend="${#fields.hasErrors('memberships[__${stat.index}__].membershipName')} ? 'has-error' : ''">
+                                <input type="text" class="form-control" placeholder="Name of Certification" th:field="*{memberships[__${stat.index}__].membershipName}">
+                            </td>
+                            <td class="form-group col-xs-2" th:classappend="${#fields.hasErrors('memberships[__${stat.index}__].startYear')} ? 'has-error' : ''">
+                                <input type="text" class="form-control membershipDate" placeholder="Start Year(YYYY)" th:field="*{memberships[__${stat.index}__].startYear}">
+                            </td>
+                            <td class="form-group col-xs-4" th:classappend="${#fields.hasErrors('memberships[__${stat.index}__].endYear')} ? 'has-error' : ''">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <input type="text" class="form-control membershipDate" placeholder="End Year(YYYY)" th:field="*{memberships[__${stat.index}__].endYear}">
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="checkbox-inline">
+                                            <label>
+                                                <input type="checkbox" th:field="*{memberships[__${stat.index}__].present}">
+                                                Present
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <button th:if="${membership.readOnly eq fasle}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|membership:${stat.index}|"><i class="fa fa-trash-o"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="text-right">
+
+                        <button class="btn btn-info" name="add" value="membership"><i class="fa fa-plus"></i> Membership</button>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</div>
+</html>

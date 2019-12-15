@@ -55,6 +55,13 @@ public class CurriculumVitae extends AuditorEntity<String> implements Serializab
     @Column(name = "page_count")
     private Integer pageCount;
 
+    @Transient
+    private int pos;
+
+    public double getProgress() {
+        return (((double)pos + 1) / 6) * 100;
+    }
+
     @Column(name = "status", length = 20)
     @Enumerated(EnumType.STRING)
     private CurriculumVitaeStatus status;

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<div th:styleappend="${cv.pos == 2 ? '' : 'display:none'}">
+<table class="table table-bordered" >
+    <tbody>
+    <tr>
+        <th class="col-xs-2 bg-gray-light">Licenses</th>
+        <td>
+            <div class="row">
+                <div class="col-xs-12">
+                    <a name="license"></a>
+                    <table class="table table-bordered" th:each="license, stat : *{licenses}">
+                        <tbody>
+                        <tr>
+                            <td colspan="4" class="form-group" th:classappend="${#fields.hasErrors('licenses[__${stat.index}__].nameOfLicense')} ? 'has-error' : ''"><input type="text" class="form-control" placeholder="Name of License" th:field="*{licenses[__${stat.index}__].nameOfLicense}"></td>
+                            <td rowspan="2">
+                                <button th:if="${license.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|license:${stat.index}|"><i class="fa fa-trash-o"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold col-xs-2 bg-gray-light">License No.</td>
+                            <td class="col-xs-4 form-group" th:classappend="${#fields.hasErrors('licenses[__${stat.index}__].licenseNo')} ? 'has-error' : ''"><input type="text" placeholder="License No" class="form-control" th:field="*{licenses[__${stat.index}__].licenseNo}"></td>
+                            <td class="text-bold col-xs-2 bg-gray-light form-group" th:classappend="${#fields.hasErrors('licenses[__${stat.index}__].licenseInCountry')} ? 'has-error' : ''">License in Country</td>
+                            <td class="col-xs-4"><input type="text" class="form-control" placeholder="License in Country" th:field="*{licenses[__${stat.index}__].licenseInCountry}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="text-right">
+                        <button class="btn btn-info" name="add" value="license"><i class="fa fa-plus"></i> License</button>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <th class="bg-gray-light">Certifications</th>
+        <td>
+            <div class="row">
+                <div class="col-xs-12">
+                    <a name="certification"></a>
+                    <table class="table table-bordered">
+                        <tbody>
+                        <tr th:each="certification, stat : *{certifications}">
+                            <td class="form-group col-xs-4" th:classappend="${#fields.hasErrors('certifications[__${stat.index}__].nameOfCertification')} ? 'has-error' : ''">
+                                <input type="text" class="form-control" placeholder="Name of Certification" th:field="*{certifications[__${stat.index}__].nameOfCertification}">
+                            </td>
+                            <td class="form-group col-xs-4" th:classappend="${#fields.hasErrors('certifications[__${stat.index}__].organizers')} ? 'has-error' : ''">
+                                <input type="text" class="form-control" placeholder="Name of License" th:field="*{certifications[__${stat.index}__].organizers}">
+                            </td>
+                            <td class="form-group" th:classappend="${#fields.hasErrors('certifications[__${stat.index}__].issueDate')} ? 'has-error' : ''">
+                                <input type="text" class="form-control issueDate" placeholder="Issue Date(MMM YYYY)" th:field="*{certifications[__${stat.index}__].issueDate}">
+                            </td>
+                            <td>
+                                <button th:if="${certification.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|certification:${stat.index}|"><i class="fa fa-trash-o"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="text-right">
+
+                        <button class="btn btn-info" name="add" value="certification"><i class="fa fa-plus"></i> Certification</button>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</div>
+</html>

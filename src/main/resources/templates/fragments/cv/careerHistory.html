@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<div th:styleappend="${cv.pos == 1 ? '' : 'display:none'}">
+<div th:each="edu, stat : *{careerHistories}">
+    <h5><a name="careerHistory"></a>
+        <span th:text="|No. ${stat.index + 1}|"></span>
+        <div class="pull-right" th:if="${stat.size gt 1 and edu.readOnly eq false}">
+            <button class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|careerHistory:${stat.index}|"><i class="fa fa-trash-o"></i></button>
+        </div>
+    </h5>
+
+    <table class="table table-bordered">
+        <tbody>
+        <tr>
+            <td class="col-xs-2 text-bold bg-gray-light">Company Name</td>
+            <td class="col-xs-6 form-group" th:classappend="${#fields.hasErrors('careerHistories[__${stat.index}__].companyName')} ? 'has-error' : ''">
+                <input type="text" placeholder="Company Name" class="form-control col-sm-10" th:field="*{careerHistories[__${stat.index}__].companyName}"></td>
+            <td class="col-xs-4 form-group" th:classappend="${#fields.hasErrors('careerHistories[__${stat.index}__].cityCountry')} ? 'has-error' : ''">
+                <input type="text" placeholder="City, Country" class="form-control col-sm-10" th:field="*{careerHistories[__${stat.index}__].cityCountry}"></td>
+        </tr>
+        <tr>
+            <td class="col-xs-2 text-bold bg-gray-light">Period</td>
+            <td class="col-xs-10" colspan="2">
+
+                <div class="row">
+                    <div class="col-xs-8">
+
+                        <div class="input-daterange input-group" th:classappend="${#fields.hasErrors('careerHistories[__${stat.index}__].startDate') or #fields.hasErrors('careerHistories[__${stat.index}__].endDate')} ? 'has-error' : ''">
+                            <input class="form-control" type="text" th:field="*{careerHistories[__${stat.index}__].startDate}"/>
+                            <span class="input-group-addon">~</span>
+                            <input type="text" class="form-control" th:field="*{careerHistories[__${stat.index}__].endDate}" />
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+
+                        <div class="checkbox" th:if="${stat.first}">
+                            <label><input type="checkbox" class="career-present" th:attr="data-index=${stat.index}" th:field="*{careerHistories[__${stat.index}__].present}"> Present</label>
+                        </div>
+                    </div>
+                </div>
+
+            </td>
+        </tr>
+
+        <tr>
+            <td class="text-bold bg-gray-light">Position</td>
+            <td colspan="2" class="form-group" th:classappend="${#fields.hasErrors('careerHistories[__${stat.index}__].position')} ? 'has-error' : ''">
+                <input type="text" placeholder="Position" class="form-control col-sm-10" th:field="*{careerHistories[__${stat.index}__].position}"></td>
+        </tr>
+        <tr>
+            <td class="text-bold bg-gray-light">Team/Department</td>
+            <td colspan="2" class="from-group" th:classappend="${#fields.hasErrors('careerHistories[__${stat.index}__].teamDepartment')} ? 'has-error' : ''">
+                <input type="text" placeholder="Team/Department" class="form-control col-sm-10" th:field="*{careerHistories[__${stat.index}__].teamDepartment}">
+            </td>
+        </tr>
+        <tr>
+            <td class="text-bold bg-gray-light">Clinical Trial Experience</td>
+            <td colspan="2">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" th:field="*{careerHistories[__${stat.index}__].clinicalTrialExperience}">
+                        Clinical Trial Experience
+                    </label>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="row">
+    <div class="col-xs-12 text-right">
+        <button class="btn btn-info" name="add" value="careerHistory">
+            <i class="fa fa-plus"></i> Career History
+        </button>
+    </div>
+</div>
+</div>
+</html>
