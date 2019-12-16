@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dtnsm.lms.mybatis.mapper.CourseAccountMapper">
+
+    <select id="selectCourseReportAlarm" parameterType="String" resultType="com.dtnsm.lms.domain.CourseAccount">
+        select a.*
+        from el_course_account a
+            inner join el_course b
+                on a.course_id = b.id
+            left outer join el_document c
+                on a.id = c.course_doc_id
+        where b.type_id = #{typeId}
+        and a.to_date = convert(varchar(10), getdate() + #{day}, 121)
+        and c.id is null
+    </select>
+
+
+    <select id="selectCourseToDateAlarm" parameterType="String" resultType="com.dtnsm.lms.domain.CourseAccount">
+        select a.*
+        from el_course_account a
+            inner join el_course b
+                on a.course_id = b.id
+        where b.type_id = #{typeId}
+        and a.to_date = convert(varchar(10), getdate() + #{day}, 121)
+        and a.course_status = 'process'
+    </select>
+
+</mapper>

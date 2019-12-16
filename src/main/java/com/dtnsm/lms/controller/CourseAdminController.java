@@ -241,8 +241,17 @@ public class CourseAdminController {
         if(course.getCourseMaster().getId().equalsIgnoreCase("BC0103") || course.getCourseMaster().getId().equalsIgnoreCase("BC0104")) {
             course.setRequestFromDate("1900-01-01");
             course.setRequestToDate("1900-01-01");
-        }
 
+            if(course.getCourseMaster().getId().equalsIgnoreCase("BC0104")) {
+                // 외부교육은 바로 신청할 수 있도록 상태를 신청가능 상태로 변경한다(신청가능상태 : 2)
+                course.setStatus(2);
+            }
+
+            if(course.getCourseMaster().getId().equalsIgnoreCase("BC0103")) {
+                // 부서별 교육은 신청 프로세스가 없음으로 0
+                course.setStatus(0);
+            }
+        }
 
         if(course.getPlace() == null || course.getTeam() == null) {
             course.setPlace("");
@@ -391,6 +400,24 @@ public class CourseAdminController {
                 course.setFromDate(DateUtil.getTodayString());
                 course.setToDate("2999-12-31");
             }
+        }
+
+        // 부서별 교육(BC0103), 외부교육(BC0104) 은 신청기간이 없음으로 1900-01-01 로 설정한다.
+        if(course.getCourseMaster().getId().equalsIgnoreCase("BC0103") || course.getCourseMaster().getId().equalsIgnoreCase("BC0104")) {
+            course.setRequestFromDate("1900-01-01");
+            course.setRequestToDate("1900-01-01");
+
+            if(course.getCourseMaster().getId().equalsIgnoreCase("BC0104")) {
+                // 외부교육은 바로 신청할 수 있도록 상태를 신청가능 상태로 변경한다(신청가능상태 : 2)
+                course.setStatus(2);
+            }
+
+            if(course.getCourseMaster().getId().equalsIgnoreCase("BC0103")) {
+                // 부서별 교육은 참석자 등록을 바로 해야 함으로 상태를 종료상태로 변경한다.
+                course.setStatus(5);
+            }
+
+
         }
 
         if(course.getPlace() == null || course.getTeam() == null) {

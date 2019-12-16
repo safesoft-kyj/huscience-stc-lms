@@ -50,7 +50,7 @@ public class BorderService {
     }
 
     public List<Border> getListTop5ByBorderMasterId(String masterId) {
-        return borderRepository.findFirst5ByBorderMaster_Id(masterId);
+        return borderRepository.findFirst5ByBorderMaster_Id(masterId, Sort.by(Sort.Direction.DESC, "isNotice", "createdDate"));
     }
 
     public Page<Border> getPageList(Pageable pageable) {

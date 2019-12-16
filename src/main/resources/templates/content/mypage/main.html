@@ -36,27 +36,141 @@
         <div id="page-content">
 
 
+
+
             <div class="panel">
                 <div class="panel-body">
+                    <hr class="table-head">
+                    <table id="customer-list-page1" class="table" cellspacing="0" width="100%">
+                        <form name="testForm" id="testForm" th:action="@{/mypage/main}">
+                            <tbody>
+<!--                            <tr>-->
+<!--                                <td class="text-right" style="vertical-align: middle; background: #FAFAFA;">과정구분</td>-->
+<!--                                <td>-->
+<!--                                    <div th:switch="${courseTypeList}">-->
+<!--                                        <h2 th:case="null">No customer yet!</h2>-->
+<!--                                        <div th:case="*">-->
+<!--                                            &lt;!&ndash;                                        <div class="form-group pad-ver">&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                                    <label class="col-md-3 control-label text-right">Radio Buttons</label>&ndash;&gt;-->
+<!--                                            <div class="col-md-9 text-left">-->
+<!--                                                &lt;!&ndash; Radio Buttons &ndash;&gt;-->
+<!--                                                <div class="radio">-->
+<!--                                                    <input id='lbl-code0' class="magic-radio" type="radio" name="gubunId" value="" checked>-->
+<!--                                                    <label for='lbl-code0'>전체</label>-->
+
+<!--                                                    <th:block th:each="code, index : ${courseTypeList}">-->
+
+<!--                                                        <input th:id="${'lbl-code' + index.count}" class="magic-radio" type="radio" name="gubunId" th:value="${code.getMinorCd()}" th:checked="${#strings.equalsIgnoreCase(code.getMinorCd(), param.gubunId)}">-->
+<!--                                                        <label th:for="${'lbl-code' + index.count}" th:text="${code.getMinorNm()}">Option 1 (pre-checked)</label>-->
+<!--                                                    </th:block>-->
+
+<!--                                                </div>-->
+<!--                                                &lt;!&ndash;                                            </div>&ndash;&gt;-->
+<!--                                            </div>-->
+
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+                            <tr>
+                                <td class="text-right" style="vertical-align: middle; background: #FAFAFA;">과정유형</td>
+                                <td>
+                                    <div th:switch="${courseMasterList}">
+                                        <h2 th:case="null">No customer yet!</h2>
+                                        <div th:case="*">
+                                            <!--                                         <div class="form-group pad-ver">-->
+                                            <!--                                                    <label class="col-md-3 control-label text-right">Radio Buttons</label>-->
+                                            <div class="col-md-9 text-left">
+                                                <!-- Radio Buttons -->
+                                                <div class="radio">
+                                                    <input id='demo-inline-form-radio0' class="magic-radio" type="radio" name="typeId" value="" checked>
+                                                    <label for='demo-inline-form-radio0'>전체</label>
+
+                                                    <th:block th:each="courseMaster, index : ${courseMasterList}">
+
+                                                        <input th:id="${'demo-inline-form-radio' + index.count}" class="magic-radio" type="radio" name="typeId" th:value="${courseMaster.getId()}" th:checked="${#strings.equalsIgnoreCase(courseMaster.getId(), param.typeId)}">
+                                                        <label th:for="${'demo-inline-form-radio' + index.count}" th:text="${courseMaster.getCourseName()}">Option 1 (pre-checked)</label>
+                                                    </th:block>
+
+                                                </div>
+                                            </div>
+                                            <!--                                        </div>-->
+
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-right" style="vertical-align: middle; background: #FAFAFA;">과정상태</td>
+                                <td>
+                                    <div th:switch="${courseStepStatus}">
+                                        <h2 th:case="null">No customer yet!</h2>
+                                        <div th:case="*">
+                                            <!--                                         <div class="form-group pad-ver">-->
+                                            <!--                                                    <label class="col-md-3 control-label text-right">Radio Buttons</label>-->
+                                            <div class="col-md-9 text-left">
+                                                <!-- Radio Buttons -->
+                                                <div class="radio">
+                                                    <input id="course_step-form-radio0" class="magic-radio" type="radio" name="courseStepStatusId" value="" checked>
+                                                    <label for='course_step-form-radio0'>전체</label>
+
+                                                    <th:block th:each="courseStep, index : ${courseStepStatus}">
+
+                                                        <input th:id="${'course_step-form-radio' + index.count}" class="magic-radio" type="radio" name="courseStepStatusId" th:value="${courseStep.name()}" th:checked="${#strings.equalsIgnoreCase(courseStep.name(), param.courseStepStatusId)}">
+                                                        <label th:for="${'course_step-form-radio' + index.count}" th:text="${courseStep.getLabel()}">Option 1 (pre-checked)</label>
+                                                    </th:block>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-right" style="vertical-align: middle; background: #FAFAFA;">과정명</td>
+                                <td>
+                                    <input class="form-control" type="text" th:value="${param.title}" id="title" name="title" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="text-center">
+                                    <br>
+                                    <a class="btn btn-lg btn-info" onclick="form_subimt();return false;">
+                                        <div class="demo-icon">
+                                            <i class="fa fa-search"></i> <span th:text="#{label.search}">fa fa-search</span>
+                                        </div>
+                                    </a>
+                                    <a class="btn btn-lg btn-default" th:href="@{/mypage/main}" th:text="#{label.init}">초기화</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </form>
+                    </table>
+
+
                     <div class="row">
 <!--                        <h5><strong class="text-warning"><i class="demo-pli-dot-vertical"></i> 신청대기 과정</strong></h5>-->
                         <hr class="table-head">
                         <table class="table" cellspacing="0" width="100%">
                             <thead>
                             <tr style="background: #FAFAFA;">
+                                <th class="text-center" th:text="#{label.no}">교육유형</th>
                                 <th class="text-center col-md-1" th:text="#{label.course.type}">교육유형</th>
                                 <th class="text-center col-md-3" th:text="#{label.course.name}">과정명</th>
                                 <th class="text-center col-md-2" th:text="#{label.course.period}">기간</th>
                                 <th class="text-center col-md-1" th:text="#{label.title.section}">강의</th>
                                 <th class="text-center col-md-1" th:text="#{label.title.quiz}">시험</th>
                                 <th class="text-center col-md-1" th:text="#{label.title.survey}">설문</th>
-                                <th class="text-center col-md-2" th:text="#{label.status}">상태</th>
+                                <th class="text-center col-md-1" th:text="#{label.status}">상태</th>
                                 <th class="text-center" th:text="#{label.actions}">비고</th>
                             </tr>
                             </thead>
                             <tbody>
                             <th:block th:each="courseAccount, index : ${courseAccountList}">
                                 <tr>
+                                    <td class="text-center">
+                                        <span th:text="${courseAccountList.getTotalElements() - index.index}"></span>
+                                    </td>
                                     <td class="text-left">
                                         <span th:text="${courseAccount.getCourse().getCourseMaster().getCourseName()}"></span>
                                     </td>
@@ -81,16 +195,18 @@
                                     </td>
                                     <td class="text-center">
                                         <form id="submit_form" th:action="@{/course/request2/{id}(id=${courseAccount.getId()})}" method="get">
+
                                             <div th:switch="${courseAccount.getCourseStatus()}">
-                                                <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).none}" class="text-warning" th:text="${'신청대기'}"></span>
-                                                <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).request}" class="text-mint" th:text="${'신청완료'}"></span>
-                                                <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).process}" class="text-warning" th:text="${'진행중'}"></span>
-                                                <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).complete}" class="text-mint" th:text="${'교육완료'}"></span>
-                                                <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).reject}" class="text-mint" th:text="${'기각'}"></span>
+                                                <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).none}" class="text-warning" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).none.getLabel()}"></span>
+                                                <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).request}" class="text-mint" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).request.getLabel()}"></span>
+                                                <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).process}" class="text-warning" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).process.getLabel()}"></span>
+                                                <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).wait}" class="text-mint" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).wait.getLabel()}"></span>
+                                                <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).complete}" class="text-mint" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).complete.getLabel()}"></span>
+                                                <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).reject}" class="text-mint" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).reject.getLabel()}"></span>
                                             </div>
                                         </form>
                                     </td>
-                                    <td class="text-left">
+                                    <td class="text-center">
                                         <div th:switch="${courseAccount.getCourseStatus()}">
                                             <th:block th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).none}">
 <!--                                                <a class="btn btn-info" th:href="|javascript:checkRequest('${courseAccount.getCourse().getId()}', '${courseAccount.getAccount().getUserId()}')|"><i class="demo-pli-inbox-into"></i> 교육신청</a>-->
@@ -101,11 +217,30 @@
                                             <th:block th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).request}"></th:block>
                                             <th:block th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).process}">
                                                 <form th:id="${'submit_form2' + index.count}" th:action="@{/mypage/classroom/view/{id}(id=${courseAccount.getId()})}" method="get">
-                                                    <a class="btn btn-info" th:onclick="|javascript:checkCoursePeriod('${courseAccount.getId()}','${index.count}')|"><i class="demo-pli-inbox-into"></i> 입장</a>
+                                                    <!-- class 교육인 경우는 참석처리가 완료되어야 시험이나 설문을 진행할 수 있다. -->
+                                                    <th:block th:if="${#strings.equalsIgnoreCase(courseAccount.getCourse().getCourseMaster().getId(), 'BC0102') and #strings.equalsIgnoreCase(courseAccount.getIsAttendance(), '1')}">
+                                                        <a class="btn btn-info" th:onclick="|javascript:checkCoursePeriod('${courseAccount.getId()}','${index.count}')|"><i class="demo-pli-inbox-into"></i> 입장</a>
+                                                    </th:block>
+                                                    <!-- class 교육인 경우는 참석처리가 완료되어야 시험이나 설문을 진행할 수 있다. -->
+                                                    <th:block th:unless="${#strings.equalsIgnoreCase(courseAccount.getCourse().getCourseMaster().getId(), 'BC0102')}">
+                                                        <a class="btn btn-info" th:onclick="|javascript:checkCoursePeriod('${courseAccount.getId()}','${index.count}')|"><i class="demo-pli-inbox-into"></i> 입장</a>
+                                                    </th:block>
                                                 </form>
-
                                             </th:block>
-                                            <th:block th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).complete}"></th:block>
+                                            <th:block th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).complete}">
+
+
+                                                <th:block th:if="${courseAccount.getCourse().getIsCerti().equals('Y')}">
+                                                    <th:block th:if="${courseAccount.getCertificateBindDate() == null}">
+                                                        <a href="#" class="btn btn-info" id="popupBtn"
+                                                           th:onclick="|javascript:popupPdfView('${courseAccount.getId()}', '1');return false;|" target="_blank"><i class="fa fa-print"></i> 발급</a>
+                                                    </th:block>
+                                                    <th:block th:unless="${courseAccount.getCertificateBindDate() == null}">
+                                                        <a href="#" class="btn btn-mint" id="popupBtn2"
+                                                           th:onclick="|javascript:popupPdfView('${courseAccount.getId()}', '2');return false;|" target="_blank"><i class="fa fa-print"></i> 수료증</a>
+                                                    </th:block>
+                                                </th:block>
+                                            </th:block>
                                             <th:block th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).reject}"></th:block>
                                         </div>
 
@@ -115,6 +250,36 @@
                             </th:block>
                             </tbody>
                         </table>
+                        <nav style="text-align: center;">
+                            <ul class="pagination"
+                                th:with="start=${T(Math).floor(courseAccountList.number/10)*10 + 1}, last=(${start + 9 < courseAccountList.totalPages ? start + 9 : courseAccountList.totalPages})">
+                                <li>
+                                    <a th:href="@{/mypage/main(page=1)}" aria-label="First">
+                                        <span aria-hidden="true">First</span>
+                                    </a>
+                                </li>
+
+                                <li th:class="${courseAccountList.first} ? 'disabled'">
+                                    <a th:href="${courseAccountList.first} ? '#' :@{/mypage/main(page=${courseAccountList.number})}" aria-label="Previous">
+                                        <span aria-hidden="true">&lt;</span>
+                                    </a>
+                                </li>
+                                <li th:each="page: ${#numbers.sequence(start, last)}" th:class="${page == courseAccountList.number + 1} ? 'active'">
+                                    <a th:text="${page}" th:href="@{/mypage/main(page=${page})}"></a>
+                                </li>
+                                <li th:class="${courseAccountList.last} ? 'disabled'">
+                                    <a th:href="${courseAccountList.last} ? '#' : @{/mypage/main(page=${courseAccountList.number + 2})}" aria-label="Next">
+                                        <span aria-hidden="true">&gt;</span>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a th:href="@{/mypage/main(page=${courseAccountList.totalPages})}" aria-label="Last">
+                                        <span aria-hidden="true">Last</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -126,11 +291,41 @@
 
     <script>
 
+        $(document).ready(function() {
+            $('#title').focus();
+        });
+
+
+        function form_subimt() {
+
+            $('#testForm').submit();
+            $('#title').focus();
+        }
+
+        // 수료증 팦업창
+        function popupPdfView(id, flag) {
+            var popupName;
+
+            if(flag == 1) popupName = "/mypage/certificate/print/";
+            else popupName = "/mypage/certificate/printView/";
+
+            var width = 800;
+            var height = 630;  //1.414;
+
+            var title = "디티앤사노메딕스";
+            var url = popupName + id;
+            // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+            var popupX = (window.screen.width / 2) - (width / 2);
+            // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
+            var popupY= (window.screen.height / 2) - (height / 2);
+
+            var option = "width =" + width + ", height =" + height + ", menubar=no, directories=no, location = no, scrollbars=no, resizable=no";
+            option += ", left=" + popupX + ", top=" + popupY;
+
+            window.open(url, title, option);
+        }
+
         function checkCoursePeriod(docId, formId) {
-
-            alert(docId);
-
-            alert(formId);
 
             $.ajax({
                 type : 'get',

@@ -117,12 +117,32 @@ public class CourseAccountService {
         return courseAccountRepository.findAllByAccount_UserIdAndIsCommit(userId, isCommit);
     }
 
+    // MyPage/main
+    public Page<CourseAccount> getListUserId(String userId, String typeId, String title, CourseStepStatus courseStepStatus, Pageable pageable) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.ASC, "isCommit", "toDate"));
+
+        return courseAccountRepository.findByAccount_UserIdAndCourse_CourseMaster_idLikeAndCourse_TitleLikeAndCourseStatusLike(userId, typeId, title, courseStepStatus, pageable);
+    }
+
+    // MyPage/main
+    public Page<CourseAccount> getListUserId(String userId, String typeId, String title, Pageable pageable) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.ASC, "isCommit", "toDate"));
+
+        return courseAccountRepository.findByAccount_UserIdAndCourse_CourseMaster_idLikeAndCourse_TitleLike(userId, typeId, title, pageable);
+    }
+
     // 내신청함
     public Page<CourseAccount> getListUserId(String userId, Pageable pageable) {
 
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.ASC, "isCommit", "toDate"));
 
         return courseAccountRepository.findByAccount_UserId(userId, pageable);
     }

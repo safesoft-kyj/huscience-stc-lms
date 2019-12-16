@@ -52,6 +52,9 @@ public class Border extends AuditorEntity<String> {
     private Account account;
 
     @OneToMany(mappedBy = "border", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BorderViewAccount> borderViewAccounts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "border", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BorderFile> borderFiles = new ArrayList<>();
 
     public Border(){}

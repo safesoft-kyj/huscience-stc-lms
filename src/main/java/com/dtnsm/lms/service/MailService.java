@@ -50,6 +50,12 @@ public class MailService {
             case CourseAccountAssign:
                 templateUri = "email/course-account-assign";
                 break;
+            case CourseToDateApproach:
+                templateUri = "email/course-todate-approach";
+                break;
+            case CourseReportApproach:
+                templateUri = "email/course-report-approach";
+                break;
             case Request:
                 templateUri = "email/course-request";
                 break;

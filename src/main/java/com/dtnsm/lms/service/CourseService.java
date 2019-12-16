@@ -1,7 +1,5 @@
 package com.dtnsm.lms.service;
 
-import com.dtnsm.common.entity.JobDescription;
-import com.dtnsm.common.entity.QJobDescription;
 import com.dtnsm.lms.domain.Course;
 import com.dtnsm.lms.domain.CourseFile;
 import com.dtnsm.lms.domain.CourseSection;
@@ -18,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CourseService {

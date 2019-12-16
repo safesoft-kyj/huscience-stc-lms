@@ -305,7 +305,7 @@
                                 <div class="panel height-fix-pannel">
                                     <div class="panel-body">
                                         <h5 class="col-md-6" th:text="#{label.course.request}" style="padding-bottom: 10px">교육신청</h5>
-                                        <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="/info/requestMonth">more ></a></small>
+                                        <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="/info/totalMonth">more ></a></small>
 
                                         <div id="dayList" class="text-left">
                                             <table id="customer-list-page5" class="" cellspacing="0" width="100%">
@@ -376,45 +376,128 @@
                                 </div>
                             </div>
                             <div class="media-body">
+                                <a href="#" id="popupBtn"
+                                   th:onclick="|javascript:popupPdfView('${schedule.getId()}');return false;|" target="_blank" style="color:white">
                                 <p class="text-2x mar-no text-semibold">
                                     <th:block th:if="${schedule != null}">
-                                    <a href="#" id="popupBtn"
-                                       th:onclick="|javascript:popupPdfView('${schedule.getId()}');return false;|" target="_blank" style="color:white">View</a>
+                                    View
                                     </th:block>
                                 </p>
                                 <p class="mar-no">Employee training matrix</p>
+                                </a>
                             </div>
                         </div>
                     </div>
-                     <div class="row">
-                        <div class="col-md-6"></div>
-                            <div class="panel">
-                                <div class="panel-body">
-                                    <h5 class="col-md-6" th:text="#{label.title.customer}" style="padding-bottom: 10px">협약기관</h5>
-                                    <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a th:href="@{/customer/list-page}">more ></a></small>
-
-                                    <div th:switch="${customers}">
-                                        <h2 th:case="null">No customer yet!</h2>
-                                        <div th:case="*">
-                                            <table id="customer-list-page1" class="" cellspacing="0" width="100%">
-                                                <tbody>
-                                                <tr th:each="customer, index : ${customers}">
-                                                    <td>
-                                                        <a th:href="@{/customer/view/{id}(id=${customer.getId()})}" th:text="${customer.getName()}"></a>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div><!--switch End -->
+                    <div class="row">
+                        <div class="panel panel-success panel-colorful media middle pad-all">
+                            <div class="media-left">
+                                <div class="pad-hor">
+                                    <i class="demo-pli-address-book icon-3x"></i>
                                 </div>
                             </div>
+                            <div class="media-body">
+
+                                <a href="#" class="" data-toggle="modal"
+                                        data-target="#demo-default-modal" style="color:white">
+<!--                                <a href="#" id="popupBtn11"-->
+<!--                                   th:href="@{/customer/list-page}" target="_blank" style="color:white">-->
+                                <p class="text-2x mar-no text-semibold">
+                                    <th:block th:if="${schedule != null}">
+                                         <span>View</span>
+                                    </th:block>
+                                </p>
+                                <p class="mar-no"><!---->협약기관</p></a>
+                            </div>
+                        </div>
+                    </div>
+
+                     <div class="row">
+<!--                        <div class="col-md-6"></div>-->
+<!--                            <div class="panel">-->
+<!--                                <div class="panel-body">-->
+<!--                                    <h5 class="col-md-6" th:text="#{label.title.customer}" style="padding-bottom: 10px">협약기관</h5>-->
+<!--                                    <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a th:href="@{/customer/list-page}">more ></a></small>-->
+
+<!--                                    <div th:switch="${customers}">-->
+<!--                                        <h2 th:case="null">No customer yet!</h2>-->
+<!--                                        <div th:case="*">-->
+<!--                                            <table id="customer-list-page1" class="" cellspacing="0" width="100%">-->
+<!--                                                <tbody>-->
+<!--                                                <tr th:each="customer, index : ${customers}">-->
+<!--                                                    <td>-->
+<!--                                                        <a th:href="@{/customer/view/{id}(id=${customer.getId()})}" th:text="${customer.getName()}"></a>-->
+<!--                                                    </td>-->
+<!--                                                </tr>-->
+<!--                                                </tbody>-->
+<!--                                            </table>-->
+<!--                                        </div>-->
+<!--                                    </div>&lt;!&ndash;switch End &ndash;&gt;-->
+<!--                                </div>-->
+<!--                            </div>-->
                          <div class="col-md-6">
                              <div id="custom-date-format"></div>
                          </div>
                      </div>
                 </div>
             </div>
+
+
+            <!--Default Bootstrap Modal-->
+            <!--===================================================-->
+            <div class="modal fade" id="demo-default-modal" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <!--Modal header-->
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                            <h4 class="modal-title">협약기관</h4>
+                        </div>
+
+                        <!--Modal body-->
+                        <div class="modal-body">
+                            <div th:switch="${customers}">
+                                <h2 th:case="null">협약기관이 등록되지 않았습니다.</h2>
+                                <div th:case="*">
+                                    <hr class="table-head">
+                                    <table id="customer-page" class="table" cellspacing="0" width="100%">
+                                        <thead>
+                                        <tr style="background: #FAFAFA;">
+                                            <th class="text-center">#</th>
+                                            <th th:text="#{label.customer.name}" class="text-center">협약기관명</th>
+                                            <th th:text="#{label.customer.date}" class="text-center">협약체결일자</th>
+                                            <th th:text="#{label.customer.condition}" class="text-center">협약 특혜</th>
+                                            <th th:text="#{label.homepage}" class="text-center">홈페이지</th>
+<!--                                            <th th:text="#{label.createby}">작성자</th>-->
+<!--                                            <th th:text="#{label.createdate}">작성일</th>-->
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="customer, index : ${customers}">
+                                            <td th:text="${customers.size() - index.index}" class="text-center"></td>
+<!--                                            <td><a th:href="@{/customer/view/{id}(id=${customer.getId()})}" th:text="${customer.getName()}"></a></td>-->
+                                            <td th:text="${customer.getName()}"></td>
+                                            <td th:text="${customer.getCondate()}"></td>
+                                            <td th:text="${customer.getCondition()}"></td>
+                                            <td><a th:href="${customer.homepage}" target="_blank"><span th:text="${customer.homepage}"></span></a></td>
+<!--                                            <td th:text="${customer.getAccount().getName()}"></td>-->
+<!--                                            <td th:text="${customer.getCreatedDate()} ? ${#dates.format(customer.getCreatedDate(), 'yyyy/MM/dd HH:mm:ss')} : ${customer.getCreatedDate()}"></td>-->
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div><!--switch End -->
+                        </div>
+
+                        <!--Modal footer-->
+                        <div class="modal-footer">
+                            <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+                            <!--                            <button class="btn btn-primary">Save changes</button>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div><!-- Page content End -->
     </div><!-- Content container End -->
 </th:block>

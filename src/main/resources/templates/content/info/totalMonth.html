@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+
+    <link href='/default/plugins/fullcalendar4.3.1/core/main.css' rel='stylesheet' />
+    <link href='/default/plugins/fullcalendar4.3.1/daygrid/main.css' rel='stylesheet' />
+    <link href='/default/plugins/fullcalendar4.3.1/timegrid/main.css' rel='stylesheet' />
+    <link href='/default/plugins/fullcalendar4.3.1/list/main.css' rel='stylesheet' />
+    <link th:href="@{/default/plugins/fullcalendar/nifty-skin/fullcalendar-nifty.min.css}" rel="stylesheet">
+
+    <style>
+
+        #container .fc-row.fc-widget-header table th {
+            background-color: #46525E;
+            color: #fff;
+            /*background-color: #42A5F5;*/
+            /*color: #fff;*/
+        }
+
+    </style>
+
+</th:block>
+
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+            <!-- Basic Data -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3></h3>
+                </div>
+                <div class="panel-body">
+                    <div class="fixed-fluid">
+<!--                        <div class="fixed-sm-150 pull-sm-left fixed-right-border">-->
+
+                        <div class="fixed-sm-150 pull-sm-left">
+                            <!-- Draggable Events -->
+                            <!-- ============================================ -->
+                            <p class="text-muted text-sm text-uppercase"></p>
+
+                            <div id="demo-external-events">
+<!--                                <p class="text-muted text-sm text-uppercase">일자선택</p>-->
+                                <div class="fc-event fc-list" data-class="warning">신청일</div>
+<!--                                <a href="#" th:href="@{/info/month}"  class="fc-event fc-list" data-class="warning" style="border-top:2px solid #FFA726">교육일 보기</a>-->
+                                <hr>
+                                <p class="text-muted text-sm text-uppercase">Training</p>
+                                <hr>
+<!--                                <div class="fc-event" data-class="warning">Self-training</div>-->
+                                <div class="fc-event" data-class="success">Class training</div>
+                                <div class="fc-event" data-class="mint">부서별교육</div>
+                                <div class="fc-event" data-class="purple">외부교육</div>
+                            </div>
+<!--                            <hr>-->
+                            <!-- ============================================ -->
+                        </div>
+                        <div class="fluid">
+                            <!-- Calendar placeholder-->
+                            <!-- ============================================ -->
+                            <div id='calendar'></div>
+                            <!-- ============================================ -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+    <!--Full Calendar [ OPTIONAL ]-->
+    <script src='/default/plugins/fullcalendar4.3.1/core/main.js'></script>
+    <script src='/default/plugins/fullcalendar4.3.1/interaction/main.js'></script>
+    <script src='/default/plugins/fullcalendar4.3.1/daygrid/main.js'></script>
+    <script src='/default/plugins/fullcalendar4.3.1/timegrid/main.js'></script>
+    <script src='/default/plugins/fullcalendar4.3.1/list/main.js'></script>
+    <script src='/default/plugins/fullcalendar4.3.1/core/locales-all.js'></script>
+
+
+    <!--Full Calendar [ SAMPLE ]-->
+    <script>
+
+        $(document).on('nifty.ready', function() {
+
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list' ],
+                // height: 'parent',
+                height: 680,
+                locale : "ko",
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,listMonth'
+                },
+                defaultView: 'dayGridMonth',
+                views: {
+                    month: {
+                        columnFormat: 'dddd'
+                    }
+                },
+                // defaultDate: '2019-08-12',
+                navLinks: true, // can click day/week names to navigate views
+                editable: false,
+                allDayDefault: true,
+                hiddenDays: [ 0, 6 ],
+                eventLimit: false, // allow "more" link when too many events
+                events: {url : "/info/api/month/totalCalendar"}
+            });
+
+            calendar.render();
+        });
+
+    </script>
+</th:block>
+
+</html>
