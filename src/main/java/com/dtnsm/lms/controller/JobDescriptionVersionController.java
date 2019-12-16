@@ -74,7 +74,7 @@ public class JobDescriptionVersionController {
 
     // Job Description Version 이력 조회
     @GetMapping("/viewHistory/{id}")
-    public String viewPage(@PathVariable("id") long id, Model model) {
+    public String viewPage(@PathVariable("id") Integer id, Model model) {
 
         pageInfo.setPageTitle(pageTitle + "Detail");
 
@@ -90,7 +90,7 @@ public class JobDescriptionVersionController {
 
     // Job Description 사용자 조회
     @GetMapping("/viewUser/{id}")
-    public String userViewPage(@PathVariable("id") long id, Model model) {
+    public String userViewPage(@PathVariable("id") Integer id, Model model) {
 
         pageInfo.setPageTitle(pageTitle + "Detail");
 
@@ -104,7 +104,7 @@ public class JobDescriptionVersionController {
 
     // Job Description File 조회
     @GetMapping("/viewJdFile/{id}")
-    public String jdViewPage(@PathVariable("id") long id, Model model) {
+    public String jdViewPage(@PathVariable("id") Integer id, Model model) {
 
         pageInfo.setPageTitle(pageTitle + "Detail");
 
@@ -116,7 +116,7 @@ public class JobDescriptionVersionController {
 
 
     @GetMapping("/edit/{id}")
-    public String showUpdateForm(@PathVariable("id") long id, Model model) {
+    public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         JobDescriptionVersion obj = versionService.getById(id);
 
         JobDescriptionVersion newVersion = new JobDescriptionVersion();
@@ -162,7 +162,7 @@ public class JobDescriptionVersionController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteCustomer(@PathVariable("id") long id) {
+    public String deleteCustomer(@PathVariable("id") Integer id) {
 
         JobDescriptionVersion obj = versionService.getById(id);
 

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<div th:styleappend="${cv.pos == 5 ? '' : 'display:none'}">
+<table class="table">
+    <thead>
+    <tr>
+        <th>CLINICAL TRIAL EXPERIENCE</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            <table class="table table-bordered" th:each="experience, stat : *{experiences}">
+                <tbody>
+                <tr>
+                    <td class="col-xs-2 bg-gray-light" rowspan="3"  th:classappend="${#fields.hasErrors('experiences[__${stat.index}__].indication')} ? 'has-error' : ''">
+                        <select class="form-control" th:field="*{experiences[__${stat.index}__].indication}">
+                            <option th:each="indication : ${indicationList}" th:value="${indication.id}" th:text="${indication.indication}"></option>
+                        </select>
+                    </td>
+                    <td>
+                        <div class="row">
+                            <div class="col-xs-2">
+                                <select class="form-control" th:field="*{experiences[__${stat.index}__].phase}">
+                                    <option th:each="phase : ${phaseList}" th:value="${phase.id}" th:text="${phase.phase}"></option>
+                                </select>
+                            </div>
+                            <div class="col-xs-2">
+                                <select class="form-control" th:field="*{experiences[__${stat.index}__].globalOrLocal}">
+                                    <option value="GLOBAL">Global Study</option>
+                                    <option value="LOCAL">Local Study</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-8 text-right">
+                                <button th:if="${experience.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|experience:${stat.index}|"><i class="fa fa-trash-o"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><input type="text" class="form-control" placeholder="Role" th:field="*{experiences[__${stat.index}__].role}"></td>
+                </tr>
+                <tr>
+                    <td><input type="text" class="form-control" placeholder="Working Details(Responsibilities)" th:field="*{experiences[__${stat.index}__].workingDetails}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="text-right">
+                        <a name="experience"></a>
+                        <button class="btn btn-info" name="add" value="experience"><i class="fa fa-plus"></i> Experience</button>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</div>
+</html>

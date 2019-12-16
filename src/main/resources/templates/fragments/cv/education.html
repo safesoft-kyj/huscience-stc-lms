@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<div th:styleappend="${cv.pos == 0 ? '' : 'display:none'}">
+<a name="education"></a>
+<!--===================================================-->
+<!--End Horizontal Form-->
+<div th:each="edu, stat : *{educations}" >
+    <h5>
+        <span th:text="|No. ${stat.index + 1}|"></span>
+        <div class="pull-right" th:if="${stat.size gt 1 and edu.readOnly eq false}">
+            <button class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|education:${stat.index}|"><i class="fa fa-trash-o"></i></button>
+        </div>
+    </h5>
+
+    <table class="table table-bordered">
+        <tbody>
+        <tr>
+            <td class="col-xs-2 text-bold bg-gray-light">Period</td>
+            <td class="col-xs-10" colspan="2">
+
+                <div class="row">
+                    <div class="col-xs-8">
+                        <div class="input-daterange input-group" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].startDate') or #fields.hasErrors('educations[__${stat.index}__].endDate')} ? 'has-error' : ''">
+                            <input class="form-control" type="text" th:field="*{educations[__${stat.index}__].startDate}"/>
+                            <span class="input-group-addon">~</span>
+                            <input type="text" class="form-control" th:field="*{educations[__${stat.index}__].endDate}" />
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+
+                        <div class="checkbox" th:if="${stat.first}">
+                            <label><input type="checkbox" class="edu-present" th:attr="data-index=${stat.index}" th:field="*{educations[__${stat.index}__].present}"> Present</label>
+                        </div>
+                    </div>
+                </div>
+
+            </td>
+        </tr>
+        <tr>
+            <td class="col-xs-2 text-bold bg-gray-light">Institute</td>
+            <td class="col-xs-6 form-group" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].nameOfUniversity')} ? 'has-error' : ''">
+                <input type="text" placeholder="Name of University" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].nameOfUniversity}">
+            </td>
+            <td class="col-xs-4 form-group" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].cityCountry')} ? 'has-error' : ''"><input type="text" placeholder="City, Country" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].cityCountry}"></td>
+        </tr>
+        <tr>
+            <td class="text-bold bg-gray-light">Degree</td>
+            <td colspan="2" class="form-group" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].degree')} ? 'has-error' : ''"><input type="text" placeholder="Degree description, concentration listing" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].degree}"></td>
+        </tr>
+        <tr>
+            <td class="text-bold bg-gray-light">Thesis Title<br/>(if applicable)</td>
+            <td colspan="2">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <input type="text" placeholder="Thesis Title" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].thesisTitle}">
+                    </div>
+                    <div class="col-xs-6">
+                        <input type="text" placeholder="Name of Supervisor" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].nameOfSupervisor}">
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="pull-right">
+    <button class="btn btn-info" name="add" value="education">
+        <i class="fa fa-plus"></i> Education
+    </button>
+</div>
+</div>
+</html>

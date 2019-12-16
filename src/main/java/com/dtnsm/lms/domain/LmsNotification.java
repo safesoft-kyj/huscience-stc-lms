@@ -22,7 +22,8 @@ public class LmsNotification extends AuditorCreateEntity<String> {
     private LmsAlarmGubun alarmGubun;
 
     // C:과정, D:전자결재
-    @Column(length = 1, nullable = false)
+//    @Column(length = 1, nullable = false)
+    @Transient
     private String gubun;
 
 

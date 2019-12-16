@@ -73,7 +73,7 @@ public class JobDescriptionVersionService {
         return repository.findAll(pageable);
     }
 
-    public JobDescriptionVersion getById(Long id) {
+    public JobDescriptionVersion getById(Integer id) {
 
         return repository.findById(id).get();
     }

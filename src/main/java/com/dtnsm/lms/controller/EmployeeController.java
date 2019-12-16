@@ -17,7 +17,7 @@ import com.dtnsm.lms.service.JobDescriptionFileService;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
-import com.dtnsm.lms.xdocreport.JobDescriptionReportService;
+//import com.dtnsm.lms.xdocreport.JobDescriptionReportService;
 import com.dtnsm.lms.xdocreport.dto.JobDescriptionSign;
 import com.querydsl.core.BooleanBuilder;
 import fr.opensagres.xdocreport.document.images.ByteArrayImageProvider;
@@ -51,7 +51,7 @@ public class EmployeeController {
     private final UserJobDescriptionRepository userJobDescriptionRepository;
     private final SignatureRepository signatureRepository;
     private final JobDescriptionFileService jobDescriptionFileService;
-    private final JobDescriptionReportService jobDescriptionReportService;
+//    private final JobDescriptionReportService jobDescriptionReportService;
     private final CurriculumVitaeRepository curriculumVitaeRepository;
     private final FileUploadProperties prop;
     private PageInfo pageInfo = new PageInfo();
@@ -187,7 +187,8 @@ public class EmployeeController {
 
                     String pdfOutput = prop.getBinderJdUploadDir() + "/JD_" + userJobDescription.getId() + ".pdf";
 
-                    jobDescriptionReportService.generateReport(jobDescriptionSign, resource.getInputStream(), pdfOutput, id);
+                    //TODO 11111111111111
+//                    jobDescriptionReportService.generateReport(jobDescriptionSign, resource.getInputStream(), pdfOutput, id);
                 } catch (Exception e) {
                     System.err.println(e);
                 }
