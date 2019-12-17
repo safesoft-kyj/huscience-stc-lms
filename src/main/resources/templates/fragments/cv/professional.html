@@ -35,7 +35,7 @@
                                 </div>
                             </td>
                             <td>
-                                <button th:if="${membership.readOnly eq fasle}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|membership:${stat.index}|"><i class="fa fa-trash-o"></i>
+                                <button th:if="${membership.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|membership:${stat.index}|"><i class="fa fa-trash-o"></i>
                                 </button>
                             </td>
                         </tr>

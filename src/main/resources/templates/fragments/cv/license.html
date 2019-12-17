@@ -50,7 +50,7 @@
                                 <input type="text" class="form-control" placeholder="Name of Certification" th:field="*{certifications[__${stat.index}__].nameOfCertification}">
                             </td>
                             <td class="form-group col-xs-4" th:classappend="${#fields.hasErrors('certifications[__${stat.index}__].organizers')} ? 'has-error' : ''">
-                                <input type="text" class="form-control" placeholder="Name of License" th:field="*{certifications[__${stat.index}__].organizers}">
+                                <input type="text" class="form-control" placeholder="Name of Institution/Organization" th:field="*{certifications[__${stat.index}__].organizers}">
                             </td>
                             <td class="form-group" th:classappend="${#fields.hasErrors('certifications[__${stat.index}__].issueDate')} ? 'has-error' : ''">
                                 <input type="text" class="form-control issueDate" placeholder="Issue Date(MMM YYYY)" th:field="*{certifications[__${stat.index}__].issueDate}">

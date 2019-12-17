@@ -39,39 +39,39 @@
                         <!--nav-->
                         <ul class="row wz-steps wz-icon-bw wz-nav-off mar-top">
                             <li class="col-xs-2" th:classappend="${cv.pos == 0 ? 'active' : ''}">
-                                <a data-toggle="tab" href="#demo-main-tab1">
-                                    <span class="text-danger"><i class="demo-pli-information icon-2x"></i></span>
+                                <a>
+<!--                                    <span class="text-danger"><i class="demo-pli-student-hat icon-2x"></i></span>-->
                                     <h5 class="mar-no">EDUCATION</h5>
                                 </a>
                             </li>
                             <li class="col-xs-2" th:classappend="${cv.pos == 1 ? 'active' : ''}">
-                                <a data-toggle="tab">
-                                    <span class="text-warning"><i class="demo-pli-male icon-2x"></i></span>
+                                <a>
+<!--                                    <span class="text-warning"><i class="demo-pli-male icon-2x"></i></span>-->
                                     <h5 class="mar-no">CAREER HISTORY</h5>
                                 </a>
                             </li>
                             <li class="col-xs-2" th:classappend="${cv.pos == 2 ? 'active' : ''}">
-                                <a data-toggle="tab" href="#demo-main-tab3" aria-expanded=true>
-                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>
+                                <a>
+<!--                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>-->
                                     <h5 class="mar-no">LICENSES & CERTIFICATION</h5>
                                 </a>
                             </li>
                             <li class="col-xs-2" th:classappend="${cv.pos == 3 ? 'active' : ''}">
-                                <a data-toggle="tab" href="#demo-main-tab3">
-                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>
+                                <a>
+<!--                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>-->
                                     <h5 class="mar-no">PROFESSIONAL AFFILIATIONS
                                     </h5>
                                 </a>
                             </li>
                             <li class="col-xs-2" th:classappend="${cv.pos == 4 ? 'active' : ''}">
-                                <a data-toggle="tab" href="#demo-main-tab3">
-                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>
+                                <a>
+<!--                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>-->
                                     <h5 class="mar-no">SKILLS</h5>
                                 </a>
                             </li>
                             <li class="col-xs-2" th:classappend="${cv.pos == 5 ? 'active' : ''}">
-                                <a data-toggle="tab" href="#demo-main-tab3">
-                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>
+                                <a>
+<!--                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>-->
                                     <h5 class="mar-no">EXPERIENCE</h5>
                                 </a>
                             </li>
@@ -99,9 +99,9 @@
 
                             <!--Footer buttons-->
                             <div class="pull-right pad-rgt mar-btm">
-                                <button type="submit" name="prev" class="previous btn btn-primary" th:disabled="${cv.pos == 0}">Previous</button>
-                                <button type="submit" name="next" class="next btn btn-primary" th:disabled="${cv.pos == 5}">Next</button>
-                                <button type="button" class="finish btn btn-success" th:disabled="${cv.pos != 5}">Finish</button>
+                                <button type="submit" name="prev" class="previous btn btn-primary" th:disabled="${cv.pos == 0}"><i class="fa fa-caret-left"></i> Previous</button>
+                                <button type="submit" name="next" class="next btn btn-primary" th:disabled="${cv.pos == 5}">Next <i class="fa fa-caret-right"></i></button>
+                                <button type="button" class="finish btn btn-success" th:disabled="${cv.pos != 5}"><i class="fa fa-check"></i> Finish</button>
                             </div>
 
                         </form>

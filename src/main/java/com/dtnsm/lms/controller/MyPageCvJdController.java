@@ -128,7 +128,7 @@ public class MyPageCvJdController {
         cv.getLicenses().forEach(i -> i.setReadOnly(true));
         cv.getCertifications().forEach(i -> i.setReadOnly(true));
         cv.getMemberships().forEach(i -> i.setReadOnly(true));
-        cv.setLanguages(List.copyOf(orgCV.getLanguages()));
+//        cv.setLanguages(List.copyOf(orgCV.getLanguages()));
         cv.getLanguages().forEach(i -> i.setReadOnly(true));
 //        for(int i = 0; i < cv.getLanguages().size(); i ++) {
 //            log.info("language deep copy[{}]", i);

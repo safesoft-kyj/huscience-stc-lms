@@ -46,7 +46,9 @@
         </tr>
         <tr>
             <td class="text-bold bg-gray-light">Degree</td>
-            <td colspan="2" class="form-group" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].degree')} ? 'has-error' : ''"><input type="text" placeholder="Degree description, concentration listing" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].degree}"></td>
+            <td colspan="2" class="form-group" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].degree')} ? 'has-error' : ''">
+                <input type="text" placeholder="Degree description, concentration listing" data-original-title="Degree" data-html="true" data-content="- 학사 학위는 Bachelo's Degree of ~ 로 작성.<br/>예, Bachelor's of Clinical Pathology<br/>- 석사 학위는 Master's Degree of ~ 작성" data-placement="top" data-trigger="focus" data-toggle="popover" class="form-control col-sm-10 add-popover" th:field="*{educations[__${stat.index}__].degree}">
+            </td>
         </tr>
         <tr>
             <td class="text-bold bg-gray-light">Thesis Title<br/>(if applicable)</td>
