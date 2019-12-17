@@ -82,7 +82,7 @@
                                     </thead>
                                     <tbody>
                                     <tr th:each="border, index : ${borders}">
-                                        <td th:text="${index.count}" class="text-center"></td>
+                                        <td th:text="${borders.getTotalElements() - index.index}" class="text-center"></td>
                                         <td>
                                             <th:block th:if="${border.getActive() == 1}">
                                                 <span class="badge badge-info" th:text="#{label.active}"></span>

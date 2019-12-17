@@ -7,6 +7,7 @@ import com.dtnsm.lms.domain.constant.LmsAlarmGubun;
 import com.dtnsm.lms.domain.constant.LmsAlarmType;
 import com.dtnsm.lms.repository.LmsNotificationRepository;
 import com.dtnsm.lms.repository.RoleRepository;
+import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -79,6 +80,15 @@ public class LmsNotificationService {
                 lmsNotification.setTitle(course.getTitle() +  "과정 교육 대상자로 지정되셨습니다.");
                 lmsNotification.setContent(message);
                 break;
+            case CourseToDateApproach:
+                lmsNotification.setAlarmGubun(LmsAlarmGubun.INFO);
+                lmsNotification.setTitle(message);
+                lmsNotification.setContent(message);
+                break;
+            case CourseReportApproach:
+                lmsNotification.setAlarmGubun(LmsAlarmGubun.INFO);
+                lmsNotification.setTitle(course.getTitle() +  "외부교육 참석보고서를 3일이내(" + DateUtil.getStringDateAddDay(course.getToDate(), 3) + ") 작성해 주세요.");
+                lmsNotification.setContent(message);
             case Request:
                 lmsNotification.setAlarmGubun(LmsAlarmGubun.INFO);
                 lmsNotification.setTitle(course.getTitle() +  "과정 교육 신청 처리 되었습니다..");

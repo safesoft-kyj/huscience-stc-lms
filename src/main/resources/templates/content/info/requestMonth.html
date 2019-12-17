@@ -10,8 +10,13 @@
 </th:block>
 
 <th:block layout:fragment="custom_css">
-    <link th:href="@{/default/plugins/fullcalendar/fullcalendar.min.css}" rel="stylesheet">
+
+    <link href='/default/plugins/fullcalendar4.3.1/core/main.css' rel='stylesheet' />
+    <link href='/default/plugins/fullcalendar4.3.1/daygrid/main.css' rel='stylesheet' />
+    <link href='/default/plugins/fullcalendar4.3.1/timegrid/main.css' rel='stylesheet' />
+    <link href='/default/plugins/fullcalendar4.3.1/list/main.css' rel='stylesheet' />
     <link th:href="@{/default/plugins/fullcalendar/nifty-skin/fullcalendar-nifty.min.css}" rel="stylesheet">
+
 </th:block>
 
 <th:block layout:fragment="content_body">
@@ -46,7 +51,7 @@
 
                             <div id="demo-external-events">
                                 <p class="text-muted text-sm text-uppercase">일자선택</p>
-                                <a href="#" th:href="@{/info/requestMonth}" class="fc-event fc-list fa-calendar-check-o" data-class="warning">신청일 보기</a>
+                                <a href="#" th:href="@{/info/requestMonth}" class="fc-event fc-list fa-calendar-check-o" data-class="warning" style="border-top:2px solid #FFA726">신청일 보기</a>
                                 <a href="#" th:href="@{/info/month}"  class="fc-event fc-list" data-class="success">교육일 보기</a>
                                 <hr>
                                 <p class="text-muted text-sm text-uppercase">Training</p>
@@ -72,92 +77,53 @@
         </div><!-- Page content End -->
     </div><!-- Content container End -->
 </th:block>
-<div class="calendar" id="calendarList">aaaaaaaaaaaaaaaaaaaa</div>
 
 <th:block layout:fragment="custom_js">
     <!--Full Calendar [ OPTIONAL ]-->
-    <script th:src="@{/default/plugins/fullcalendar/lib/moment.min.js}"></script>
-    <script th:src="@{/default/plugins/fullcalendar/lib/jquery-ui.custom.min.js}"></script>
-    <script th:src="@{/default/plugins/fullcalendar/fullcalendar.min.js}"></script>
-    <script th:src="@{/default/plugins/fullcalendar/lang-all.js}"></script>
+<!--    <script th:src="@{/default/plugins/fullcalendar/lib/moment.min.js}"></script>-->
+<!--    <script th:src="@{/default/plugins/fullcalendar/lib/jquery-ui.custom.min.js}"></script>-->
+<!--    <script th:src="@{/default/plugins/fullcalendar/fullcalendar.min.js}"></script>-->
+<!--    <script th:src="@{/default/plugins/fullcalendar/lang-all.js}"></script>-->
 
-    <!--Full Calendar [ SAMPLE ]-->
+
+    <script src='/default/plugins/fullcalendar4.3.1/core/main.js'></script>
+    <script src='/default/plugins/fullcalendar4.3.1/interaction/main.js'></script>
+    <script src='/default/plugins/fullcalendar4.3.1/daygrid/main.js'></script>
+    <script src='/default/plugins/fullcalendar4.3.1/timegrid/main.js'></script>
+    <script src='/default/plugins/fullcalendar4.3.1/list/main.js'></script>
+    <script src='/default/plugins/fullcalendar4.3.1/core/locales-all.js'></script>
+
     <script>
 
         $(document).on('nifty.ready', function() {
 
-            $('#calendar').fullCalendar({
-                // plugins: [ 'list' ],
-                lang : "ko",
-                // buttonText: {
-                //     listMonth: 'listMonth',
-                //     listYear: 'List Year',
-                //     listWeek: 'List Week',
-                //     listDay: 'List Day'
-                // },
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list' ],
+                // height: 'parent',
+                height: 650,
+                locale : "ko",
                 header: {
-                    left: 'today, prevYear, nextYear, viewWeekends',
-                    center: 'prev, title, next',
-                    // right: 'month'
-                    // right: 'month, listMonth'
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,listMonth'
                 },
+                defaultView: 'dayGridMonth',
                 views: {
                     month: {
                         columnFormat: 'dddd'
-                    },
-                    // agendaWeek: {
-                    //     columnFormat: 'M/D ddd',
-                    //     titleFormat: 'YYYY년 M월 D일',
-                    //     eventLimit: false
-                    // },
-                    // agendaDay: {
-                    //     columnFormat: 'dddd',
-                    //     eventLimit: false
-                    // },
-                    // listWeek: {
-                    //     columnFormat: ''
-                    // },
-                    listMonth: {
-                        buttonText: 'listMonth',
-                        displayEventTime: true
                     }
                 },
-                // monthNames: ["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"],
-                // monthNamesShort: ["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"],
-                editable: true,
-                //locale: 'ko',
-                droppable: true, // this allows things to be dropped onto the calendar
-                 eventLimit: true,
-                 minTime: '08:00:00',
-                 maxTime: '21:00:00',
-                // timeFormat: 'H(:mm)',
+                // defaultDate: '2019-08-12',
+                navLinks: true, // can click day/week names to navigate views
+                editable: false,
                 allDayDefault: true,
-                drop: function() {
-                    // is the "remove after drop" checkbox checked?
-                    if ($('#drop-remove').is(':checked')) {
-                        // if so, remove the element from the "Draggable Events" list
-                        $(this).remove();
-                    }
-                },
-               // defaultDate: '2019-10-08',
                 eventLimit: true, // allow "more" link when too many events
-                events: {
-                    url : "/info/api/month/requestCalendar"
-                }
+                events: {url : "/info/api/month/requestCalendar"}
             });
 
-
-            $('#calendarList').fullCalendar({
-                //Options for Calendar View
-                defaultView: 'listMonth',
-                events: [
-                    {
-                        title: 'My Birthday',
-                        start  : '2019-12-01',
-                        end    : '2019-12-31'
-                    }
-                ],
-            });
+            calendar.render();
         });
 
     </script>

@@ -153,15 +153,23 @@
                                                         <th class="text-center" th:text="#{label.minute}">Date & Times</th>
                                                         </thead>
                                                         <tbody>
-                                                        <tr th:each="sections, index : ${course.getSections()}">
+                                                        <tr th:each="section, index : ${course.getSections()}">
                                                             <td class="text-center" th:text="${index.count}"></td>
                                                             <td class="text-center" th:text="#{label.title.section}"></td>
                                                             <td class="text-left">
-                                                                <div th:text="${sections.getName()}"></div>
-                                                                <div th:text="${sections.getDescription()}"></div>
+                                                                <!-- class 교육일때는 과정명 + 강의명 + 설명  -->
+                                                                <th:block th:if="${#strings.equalsIgnoreCase(section.getCourse().getCourseMaster().getId(), 'BC0102')}">
+                                                                    <div th:text="${section.getCourse().getTitle()}"></div>
+                                                                    <div th:text="${section.getName()}"></div>
+                                                                    <div th:text="${section.getDescription()}"></div>
+                                                                </th:block>
+                                                                <!-- class 교육외에는 강의명 -->
+                                                                <th:block th:unless="${#strings.equalsIgnoreCase(section.getCourse().getCourseMaster().getId(), 'BC0102')}">
+                                                                    <div th:text="#{label.title.section}"></div>
+                                                                </th:block>
                                                             </td>
-                                                            <td th:text="${sections.getStudyDate()}" class="text-center"></td>
-                                                            <td class="text-center" th:text="#{label.course.minute(${sections.getMinute()})}"></td>
+                                                            <td th:text="${section.getStudyDate()}" class="text-center"></td>
+                                                            <td class="text-center" th:text="#{label.course.minute(${section.getMinute()})}"></td>
                                                         </tr>
 
                                                         <tr th:each="quiz, index : ${course.getQuizzes()}">

@@ -53,6 +53,34 @@
     </select>
 
 
+    <select id="selectUserCourseCalenda1" parameterType="String" resultType="com.dtnsm.lms.mybatis.dto.CourseCalendarVO">
+        select b.id, title, request_date as request_from_date, request_date as request_to_date, a.from_date, a.to_date, status, active, type_id
+        from el_course_account a
+            inner join el_course b
+                on a.course_id = b.id
+        WHERE a.request_date between #{start} and #{end}
+        and a.user_id like #{userId} + '%'
+--         and b.type_id not in ('BC0101')
+        and b.active  = 1
+    </select>
+
+    <select id="selectUserCourseCalenda2" parameterType="String" resultType="com.dtnsm.lms.mybatis.dto.CourseCalendarVO">
+        select b.id, title, request_date as from_date, request_date as request_to_date, a.from_date, a.to_date, status, active, type_id
+        from el_course_account a
+            inner join el_course b
+                on a.course_id = b.id
+        WHERE a.from_date between #{start} and #{end}
+        and a.user_id like #{userId} + '%'
+--         and type_id not in ('BC0101')
+        union
+        select b.id, title, request_date as from_date, request_date as request_to_date, a.from_date, a.to_date, status, active, type_id
+        from el_course_account a
+            inner join el_course b
+                on a.course_id = b.id
+        WHERE a.to_date between #{start} and #{end}
+        and a.user_id like #{userId} + '%'
+--         and b.type_id not in ('BC0101')
+    </select>
 
 <!--    <insert id="insertCity">-->
 <!--      INSERT INTO CITY (NAME, COUNTRY, POPULATION)-->

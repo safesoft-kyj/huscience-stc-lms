@@ -15,7 +15,7 @@
             min-height: 90px;
         }
 
-        img {
+        .sign {
             min-height: 90px;
         }
     </style>
@@ -175,11 +175,10 @@
 
                     <table class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <tbody>
-                        <colgroup><col width="10%" /><col width="40%" /><col width="10%" /><col width="40%" /></colgroup>
                         <th:block th:if="${document.getCourseAccount() != null}">
                             <tr>
-                                <th><span>*</span> <span>외부교육과정</span></th>
-                                <td colspan="3">
+                                <th class="col-md-2"><span>외부교육과정</span></th>
+                                <td class="col-md-10">
                                     <div th:each="courseAccount : ${document.getCourseAccount()}">
                                         <a th:href="@{/course/view/{id}(id=${courseAccount.getCourse().getId()})}">
                                         <span th:text="${courseAccount.getCourse().getTitle()}"></span></a>
@@ -189,12 +188,12 @@
                         </th:block>
                         <tr>
                             <th><span th:text="#{label.subject}">구분</span></th>
-                            <td th:text="${document.getTitle()}" colspan="3"></td>
+                            <td th:text="${document.getTitle()}"></td>
                         </tr>
                         <th:block th:if="${document.getDocumentFiles().size() > 0}">
                         <tr>
                             <th><span>*</span> <span th:text="#{label.file}"></span></th>
-                            <td colspan="3">
+                            <td>
                                 <div th:each="uploadFile : ${document.getDocumentFiles()}">
                                     <a th:href="@{/document/download-file/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>
                                 </div>
@@ -202,8 +201,7 @@
                         </tr>
                         </th:block>
                         <tr>
-                            <th><span th:text="#{label.course.name}">과정명</span></th>
-                            <td th:utext="${document.getContent()}" colspan="3"></td>
+                            <td th:utext="${document.getContent()}" colspan="2"></td>
                         </tr>
                         </tbody>
                     </table>

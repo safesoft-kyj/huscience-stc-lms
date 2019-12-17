@@ -57,8 +57,20 @@ public class InfoController {
         return "content/info/requestMonth";
     }
 
-    @GetMapping("/month")
+
+    // 신청일 + 교육일 보기
+    @GetMapping("/totalMonth")
     public String month(Model model) {
+
+        pageInfo.setPageId("m-info-month");
+        pageInfo.setPageTitle("교육월간일정");
+        model.addAttribute(pageInfo);
+
+        return "content/info/totalMonth";
+    }
+
+    @GetMapping("/month")
+    public String totalMonth(Model model) {
 
         pageInfo.setPageId("m-info-month");
         pageInfo.setPageTitle("교육월간일정(교육일)");

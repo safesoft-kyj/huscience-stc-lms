@@ -106,13 +106,13 @@ public class CourseSectionAdminController {
     @PostMapping("/add-post")
     public String noticeAddPost(@Valid CourseSection courseSection
             , @RequestParam("files") MultipartFile[] files
-            , @RequestParam("id") Long id
+            , @RequestParam("courseId") Long courseId
             , BindingResult result) {
         if(result.hasErrors()) {
-            return "admin/course/section/add/" + id;
+            return "admin/course/section/add";
         }
 
-        Course course = courseService.getCourseById(id);
+        Course course = courseService.getCourseById(courseId);
         courseSection.setCourse(course);
         courseSection.setMinute(Math.round(courseSection.getHour()*60));
         courseSection.setSecond(Math.round(courseSection.getMinute()*60));
@@ -204,7 +204,7 @@ public class CourseSectionAdminController {
             sectionService.deleteSection(courseSection);
         }
 
-        return "redirect:/admin/course/section/edit/" + courseId;
+        return "redirect:/admin/course/section/list/" + courseId;
     }
 
 

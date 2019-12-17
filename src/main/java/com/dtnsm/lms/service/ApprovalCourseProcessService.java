@@ -573,8 +573,8 @@ public class ApprovalCourseProcessService {
         // 교육 대상자 신청인 경우는 상태를 신청상태로 변경한다.
         courseAccount.setCourseStatus(CourseStepStatus.request);
 
-        // self 교육 및 부서별 교육은 승인이 없음으로 신청시 교육상태로 변경한다.
-        if (course.getCourseMaster().getId().equals("BC0101") || course.getCourseMaster().getId().equals("BC0103")) {  // self
+        // self 교육은 신청시 교육상태로 변경
+        if (course.getCourseMaster().getId().equals("BC0101")) {  // self
             courseAccount.setCourseStatus(CourseStepStatus.process);
         }
 
@@ -607,19 +607,13 @@ public class ApprovalCourseProcessService {
             CourseAccount courseAccount = new CourseAccount();
             courseAccount.setCourse(course);
             courseAccount.setAccount(account);
-            courseAccount.setRequestDate(DateUtil.getTodayString());
+            courseAccount.setRequestDate("");
             courseAccount.setRequestType(requestType);        // 교육신청(0:관리자지정, 1:사용자 신청)
             courseAccount.setFnStatus("9");
             courseAccount.setFnCurrSeq(1);
+            courseAccount.setFromDate("");
+            courseAccount.setToDate("");
             courseAccount.setCourseStatus(CourseStepStatus.none);
-
-            if (course.getIsAlways().equals("1")) {     // 상시교육일 경우
-                fromDate = DateUtil.getTodayString();
-                toDate = DateUtil.getStringDateAddDay(fromDate, course.getDay());
-            } else {    // 상시교육이 아닌 경우
-                fromDate = course.getFromDate();
-                toDate = course.getToDate();
-            }
 
             // 결재자수 Max 설정
             if(isAppr1.equals("Y") && isAppr2.equals("Y")) {
@@ -634,8 +628,7 @@ public class ApprovalCourseProcessService {
             }
 
             courseAccount.setFnStatus("9");      // 신청전까지는 미진행으로 처리
-            courseAccount.setFromDate(fromDate);
-            courseAccount.setToDate(toDate);
+
 
             // self 교육은 참석처리를 하지 않기 때문에 미리 처리한다.
             // 외부교육은 교육참석보고서 승인시 참석처리를 자동으로 해야 한다.
@@ -643,6 +636,21 @@ public class ApprovalCourseProcessService {
             if (course.getCourseMaster().getId().equals("BC0101")) {  // self
                 courseAccount.setIsAttendance("1"); // 교육참석유무(0:미참석, 1:참석) => 기본값 0
             }
+
+            if (course.getIsAlways().equals("0")) {     // 상시교육이 아닌경우는 과정 교육일자를 기준으로 교육일자를 생성한다.
+                fromDate = course.getFromDate();
+                toDate = course.getToDate();
+            }
+
+            courseAccount.setFromDate(fromDate);
+            courseAccount.setToDate(toDate);
+
+
+            // 부서별 교육은 교육신청 프로세스가 없음으로 바로 교육 완료 상태로 변경한다.
+            if(course.getCourseMaster().getId().equalsIgnoreCase("BC0103")) {
+                courseAccount.setCourseStatus(CourseStepStatus.wait);
+            }
+
 
 //            courseAccount = courseAccountService.save(courseAccount);
             // 교육 과정 생성
@@ -652,13 +660,30 @@ public class ApprovalCourseProcessService {
             MessageUtil.sendNotificationMessage(LmsAlarmCourseType.CourseAccountAssign, account, course, "<a href='/mypage/main'>교육현황 바로가기</a>");
 
         } else {
-
             CourseAccount saveCourseAccount = courseAccountService.getByCourseIdAndUserId(course.getId(), account.getUserId());
-            if (saveCourseAccount == null) saveCourseAccount = courseAccountProcess(account, course, requestType);
+
+            if (saveCourseAccount == null) {
+                saveCourseAccount = courseAccountProcess(account, course, requestType);
+            }
+            else {  // 상시교육은 신청 시점에 교육일을 생성한다.
+                // 상시
+                if (course.getIsAlways().equals("1")) {     // 상시교육일 경우
+                    saveCourseAccount.setFromDate(DateUtil.getTodayString());
+                    saveCourseAccount.setToDate(DateUtil.getStringDateAddDay(DateUtil.getTodayString(), course.getDay()));
+                }
+            }
 
             saveCourseAccount.setFnWdate(DateUtil.getTodayDate());
             saveCourseAccount.setRequestDate(DateUtil.getTodayString());
             saveCourseAccount.setRequestType(requestType);
+
+//            if (course.getIsAlways().equals("1")) {     // 상시교육일 경우는 신청시점부터 교육일자를 산정하여 생성한다.
+//                fromDate = DateUtil.getTodayString();
+//                toDate = DateUtil.getStringDateAddDay(fromDate, course.getDay());
+//            }
+//
+//            saveCourseAccount.setFromDate(fromDate);
+//            saveCourseAccount.setToDate(toDate);
 
 
 //            // 교육 신청인 경우 sleft 교육인 경우는 교육 참석유무를 참석으로 하고 교육상태를 진행상태로 변경한다.
@@ -1047,3 +1072,4 @@ public class ApprovalCourseProcessService {
 //        mailService.send(mail, lmsAlarmCourseType);
 //    }
 }
+

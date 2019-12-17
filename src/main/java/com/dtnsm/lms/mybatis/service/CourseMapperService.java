@@ -27,4 +27,12 @@ public class CourseMapperService {
     public List<CourseCalendarVO> getCourseCalenda2(String start, String end) {
         return courseMapper.selectCourseCalenda2(start, end);
     }
+
+    public List<CourseCalendarVO> getUserCourseCalenda1(String start, String end, String userId) {
+        return courseMapper.selectUserCourseCalenda1(start, end, userId);
+    }
+
+    public List<CourseCalendarVO> getUserCourseCalenda2(String start, String end, String userId) {
+        return courseMapper.selectUserCourseCalenda2(start, end, userId);
+    }
 }

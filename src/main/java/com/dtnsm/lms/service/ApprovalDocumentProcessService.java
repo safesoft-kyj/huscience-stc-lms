@@ -174,7 +174,10 @@ public class ApprovalDocumentProcessService {
             }
 
             // 최종 승인이면 기안자에게 메일 전송
-            MessageUtil.sendMail(LmsAlarmCourseType.Approval, document.getAccount(), document1);
+            MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Approval, document.getAccount(), document1);
+
+            // 최종 승인이면 관리자에게 메일 전송
+            MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Approval, courseManagerService.getCourseManager().getAccount(), document1);
 
 
         } else {
@@ -212,7 +215,10 @@ public class ApprovalDocumentProcessService {
         documentService.save(document);
 
         // 기안자에게 메일 전송
-        MessageUtil.sendMail(LmsAlarmCourseType.Reject, document.getAccount(), document);
+        MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Reject, document.getAccount(), document);
+
+        // 관리자에게 메일 전송
+        MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Reject, courseManagerService.getCourseManager().getAccount(), document);
     }
 
     // 전자결재 2차 승인 처리
@@ -256,8 +262,10 @@ public class ApprovalDocumentProcessService {
             }
 
             // 최종 승인이면 기안자에게 메일 전송
-            MessageUtil.sendMail(LmsAlarmCourseType.Approval, document.getAccount(), document1);
+            MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Approval, document.getAccount(), document1);
 
+            // 관리자에게 메일 전송
+            MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Approval, courseManagerService.getCourseManager().getAccount(), document1);
 
         } else {
             DocumentAccountOrder nextOrder = documentAccountOrderService.getByFnoAndSeq(documentAccountOrder.getDocument().getId(), documentAccountOrder.getFnSeq()+1);
@@ -295,7 +303,10 @@ public class ApprovalDocumentProcessService {
         documentService.save(document);
 
         // 기안자에게 메일 전송
-        MessageUtil.sendMail(LmsAlarmCourseType.Reject, document.getAccount(), document);
+        MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Reject, document.getAccount(), document);
+
+        // 관리자에게 메일 전송
+        MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Reject, courseManagerService.getCourseManager().getAccount(), document);
     }
 
 

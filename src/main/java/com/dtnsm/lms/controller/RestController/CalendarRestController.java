@@ -38,6 +38,105 @@ public class CalendarRestController {
     @Autowired
     CourseMapperService courseMapperService;
 
+
+    // 신청일및 교육일 보기 통합
+    // 신청일은 신청시작일만 표기
+    // 교육일은 교육시작일에서 교육종료일까지 표기
+    @GetMapping("/month/totalCalendar")
+    public String monthTotalCalendar(@RequestParam("start") String start, @RequestParam("end") String end) {
+
+        String jsonMsg = null;
+        try {
+//            List<Course> courses = courseService.getCourseByRequestFromDateBetween(start, end, 0);
+
+            List<CourseCalendarVO> courses = courseMapperService.getCourseCalenda1(start, end);
+
+            List<CalendarVO> events = new ArrayList<CalendarVO>();
+
+            CalendarVO event;
+            String color, url;
+            for(CourseCalendarVO course : courses) {
+
+                url = "/course/view/" + course.getId();
+                switch (course.getTypeId()) {
+                    case "BC0101":  // self training
+                        color = "#FFA726";
+                        break;
+                    case "BC0102":  // class training
+                        color = "#FFA726";
+                        break;
+                    case "BC0103":  // 부서별 교육
+                        color = "#FFA726";
+                        break;
+                    case "BC0104":  // 외부 교육
+                        color = "#FFA726";
+                        break;
+                    default:
+                        color = "#FFA726";
+                }
+
+                event = new CalendarVO();
+                event.setTitle("[신청] " + course.getTitle());
+                event.setStart(course.getRequestFromDate());
+                // allDay 가 true 인 경우 하루를 더해야 함
+//                if (event.isAllDay()) {
+//                    event.setEnd(DateUtil.getStringDateAddDay(course.getRequestToDate(), 1));
+//                } else {
+//                    event.setEnd(course.getRequestToDate());
+//                }
+                event.setColor(color);
+                event.setUrl(url);
+                events.add(event);
+            }
+
+
+            List<CourseCalendarVO> courses2 = courseMapperService.getCourseCalenda2(start, end);
+
+            for(CourseCalendarVO course : courses2) {
+
+                url = "/course/view/" + course.getId();
+                switch (course.getTypeId()) {
+                    case "BC0101":  // self training
+                        color = "#FFA726";
+                        break;
+                    case "BC0102":  // class training
+                        color = "#8BC34A";
+                        break;
+                    case "BC0103":  // 부서별 교육
+                        color = "#26A69A";
+                        break;
+                    case "BC0104":  // 외부 교육
+                        color = "#BA68C8";
+                        break;
+                    default:
+                        color = "#ff0000";
+                }
+
+                event = new CalendarVO();
+                event.setTitle("[교육] " + course.getTitle());
+                event.setStart(course.getFromDate());
+                // allDay 가 true 인 경우 하루를 더해야 함
+                if (event.isAllDay()) {
+                    event.setEnd(DateUtil.getStringDateAddDay(course.getToDate(), 1));
+                } else {
+                    event.setEnd(course.getToDate());
+                }
+                event.setColor(color);
+                event.setUrl(url);
+                events.add(event);
+            }
+
+            // FullCalendar
+            ObjectMapper mapper = new ObjectMapper();
+            jsonMsg =  mapper.writerWithDefaultPrettyPrinter().writeValueAsString(events);
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return jsonMsg;
+    }
+
+
+
     @GetMapping("/month/requestCalendar")
     public String monthRequestCalendar(@RequestParam("start") String start, @RequestParam("end") String end) {
 
@@ -158,16 +257,17 @@ public class CalendarRestController {
 
         String jsonMsg = null;
         try {
-            List<CourseAccount> courseAccountList = courseAccountService.getCourseByUserAndRequestFromDateBetween(SessionUtil.getUserId(), start, end, CourseStepStatus.process);
+//            List<CourseAccount> courseAccountList = courseAccountService.getCourseByUserAndRequestFromDateBetween(SessionUtil.getUserId(), start, end, CourseStepStatus.process);
+            List<CourseCalendarVO> courses = courseMapperService.getUserCourseCalenda1(start, end, SessionUtil.getUserId());
 
             List<CalendarVO> events = new ArrayList<CalendarVO>();
 
             CalendarVO event;
             String color, url;
-            for(CourseAccount courseAccount : courseAccountList) {
+            for(CourseCalendarVO course : courses) {
 
-                url = "/course/view/" + courseAccount.getCourse().getId();
-                switch (courseAccount.getCourse().getCourseMaster().getId()) {
+                url = "/course/view/" + course.getId();
+                switch (course.getTypeId()) {
                     case "BC0101":  // self training
                         color = "#FFA726";
                         break;
@@ -185,13 +285,13 @@ public class CalendarRestController {
                 }
 
                 event = new CalendarVO();
-                event.setTitle(courseAccount.getCourse().getTitle());
-                event.setStart(courseAccount.getRequestDate());
+                event.setTitle(course.getTitle());
+                event.setStart(course.getRequestFromDate());
                 // allDay 가 true 인 경우 하루를 더해야 함
                 if (event.isAllDay()) {
-                    event.setEnd(DateUtil.getStringDateAddDay(courseAccount.getRequestDate(), 1));
+                    event.setEnd(DateUtil.getStringDateAddDay(course.getRequestToDate(), 1));
                 } else {
-                    event.setEnd(courseAccount.getRequestDate());
+                    event.setEnd(course.getRequestToDate());
                 }
                 event.setColor(color);
                 event.setUrl(url);
@@ -213,16 +313,17 @@ public class CalendarRestController {
 
         String jsonMsg = null;
         try {
-            List<CourseAccount> courseAccountList = courseAccountService.getCourseByUserAndFromDateBetween(SessionUtil.getUserId(), start, end, CourseStepStatus.process);
+//            List<CourseAccount> courseAccountList = courseAccountService.getCourseByUserAndFromDateBetween(SessionUtil.getUserId(), start, end, CourseStepStatus.process);
+            List<CourseCalendarVO> courses = courseMapperService.getUserCourseCalenda2(start, end, SessionUtil.getUserId());
 
             List<CalendarVO> events = new ArrayList<CalendarVO>();
 
             CalendarVO event;
             String color, url;
-            for(CourseAccount courseAccount : courseAccountList) {
+            for(CourseCalendarVO course : courses) {
 
-                url = "/course/view/" + courseAccount.getCourse().getId();
-                switch (courseAccount.getCourse().getCourseMaster().getId()) {
+                url = "/course/view/" + course.getId();
+                switch (course.getTypeId()) {
                     case "BC0101":  // self training
                         color = "#FFA726";
                         break;
@@ -240,13 +341,13 @@ public class CalendarRestController {
                 }
 
                 event = new CalendarVO();
-                event.setTitle(courseAccount.getCourse().getTitle());
-                event.setStart(courseAccount.getFromDate());
+                event.setTitle(course.getTitle());
+                event.setStart(course.getFromDate());
                 // allDay 가 true 인 경우 하루를 더해야 함
                 if (event.isAllDay()) {
-                    event.setEnd(DateUtil.getStringDateAddDay(courseAccount.getToDate(), 1));
+                    event.setEnd(DateUtil.getStringDateAddDay(course.getToDate(), 1));
                 } else {
-                    event.setEnd(courseAccount.getToDate());
+                    event.setEnd(course.getToDate());
                 }
                 event.setColor(color);
                 event.setUrl(url);

@@ -16,4 +16,8 @@ public interface CourseMapper {
     List<CourseCalendarVO> selectCourseCalenda1(String start, String end);
 
     List<CourseCalendarVO> selectCourseCalenda2(String start, String end);
+
+    List<CourseCalendarVO> selectUserCourseCalenda1(String start, String end, String userId);
+
+    List<CourseCalendarVO> selectUserCourseCalenda2(String start, String end, String userId);
 }

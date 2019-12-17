@@ -76,6 +76,10 @@ public class MyPageController {
     private CourseSectionFileService courseSectionFileService;
     @Autowired
     private SignatureRepository signatureRepository;
+    @Autowired
+    CourseMasterService courseMasterService;
+    @Autowired
+    CodeService codeService;
 
     @Autowired
     JobDescriptionFileService jobDescriptionFileService;
@@ -90,7 +94,11 @@ public class MyPageController {
     }
 
     @GetMapping("/main")
-    public String main(Model model) {
+    public String main(Model model
+            , @RequestParam(value="typeId",  defaultValue = "%") String typeId
+            , @RequestParam(value="courseStepStatusId",  defaultValue = "%") String courseStepStatusId
+            , @RequestParam(value="title",  defaultValue = "%") String title
+            , Pageable pageable) {
 
         pageInfo.setPageId("m-mypage-main");
         pageInfo.setPageTitle("교육현황");
@@ -98,9 +106,12 @@ public class MyPageController {
         CustomUserDetails userDetails = SessionUtil.getUserDetail();
         Account account = userService.getAccountByUserId(userDetails.getUserId());
 
-
-
-        List<CourseAccount> courseAccountList = courseAccountService.getCourseAccountByUserId(userDetails.getUserId());
+        Page<CourseAccount> courseAccountList;
+        if (courseStepStatusId.equals("%")) {
+            courseAccountList = courseAccountService.getListUserId(userDetails.getUserId(), typeId + "%", "%" + title + "%", pageable);
+        } else {
+            courseAccountList = courseAccountService.getListUserId(userDetails.getUserId(), typeId + "%", "%" + title + "%", CourseStepStatus.valueOf(courseStepStatusId), pageable);
+        }
 
         Account parentAccount = userService.getAccountByUserId(account.getParentUserId());
 
@@ -111,6 +122,9 @@ public class MyPageController {
         model.addAttribute("account", account);
         model.addAttribute("parentAccount", parentAccount);
         model.addAttribute("accountList", userService.getAccountList());
+        model.addAttribute("courseMasterList", courseMasterService.getList());
+        model.addAttribute("courseTypeList", codeService.getMinorList("BC01")); // onLine, offLine 구분
+        model.addAttribute("courseStepStatus", CourseStepStatus.class.getEnumConstants()); // 교육상태
 
         return "content/mypage/main";
     }

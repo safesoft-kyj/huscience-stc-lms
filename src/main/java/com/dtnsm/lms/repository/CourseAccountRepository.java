@@ -40,9 +40,15 @@ public interface CourseAccountRepository extends JpaRepository<CourseAccount, Lo
     // 사용자별 교육 신청 일정
     List<CourseAccount> findByAccount_UserIdAndRequestDateBetweenAndCourseStatus(String userId, String fromDate, String toDate, CourseStepStatus courseStepStatus);
 
+    // Mypage/main
+    Page<CourseAccount> findByAccount_UserIdAndCourse_CourseMaster_idLikeAndCourse_TitleLikeAndCourseStatusLike(String userId, String typeId, String title, CourseStepStatus courseStepStatus, Pageable pageable);
+
+    // Mypage/main
+    Page<CourseAccount> findByAccount_UserIdAndCourse_CourseMaster_idLikeAndCourse_TitleLike(String userId, String typeId, String title, Pageable pageable);
 
     // 내신청함
     Page<CourseAccount> findByAccount_UserId(String userId, Pageable pageable);
+
 
 
     // 상태별 신청 조회

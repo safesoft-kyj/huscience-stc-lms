@@ -69,15 +69,37 @@ public class BinderLogService {
             courseTrainingLog.setIsUpload("0");
             courseTrainingLog.setTrainingTime(courseSection.getSecond());
             courseTrainingLog.setCourseSectionAction(courseSection.getCourseSectionActions().get(0));
-            courseTrainingLog.setTrainingCourse(courseSection.getName() + courseSection.getDescription());
 
             // Self training  이면
             if (courseAccount.getCourse().getCourseMaster().getId().equals("BC0101")) {
                 courseTrainingLog.setType(TrainingType.SELF);
                 courseTrainingLog.setOrganization(TrainingType.SELF.getLabel());
+
+                StringBuilder sb = new StringBuilder();
+                if (!courseSection.getName().trim().isEmpty()) sb.append(courseSection.getName().trim());
+                if (!courseSection.getDescription().isEmpty()) sb.append("\r\n" + courseSection.getDescription().trim());
+
+                courseTrainingLog.setTrainingCourse(sb.toString());
+
             } else {
                 courseTrainingLog.setType(TrainingType.OTHER);
                 courseTrainingLog.setOrganization(courseAccount.getCourse().getTeam());
+
+                // class training 인 경우는 과정명 + 강의명 + 강의설명으로 로그를 남긴다.
+                if (courseAccount.getCourse().getCourseMaster().getId().equals("BC0102")) {
+
+                    StringBuilder sb = new StringBuilder();
+                    if (!courseSection.getCourse().getTitle().trim().isEmpty()) sb.append(courseSection.getCourse().getTitle().trim());
+                    if (!courseSection.getName().trim().isEmpty()) sb.append("\r\n" + courseSection.getName().trim());
+                    if (!courseSection.getDescription().isEmpty()) sb.append("\r\n" + courseSection.getDescription().trim());
+
+                    courseTrainingLog.setTrainingCourse(sb.toString());
+                } else {
+                    StringBuilder sb = new StringBuilder();
+                    if (!courseSection.getName().trim().isEmpty()) sb.append(courseSection.getName().trim());
+                    if (!courseSection.getDescription().isEmpty()) sb.append("\r\n" + courseSection.getDescription().trim());
+                    courseTrainingLog.setTrainingCourse(sb.toString());
+                }
             }
 
             binderLogService.saveLog(courseTrainingLog);

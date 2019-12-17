@@ -1,16 +1,19 @@
 package com.dtnsm.lms.repository;
 
 import com.dtnsm.lms.domain.Border;
+import com.dtnsm.lms.domain.CVEducation;
 import com.dtnsm.lms.domain.Course;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import java.util.List;
 
 
-public interface BorderRepository extends JpaRepository<Border, Long> {
+public interface BorderRepository extends JpaRepository<Border, Long>, CustomBorderRepository {
 
     Page<Border> findAllByBorderMaster_Id(String typeId, Pageable pageable);
 
@@ -25,7 +28,11 @@ public interface BorderRepository extends JpaRepository<Border, Long> {
 
     List<Border> findAllByBorderMaster_Id(String masterId);
 
+    List<Border> findAllByBorderMaster_Id(String masterId, Sort orders);
+
     List<Border> findFirst5ByBorderMaster_Id(String masterId);
+
+    List<Border> findFirst5ByBorderMaster_Id(String masterId, Sort orders);
 
     List<Border> findAllByIsNoticeAndToDateLessThan(String isNotice, String toDate);
 }

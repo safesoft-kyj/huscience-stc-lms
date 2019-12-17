@@ -129,7 +129,7 @@ public class BorderController {
         String newFileName = FileUtil.getNewFileName(request, borderFile.getFileName());
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + newFileName + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + newFileName + "\"")
                 .contentType(MediaType.parseMediaType(contentType))
                 .body(resource);
 

@@ -48,6 +48,7 @@
                             <table id="customer-list-page" class="table " cellspacing="0" width="100%">
                                 <thead>
                                 <tr style="background: #FAFAFA;">
+                                    <th class="text-center">#</th>
                                     <th th:text="#{label.customer.name}">협약기관명</th>
                                     <th th:text="#{label.customer.date}" class="min-tablet">협약체결일자</th>
                                     <th th:text="#{label.customer.condition}" class="min-desktop">협약 특혜</th>
@@ -57,7 +58,8 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="customer : ${customers}">
+                                <tr th:each="customer, index : ${customers}">
+                                    <td th:text="${customers.getTotalElements() - index.index}" class="text-center"></td>
                                     <td><a th:href="@{/customer/view/{id}(id=${customer.getId()})}" th:text="${customer.getName()}"></a></td>
                                     <td th:text="${customer.getCondate()}"></td>
                                     <td th:text="${customer.getCondition()}"></td>

@@ -75,7 +75,7 @@
                                 <th><span th:text="#{label.file}"></span></th>
                                 <td class="text-left">
                                     <div th:each="uploadFile : ${border.getBorderFiles()}">
-                                        <a th:href="@{/border/download-file/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}" target="_blank"></a>
+                                        <a th:href="@{/border/download-file/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>
                                     </div>
                                 </td>
                             </tr>

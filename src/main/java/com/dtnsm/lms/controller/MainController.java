@@ -12,6 +12,7 @@ import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,10 +76,8 @@ public class MainController {
     @GetMapping("/")
     public String root(Model model) {
 
-
         model.addAttribute(pageInfo);
         model.addAttribute("customers", customerService.getCustomerList());
-
 
         // 공지사항
         model.addAttribute("borders", borderService.getListTop5ByBorderMasterId("BA0101"));

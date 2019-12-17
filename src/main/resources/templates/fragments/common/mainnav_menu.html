@@ -19,7 +19,8 @@
 
             <!--Submenu-->
             <ul class="collapse">
-                <li><a data-th-href="@{/info/month}">교육월간일정</a></li>
+<!--                <li><a data-th-href="@{/info/month}">교육월간일정</a></li>-->
+                <li><a data-th-href="@{/info/totalMonth}">교육월간일정</a></li>
                 <li><a data-th-href="@{/info/year/{sctype}(sctype=${T(com.dtnsm.lms.domain.constant.ScheduleType).CALENDAR})}">교육연간일정</a></li>
                 <li class="list-divider"></li>
                 <li><a data-th-href="@{/info/request}">교육신청</a></li>
@@ -116,12 +117,12 @@
             <!--Submenu-->
             <ul class="collapse">
                 <li><a data-th-href="@{/mypage/main}">교육현황</a></li>
-<!--                <li><a data-th-href="@{/info/monthUser}">나의월간일정</a></li>-->
+                <li><a data-th-href="@{/info/monthUser}">나의월간일정</a></li>
                 <li><a data-th-href="@{/mypage/uploadTrainingLog}">Training Log Upload</a></li>
                 <li><a data-th-href="@{/mypage/courseTraingLog}">Employee Training Log</a></li>
                 <li class="list-divider"></li>
                 <li><a data-th-href="@{/mypage/certificate/file/list}">수료증 Upload</a></li>
-                <li><a data-th-href="@{/mypage/certificate/view}">수료증발급</a></li>
+<!--                <li><a data-th-href="@{/mypage/certificate/view}">수료증발급</a></li>-->
                 <li><a data-th-href="@{/mypage/cv}">Curriculum Vitae</a></li>
                 <li><a data-th-href="@{/mypage/jd/approved}">Job Description</a></li>
                 <li class="list-divider"></li>
@@ -134,7 +135,7 @@
             <a href="/binder">
                 <i class="demo-pli-home"></i>
                 <span class="menu-title">Digital Binder</span>
-                <i class="arrow"></i>
+<!--                <i class="arrow"></i>-->
             </a>
         </li>
         <th:block th:with="isManager = ${#authorization.getAuthentication().getPrincipal().isManager()}">
@@ -255,16 +256,16 @@
         </li>
 
         <li>
-            <a href="#">
+            <a href="#" data-th-href="@{/admin/customer/list}">
                 <i class="demo-pli-gear"></i>
                 <span class="menu-title">협약기관</span>
-                <i class="arrow"></i>
+<!--                <i class="arrow"></i>-->
             </a>
 
             <!--Submenu-->
-            <ul class="collapse">
-                <li><a href="#" data-th-href="@{/admin/customer/list}">협약기관</a></li>
-            </ul>
+<!--            <ul class="collapse">-->
+<!--                <li><a href="#" data-th-href="@{/admin/customer/list}">협약기관</a></li>-->
+<!--            </ul>-->
         </li>
 
         <li>
