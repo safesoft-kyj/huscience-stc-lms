@@ -2,6 +2,7 @@ package com.dtnsm.lms.validator;
 
 import com.dtnsm.lms.domain.CVCareerHistory;
 import com.dtnsm.lms.domain.CVEducation;
+import com.dtnsm.lms.domain.CVTeamDept;
 import com.dtnsm.lms.domain.CurriculumVitae;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
@@ -45,12 +46,28 @@ public class CurriculumVitaeValidator implements Validator {
             if(StringUtils.isEmpty(edu.getCityCountry())) {
                 errors.rejectValue("educations[" + eduIndex + "].cityCountry", "message.required", "required field.");
             }
-            if(StringUtils.isEmpty(edu.getDegree())) {
-                errors.rejectValue("educations[" + eduIndex + "].degree", "message.required", "required field.");
+            if(StringUtils.isEmpty(edu.getBachelorsDegree())) {
+                errors.rejectValue("educations[" + eduIndex + "].bachelorsDegree", "message.required", "required field.");
             }
-//            if(StringUtils.isEmpty(edu.getNameOfSupervisor())) {
-//                errors.rejectValue("educations[" + eduIndex + "].nameOfSupervisor", "message.required", "required field.");
-//            }
+            if(StringUtils.isEmpty(edu.getMastersDegree())) {
+                errors.rejectValue("educations[" + eduIndex + "].mastersDegree", "message.required", "required field.");
+            }
+            if(StringUtils.isEmpty(edu.getMastersThesisTitle())) {
+                errors.rejectValue("educations[" + eduIndex + "].mastersThesisTitle", "message.required", "required field.");
+            }
+            if(StringUtils.isEmpty(edu.getMastersName())) {
+                errors.rejectValue("educations[" + eduIndex + "].mastersName", "message.required", "required field.");
+            }
+
+            if(StringUtils.isEmpty(edu.getPhdDegree())) {
+                errors.rejectValue("educations[" + eduIndex + "].phdDegree", "message.required", "required field.");
+            }
+            if(StringUtils.isEmpty(edu.getPhdThesisTitle())) {
+                errors.rejectValue("educations[" + eduIndex + "].phdThesisTitle", "message.required", "required field.");
+            }
+            if(StringUtils.isEmpty(edu.getPhdName())) {
+                errors.rejectValue("educations[" + eduIndex + "].phdName", "message.required", "required field.");
+            }
 
             eduIndex ++;
         }
@@ -76,11 +93,17 @@ public class CurriculumVitaeValidator implements Validator {
             if(StringUtils.isEmpty(history.getCityCountry())) {
                 errors.rejectValue("careerHistories[" + historyIndex + "].cityCountry", "message.required", "required field.");
             }
-            if(StringUtils.isEmpty(history.getPosition())) {
-                errors.rejectValue("careerHistories[" + historyIndex + "].position", "message.required", "required field.");
-            }
-            if(StringUtils.isEmpty(history.getTeamDepartment())) {
-                errors.rejectValue("careerHistories[" + historyIndex + "].teamDepartment", "message.required", "required field.");
+            for(int x = 0; x < history.getCvTeamDepts().size(); x ++ ) {
+                CVTeamDept cvTeamDept = history.getCvTeamDepts().get(x);
+                if (StringUtils.isEmpty(cvTeamDept.getPosition())) {
+                    errors.rejectValue("careerHistories[" + historyIndex + "].position", "message.required", "required field.");
+                }
+                if (StringUtils.isEmpty(cvTeamDept.getTeam())) {
+                    errors.rejectValue("careerHistories[" + historyIndex + "].team", "message.required", "required field.");
+                }
+                if (StringUtils.isEmpty(cvTeamDept.getDepartment())) {
+                    errors.rejectValue("careerHistories[" + historyIndex + "].department", "message.required", "required field.");
+                }
             }
 
             historyIndex ++;

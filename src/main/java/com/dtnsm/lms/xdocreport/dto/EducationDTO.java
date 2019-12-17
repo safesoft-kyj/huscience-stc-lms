@@ -9,18 +9,33 @@ public class EducationDTO {
     private String endDate;
     private String nameOfUniversity;
     private String cityCountry;
-    private String degree;
-    private String thesisTitle;
-    private String nameOfSupervisor;
+    private String bachelorsDegree;
+    private String mastersDegree;
+    private String phdDegree;
+
+    private String mastersThesisTitle;
+    private String phdThesisTitle;
+
+    private String mastersName;
+    private String phdName;
 
     @Builder
-    public EducationDTO(String startDate, String endDate, String nameOfUniversity, String cityCountry, String degree, String thesisTitle, String nameOfSupervisor) {
+    public EducationDTO(String startDate, String endDate, String nameOfUniversity, String cityCountry,
+                        String bachelorsDegree, String mastersDegree, String phdDegree, String mastersThesisTitle, String phdThesisTitle,
+                        String mastersName, String phdName) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.nameOfUniversity = nameOfUniversity;
         this.cityCountry = cityCountry;
-        this.degree = degree;
-        this.thesisTitle = thesisTitle;
-        this.nameOfSupervisor = nameOfSupervisor;
+
+        this.bachelorsDegree = bachelorsDegree;
+        this.mastersDegree = mastersDegree;
+        this.phdDegree = phdDegree;
+
+        this.mastersThesisTitle = mastersThesisTitle;
+        this.phdThesisTitle = phdThesisTitle;
+
+        this.mastersName = mastersName;
+        this.phdName = phdName;
     }
 }

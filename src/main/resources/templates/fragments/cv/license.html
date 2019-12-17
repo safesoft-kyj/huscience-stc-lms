@@ -10,29 +10,39 @@
             <div class="row">
                 <div class="col-xs-12">
                     <a name="license"></a>
-                    <table class="table table-bordered" th:each="license, stat : *{licenses}">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr class="bg-gray-light">
+                            <th>No.</th>
+                            <th>Name of License</th>
+                            <th>License No</th>
+                            <th>License in Country</th>
+                            <th>#</th>
+                        </tr>
+                        </thead>
                         <tbody>
-                        <tr>
-                            <td colspan="4" class="form-group" th:classappend="${#fields.hasErrors('licenses[__${stat.index}__].nameOfLicense')} ? 'has-error' : ''"><input type="text" class="form-control" placeholder="Name of License" th:field="*{licenses[__${stat.index}__].nameOfLicense}"></td>
-                            <td rowspan="2">
+                        <tr th:each="license, stat : *{licenses}">
+                            <td th:text="${stat.index + 1}"></td>
+                            <td class="form-group" th:classappend="${#fields.hasErrors('licenses[__${stat.index}__].nameOfLicense')} ? 'has-error' : ''">
+                                <input type="text" class="form-control" placeholder="Name of License" th:field="*{licenses[__${stat.index}__].nameOfLicense}">
+                            </td>
+                            <td class="form-group" th:classappend="${#fields.hasErrors('licenses[__${stat.index}__].licenseNo')} ? 'has-error' : ''">
+                                <input type="text" placeholder="License No" class="form-control" th:field="*{licenses[__${stat.index}__].licenseNo}">
+                            </td>
+                            <td class="form-group" th:classappend="${#fields.hasErrors('licenses[__${stat.index}__].licenseInCountry')} ? 'has-error' : ''">
+                                <input type="text" class="form-control" placeholder="License in Country" th:field="*{licenses[__${stat.index}__].licenseInCountry}">
+                            </td>
+                            <td>
                                 <button th:if="${license.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|license:${stat.index}|"><i class="fa fa-trash-o"></i></button>
                             </td>
                         </tr>
                         <tr>
-                            <td class="text-bold col-xs-2 bg-gray-light">License No.</td>
-                            <td class="col-xs-4 form-group" th:classappend="${#fields.hasErrors('licenses[__${stat.index}__].licenseNo')} ? 'has-error' : ''"><input type="text" placeholder="License No" class="form-control" th:field="*{licenses[__${stat.index}__].licenseNo}"></td>
-                            <td class="text-bold col-xs-2 bg-gray-light form-group" th:classappend="${#fields.hasErrors('licenses[__${stat.index}__].licenseInCountry')} ? 'has-error' : ''">License in Country</td>
-                            <td class="col-xs-4"><input type="text" class="form-control" placeholder="License in Country" th:field="*{licenses[__${stat.index}__].licenseInCountry}"></td>
+                            <td colspan="5"><button class="btn btn-info pull-right" name="add" value="license"><i class="fa fa-plus"></i> License</button>
+                            <small class="text-info"><i class="fa fa-exclamation-circle"></i> License가 있는 경우 추가해 주세요.</small>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="text-right">
-                        <button class="btn btn-info" name="add" value="license"><i class="fa fa-plus"></i> License</button>
-                    </div>
                 </div>
             </div>
         </td>
@@ -44,12 +54,22 @@
                 <div class="col-xs-12">
                     <a name="certification"></a>
                     <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Name of Certification</th>
+                            <th>Name of Insititution/Organization</th>
+                            <th>Issue Date(MMM YYYY)</th>
+                            <th>#</th>
+                        </tr>
+                        </thead>
                         <tbody>
                         <tr th:each="certification, stat : *{certifications}">
-                            <td class="form-group col-xs-4" th:classappend="${#fields.hasErrors('certifications[__${stat.index}__].nameOfCertification')} ? 'has-error' : ''">
+                            <td th:text="${stat.index + 1}"></td>
+                            <td class="form-group" th:classappend="${#fields.hasErrors('certifications[__${stat.index}__].nameOfCertification')} ? 'has-error' : ''">
                                 <input type="text" class="form-control" placeholder="Name of Certification" th:field="*{certifications[__${stat.index}__].nameOfCertification}">
                             </td>
-                            <td class="form-group col-xs-4" th:classappend="${#fields.hasErrors('certifications[__${stat.index}__].organizers')} ? 'has-error' : ''">
+                            <td class="form-group" th:classappend="${#fields.hasErrors('certifications[__${stat.index}__].organizers')} ? 'has-error' : ''">
                                 <input type="text" class="form-control" placeholder="Name of Institution/Organization" th:field="*{certifications[__${stat.index}__].organizers}">
                             </td>
                             <td class="form-group" th:classappend="${#fields.hasErrors('certifications[__${stat.index}__].issueDate')} ? 'has-error' : ''">
@@ -60,6 +80,12 @@
                                 </button>
                             </td>
                         </tr>
+                        <tr>
+                            <td colspan="5">
+                                <button class="btn btn-info pull-right" name="add" value="certification"><i class="fa fa-plus"></i> Certification</button>
+                                <small class="text-info"><i class="fa fa-exclamation-circle"></i> Certification이 있는 경우 추가해 주세요.</small>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -68,7 +94,7 @@
                 <div class="col-xs-12">
                     <div class="text-right">
 
-                        <button class="btn btn-info" name="add" value="certification"><i class="fa fa-plus"></i> Certification</button>
+
                     </div>
                 </div>
             </div>

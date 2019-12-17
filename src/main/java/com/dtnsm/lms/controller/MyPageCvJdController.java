@@ -18,6 +18,7 @@ import com.dtnsm.lms.service.CurriculumVitaeService;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
+import com.dtnsm.lms.validator.CareerHistoryValidator;
 import com.dtnsm.lms.validator.CurriculumVitaeValidator;
 import com.dtnsm.lms.validator.EducationValidator;
 import com.dtnsm.lms.xdocreport.dto.*;
@@ -49,7 +50,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/mypage")
-@SessionAttributes({"pageInfo", "cv", "phaseList", "indicationList"})
+@SessionAttributes({"pageInfo", "cv", "phaseList", "indicationList", "universityList", "countryList"})
 @RequiredArgsConstructor
 @Slf4j
 public class MyPageCvJdController {
@@ -57,6 +58,7 @@ public class MyPageCvJdController {
     private final CurriculumVitaeRepository curriculumVitaeRepository;
     private final CurriculumVitaeValidator curriculumVitaeValidator;
     private final EducationValidator educationValidator;
+    private final CareerHistoryValidator careerHistoryValidator;
     private final CurriculumVitaeService curriculumVitaeService;
     private final CVIndicationRepository indicationRepository;
     private final CVPhaseRepository phaseRepository;
@@ -74,9 +76,11 @@ public class MyPageCvJdController {
     @GetMapping("/cv")
     public String cv(Model model) {
         String userId = SessionUtil.getUserId();
+        log.debug("@최신 CV 정보를 가져온다. ({})", userId);
         Optional<CurriculumVitae> currentCV = latestCV(userId);
         if(currentCV.isPresent()) {
             CurriculumVitae cv = currentCV.get();
+            log.debug("<== CV({}) status : {}", userId, cv.getStatus());
             if(cv.getStatus() == CurriculumVitaeStatus.CURRENT) {
                 pageInfo.setPageId("m-mypage-cv");
                 pageInfo.setPageTitle("Curriculum Vitae");
@@ -107,40 +111,63 @@ public class MyPageCvJdController {
         return "content/mypage/cv/old";
     }
 
-    @GetMapping("/cv/new")
-    public String newCV(@RequestParam(value = "id") Integer id, Model model) throws Exception {
+    @GetMapping("/cv/{newOrEdit}")
+    public String newCV(@PathVariable("newOrEdit") String newOrEdit, @RequestParam(value = "id", required = false) Integer id, Model model) throws Exception {
         pageInfo.setPageId("m-mypage-cv");
         pageInfo.setPageTitle("Curriculum Vitae");
+
+        Account account = SessionUtil.getUserDetail().getUser();
 
         model.addAttribute(pageInfo);
 
         model.addAttribute("indicationList", indicationRepository.findAll(QCVIndication.cVIndication.indication.asc()));
         model.addAttribute("phaseList", phaseRepository.findAll(QCVPhase.cVPhase.phase.asc()));
+        model.addAttribute("universityList", getUniversityList());
+        model.addAttribute("countryList", getCityCountryList());
 
-        CurriculumVitae orgCV = curriculumVitaeRepository.findById(id).get();
-        CurriculumVitae cv = (CurriculumVitae)orgCV.clone();
-        cv.setParentId(orgCV.getId());
-        cv.setId(null);
-        cv.setInitial(false);
-        cv.setStatus(CurriculumVitaeStatus.NEW);
-        cv.getEducations().forEach(e -> e.setReadOnly(true));
-        cv.getCareerHistories().forEach(c -> c.setReadOnly(true));
-        cv.getLicenses().forEach(i -> i.setReadOnly(true));
-        cv.getCertifications().forEach(i -> i.setReadOnly(true));
-        cv.getMemberships().forEach(i -> i.setReadOnly(true));
-//        cv.setLanguages(List.copyOf(orgCV.getLanguages()));
-        cv.getLanguages().forEach(i -> i.setReadOnly(true));
-//        for(int i = 0; i < cv.getLanguages().size(); i ++) {
-//            log.info("language deep copy[{}]", i);
-//            CVLanguage lang = cv.getLanguages().get(i);
-//            lang.setReadOnly(true);
-//            lang.setLanguageCertifications(orgCV.getLanguages().get(i).getLanguageCertifications());
-//            orgCV.getLanguages().get(i).getLanguageCertifications().
-//        }
+        CurriculumVitae cv;
+        if(!ObjectUtils.isEmpty(id)) {
+            CurriculumVitae orgCV = curriculumVitaeRepository.findById(id).get();
+            cv = (CurriculumVitae) orgCV.clone();
+            if("new".equals(newOrEdit)) {
+                cv.setParentId(orgCV.getId());
+                cv.setId(null);
+                cv.setInitial(false);
+                cv.setStatus(CurriculumVitaeStatus.NEW);
+                cv.getEducations().forEach(e -> e.setReadOnly(true));
+                cv.getCareerHistories().forEach(c -> c.setReadOnly(true));
+                cv.getLicenses().forEach(i -> i.setReadOnly(true));
+                cv.getCertifications().forEach(i -> i.setReadOnly(true));
+                cv.getMemberships().forEach(i -> i.setReadOnly(true));
+                cv.getLanguages().forEach(i -> i.setReadOnly(true));
+                cv.getComputerKnowledges().forEach(i -> i.setReadOnly(true));
+                cv.getExperiences().forEach(i -> i.setReadOnly(true));
+            }
+        } else {
+            cv = new CurriculumVitae();
+            cv.setInitial(true);
+            cv.getEducations().add(new CVEducation());
 
-
-        cv.getComputerKnowledges().forEach(i -> i.setReadOnly(true));
-        cv.getExperiences().forEach(i -> i.setReadOnly(true));
+            CVCareerHistory history = new CVCareerHistory();
+            history.setPresent(true);
+            history.setCityCountry("Seoul, Korea");
+            history.setClinicalTrialExperience(true);
+            history.setCompanyName("Dt&SanoMedics");
+            if(!StringUtils.isEmpty(account.getIndate())) {
+                history.setStartDate(DateUtil.getStringToDate(account.getIndate(), "yyyy-MM-dd"));
+            }
+            if(!ObjectUtils.isEmpty(account.getIndate())) {
+                history.setStartDate(DateUtil.getStringToDate(account.getIndate()));
+            }
+            history.getCvTeamDepts().add(new CVTeamDept());
+            cv.getCareerHistories().add(history);
+            cv.getLicenses();//.add(new CVLicense());
+            cv.getCertifications();//.add(new CVCertification());
+            cv.getMemberships().add(new CVMembership());
+            cv.getLanguages().add(new CVLanguage());
+            cv.getComputerKnowledges().add(new CVComputerKnowledge());
+            cv.getExperiences().add(new CVExperience());
+        }
 
         model.addAttribute("cv", cv);
 
@@ -216,22 +243,23 @@ public class MyPageCvJdController {
         boolean isNext = WebUtils.hasSubmitParameter(request, "next");
 
         if(isPrev) {
-            if(cv.getPos() > 0) {
-                cv.setPos(cv.getPos() - 1);
-            }
+            cv.setPos(ServletRequestUtils.getIntParameter(request, "prev"));
             return "content/mypage/cv/edit";
         } else if(isNext) {
             if(cv.getPos() == 0) {
                 educationValidator.validate(cv, result);
                 if(result.hasErrors()) {
+                    log.info("<== education validation error : {}", result.getAllErrors());
                     return "content/mypage/cv/edit";
                 }
             } else if(cv.getPos() == 1) {
-
+                careerHistoryValidator.validate(cv, result);
+                if(result.hasErrors()) {
+                    log.info("<== Career History validation error : {}", result.getAllErrors());
+                    return "content/mypage/cv/edit";
+                }
             }
-            if(cv.getPos() < 5) {
-                cv.setPos(cv.getPos() + 1);
-            }
+            cv.setPos(ServletRequestUtils.getIntParameter(request, "next"));
             return "content/mypage/cv/edit";
         }
 
@@ -251,7 +279,12 @@ public class MyPageCvJdController {
                     cv.getEducations().add(new CVEducation());
                     break;
                 case "careerHistory":
-                    cv.getCareerHistories().add(new CVCareerHistory());
+                    CVCareerHistory careerHistory = new CVCareerHistory();
+                    careerHistory.getCvTeamDepts().add(new CVTeamDept());
+                    cv.getCareerHistories().add(careerHistory);
+                    break;
+                case "teamDept":
+                    cv.getCareerHistories().get(index).getCvTeamDepts().add(new CVTeamDept());
                     break;
                 case "license":
                     cv.getLicenses().add(new CVLicense());
@@ -282,12 +315,18 @@ public class MyPageCvJdController {
             return "content/mypage/cv/edit";
         } else if(isRemove) {
             String target = ServletRequestUtils.getStringParameter(request,"remove");
+            log.info("@cv remove Target : {}", target);
             String[] s = target.split(":");
             boolean isSaved = !ObjectUtils.isEmpty(cv.getId());
             int index = -1;
+            String[] sindex = null;
             if(s[1].indexOf(".") == -1) {
                 index = Integer.parseInt(s[1]);
+            } else {
+                sindex = s[1].split("\\.");
+                index = Integer.parseInt(sindex[0]);
             }
+
             switch(s[0]) {
                 case "education":
                     if(isSaved) {
@@ -304,6 +343,9 @@ public class MyPageCvJdController {
                         }
                     }
                     cv.getCareerHistories().remove(index);
+                    break;
+                case "teamDept":
+                    cv.getCareerHistories().get(index).getCvTeamDepts().remove(Integer.parseInt(sindex[1]));
                     break;
                 case "license":
                     if(isSaved) {
@@ -338,9 +380,9 @@ public class MyPageCvJdController {
                     cv.getLanguages().remove(index);
                     break;
                 case "languageCertification":
-                    String[] sindex = s[1].split("\\.");
+//                    String[] sindex = s[1].split("\\.");
                     if(isSaved) {
-                        if(!ObjectUtils.isEmpty(cv.getLanguages().get(Integer.parseInt(sindex[0])).getLanguageCertifications().get(Integer.parseInt(sindex[1])).getId())) {
+                        if(!ObjectUtils.isEmpty(cv.getLanguages().get(index).getLanguageCertifications().get(Integer.parseInt(sindex[1])).getId())) {
                             cv.getLanguages().get(Integer.parseInt(sindex[0])).getRemoveLanguageCertifications().add(cv.getLanguages().get(Integer.parseInt(sindex[0])).getLanguageCertifications().get(Integer.parseInt(sindex[1])));
                         }
                     }
@@ -430,22 +472,26 @@ public class MyPageCvJdController {
                                         .startDate(DateUtil.getDateToString(e.getStartDate(), "MMM yyyy"))
                                         .endDate(e.isPresent() ? "Present" : DateUtil.getDateToString(e.getEndDate(), "MMM yyyy"))
                                         .nameOfUniversity(e.getNameOfUniversity())
-                                        .degree(e.getDegree())
                                         .cityCountry(e.getCityCountry())
-                                        .thesisTitle(e.getThesisTitle())
-                                        .nameOfSupervisor(e.getNameOfSupervisor()).build())
+                                        .bachelorsDegree(StringUtils.isEmpty(e.getBachelorsDegreeOther()) ? e.getBachelorsDegree() : e.getBachelorsDegreeOther())
+                                        .mastersDegree(StringUtils.isEmpty(e.getMastersDegreeOther()) ? e.getMastersDegree() : e.getMastersDegreeOther())
+                                        .mastersThesisTitle(e.getMastersThesisTitle())
+                                        .mastersName(e.getMastersName())
+                                        .phdDegree(e.getPhdDegree())
+                                        .phdName(e.getPhdName())
+                                        .build())
                                 .collect(Collectors.toList()));
 
-                        dto.setCareerHistories(savedCV.getCareerHistories().stream().map(c ->
-                                CareerHistoryDTO.builder()
-                                        .companyName(c.getCompanyName())
-                                        .cityCountry(c.getCityCountry())
-                                        .startDate(DateUtil.getDateToString(c.getStartDate(), "MMM yyyy"))
-                                        .endDate(c.isPresent() ? "Present" : DateUtil.getDateToString(c.getEndDate(), "MMM yyyy"))
-                                        .position(c.getPosition())
-                                        .teamDepartment(c.getTeamDepartment())
-                                        .build()
-                        ).collect(Collectors.toList()));
+//                        dto.setCareerHistories(savedCV.getCareerHistories().stream().map(c ->
+//                                CareerHistoryDTO.builder()
+//                                        .companyName(c.getCompanyName())
+//                                        .cityCountry(c.getCityCountry())
+//                                        .startDate(DateUtil.getDateToString(c.getStartDate(), "MMM yyyy"))
+//                                        .endDate(c.isPresent() ? "Present" : DateUtil.getDateToString(c.getEndDate(), "MMM yyyy"))
+//                                        .position(c.getPosition())
+//                                        .teamDepartment(c.getTeamDepartment())
+//                                        .build()
+//                        ).collect(Collectors.toList()));
 
                         dto.setLicenses(savedCV.getLicenses().stream().map(i ->
                                 LicenseDTO.builder()
@@ -608,5 +654,299 @@ public class MyPageCvJdController {
         }
 
         return "redirect:/mypage/jd/approved";
+    }
+    
+    public List<String> getUniversityList() {
+        return Arrays.asList("Ajou University",
+                "Andong Institute of Information Technology",
+                "Andong National University",
+                "Andong Science College",
+                "Ansan University",
+                "Anyang University",
+                "Baeseok University",
+                "Baewha Women's University",
+                "Bucheon University",
+                "Busan College of Information Technology",
+                "Catholic University of Daegu",
+                "Catholic University of Korea",
+                "Catholic University of Pusan",
+                "Changshin University",
+                "Changwon National University",
+                "Chej Halla University",
+                "Cheonan National Technical College",
+                "Cheonan University",
+                "Cheonan Yonam College",
+                "Cheongju University",
+                "Chodang University",
+                "Chonbuk National University",
+                "Chongju National College of Science and Technology",
+                "Chongju Univeristy",
+                "Chongshin University",
+                "Chonnam National University",
+                "Chosun University",
+                "Christian College of Nursing",
+                "Chung Cheong University",
+                "Chung-Ang University",
+                "Chungbuk National University",
+                "Chungju National University",
+                "Chungnam National University",
+                "Chungwoon University",
+                "Daebul University",
+                "Daedong College",
+                "Daeduk College",
+                "Daegu Gyeongbuk Institute of Science and Technology",
+                "Daegu Haany University",
+                "Daegu Health College",
+                "Daegu University",
+                "Daejeon Health Sciences College",
+                "Daejeon University",
+                "Daejin University",
+                "Dong Seoul College",
+                "Dong-A College",
+                "Dong-A University",
+                "Dongduk Women's University",
+                "Dong-eui University",
+                "Dongguk University",
+                "Dongju College",
+                "Dongkan College",
+                "Dongnam Health College",
+                "Dong-Pusan College",
+                "Dongseo University",
+                "Dongshin University",
+                "Dong-U College",
+                "Duksung Women's University",
+                "Eulji University",
+                "Ewha Womans University",
+                "Gachon Medical School",
+                "Gachon University",
+                "Gachonjil College",
+                "Gangdong College",
+                "Gangneung-Wonju National University",
+                "George Mason University",
+                "Geumgan University",
+                "Gimcheon Science College",
+                "Gimcheon University",
+                "Gumi University",
+                "Gwangju Catholic University",
+                "Gwangju Health University",
+                "Gyeongju University",
+                "Gyeongnam National University of Science and Technology",
+                "Gyeongsang National University",
+                "Halla University",
+                "Hallym University",
+                "Hanbat National University",
+                "Hanil University",
+                "Hankyong National University",
+                "Hanlyo University",
+                "Hanmin University",
+                "Hannam University",
+                "Hansei University",
+                "Hanseo University",
+                "Hanshin University",
+                "Hansung University",
+                "Hanyang University",
+                "Hanyang Women's University",
+                "Hanyeong College",
+                "Hanzhung University",
+                "Honam University",
+                "Hongik University",
+                "Hoseo University",
+                "Howon University",
+                "Hyupsung University",
+                "Incheon Catholic University",
+                "Incheon National University",
+                "Induk University",
+                "Inha University",
+                "Inje University",
+                "Jangan University",
+                "JEI University",
+                "Jeju International University",
+                "Jeju National University",
+                "Jeonju University",
+                "Jinju National University",
+                "Joong-ang Sangha University",
+                "Joongbu University",
+                "Kangnam University",
+                "Kangwon National University",
+                "Kaya University",
+                "Keimyung College",
+                "Keimyung University",
+                "Kimcheon Sciecne College",
+                "Kimpo College",
+                "Kongju National University",
+                "Konkuk National University",
+                "Konyang University",
+                "Kookmin University",
+                "Korea Advanced Institute of Science and Technology",
+                "Korea University",
+                "Korea University of Science and Technology",
+                "Kosin University",
+                "Kunsan National University",
+                "Kwandong University",
+                "Kwangju Institute of Science and Technology",
+                "Kwangju Women's University",
+                "Kwangshin University",
+                "Kwangwoon University",
+                "Kyongbuk College of Science",
+                "Kyonggi University",
+                "Kyongju University",
+                "Kyungbok University",
+                "Kyungbuk College",
+                "Kyungdong University",
+                "Kyunghee University",
+                "Kyungil University",
+                "Kyungnam University",
+                "Kyungpook National University",
+                "Kyungsung University",
+                "Kyungwoon University",
+                "Masan Univrsity",
+                "Miryang National University",
+                "Mokpo Catholic University",
+                "Mokpo National University",
+                "Mokwon University",
+                "Myongji University",
+                "Myungshin University",
+                "Nambu University",
+                "Namseoul University",
+                "National Medical Center College of Nursing",
+                "Osan University",
+                "Pai Chai University",
+                "Pohang University of Science and Technology",
+                "Pukyong National University",
+                "Pusan National University",
+                "Pusan Women's College",
+                "Pyeongtaek University",
+                "Red Cross College of Nursing",
+                "Sahmyook University",
+                "Sangji University",
+                "Sangju National University",
+                "Sangju University",
+                "Sangmyung University",
+                "Sejong University",
+                "Semyung University",
+                "Seoil University",
+                "Seojeong University",
+                "Seokyeong University",
+                "Seoul Christian University",
+                "Seoul Jangsin University",
+                "Seoul Natioanl University",
+                "Seoul Natioanl University of Science and Technology",
+                "Seoul Women's University",
+                "Seowon University",
+                "Seoyeong University",
+                "Shin Ansan University",
+                "Shinkyeong University",
+                "Shinsung University",
+                "Silla University",
+                "Sogang University",
+                "Songwon University",
+                "Sookmyung Women's University",
+                "Soonchunghyang University",
+                "Soongsil University",
+                "Sunchon National University",
+                "Sungkonghoe University",
+                "Sungkyul University",
+                "Sungkyunkwan University",
+                "Sungmin University",
+                "Sungshin Women's University",
+                "Sunlin University",
+                "Sunmoon University",
+                "Suwon Catholic University",
+                "Suwon Science College",
+                "Suwon Women's Collge",
+                "Taegu Science College",
+                "Taekyeung University",
+                "Taeshin Christian University",
+                "Tongmyong University",
+                "Tongwon University",
+                "Uiduk University",
+                "Ulsan College",
+                "Ulsan Natioanl Institute of Science and Technology",
+                "University of Incheon",
+                "University of Science & Technology",
+                "University of Seoul",
+                "University of Suwon",
+                "University of Ulsan",
+                "Wonju National College",
+                "Wonkwang Health Science College",
+                "Wonkwang University",
+                "Woosong Univeristy",
+                "Woosuk University",
+                "Yeonsung University",
+                "Yeungnam College of Science and Technology",
+                "Yeungnam University",
+                "Yong-In University",
+                "Yonsei University",
+                "Yosu National University",
+                "Youngdong University",
+                "Youngsan University",
+                "Others");
+    }
+    
+    public List<String> getCityCountryList() {
+        return Arrays.asList("Andong, Korea",
+                "Ansan, Korea",
+                "Anseong, Korea",
+                "Anyang, Korea",
+                "Asan, Korea",
+                "Bucheon, Korea",
+                "Busan, Korea",
+                "Changwon, Korea",
+                "Cheonan, Korea",
+                "Cheongju, Korea",
+                "Chuncheon, Korea",
+                "Chungju, Korea",
+                "Daegu, Korea",
+                "Daejeon, Korea",
+                "Donghae, Korea",
+                "Gangneung, Korea",
+                "Geochang, Korea",
+                "Gimhae, Korea",
+                "Gimje, Korea",
+                "Gongju, Korea",
+                "Goryeong, Korea",
+                "Goyang, Korea",
+                "Gumi, Korea",
+                "Gunpo, Korea",
+                "Gunsan, Korea",
+                "Gwangju, Korea",
+                "Gyeongju, Korea",
+                "Gyeongsan, Korea",
+                "Hwaseong, Korea",
+                "Iksan, Korea",
+                "Incheon, Korea",
+                "Jecheon, Korea",
+                "Jeju, Korea",
+                "Jeju City, Korea",
+                "Jeonju, Korea",
+                "Jinju, Korea",
+                "Masan, Korea",
+                "Miryang, Korea",
+                "Mokpo, Korea",
+                "Naju, Korea",
+                "Nonsan, Korea",
+                "Osan, Korea",
+                "Pocheon, Korea",
+                "Pohang, Korea",
+                "Samcheok, Korea",
+                "Sangju, Korea",
+                "Seongnam, Korea",
+                "Seosan, Korea",
+                "Seoul, Korea",
+                "Sokcho, Korea",
+                "Songdo, Korea",
+                "Suncheon, Korea",
+                "Suwon, Korea",
+                "Taebaek, Korea",
+                "Ulsan, Korea",
+                "Wanju, Korea",
+                "Wonju, Korea",
+                "Yangju, Korea",
+                "Yangsan, Korea",
+                "Yeonsan, Korea",
+                "Yeosu, Korea",
+                "Yongin, Korea",
+                "Yonjin, Korea",
+                "Others");
     }
 }

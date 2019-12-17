@@ -99,8 +99,8 @@
 
                             <!--Footer buttons-->
                             <div class="pull-right pad-rgt mar-btm">
-                                <button type="submit" name="prev" class="previous btn btn-primary" th:disabled="${cv.pos == 0}"><i class="fa fa-caret-left"></i> Previous</button>
-                                <button type="submit" name="next" class="next btn btn-primary" th:disabled="${cv.pos == 5}">Next <i class="fa fa-caret-right"></i></button>
+                                <button type="submit" name="prev" class="previous btn btn-primary" th:value="${cv.pos - 1}" th:disabled="${cv.pos == 0}"><i class="fa fa-caret-left"></i> Previous</button>
+                                <button type="submit" name="next" class="next btn btn-primary" th:value="${cv.pos + 1}" th:disabled="${cv.pos == 5}">Next <i class="fa fa-caret-right"></i></button>
                                 <button type="button" class="finish btn btn-success" th:disabled="${cv.pos != 5}"><i class="fa fa-check"></i> Finish</button>
                             </div>
 
@@ -128,6 +128,36 @@
 <!--    <script th:src="@{/default/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js}"></script>-->
     <script>
         $(document).ready(function() {
+            $("select.name-of-university").change(function(e) {
+               var _val = $(this).val();
+               var otherId = "#educations"+$(this).data("index")+"\\.nameOfUniversityOther";
+               if(_val == "Others") {
+                   $(otherId).removeAttr("disabled");
+               } else {
+                   $(otherId).val("").attr("disabled", "disabled");
+               }
+            }).trigger("change");
+
+            $("select.city-country").change(function(e) {
+               var _val = $(this).val();
+               var otherId = "#educations"+$(this).data("index")+"\\.cityCountryOther";
+               if(_val == "Others") {
+                   $(otherId).removeAttr("disabled");
+               } else {
+                   $(otherId).val("").attr("disabled", "disabled");
+               }
+            }).trigger("change");
+
+            $("select.ch-city-country").change(function(e) {
+               var _val = $(this).val();
+               var otherId = "#careerHistories"+$(this).data("index")+"\\.cityCountryOther";
+               if(_val == "Others") {
+                   $(otherId).removeAttr("disabled");
+               } else {
+                   $(otherId).val("").attr("disabled", "disabled");
+               }
+            }).trigger("change");
+
             $('.input-daterange').datepicker({
                 format: "M yyyy",
                 startView: 1,

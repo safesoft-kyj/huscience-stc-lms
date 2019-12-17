@@ -7,7 +7,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -25,11 +27,14 @@ public class CVCareerHistory extends AuditorEntity<String> implements Serializab
     @JoinColumn(name = "cv_id", referencedColumnName = "id")
     private CurriculumVitae curriculumVitae;
 
-    @Column(name = "companyName", length = 50)
+    @Column(name = "company_name", length = 50)
     private String companyName;
 
     @Column(name = "city_country")
     private String cityCountry;
+
+    @Column(name = "city_country_other")
+    private String cityCountryOther;
 
     @DateTimeFormat(pattern = "MMM yyyy")
     @Column(name = "start_date")
@@ -42,14 +47,20 @@ public class CVCareerHistory extends AuditorEntity<String> implements Serializab
     @Column(name = "present")
     private boolean present;
 
-    @Column(name = "position")
-    private String position;
+//    @Column(name = "position")
+//    private String position;
 
     @Column(name = "clinical_trial_experience")
     private boolean clinicalTrialExperience;
 
-    @Column(name = "team_department")
-    private String teamDepartment;
+//    @Column(name = "team")
+//    private String team;
+
+//    @Column(name = "department")
+//    private String department;
+
+    @OneToMany(mappedBy = "careerHistory")
+    private List<CVTeamDept> cvTeamDepts = new ArrayList<>();
 
     @Column(name = "readonly")
     private boolean readOnly;
