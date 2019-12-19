@@ -29,8 +29,17 @@
                             <td class="form-group" th:classappend="${#fields.hasErrors('licenses[__${stat.index}__].licenseNo')} ? 'has-error' : ''">
                                 <input type="text" placeholder="License No" class="form-control" th:field="*{licenses[__${stat.index}__].licenseNo}">
                             </td>
-                            <td class="form-group" th:classappend="${#fields.hasErrors('licenses[__${stat.index}__].licenseInCountry')} ? 'has-error' : ''">
-                                <input type="text" class="form-control" placeholder="License in Country" th:field="*{licenses[__${stat.index}__].licenseInCountry}">
+                            <td>
+                                <div class="row form-group">
+                                    <div class="col-xs-6" th:classappend="${#fields.hasErrors('licenses[__${stat.index}__].licenseInCountry')} ? 'has-error' : ''">
+                                        <select class="form-control license-country" th:field="*{licenses[__${stat.index}__].licenseInCountry}" th:attr="data-index=${stat.index}">
+                                            <option th:each="u : ${countryList}" th:value="${u}" th:text="${u}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-6" th:classappend="${#fields.hasErrors('licenses[__${stat.index}__].licenseInCountryOther')} ? 'has-error' : ''">
+                                        <input type="text" class="form-control" placeholder="License in Country(Other)" th:field="*{licenses[__${stat.index}__].licenseInCountryOther}">
+                                    </div>
+                                </div>
                             </td>
                             <td>
                                 <button th:if="${license.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|license:${stat.index}|"><i class="fa fa-trash-o"></i></button>
@@ -38,7 +47,7 @@
                         </tr>
                         <tr>
                             <td colspan="5"><button class="btn btn-info pull-right" name="add" value="license"><i class="fa fa-plus"></i> License</button>
-                            <small class="text-info"><i class="fa fa-exclamation-circle"></i> License가 있는 경우 추가해 주세요.</small>
+                            <small class="text-info"><i class="fa fa-exclamation-circle"></i> 등록 할 정보가 있는 경우 추가해 주세요.</small>
                             </td>
                         </tr>
                         </tbody>
@@ -56,11 +65,11 @@
                     <table class="table table-bordered">
                         <thead>
                         <tr>
-                            <th>No</th>
-                            <th>Name of Certification</th>
-                            <th>Name of Insititution/Organization</th>
-                            <th>Issue Date(MMM YYYY)</th>
-                            <th>#</th>
+                            <th class="bg-gray-light">No</th>
+                            <th class="bg-gray-light">Name of Certification</th>
+                            <th class="bg-gray-light">Name of Insititution/Organization</th>
+                            <th class="bg-gray-light">Issue Date(MMM YYYY)</th>
+                            <th class="bg-gray-light">#</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -83,7 +92,7 @@
                         <tr>
                             <td colspan="5">
                                 <button class="btn btn-info pull-right" name="add" value="certification"><i class="fa fa-plus"></i> Certification</button>
-                                <small class="text-info"><i class="fa fa-exclamation-circle"></i> Certification이 있는 경우 추가해 주세요.</small>
+                                <small class="text-info"><i class="fa fa-exclamation-circle"></i> 등록 할 정보가 있는 경우 추가해 주세요.</small>
                             </td>
                         </tr>
                         </tbody>

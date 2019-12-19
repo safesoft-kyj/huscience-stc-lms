@@ -11,31 +11,72 @@
                 <div class="col-xs-12">
                     <a name="language"></a>
                     <a name="languageCertification"></a>
-                    <table class="table table-bordered" th:each="language, stat : *{languages}">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr class="bg-gray-light">
+                            <th>No.</th>
+                            <th>Language</th>
+                            <th>Level</th>
+<!--                            <th>Name of Certification</th>-->
+                            <th>#</th>
+                        </tr>
+                        </thead>
                         <tbody>
+                        <th:block th:each="language, stat : *{languages}">
                         <tr>
-                            <td class="form-group col-xs-6" th:classappend="${#fields.hasErrors('languages[__${stat.index}__].language')} ? 'has-error' : ''">
-                                <input type="text" class="form-control" placeholder="Name of Certification" th:field="*{languages[__${stat.index}__].language}">
+                            <td th:text="${stat.index + 1}" rowspan="2"></td>
+                            <td class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <select class="form-control skill-language" th:field="*{languages[__${stat.index}__].language}" th:attr="data-index=${stat.index}">
+                                            <option th:each="u : ${skillLanguageList}" th:value="${u}" th:text="${u}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-6" th:classappend="${#fields.hasErrors('languages[__${stat.index}__].languageOther')} ? 'has-error' : ''">
+                                        <input type="text" class="form-control" placeholder="Other" th:field="*{languages[__${stat.index}__].languageOther}">
+                                    </div>
+                                </div>
+
                             </td>
-                            <td class="form-group col-xs-2" th:classappend="${#fields.hasErrors('languages[__${stat.index}__].level')} ? 'has-error' : ''">
+                            <td class="form-group" th:classappend="${#fields.hasErrors('languages[__${stat.index}__].level')} ? 'has-error' : ''">
                                 <select class="form-control" th:field="*{languages[__${stat.index}__].level}">
                                     <option value="BEGINNER">Beginner</option>
                                     <option value="INTERMEDIATE">Intermediate</option>
                                     <option value="ADVANCED">Advanced</option>
                                 </select>
                             </td>
-                            <td class="text-right">
-                                <button th:if="${language.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|language:${stat.index}|"><i class="fa fa-trash-o"></i>
+
+                            <td class="text-center" rowspan="2">
+                                <button th:if="${language.readOnly eq false and stat.index > 0}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|language:${stat.index}|"><i class="fa fa-trash-o"></i>
                                 </button>
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="4">
-                                <table class="table">
+                            <td colspan="2">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr class="bg-gray-light">
+                                        <th>Name of Certification</th>
+                                        <th class="col-xs-3">Level/Score</th>
+                                        <th>#</th>
+                                    </tr>
+                                    </thead>
                                     <tbody>
                                     <tr th:each="languageCertification, certStat : *{languages[__${stat.index}__].languageCertifications}">
                                         <td>
-                                            <input type="text" class="form-control" placeholder="Certificate Program" th:field="*{languages[__${stat.index}__].languageCertifications[__${certStat.index}__].certificateProgram}">
+                                            <div class="row">
+                                                <div class="col-xs-6">
+                                                    <select class="form-control skill-cert" th:attr="data-index=${stat.index}" th:field="*{languages[__${stat.index}__].languageCertifications[__${certStat.index}__].certificateProgram}">
+                                                        <option th:each="u : ${skillCertificationList}" th:value="${u}" th:text="${u}"></option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-xs-6" th:classappend="${#fields.hasErrors('languages[__${stat.index}__].languageCertifications[__${certStat.index}__].certificateProgramOther')} ? 'has-error' : ''">
+                                                    <input type="text" class="form-control" placeholder="Other" th:field="*{languages[__${stat.index}__].languageCertifications[__${certStat.index}__].certificateProgramOther}">
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="form-group" th:classappend="${#fields.hasErrors('languages[__${stat.index}__].languageCertifications[__${certStat.index}__].levelOrScore')} ? 'has-error' : ''">
+                                            <input type="text" class="form-control" placeholder="Level or Score" th:field="*{languages[__${stat.index}__].languageCertifications[__${certStat.index}__].levelOrScore}">
                                         </td>
                                         <td>
                                             <button class="btn btn-xs btn-danger" th:if="${language.readOnly eq false}" type="submit" name="remove" th:value="|languageCertification:${stat.index}.${certStat.index}|"><i class="fa fa-trash-o"></i>
@@ -48,6 +89,7 @@
                                 </button>
                             </td>
                         </tr>
+                        </th:block>
                         </tbody>
                     </table>
                 </div>
@@ -70,11 +112,21 @@
                 <div class="col-xs-12">
                     <a name="computerKnowledge"></a>
                     <a name="computerCertification"></a>
-                    <table class="table table-bordered" th:each="computerKnowledge, stat : *{computerKnowledges}">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr class="bg-gray-light">
+                            <th>No.</th>
+                            <th>Program Name</th>
+                            <th>Level</th>
+                            <th>#</th>
+                        </tr>
+                        </thead>
                         <tbody>
+                        <th:block th:each="computerKnowledge, stat : *{computerKnowledges}">
                         <tr>
-                            <td class="form-group col-xs-6" th:classappend="${#fields.hasErrors('computerKnowledges[__${stat.index}__].programName')} ? 'has-error' : ''">
-                                <input type="text" class="form-control" placeholder="Program Name" th:field="*{computerKnowledges[__${stat.index}__].programName}">
+                            <td th:text="${stat.index + 1}" rowspan="2"></td>
+                            <td class="form-group" th:classappend="${#fields.hasErrors('computerKnowledges[__${stat.index}__].programName')} ? 'has-error' : ''">
+                                <input type="text" class="form-control" th:attr="readonly=${stat.index == 0}" placeholder="Program Name" th:field="*{computerKnowledges[__${stat.index}__].programName}">
                             </td>
                             <td class="form-group col-xs-2" th:classappend="${#fields.hasErrors('computerKnowledges[__${stat.index}__].level')} ? 'has-error' : ''">
                                 <select class="form-control" th:field="*{computerKnowledges[__${stat.index}__].level}">
@@ -83,31 +135,40 @@
                                     <option value="ADVANCED">Advanced</option>
                                 </select>
                             </td>
-                            <td class="text-right">
-                                <button th:if="${computerKnowledge.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|computerKnowledge:${stat.index}|"><i class="fa fa-trash-o"></i>
+                            <td class="text-center" rowspan="2">
+                                <button th:if="${computerKnowledge.readOnly eq false and stat.index > 0}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|computerKnowledge:${stat.index}|"><i class="fa fa-trash-o"></i>
                                 </button>
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="4">
-                                <table class="table">
+                            <td colspan="2">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr class="bg-gray-light">
+                                        <th>Certification Name</th>
+                                        <th>#</th>
+                                    </tr>
+                                    </thead>
                                     <tbody>
-                                    <tr th:each="languageCertification, certStat : *{computerKnowledges[__${stat.index}__].computerCertifications}">
-                                        <td>
+                                    <tr th:each="computerCertification, certStat : *{computerKnowledges[__${stat.index}__].computerCertifications}">
+                                        <td class="form-group" th:classappend="${#fields.hasErrors('computerKnowledges[__${stat.index}__].computerCertifications[__${certStat.index}__].certificateProgram')} ? 'has-error' : ''">
                                             <input type="text" class="form-control" placeholder="Certificate Program" th:field="*{computerKnowledges[__${stat.index}__].computerCertifications[__${certStat.index}__].certificateProgram}">
                                         </td>
                                         <td>
-                                            <button class="btn btn-xs btn-danger" th:if="${computerKnowledge.readOnly eq fasle}" type="submit" name="remove" th:value="|computerCertification:${stat.index}.${certStat.index}|"><i class="fa fa-trash-o"></i>
+                                            <button class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|computerCertification:${stat.index}.${certStat.index}|"><i class="fa fa-trash-o"></i>
                                             </button>
                                         </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="text-right"><button class="btn btn-xs btn-info" type="submit" name="add" th:value="|computerCertification:${stat.index}|"><i class="fa fa-plus"></i> Certification</button></td>
                                     </tr>
                                     </tbody>
 
                                 </table>
-                                <button class="btn btn-xs btn-info" type="submit" name="add" th:value="|computerCertification:${stat.index}|"><i class="fa fa-plus"></i> Certification
-                                </button>
+
                             </td>
                         </tr>
+                        </th:block>
                         </tbody>
                     </table>
                 </div>

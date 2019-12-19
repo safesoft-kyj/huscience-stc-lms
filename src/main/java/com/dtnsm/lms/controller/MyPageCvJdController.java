@@ -18,9 +18,7 @@ import com.dtnsm.lms.service.CurriculumVitaeService;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
-import com.dtnsm.lms.validator.CareerHistoryValidator;
-import com.dtnsm.lms.validator.CurriculumVitaeValidator;
-import com.dtnsm.lms.validator.EducationValidator;
+import com.dtnsm.lms.validator.*;
 import com.dtnsm.lms.xdocreport.dto.*;
 import com.querydsl.core.BooleanBuilder;
 import fr.opensagres.xdocreport.document.images.ByteArrayImageProvider;
@@ -50,7 +48,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/mypage")
-@SessionAttributes({"pageInfo", "cv", "phaseList", "indicationList", "universityList", "countryList"})
+@SessionAttributes({"pageInfo", "cv", "phaseList", "indicationList", "universityList", "cityCountryList", "countryList", "skillLanguageList", "skillCertificationList"})
 @RequiredArgsConstructor
 @Slf4j
 public class MyPageCvJdController {
@@ -59,11 +57,13 @@ public class MyPageCvJdController {
     private final CurriculumVitaeValidator curriculumVitaeValidator;
     private final EducationValidator educationValidator;
     private final CareerHistoryValidator careerHistoryValidator;
+    private final LicenseCertificationValidator licenseCertificationValidator;
+    private final MembershipValidator membershipValidator;
+    private final SkillValidator skillValidator;
     private final CurriculumVitaeService curriculumVitaeService;
     private final CVIndicationRepository indicationRepository;
     private final CVPhaseRepository phaseRepository;
     private final SignatureRepository signatureRepository;
-//    private final CurriculumVitaeReportService curriculumVitaeReportService;
     private final FileUploadProperties prop;
     private PageInfo pageInfo = new PageInfo();
 
@@ -123,7 +123,10 @@ public class MyPageCvJdController {
         model.addAttribute("indicationList", indicationRepository.findAll(QCVIndication.cVIndication.indication.asc()));
         model.addAttribute("phaseList", phaseRepository.findAll(QCVPhase.cVPhase.phase.asc()));
         model.addAttribute("universityList", getUniversityList());
-        model.addAttribute("countryList", getCityCountryList());
+        model.addAttribute("cityCountryList", getCityCountryList());
+        model.addAttribute("countryList", getCountryList());
+        model.addAttribute("skillLanguageList", getSkillLanguages());
+        model.addAttribute("skillCertificationList", getSkillCertifications());
 
         CurriculumVitae cv;
         if(!ObjectUtils.isEmpty(id)) {
@@ -163,10 +166,12 @@ public class MyPageCvJdController {
             cv.getCareerHistories().add(history);
             cv.getLicenses();//.add(new CVLicense());
             cv.getCertifications();//.add(new CVCertification());
-            cv.getMemberships().add(new CVMembership());
+            cv.getMemberships();//.add(new CVMembership());
             cv.getLanguages().add(new CVLanguage());
-            cv.getComputerKnowledges().add(new CVComputerKnowledge());
-            cv.getExperiences().add(new CVExperience());
+            CVComputerKnowledge computerKnowledge = new CVComputerKnowledge();
+            computerKnowledge.setProgramName("MS Word, MS Excel, MS PowerPoint");
+            cv.getComputerKnowledges().add(computerKnowledge);
+            cv.getExperiences();//.add(new CVExperience());
         }
 
         model.addAttribute("cv", cv);
@@ -248,16 +253,19 @@ public class MyPageCvJdController {
         } else if(isNext) {
             if(cv.getPos() == 0) {
                 educationValidator.validate(cv, result);
-                if(result.hasErrors()) {
-                    log.info("<== education validation error : {}", result.getAllErrors());
-                    return "content/mypage/cv/edit";
-                }
             } else if(cv.getPos() == 1) {
                 careerHistoryValidator.validate(cv, result);
-                if(result.hasErrors()) {
-                    log.info("<== Career History validation error : {}", result.getAllErrors());
-                    return "content/mypage/cv/edit";
-                }
+            } else if(cv.getPos() == 2) {
+                licenseCertificationValidator.validate(cv, result);
+            } else if(cv.getPos() == 3) {
+                membershipValidator.validate(cv, result);
+            } else if(cv.getPos() == 4) {
+                skillValidator.validate(cv, result);
+            }
+
+            if(result.hasErrors()) {
+                log.info("<== validation error : {}", result.getAllErrors());
+                return "content/mypage/cv/edit";
             }
             cv.setPos(ServletRequestUtils.getIntParameter(request, "next"));
             return "content/mypage/cv/edit";
@@ -655,8 +663,8 @@ public class MyPageCvJdController {
 
         return "redirect:/mypage/jd/approved";
     }
-    
-    public List<String> getUniversityList() {
+
+    private List<String> getUniversityList() {
         return Arrays.asList("Ajou University",
                 "Andong Institute of Information Technology",
                 "Andong National University",
@@ -882,8 +890,8 @@ public class MyPageCvJdController {
                 "Youngsan University",
                 "Others");
     }
-    
-    public List<String> getCityCountryList() {
+
+    private List<String> getCityCountryList() {
         return Arrays.asList("Andong, Korea",
                 "Ansan, Korea",
                 "Anseong, Korea",
@@ -947,6 +955,41 @@ public class MyPageCvJdController {
                 "Yeosu, Korea",
                 "Yongin, Korea",
                 "Yonjin, Korea",
+                "Others");
+    }
+    
+    private List<String> getCountryList() {
+        return Arrays.asList("Korea",
+                "China",
+                "Japan",
+                "England",
+                "France",
+                "Russia",
+                "USA",
+                "Others");
+    }
+    
+    private List<String> getSkillLanguages() {
+        return Arrays.asList("Chinese",
+                "English",
+                "French",
+                "Japanese",
+                "Malay",
+                "Portuguese",
+                "Russian",
+                "Spanish",
+                "Vietnamese",
+                "Others");
+    }
+    
+    private List<String> getSkillCertifications() {
+        return Arrays.asList("ILETS",
+                "OPIC Listening & Reading",
+                "OPIC Writing",
+                "TESOL",
+                "TOEIC Listening & Reading",
+                "TOEIC Speaking",
+                "TOEFL",
                 "Others");
     }
 }

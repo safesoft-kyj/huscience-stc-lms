@@ -51,6 +51,13 @@ public class EducationValidator implements Validator {
             if(StringUtils.isEmpty(edu.getBachelorsDegree())) {
                 errors.rejectValue("educations[" + eduIndex + "].bachelorsDegree", "message.required", "required field.");
             }
+
+            if(!StringUtils.isEmpty(edu.getMastersThesisTitle()) || !StringUtils.isEmpty(edu.getMastersName())) {
+                if(StringUtils.isEmpty(edu.getMastersDegree())) {
+                    errors.rejectValue("educations[" + eduIndex + "].mastersDegree", "message.required", "required field.");
+                }
+            }
+
             if(!StringUtils.isEmpty(edu.getMastersDegree())) {
 //                errors.rejectValue("educations[" + eduIndex + "].mastersDegree", "message.required", "required field.");
 
@@ -60,7 +67,12 @@ public class EducationValidator implements Validator {
                 if(StringUtils.isEmpty(edu.getMastersName())) {
                     errors.rejectValue("educations[" + eduIndex + "].mastersName", "message.required", "required field.");
                 }
+            } else {
+                if(!StringUtils.isEmpty(edu.getMastersThesisTitle()) || !StringUtils.isEmpty(edu.getMastersName())) {
+                    errors.rejectValue("educations[" + eduIndex + "].mastersDegree", "message.required", "required field.");
+                }
             }
+
 
 
             if(!StringUtils.isEmpty(edu.getPhdDegree())) {
@@ -74,7 +86,13 @@ public class EducationValidator implements Validator {
                 if(StringUtils.isEmpty(edu.getPhdName())) {
                     errors.rejectValue("educations[" + eduIndex + "].phdName", "message.required", "required field.");
                 }
+            } else {
+                if(!StringUtils.isEmpty(edu.getPhdThesisTitle()) || !StringUtils.isEmpty(edu.getPhdName())) {
+                    errors.rejectValue("educations[" + eduIndex + "].phdDegree", "message.required", "required field.");
+                }
             }
+
+
 
 
             eduIndex ++;

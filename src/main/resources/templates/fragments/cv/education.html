@@ -71,7 +71,7 @@
                 <div class="row">
                     <div class="col-xs-6">
                         <select class="form-control city-country" th:field="*{educations[__${stat.index}__].cityCountry}" th:attr="data-index=${stat.index}">
-                            <option th:each="u : ${countryList}" th:value="${u}" th:text="${u}"></option>
+                            <option th:each="u : ${cityCountryList}" th:value="${u}" th:text="${u}"></option>
                         </select>
                     </div>
                     <div class="col-xs-6 form-group" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].cityCountryOther')} ? 'has-error' : ''">

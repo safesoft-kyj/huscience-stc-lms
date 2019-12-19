@@ -158,6 +158,25 @@
                }
             }).trigger("change");
 
+            $("select.license-country").change(function(e) {
+               var _val = $(this).val();
+               var otherId = "#licenses"+$(this).data("index")+"\\.licenseInCountryOther";
+               if(_val == "Others") {
+                   $(otherId).removeAttr("disabled");
+               } else {
+                   $(otherId).val("").attr("disabled", "disabled");
+               }
+            }).trigger("change");
+            $("select.skill-language").change(function(e) {
+               var _val = $(this).val();
+               var otherId = "#languages"+$(this).data("index")+"\\.languageOther";
+               if(_val == "Others") {
+                   $(otherId).removeAttr("disabled");
+               } else {
+                   $(otherId).val("").attr("disabled", "disabled");
+               }
+            }).trigger("change");
+
             $('.input-daterange').datepicker({
                 format: "M yyyy",
                 startView: 1,
@@ -182,22 +201,25 @@
 
             $(".edu-present").change(function(e) {
                 if($(this).is(":checked")) {
-                    $("#educations"+$(this).data("index")+"\\.endDate").val("").attr("readonly", "readonly");
+                    $("#educations"+$(this).data("index")+"\\.endDate").val("").attr("disabled", "disabled");
                 } else {
-                    $("#educations"+$(this).data("index")+"\\.endDate").removeAttr("readonly");
+                    $("#educations"+$(this).data("index")+"\\.endDate").removeAttr("disabled");
                 }
-            });
+            }).trigger("change");
             $(".career-present").change(function(e) {
                 if($(this).is(":checked")) {
-                    $("#careerHistories"+$(this).data("index")+"\\.endDate").val("").attr("readonly", "readonly");
+                    $("#careerHistories"+$(this).data("index")+"\\.endDate").val("").attr("disabled", "disabled");
                 } else {
-                    $("#careerHistories"+$(this).data("index")+"\\.endDate").removeAttr("readonly");
+                    $("#careerHistories"+$(this).data("index")+"\\.endDate").removeAttr("disabled");
                 }
-            });
-
-            $(".edu-present, .career-present").trigger("change");
-
-
+            }).trigger("change");
+            $(".member-present").change(function(e) {
+                if($(this).is(":checked")) {
+                    $("#memberships"+$(this).data("index")+"\\.endYear").val("").attr("disabled", "disabled");
+                } else {
+                    $("#memberships"+$(this).data("index")+"\\.endYear").removeAttr("disabled");
+                }
+            }).trigger("change");
         });
 
         /*<![CDATA[*/
