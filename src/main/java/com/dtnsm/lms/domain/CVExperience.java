@@ -1,6 +1,7 @@
 package com.dtnsm.lms.domain;
 
 import com.dtnsm.lms.auth.AuditorEntity;
+import com.dtnsm.lms.converter.RoleConverter;
 import com.dtnsm.lms.domain.constant.GlobalOrLocal;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,20 +25,34 @@ public class CVExperience extends AuditorEntity<String> implements Serializable 
     @JoinColumn(name = "cv_id", referencedColumnName = "id")
     private CurriculumVitae curriculumVitae;
 
-    @ManyToOne
-    @JoinColumn(name = "indication_id", referencedColumnName = "id")
-    private CVIndication indication;
+    @Column(name = "ta")
+    private String ta;
 
-    @ManyToOne
-    @JoinColumn(name = "phase_id", referencedColumnName = "id")
-    private CVPhase phase;
+    @Column(name = "ta_other")
+    private String taOther;
+
+    @Column(name = "indication")
+    private String indication;
+
+    @Column(name = "indication_other")
+    private String indicationOther;
+
+    @Column(name = "phase")
+    private String phase;
+
+    @Column(name = "phase_other")
+    private String phaseOther;
 
     @Column(name = "global_or_local")
     @Enumerated(EnumType.STRING)
     private GlobalOrLocal globalOrLocal;
 
+    @Convert(converter = RoleConverter.class)
     @Column(name = "role")
-    private String role;
+    private String[] role;
+
+    @Column(name = "role_other")
+    private String roleOther;
 
     @Column(name = "workingDetails")
     private String workingDetails;

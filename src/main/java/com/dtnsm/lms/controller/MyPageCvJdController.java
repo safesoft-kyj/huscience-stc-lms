@@ -8,11 +8,10 @@ import com.dtnsm.common.entity.constant.JobDescriptionStatus;
 import com.dtnsm.common.repository.SignatureRepository;
 import com.dtnsm.common.repository.UserJobDescriptionRepository;
 import com.dtnsm.common.utils.Base64Utils;
+import com.dtnsm.lms.data.CVCodeList;
 import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.CurriculumVitaeStatus;
 import com.dtnsm.lms.properties.FileUploadProperties;
-import com.dtnsm.lms.repository.CVIndicationRepository;
-import com.dtnsm.lms.repository.CVPhaseRepository;
 import com.dtnsm.lms.repository.CurriculumVitaeRepository;
 import com.dtnsm.lms.service.CurriculumVitaeService;
 import com.dtnsm.lms.util.DateUtil;
@@ -48,7 +47,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/mypage")
-@SessionAttributes({"pageInfo", "cv", "phaseList", "indicationList", "universityList", "cityCountryList", "countryList", "skillLanguageList", "skillCertificationList"})
+@SessionAttributes({"pageInfo", "cv", "phaseList", "taList", "roleList", "indicationMap", "universityList", "cityCountryList", "countryList", "skillLanguageList", "skillCertificationList"})
 @RequiredArgsConstructor
 @Slf4j
 public class MyPageCvJdController {
@@ -59,12 +58,13 @@ public class MyPageCvJdController {
     private final CareerHistoryValidator careerHistoryValidator;
     private final LicenseCertificationValidator licenseCertificationValidator;
     private final MembershipValidator membershipValidator;
+    private final ExperienceValidator experienceValidator;
     private final SkillValidator skillValidator;
     private final CurriculumVitaeService curriculumVitaeService;
-    private final CVIndicationRepository indicationRepository;
-    private final CVPhaseRepository phaseRepository;
     private final SignatureRepository signatureRepository;
     private final FileUploadProperties prop;
+    private final CVCodeList cvCodeList;
+
     private PageInfo pageInfo = new PageInfo();
 
     @PostConstruct
@@ -120,13 +120,15 @@ public class MyPageCvJdController {
 
         model.addAttribute(pageInfo);
 
-        model.addAttribute("indicationList", indicationRepository.findAll(QCVIndication.cVIndication.indication.asc()));
-        model.addAttribute("phaseList", phaseRepository.findAll(QCVPhase.cVPhase.phase.asc()));
-        model.addAttribute("universityList", getUniversityList());
-        model.addAttribute("cityCountryList", getCityCountryList());
-        model.addAttribute("countryList", getCountryList());
-        model.addAttribute("skillLanguageList", getSkillLanguages());
-        model.addAttribute("skillCertificationList", getSkillCertifications());
+        model.addAttribute("taList", cvCodeList.getTaList());
+        model.addAttribute("indicationMap", cvCodeList.getIndicationMap());
+        model.addAttribute("roleList", cvCodeList.getRoleList());
+        model.addAttribute("phaseList", cvCodeList.getPhaseList());
+        model.addAttribute("universityList", cvCodeList.getUniversityList());
+        model.addAttribute("cityCountryList", cvCodeList.getCityCountryList());
+        model.addAttribute("countryList", cvCodeList.getCountryList());
+        model.addAttribute("skillLanguageList", cvCodeList.getSkillLanguages());
+        model.addAttribute("skillCertificationList", cvCodeList.getSkillCertifications());
 
         CurriculumVitae cv;
         if(!ObjectUtils.isEmpty(id)) {
@@ -265,9 +267,9 @@ public class MyPageCvJdController {
 
             if(result.hasErrors()) {
                 log.info("<== validation error : {}", result.getAllErrors());
-                return "content/mypage/cv/edit";
+            } else {
+                cv.setPos(ServletRequestUtils.getIntParameter(request, "next"));
             }
-            cv.setPos(ServletRequestUtils.getIntParameter(request, "next"));
             return "content/mypage/cv/edit";
         }
 
@@ -431,6 +433,10 @@ public class MyPageCvJdController {
         boolean isSubmit = WebUtils.hasSubmitParameter(request, "_submit");
 
         if(isSubmit) {
+            experienceValidator.validate(cv, result);
+            if(result.hasErrors()) {
+                return "content/mypage/cv/edit";
+            }
             String stringStatus = ServletRequestUtils.getStringParameter(request, "_submit");
             CurriculumVitaeStatus status = CurriculumVitaeStatus.valueOf(stringStatus.toUpperCase());
             curriculumVitaeValidator.validate(cv, result);
@@ -542,8 +548,9 @@ public class MyPageCvJdController {
 
                         dto.setExperiences(savedCV.getExperiences().stream().map(i ->
                                 ExperienceDTO.builder()
-                                        .indication(i.getIndication().getIndication())
-                                        .phase(i.getPhase().getPhase())
+                                        .ta("Others".equals(i.getTa()) ? i.getTaOther() : i.getTa())
+                                        .indication("Others".equals(i.getIndication()) ? i.getIndicationOther() : i.getIndication())
+                                        .phase("Others".equals(i.getPhase()) ? i.getPhaseOther() : i.getPhase())
                                         .role(i.getRole())
                                         .globalOrLocal(i.getGlobalOrLocal().getLabel())
                                         .workingDetails(i.getWorkingDetails())
@@ -664,332 +671,5 @@ public class MyPageCvJdController {
         return "redirect:/mypage/jd/approved";
     }
 
-    private List<String> getUniversityList() {
-        return Arrays.asList("Ajou University",
-                "Andong Institute of Information Technology",
-                "Andong National University",
-                "Andong Science College",
-                "Ansan University",
-                "Anyang University",
-                "Baeseok University",
-                "Baewha Women's University",
-                "Bucheon University",
-                "Busan College of Information Technology",
-                "Catholic University of Daegu",
-                "Catholic University of Korea",
-                "Catholic University of Pusan",
-                "Changshin University",
-                "Changwon National University",
-                "Chej Halla University",
-                "Cheonan National Technical College",
-                "Cheonan University",
-                "Cheonan Yonam College",
-                "Cheongju University",
-                "Chodang University",
-                "Chonbuk National University",
-                "Chongju National College of Science and Technology",
-                "Chongju Univeristy",
-                "Chongshin University",
-                "Chonnam National University",
-                "Chosun University",
-                "Christian College of Nursing",
-                "Chung Cheong University",
-                "Chung-Ang University",
-                "Chungbuk National University",
-                "Chungju National University",
-                "Chungnam National University",
-                "Chungwoon University",
-                "Daebul University",
-                "Daedong College",
-                "Daeduk College",
-                "Daegu Gyeongbuk Institute of Science and Technology",
-                "Daegu Haany University",
-                "Daegu Health College",
-                "Daegu University",
-                "Daejeon Health Sciences College",
-                "Daejeon University",
-                "Daejin University",
-                "Dong Seoul College",
-                "Dong-A College",
-                "Dong-A University",
-                "Dongduk Women's University",
-                "Dong-eui University",
-                "Dongguk University",
-                "Dongju College",
-                "Dongkan College",
-                "Dongnam Health College",
-                "Dong-Pusan College",
-                "Dongseo University",
-                "Dongshin University",
-                "Dong-U College",
-                "Duksung Women's University",
-                "Eulji University",
-                "Ewha Womans University",
-                "Gachon Medical School",
-                "Gachon University",
-                "Gachonjil College",
-                "Gangdong College",
-                "Gangneung-Wonju National University",
-                "George Mason University",
-                "Geumgan University",
-                "Gimcheon Science College",
-                "Gimcheon University",
-                "Gumi University",
-                "Gwangju Catholic University",
-                "Gwangju Health University",
-                "Gyeongju University",
-                "Gyeongnam National University of Science and Technology",
-                "Gyeongsang National University",
-                "Halla University",
-                "Hallym University",
-                "Hanbat National University",
-                "Hanil University",
-                "Hankyong National University",
-                "Hanlyo University",
-                "Hanmin University",
-                "Hannam University",
-                "Hansei University",
-                "Hanseo University",
-                "Hanshin University",
-                "Hansung University",
-                "Hanyang University",
-                "Hanyang Women's University",
-                "Hanyeong College",
-                "Hanzhung University",
-                "Honam University",
-                "Hongik University",
-                "Hoseo University",
-                "Howon University",
-                "Hyupsung University",
-                "Incheon Catholic University",
-                "Incheon National University",
-                "Induk University",
-                "Inha University",
-                "Inje University",
-                "Jangan University",
-                "JEI University",
-                "Jeju International University",
-                "Jeju National University",
-                "Jeonju University",
-                "Jinju National University",
-                "Joong-ang Sangha University",
-                "Joongbu University",
-                "Kangnam University",
-                "Kangwon National University",
-                "Kaya University",
-                "Keimyung College",
-                "Keimyung University",
-                "Kimcheon Sciecne College",
-                "Kimpo College",
-                "Kongju National University",
-                "Konkuk National University",
-                "Konyang University",
-                "Kookmin University",
-                "Korea Advanced Institute of Science and Technology",
-                "Korea University",
-                "Korea University of Science and Technology",
-                "Kosin University",
-                "Kunsan National University",
-                "Kwandong University",
-                "Kwangju Institute of Science and Technology",
-                "Kwangju Women's University",
-                "Kwangshin University",
-                "Kwangwoon University",
-                "Kyongbuk College of Science",
-                "Kyonggi University",
-                "Kyongju University",
-                "Kyungbok University",
-                "Kyungbuk College",
-                "Kyungdong University",
-                "Kyunghee University",
-                "Kyungil University",
-                "Kyungnam University",
-                "Kyungpook National University",
-                "Kyungsung University",
-                "Kyungwoon University",
-                "Masan Univrsity",
-                "Miryang National University",
-                "Mokpo Catholic University",
-                "Mokpo National University",
-                "Mokwon University",
-                "Myongji University",
-                "Myungshin University",
-                "Nambu University",
-                "Namseoul University",
-                "National Medical Center College of Nursing",
-                "Osan University",
-                "Pai Chai University",
-                "Pohang University of Science and Technology",
-                "Pukyong National University",
-                "Pusan National University",
-                "Pusan Women's College",
-                "Pyeongtaek University",
-                "Red Cross College of Nursing",
-                "Sahmyook University",
-                "Sangji University",
-                "Sangju National University",
-                "Sangju University",
-                "Sangmyung University",
-                "Sejong University",
-                "Semyung University",
-                "Seoil University",
-                "Seojeong University",
-                "Seokyeong University",
-                "Seoul Christian University",
-                "Seoul Jangsin University",
-                "Seoul Natioanl University",
-                "Seoul Natioanl University of Science and Technology",
-                "Seoul Women's University",
-                "Seowon University",
-                "Seoyeong University",
-                "Shin Ansan University",
-                "Shinkyeong University",
-                "Shinsung University",
-                "Silla University",
-                "Sogang University",
-                "Songwon University",
-                "Sookmyung Women's University",
-                "Soonchunghyang University",
-                "Soongsil University",
-                "Sunchon National University",
-                "Sungkonghoe University",
-                "Sungkyul University",
-                "Sungkyunkwan University",
-                "Sungmin University",
-                "Sungshin Women's University",
-                "Sunlin University",
-                "Sunmoon University",
-                "Suwon Catholic University",
-                "Suwon Science College",
-                "Suwon Women's Collge",
-                "Taegu Science College",
-                "Taekyeung University",
-                "Taeshin Christian University",
-                "Tongmyong University",
-                "Tongwon University",
-                "Uiduk University",
-                "Ulsan College",
-                "Ulsan Natioanl Institute of Science and Technology",
-                "University of Incheon",
-                "University of Science & Technology",
-                "University of Seoul",
-                "University of Suwon",
-                "University of Ulsan",
-                "Wonju National College",
-                "Wonkwang Health Science College",
-                "Wonkwang University",
-                "Woosong Univeristy",
-                "Woosuk University",
-                "Yeonsung University",
-                "Yeungnam College of Science and Technology",
-                "Yeungnam University",
-                "Yong-In University",
-                "Yonsei University",
-                "Yosu National University",
-                "Youngdong University",
-                "Youngsan University",
-                "Others");
-    }
 
-    private List<String> getCityCountryList() {
-        return Arrays.asList("Andong, Korea",
-                "Ansan, Korea",
-                "Anseong, Korea",
-                "Anyang, Korea",
-                "Asan, Korea",
-                "Bucheon, Korea",
-                "Busan, Korea",
-                "Changwon, Korea",
-                "Cheonan, Korea",
-                "Cheongju, Korea",
-                "Chuncheon, Korea",
-                "Chungju, Korea",
-                "Daegu, Korea",
-                "Daejeon, Korea",
-                "Donghae, Korea",
-                "Gangneung, Korea",
-                "Geochang, Korea",
-                "Gimhae, Korea",
-                "Gimje, Korea",
-                "Gongju, Korea",
-                "Goryeong, Korea",
-                "Goyang, Korea",
-                "Gumi, Korea",
-                "Gunpo, Korea",
-                "Gunsan, Korea",
-                "Gwangju, Korea",
-                "Gyeongju, Korea",
-                "Gyeongsan, Korea",
-                "Hwaseong, Korea",
-                "Iksan, Korea",
-                "Incheon, Korea",
-                "Jecheon, Korea",
-                "Jeju, Korea",
-                "Jeju City, Korea",
-                "Jeonju, Korea",
-                "Jinju, Korea",
-                "Masan, Korea",
-                "Miryang, Korea",
-                "Mokpo, Korea",
-                "Naju, Korea",
-                "Nonsan, Korea",
-                "Osan, Korea",
-                "Pocheon, Korea",
-                "Pohang, Korea",
-                "Samcheok, Korea",
-                "Sangju, Korea",
-                "Seongnam, Korea",
-                "Seosan, Korea",
-                "Seoul, Korea",
-                "Sokcho, Korea",
-                "Songdo, Korea",
-                "Suncheon, Korea",
-                "Suwon, Korea",
-                "Taebaek, Korea",
-                "Ulsan, Korea",
-                "Wanju, Korea",
-                "Wonju, Korea",
-                "Yangju, Korea",
-                "Yangsan, Korea",
-                "Yeonsan, Korea",
-                "Yeosu, Korea",
-                "Yongin, Korea",
-                "Yonjin, Korea",
-                "Others");
-    }
-    
-    private List<String> getCountryList() {
-        return Arrays.asList("Korea",
-                "China",
-                "Japan",
-                "England",
-                "France",
-                "Russia",
-                "USA",
-                "Others");
-    }
-    
-    private List<String> getSkillLanguages() {
-        return Arrays.asList("Chinese",
-                "English",
-                "French",
-                "Japanese",
-                "Malay",
-                "Portuguese",
-                "Russian",
-                "Spanish",
-                "Vietnamese",
-                "Others");
-    }
-    
-    private List<String> getSkillCertifications() {
-        return Arrays.asList("ILETS",
-                "OPIC Listening & Reading",
-                "OPIC Writing",
-                "TESOL",
-                "TOEIC Listening & Reading",
-                "TOEIC Speaking",
-                "TOEFL",
-                "Others");
-    }
 }

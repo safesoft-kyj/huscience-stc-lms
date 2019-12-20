@@ -36,12 +36,6 @@ public class InitialDataLoader implements
     @Autowired
     private UserMapperService userMapperService;
 
-    @Autowired
-    private CVIndicationRepository indicationRepository;
-
-    @Autowired
-    private CVPhaseRepository phaseRepository;
-
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -99,15 +93,15 @@ public class InitialDataLoader implements
 //
 //        }
 
-        addIndication(1, "Ulcerative Colitis");
-        addIndication(2, "Breast Cancer");
-        addIndication(3, "Type 2 Diabetes Mellitus");
+//        addIndication(1, "Ulcerative Colitis");
+//        addIndication(2, "Breast Cancer");
+//        addIndication(3, "Type 2 Diabetes Mellitus");
+        
 
-        addPhase(1, "Phase 0");
-        addPhase(2, "Phase I");
-        addPhase(3, "Phase II");
-        addPhase(4, "Phase III");
-        addPhase(5, "Phase IV");
+
+//        for(int i = 0; i < phaseList.size(); i ++) {
+//            addPhase(i + 1, phaseList.get(i));
+//        }
         alreadySetup = true;
     }
 
@@ -122,21 +116,21 @@ public class InitialDataLoader implements
         return privilege;
     }
 
-    private void addIndication(Integer id, String indication) {
-        CVIndication cvIndication = new CVIndication();
-        cvIndication.setId(id);
-        cvIndication.setIndication(indication);
-
-        indicationRepository.save(cvIndication);
-    }
-
-    private void addPhase(Integer id, String phase) {
-        CVPhase cvPhase = new CVPhase();
-        cvPhase.setId(id);
-        cvPhase.setPhase(phase);
-
-        phaseRepository.save(cvPhase);
-    }
+//    private void addIndication(Integer id, String indication) {
+//        CVIndication cvIndication = new CVIndication();
+//        cvIndication.setId(id);
+//        cvIndication.setIndication(indication);
+//
+//        indicationRepository.save(cvIndication);
+//    }
+//
+//    private void addPhase(Integer id, String phase) {
+//        CVPhase cvPhase = new CVPhase();
+//        cvPhase.setId(id);
+//        cvPhase.setPhase(phase);
+//
+//        phaseRepository.save(cvPhase);
+//    }
 
     private Role createRoleIfNotFound(String name, String memo, Collection<Privilege> privileges) {
 
