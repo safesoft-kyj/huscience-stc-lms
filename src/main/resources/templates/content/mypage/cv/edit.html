@@ -11,7 +11,7 @@
 </th:block>
 
 <th:block layout:fragment="custom_css">
-
+    <link th:href="@{/default/plugins/select2/css/select2.min.css}" rel="stylesheet">
 </th:block>
 
 <th:block layout:fragment="content_body">
@@ -39,39 +39,39 @@
                         <!--nav-->
                         <ul class="row wz-steps wz-icon-bw wz-nav-off mar-top">
                             <li class="col-xs-2" th:classappend="${cv.pos == 0 ? 'active' : ''}">
-                                <a data-toggle="tab" href="#demo-main-tab1">
-                                    <span class="text-danger"><i class="demo-pli-information icon-2x"></i></span>
+                                <a>
+<!--                                    <span class="text-danger"><i class="demo-pli-student-hat icon-2x"></i></span>-->
                                     <h5 class="mar-no">EDUCATION</h5>
                                 </a>
                             </li>
                             <li class="col-xs-2" th:classappend="${cv.pos == 1 ? 'active' : ''}">
-                                <a data-toggle="tab">
-                                    <span class="text-warning"><i class="demo-pli-male icon-2x"></i></span>
+                                <a>
+<!--                                    <span class="text-warning"><i class="demo-pli-male icon-2x"></i></span>-->
                                     <h5 class="mar-no">CAREER HISTORY</h5>
                                 </a>
                             </li>
                             <li class="col-xs-2" th:classappend="${cv.pos == 2 ? 'active' : ''}">
-                                <a data-toggle="tab" href="#demo-main-tab3" aria-expanded=true>
-                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>
+                                <a>
+<!--                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>-->
                                     <h5 class="mar-no">LICENSES & CERTIFICATION</h5>
                                 </a>
                             </li>
                             <li class="col-xs-2" th:classappend="${cv.pos == 3 ? 'active' : ''}">
-                                <a data-toggle="tab" href="#demo-main-tab3">
-                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>
+                                <a>
+<!--                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>-->
                                     <h5 class="mar-no">PROFESSIONAL AFFILIATIONS
                                     </h5>
                                 </a>
                             </li>
                             <li class="col-xs-2" th:classappend="${cv.pos == 4 ? 'active' : ''}">
-                                <a data-toggle="tab" href="#demo-main-tab3">
-                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>
+                                <a>
+<!--                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>-->
                                     <h5 class="mar-no">SKILLS</h5>
                                 </a>
                             </li>
                             <li class="col-xs-2" th:classappend="${cv.pos == 5 ? 'active' : ''}">
-                                <a data-toggle="tab" href="#demo-main-tab3">
-                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>
+                                <a>
+<!--                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>-->
                                     <h5 class="mar-no">EXPERIENCE</h5>
                                 </a>
                             </li>
@@ -99,9 +99,9 @@
 
                             <!--Footer buttons-->
                             <div class="pull-right pad-rgt mar-btm">
-                                <button type="submit" name="prev" class="previous btn btn-primary" th:disabled="${cv.pos == 0}">Previous</button>
-                                <button type="submit" name="next" class="next btn btn-primary" th:disabled="${cv.pos == 5}">Next</button>
-                                <button type="button" class="finish btn btn-success" th:disabled="${cv.pos != 5}">Finish</button>
+                                <button type="submit" name="prev" class="previous btn btn-primary" th:value="${cv.pos - 1}" th:disabled="${cv.pos == 0}"><i class="fa fa-caret-left"></i> Previous</button>
+                                <button type="submit" name="next" class="next btn btn-primary" th:value="${cv.pos + 1}" th:disabled="${cv.pos == 5}">Next <i class="fa fa-caret-right"></i></button>
+                                <button type="submit" name="_submit" value="TEMP" class="finish btn btn-success" th:disabled="${cv.pos != 5}"><i class="fa fa-check"></i> Finish</button>
                             </div>
 
                         </form>
@@ -124,10 +124,72 @@
 </th:block>
 
 <th:block layout:fragment="custom_js">
+    <script th:src="@{/default/plugins/select2/js/select2.min.js}"></script>
     <!--Bootstrap Wizard [ OPTIONAL ]-->
 <!--    <script th:src="@{/default/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js}"></script>-->
     <script>
-        $(document).ready(function() {
+        // $(document).ready(function() {
+            $("select.name-of-university").change(function(e) {
+               var _val = $(this).val();
+               var otherId = "#educations"+$(this).data("index")+"\\.nameOfUniversityOther";
+               if(_val == "Others") {
+                   $(otherId).removeAttr("disabled");
+               } else {
+                   $(otherId).val("").attr("disabled", "disabled");
+               }
+            }).trigger("change");
+
+            $("select.city-country").change(function(e) {
+               var _val = $(this).val();
+               var otherId = "#educations"+$(this).data("index")+"\\.cityCountryOther";
+               if(_val == "Others") {
+                   $(otherId).removeAttr("disabled");
+               } else {
+                   $(otherId).val("").attr("disabled", "disabled");
+               }
+            }).trigger("change");
+
+        $(".edu-present").change(function(e) {
+            if($(this).is(":checked")) {
+                $("#educations"+$(this).data("index")+"\\.endDate").val("").attr("disabled", "disabled");
+            } else {
+                $("#educations"+$(this).data("index")+"\\.endDate").removeAttr("disabled");
+            }
+        }).trigger("change");
+    </script>
+    <script>
+            $("select.ch-city-country").change(function(e) {
+               var _val = $(this).val();
+               var otherId = "#careerHistories"+$(this).data("index")+"\\.cityCountryOther";
+               if(_val == "Others") {
+                   $(otherId).removeAttr("disabled");
+               } else {
+                   $(otherId).val("").attr("disabled", "disabled");
+               }
+            }).trigger("change");
+    </script>
+    <script>
+            $("select.license-country").change(function(e) {
+               var _val = $(this).val();
+               var otherId = "#licenses"+$(this).data("index")+"\\.licenseInCountryOther";
+               if(_val == "Others") {
+                   $(otherId).removeAttr("disabled");
+               } else {
+                   $(otherId).val("").attr("disabled", "disabled");
+               }
+            }).trigger("change");
+    </script>
+    <script>
+            $("select.skill-language").change(function(e) {
+               var _val = $(this).val();
+               var otherId = "#languages"+$(this).data("index")+"\\.languageOther";
+               if(_val == "Others") {
+                   $(otherId).removeAttr("disabled");
+               } else {
+                   $(otherId).val("").attr("disabled", "disabled");
+               }
+            }).trigger("change");
+
             $('.input-daterange').datepicker({
                 format: "M yyyy",
                 startView: 1,
@@ -150,26 +212,84 @@
                 orientation: "bottom auto"
             });
 
-            $(".edu-present").change(function(e) {
-                if($(this).is(":checked")) {
-                    $("#educations"+$(this).data("index")+"\\.endDate").val("").attr("readonly", "readonly");
-                } else {
-                    $("#educations"+$(this).data("index")+"\\.endDate").removeAttr("readonly");
-                }
-            });
+
             $(".career-present").change(function(e) {
                 if($(this).is(":checked")) {
-                    $("#careerHistories"+$(this).data("index")+"\\.endDate").val("").attr("readonly", "readonly");
+                    $("#careerHistories"+$(this).data("index")+"\\.endDate").val("").attr("disabled", "disabled");
                 } else {
-                    $("#careerHistories"+$(this).data("index")+"\\.endDate").removeAttr("readonly");
+                    $("#careerHistories"+$(this).data("index")+"\\.endDate").removeAttr("disabled");
+                }
+            }).trigger("change");
+            $(".member-present").change(function(e) {
+                if($(this).is(":checked")) {
+                    $("#memberships"+$(this).data("index")+"\\.endYear").val("").attr("disabled", "disabled");
+                } else {
+                    $("#memberships"+$(this).data("index")+"\\.endYear").removeAttr("disabled");
+                }
+            }).trigger("change");
+
+            $("select.indication-list").change(function(e) {
+                var val = $(this).val();
+                var index = $(this).data("index");
+                if("Others" == val) {
+                    $("#experiences"+index+"\\.indicationOther").removeAttr("disabled");
+                } else {
+                    $("#experiences"+index+"\\.indicationOther").attr("disabled", "disabled");
                 }
             });
+            $("select.skill-cert").change(function(e) {
+                var val = $(this).val();
+                var index = $(this).data("index");
+                var cindex = $(this).data("cindex");
+                if("Others" == val) {
+                    $("#languages"+index+"\\.languageCertifications"+cindex+"\\.certificateProgramOther").val("").removeAttr("disabled");
+                } else {
+                    $("#languages"+index+"\\.languageCertifications"+cindex+"\\.certificateProgramOther").attr("disabled", "disabled");
+                }
+            }).trigger("change");
+            $("select.phase-list").change(function(e) {
+                var val = $(this).val();
+                var index = $(this).data("index");
+                if("Others" == val) {
+                    $("#experiences"+index+"\\.phaseOther").removeAttr("disabled");
+                } else {
+                    $("#experiences"+index+"\\.phaseOther").attr("disabled", "disabled");
+                }
+            }).trigger("change");
+            $("select.role-list").select2();
+            $("select.role-list").change(function(e) {
+                var val = $(this).val();
+                var index = $(this).data("index");
+                if("Others" == val || val.indexOf("Others") != -1) {
+                    $("#experiences"+index+"\\.roleOther").removeAttr("disabled");
+                } else {
+                    $("#experiences"+index+"\\.roleOther").attr("disabled", "disabled");
+                }
+            }).trigger("change");
 
-            $(".edu-present, .career-present").trigger("change");
+            $("select.ta-list").change(function(e) {
+                var val = $(this).val();
+                var index = $(this).data("index");
+                if("Others" == val) {
+                    $("#experiences"+index+"\\.taOther").removeAttr("disabled");
+                } else {
+                    $("#experiences"+index+"\\.taOther").attr("disabled", "disabled");
+                }
 
+                var $sel = $("#experiences"+index+"\\.indication");
+                $('optgroup', $sel).hide();//.addClass('bg-gray');
+                var optgroup = $('optgroup[label="' + val + '"]', $sel);
+                setTimeout(function() {
+                    optgroup.show();//.addClass('bg-gray');
+                    optgroup.find('option:eq(0)').attr("selected", "selected");
+                    $sel.trigger("change");
+                }, 300);
 
-        });
+                // console.log($sel.find("option").eq(0));//.addClass('bg-gray').trigger("change");
+            }).trigger("change");
 
+    </script>
+    <script>
         /*<![CDATA[*/
         var progress = [[${cv.progress}]];
         /*]]>*/

@@ -27,6 +27,7 @@ public class CurriculumVitaeService {
     private final CVComputerKnowledgeRepository cvComputerKnowledgeRepository;
     private final CVComputerCertificationRepository cvComputerCertificationRepository;
     private final CVExperienceRepository cvExperienceRepository;
+    private final CVTeamDeptRepository cvTeamDeptRepository;
 
     public CurriculumVitae save(CurriculumVitae cv) {
         boolean isNew = ObjectUtils.isEmpty(cv.getId());
@@ -99,7 +100,11 @@ public class CurriculumVitaeService {
         for(CVCareerHistory history : cv.getCareerHistories()) {
             history.setCurriculumVitae(cv);
             if(isNew) history.setId(null);
-            cvCareerHistoryRepository.save(history);
+            CVCareerHistory savedCareerHistory = cvCareerHistoryRepository.save(history);
+            for(CVTeamDept cvTeamDept : history.getCvTeamDepts()) {
+                cvTeamDept.setCareerHistory(savedCareerHistory);
+                cvTeamDeptRepository.save(cvTeamDept);
+            }
         }
 
         for(CVLicense license : cv.getLicenses()) {

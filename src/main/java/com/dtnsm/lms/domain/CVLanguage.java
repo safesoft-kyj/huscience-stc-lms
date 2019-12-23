@@ -28,6 +28,9 @@ public class CVLanguage extends AuditorEntity<String> implements Serializable {
     @Column(name = "language")
     private String language;
 
+    @Column(name = "language_other")
+    private String languageOther;
+
     @Column(name = "level")
     @Enumerated(EnumType.STRING)
     private SkillLevel level;

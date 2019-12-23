@@ -117,17 +117,16 @@
                                             <h2 th:case="null"></h2>
                                             <div th:case="*">
                                                 <table id="" class="" cellspacing="0" width="100%">
-                                                    <colgroup><col width="28%"><col width="72%"></colgroup>
                                                     <tbody>
                                                     <tr th:each="border, index : ${alarmList}">
-                                                        <td class="text-left" th:text="${#dates.format(border.getCreatedDate(), 'yyyy/MM/dd hh:mm')}">
+                                                        <td class="text-left col-md-4" th:text="${#dates.format(border.getCreatedDate(), 'yyyy/MM/dd hh:mm')}">
                                                         </td>
-                                                        <th:block th:if="${#strings.length(border.getTitle()) > 26}">
-                                                            <td th:text="${#strings.substring(border.getTitle(), 0, 26) + '...'}"></td>
-                                                        </th:block>
-                                                        <th:block th:unless="${#strings.length(border.getTitle()) > 26}">
-                                                            <td th:text="${border.getTitle()}"></td>
-                                                        </th:block>
+                                                        <!--                                                        <td class="text-left col-md-2">-->
+                                                        <!--                                                            <span th:utext="${border.getAlarmGubun().getLabel()}"></span>-->
+                                                        <!--                                                        </td>-->
+                                                        <td class="text-left col-md-6">
+                                                            <span th:utext="${border.getTitle()}"></span>
+                                                        </td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
@@ -377,19 +376,15 @@
                                 </div>
                             </div>
                             <div class="media-body">
-
+                                <a href="#" id="popupBtn"
+                                   th:onclick="|javascript:popupPdfView('${schedule.getId()}');return false;|" target="_blank" style="color:white">
                                 <p class="text-2x mar-no text-semibold">
-
                                     <th:block th:if="${schedule != null}">
-                                        <a href="#" id="popupBtn"
-                                           th:onclick="|javascript:popupPdfView('${schedule.getId()}');return false;|" target="_blank" style="color:white">
                                     View
-                                        </a>
                                     </th:block>
-
                                 </p>
                                 <p class="mar-no">Employee training matrix</p>
-
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -407,7 +402,7 @@
 <!--                                <a href="#" id="popupBtn11"-->
 <!--                                   th:href="@{/customer/list-page}" target="_blank" style="color:white">-->
                                 <p class="text-2x mar-no text-semibold">
-                                    <th:block th:if="${customers != null}">
+                                    <th:block th:if="${schedule != null}">
                                          <span>View</span>
                                     </th:block>
                                 </p>

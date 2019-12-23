@@ -39,17 +39,41 @@ public class CVEducation extends AuditorEntity<String> implements Serializable {
     @Column(name = "name_of_university")
     private String nameOfUniversity;
 
+    @Column(name = "name_of_university_other")
+    private String nameOfUniversityOther;
+
     @Column(name = "city_country")
     private String cityCountry;
 
-    @Column(name = "degree")
-    private String degree;
+    @Column(name = "city_country_other")
+    private String cityCountryOther;
 
-    @Column(name = "thesis_title")
-    private String thesisTitle;
+    @Column(name = "bachelors_degree")
+    private String bachelorsDegree;
 
-    @Column(name = "name_of_supervisor")
-    private String nameOfSupervisor;
+    @Column(name = "bachelors_degree_other")
+    private String bachelorsDegreeOther;
+
+    @Column(name = "masters_degree")
+    private String mastersDegree;
+
+    @Column(name = "masters_degree_other")
+    private String mastersDegreeOther;
+
+    @Column(name = "masters_thesis_title")
+    private String mastersThesisTitle;
+
+    @Column(name = "masters_name")
+    private String mastersName;
+
+    @Column(name = "phd_degree")
+    private String phdDegree;
+
+    @Column(name = "phd_thesis_title")
+    private String phdThesisTitle;
+
+    @Column(name = "phd_name")
+    private String phdName;
 
     @Column(name = "readonly")
     private boolean readOnly;

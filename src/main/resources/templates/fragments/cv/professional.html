@@ -12,14 +12,24 @@
                     <a name="membership"></a>
                     <table class="table table-bordered">
                         <tbody>
+                        <tr class="bg-gray-light">
+                            <th>No.</th>
+                            <th>Name of Affiliation</th>
+                            <th>Start Year</th>
+                            <th>End Year</th>
+                            <th>#</th>
+                        </tr>
+                        </tbody>
+                        <tbody>
                         <tr th:each="membership, stat : *{memberships}">
-                            <td class="form-group col-xs-5" th:classappend="${#fields.hasErrors('memberships[__${stat.index}__].membershipName')} ? 'has-error' : ''">
-                                <input type="text" class="form-control" placeholder="Name of Certification" th:field="*{memberships[__${stat.index}__].membershipName}">
+                            <td th:text="${stat.index + 1}"></td>
+                            <td class="form-group" th:classappend="${#fields.hasErrors('memberships[__${stat.index}__].membershipName')} ? 'has-error' : ''">
+                                <input type="text" class="form-control" placeholder="Name of Affiliation" th:field="*{memberships[__${stat.index}__].membershipName}">
                             </td>
-                            <td class="form-group col-xs-2" th:classappend="${#fields.hasErrors('memberships[__${stat.index}__].startYear')} ? 'has-error' : ''">
+                            <td class="form-group" th:classappend="${#fields.hasErrors('memberships[__${stat.index}__].startYear')} ? 'has-error' : ''">
                                 <input type="text" class="form-control membershipDate" placeholder="Start Year(YYYY)" th:field="*{memberships[__${stat.index}__].startYear}">
                             </td>
-                            <td class="form-group col-xs-4" th:classappend="${#fields.hasErrors('memberships[__${stat.index}__].endYear')} ? 'has-error' : ''">
+                            <td class="form-group" th:classappend="${#fields.hasErrors('memberships[__${stat.index}__].endYear')} ? 'has-error' : ''">
                                 <div class="row">
                                     <div class="col-xs-6">
                                         <input type="text" class="form-control membershipDate" placeholder="End Year(YYYY)" th:field="*{memberships[__${stat.index}__].endYear}">
@@ -27,7 +37,7 @@
                                     <div class="col-xs-6">
                                         <div class="checkbox-inline">
                                             <label>
-                                                <input type="checkbox" th:field="*{memberships[__${stat.index}__].present}">
+                                                <input type="checkbox" class="member-present" th:attr="data-index=${stat.index}" th:field="*{memberships[__${stat.index}__].present}">
                                                 Present
                                             </label>
                                         </div>
@@ -35,8 +45,14 @@
                                 </div>
                             </td>
                             <td>
-                                <button th:if="${membership.readOnly eq fasle}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|membership:${stat.index}|"><i class="fa fa-trash-o"></i>
+                                <button th:if="${membership.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|membership:${stat.index}|"><i class="fa fa-trash-o"></i>
                                 </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">
+                                <button class="btn btn-info pull-right" name="add" value="membership"><i class="fa fa-plus"></i> Membership</button>
+                                <small class="text-info"><i class="fa fa-exclamation-circle"></i> 등록 할 정보가 있는 경우 추가해 주세요.</small>
                             </td>
                         </tr>
                         </tbody>
@@ -47,7 +63,7 @@
                 <div class="col-xs-12">
                     <div class="text-right">
 
-                        <button class="btn btn-info" name="add" value="membership"><i class="fa fa-plus"></i> Membership</button>
+
                     </div>
                 </div>
             </div>
