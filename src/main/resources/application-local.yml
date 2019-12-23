@@ -3,7 +3,7 @@ spring:
     basename: messages
   devtools:
     livereload:
-      enabled: true
+      enabled: false
   thymeleaf:
     cache: false
     check-template: true
@@ -106,3 +106,5 @@ image-file:
   pdf: D://elearning//images//pdf//
 
 
+groupdocs:
+  license: C:\\dev\\license\\GroupDocs.Total.Java.lic

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <link th:href="@{/default/plugins/select2/css/select2.min.css}" rel="stylesheet">
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <div class="panel">
+                <div class="panel-body">
+                    <div id="preview_cv">잠시만 기다려 주세요. CV 생성 중 입니다..</div>
+                    <input th:type="hidden" id="cvId" th:value="${id}"/>
+                </div>
+            </div>
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+<script>
+    $.ajax({
+        type: "GET",
+        url: '/mypage/cv/' + $("#cvId").val()+"/generate",
+        data: {
+            r:Math.random() * 9999
+        },
+        success: function (html) {
+            $('#preview_cv').html(html);
+        },
+        error: function (e) {
+        }
+    });
+</script>
+</th:block>
+
+</html>

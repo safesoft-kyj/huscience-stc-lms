@@ -15,9 +15,11 @@ import com.dtnsm.lms.properties.FileUploadProperties;
 import com.dtnsm.lms.repository.CurriculumVitaeRepository;
 import com.dtnsm.lms.service.CurriculumVitaeService;
 import com.dtnsm.lms.util.DateUtil;
+import com.dtnsm.lms.util.DocumentConverter;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 import com.dtnsm.lms.validator.*;
+import com.dtnsm.lms.xdocreport.CurriculumVitaeReportService;
 import com.dtnsm.lms.xdocreport.dto.*;
 import com.querydsl.core.BooleanBuilder;
 import fr.opensagres.xdocreport.document.images.ByteArrayImageProvider;
@@ -33,6 +35,7 @@ import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.util.WebUtils;
+
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -53,7 +56,6 @@ import java.util.stream.Collectors;
 public class MyPageCvJdController {
     private final UserJobDescriptionRepository userJobDescriptionRepository;
     private final CurriculumVitaeRepository curriculumVitaeRepository;
-    private final CurriculumVitaeValidator curriculumVitaeValidator;
     private final EducationValidator educationValidator;
     private final CareerHistoryValidator careerHistoryValidator;
     private final LicenseCertificationValidator licenseCertificationValidator;
@@ -63,7 +65,9 @@ public class MyPageCvJdController {
     private final CurriculumVitaeService curriculumVitaeService;
     private final SignatureRepository signatureRepository;
     private final FileUploadProperties prop;
+    private final DocumentConverter documentConverter;
     private final CVCodeList cvCodeList;
+    private final CurriculumVitaeReportService curriculumVitaeReportService;
 
     private PageInfo pageInfo = new PageInfo();
 
@@ -437,142 +441,147 @@ public class MyPageCvJdController {
             if(result.hasErrors()) {
                 return "content/mypage/cv/edit";
             }
-            String stringStatus = ServletRequestUtils.getStringParameter(request, "_submit");
-            CurriculumVitaeStatus status = CurriculumVitaeStatus.valueOf(stringStatus.toUpperCase());
-            curriculumVitaeValidator.validate(cv, result);
-            if (result.hasErrors()) {
-                return "content/mypage/cv/edit";
-            }
 
-            if(status == CurriculumVitaeStatus.PUBLISH || status == CurriculumVitaeStatus.NEW) {
-//                entityManager.detach(cv);
-//                cv.setId(null);
-
-                if(status == CurriculumVitaeStatus.PUBLISH) {
-                    status = CurriculumVitaeStatus.CURRENT;
-                } else {
-                    status = CurriculumVitaeStatus.TEMP;
-                }
-            }
-
-            cv.setStatus(status);
+            cv.setStatus(CurriculumVitaeStatus.TEMP);
             cv.setAccount(SessionUtil.getUserDetail().getUser());
             if (ObjectUtils.isEmpty(cv.getId())) {
                 cv.setInitial(countCV(SessionUtil.getUserId()) == 0 ? true : false);
             }
 
-            if (status != CurriculumVitaeStatus.TEMP) {
-                Optional<Signature> optionalSignature = signatureRepository.findById(SessionUtil.getUserId());
-                cv.setBase64sign(optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "");
-                cv.setSignDate(new Date());
-            }
+//            if (status != CurriculumVitaeStatus.TEMP) {
+//                Optional<Signature> optionalSignature = signatureRepository.findById(SessionUtil.getUserId());
+//                cv.setBase64sign(optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "");
+//                cv.setSignDate(new Date());
+//            }
 
 
             CurriculumVitae savedCV = curriculumVitaeService.save(cv);
+            log.info("=> UserId : {}, CV가 저장 되었습니다. CV ID : {}", SessionUtil.getUserId(), savedCV.getId());
 
-            if (status == CurriculumVitaeStatus.REVIEW || status == CurriculumVitaeStatus.CURRENT) {
-                new Thread(() -> {
-                    try {
-//                    CurriculumVitae savedCV = curriculumVitaeRepository.findById(id).get();
-                        CV dto = new CV();
-                        dto.setEngName(savedCV.getAccount().getEngName());
-                        dto.setSignDate(DateUtil.getDateToString(savedCV.getSignDate(), "dd-MMM-yyyy").toUpperCase());
-                        if (!StringUtils.isEmpty(savedCV.getBase64sign())) {
-                            dto.setSign(new ByteArrayImageProvider(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(savedCV.getBase64sign()))));
-                        }
 
-                        dto.setEducations(savedCV.getEducations().stream().map(e ->
-                                EducationDTO.builder()
-                                        .startDate(DateUtil.getDateToString(e.getStartDate(), "MMM yyyy"))
-                                        .endDate(e.isPresent() ? "Present" : DateUtil.getDateToString(e.getEndDate(), "MMM yyyy"))
-                                        .nameOfUniversity(e.getNameOfUniversity())
-                                        .cityCountry(e.getCityCountry())
-                                        .bachelorsDegree(StringUtils.isEmpty(e.getBachelorsDegreeOther()) ? e.getBachelorsDegree() : e.getBachelorsDegreeOther())
-                                        .mastersDegree(StringUtils.isEmpty(e.getMastersDegreeOther()) ? e.getMastersDegree() : e.getMastersDegreeOther())
-                                        .mastersThesisTitle(e.getMastersThesisTitle())
-                                        .mastersName(e.getMastersName())
-                                        .phdDegree(e.getPhdDegree())
-                                        .phdName(e.getPhdName())
-                                        .build())
-                                .collect(Collectors.toList()));
-
-//                        dto.setCareerHistories(savedCV.getCareerHistories().stream().map(c ->
-//                                CareerHistoryDTO.builder()
-//                                        .companyName(c.getCompanyName())
-//                                        .cityCountry(c.getCityCountry())
-//                                        .startDate(DateUtil.getDateToString(c.getStartDate(), "MMM yyyy"))
-//                                        .endDate(c.isPresent() ? "Present" : DateUtil.getDateToString(c.getEndDate(), "MMM yyyy"))
-//                                        .position(c.getPosition())
-//                                        .teamDepartment(c.getTeamDepartment())
-//                                        .build()
-//                        ).collect(Collectors.toList()));
-
-                        dto.setLicenses(savedCV.getLicenses().stream().map(i ->
-                                LicenseDTO.builder()
-                                        .licenseNo(i.getLicenseNo())
-                                        .licenseInCountry(i.getLicenseInCountry())
-                                        .build()
-                        ).collect(Collectors.toList()));
-
-                        dto.setCertifications(savedCV.getCertifications().stream().map(i ->
-                                CertificationDTO.builder()
-                                        .nameOfCertification(i.getNameOfCertification())
-                                        .organizers(i.getOrganizers())
-                                        .issueDate(DateUtil.getDateToString(i.getIssueDate(), "MMM YYYY").toUpperCase())
-                                        .build()
-                        ).collect(Collectors.toList()));
-
-                        dto.setMemberships(savedCV.getMemberships().stream().map(i ->
-                                MembershipDTO.builder()
-                                        .name(i.getMembershipName())
-                                        .startYear(i.getStartYear())
-                                        .endYear(i.getEndYear())
-                                        .build()
-                        ).collect(Collectors.toList()));
-
-                        dto.setLanguages(savedCV.getLanguages().stream().map(i ->
-                                LanguageDTO.builder()
-                                        .language(i.getLanguage())
-                                        .level(i.getLevel().getLabel())
-                                        .certificateProgramList(i.getLanguageCertifications().stream().map(c -> c.getCertificateProgram()).collect(Collectors.toList()))
-                                        .build()
-                        ).collect(Collectors.toList()));
-
-                        dto.setComputerKnowledges(savedCV.getComputerKnowledges().stream().map(i ->
-                                ComputerKnowledgeDTO.builder()
-                                        .name(i.getProgramName())
-                                        .level(i.getLevel().getLabel())
-                                        .certificateProgramList(i.getComputerCertifications().stream().map(c -> c.getCertificateProgram()).collect(Collectors.toList()))
-                                        .build()
-                        ).collect(Collectors.toList()));
-
-                        dto.setExperiences(savedCV.getExperiences().stream().map(i ->
-                                ExperienceDTO.builder()
-                                        .ta("Others".equals(i.getTa()) ? i.getTaOther() : i.getTa())
-                                        .indication("Others".equals(i.getIndication()) ? i.getIndicationOther() : i.getIndication())
-                                        .phase("Others".equals(i.getPhase()) ? i.getPhaseOther() : i.getPhase())
-                                        .role(i.getRole())
-                                        .globalOrLocal(i.getGlobalOrLocal().getLabel())
-                                        .workingDetails(i.getWorkingDetails())
-                                        .build()
-                        ).collect(Collectors.toList()));
-//                    response.setHeader("Content-Disposition", "attachment; filename=\"cv.pdf\"");
-//                    response.setContentType("application/pdf");
-                        String outputFileName = "CV_"+savedCV.getId()+"_" + SessionUtil.getUserId() + ".docx";
-                        Files.createDirectories(Paths.get(prop.getCvUploadDir()).toAbsolutePath().normalize());
-//                        curriculumVitaeReportService.generateReport(dto, prop.getCvUploadDir() + outputFileName, savedCV.getId());
-//TODO 222222222222 변환
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }).run();
-            }
 
             sessionStatus.setComplete();
-            return "redirect:/mypage/cv";
+            return "redirect:/mypage/cv/" + savedCV.getId() + "/preview";
         } else {
             throw new RuntimeException("잘못된 요청 입니다.");
+        }
+    }
+
+    @GetMapping("/cv/{id}/preview")
+    public String preview(@PathVariable("id") Integer id, Model model) {
+        pageInfo.setPageId("m-mypage-cv");
+        pageInfo.setPageTitle("Curriculum Vitae");
+        model.addAttribute(pageInfo);
+        model.addAttribute("id", id);
+        return "content/mypage/cv/preview";
+    }
+
+    @GetMapping("/cv/{id}/generate")
+    @ResponseBody
+    public void generate(@PathVariable("id") Integer id, HttpServletResponse response) {
+        try {
+            CurriculumVitae savedCV = curriculumVitaeRepository.findById(id).get();
+            CV dto = new CV();
+            dto.setEngName(savedCV.getAccount().getEngName());
+            dto.setSignDate(!StringUtils.isEmpty(savedCV.getSignDate()) ? DateUtil.getDateToString(savedCV.getSignDate(), "dd-MMM-yyyy").toUpperCase() : null);
+            if (!StringUtils.isEmpty(savedCV.getBase64sign())) {
+                dto.setSign(new ByteArrayImageProvider(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(savedCV.getBase64sign()))));
+            }
+
+            dto.setEducations(savedCV.getEducations().stream().map(e ->
+                    EducationDTO.builder()
+                            .startDate(DateUtil.getDateToString(e.getStartDate(), "MMM yyyy"))
+                            .endDate(e.isPresent() ? "Present" : DateUtil.getDateToString(e.getEndDate(), "MMM yyyy"))
+                            .nameOfUniversity(e.getNameOfUniversity())
+                            .cityCountry(e.getCityCountry())
+                            .bachelorsDegree(StringUtils.isEmpty(e.getBachelorsDegreeOther()) ? e.getBachelorsDegree() : e.getBachelorsDegreeOther())
+                            .mastersDegree(StringUtils.isEmpty(e.getMastersDegreeOther()) ? e.getMastersDegree() : e.getMastersDegreeOther())
+                            .mastersThesisTitle(e.getMastersThesisTitle())
+                            .mastersName(e.getMastersName())
+                            .phdDegree(e.getPhdDegree())
+                            .phdName(e.getPhdName())
+                            .build())
+                    .collect(Collectors.toList()));
+
+                    dto.setCareerHistories(savedCV.getCareerHistories().stream().map(c ->
+                            CareerHistoryDTO.builder()
+                                    .companyName(c.getCompanyName())
+                                    .cityCountry("Others".equals(c.getCityCountry()) ? c.getCityCountryOther() : c.getCityCountry())
+                                    .startDate(DateUtil.getDateToString(c.getStartDate(), "MMM yyyy"))
+                                    .endDate(c.isPresent() ? "Present" : DateUtil.getDateToString(c.getEndDate(), "MMM yyyy"))
+                                    .teamDeptDTOList(c.getCvTeamDepts()
+                                            .stream()
+                                            .map(cv -> TeamDeptDTO.builder().position(cv.getPosition())
+                                            .team(cv.getTeam()).department(cv.getDepartment())
+                                                    .build())
+                                            .collect(Collectors.toList()))
+                                    .build()
+                    ).collect(Collectors.toList()));
+
+            dto.setLicenses(savedCV.getLicenses().stream().map(i ->
+                    LicenseDTO.builder()
+                            .licenseNo(i.getLicenseNo())
+                            .licenseInCountry(i.getLicenseInCountry())
+                            .build()
+            ).collect(Collectors.toList()));
+
+            dto.setCertifications(savedCV.getCertifications().stream().map(i ->
+                    CertificationDTO.builder()
+                            .nameOfCertification(i.getNameOfCertification())
+                            .organizers(i.getOrganizers())
+                            .issueDate(DateUtil.getDateToString(i.getIssueDate(), "MMM YYYY").toUpperCase())
+                            .build()
+            ).collect(Collectors.toList()));
+
+            dto.setMemberships(savedCV.getMemberships().stream().map(i ->
+                    MembershipDTO.builder()
+                            .name(i.getMembershipName())
+                            .startYear(i.getStartYear())
+                            .endYear(i.getEndYear())
+                            .build()
+            ).collect(Collectors.toList()));
+
+            dto.setLanguages(savedCV.getLanguages().stream().map(i ->
+                    LanguageDTO.builder()
+                            .language(i.getLanguage())
+                            .level(i.getLevel().getLabel())
+                            .certificateProgramList(i.getLanguageCertifications().stream().map(c -> c.getCertificateProgram()).collect(Collectors.toList()))
+                            .build()
+            ).collect(Collectors.toList()));
+
+            dto.setComputerKnowledges(savedCV.getComputerKnowledges().stream().map(i ->
+                    ComputerKnowledgeDTO.builder()
+                            .name(i.getProgramName())
+                            .level(i.getLevel().getLabel())
+                            .certificateProgramList(i.getComputerCertifications().stream().map(c -> c.getCertificateProgram()).collect(Collectors.toList()))
+                            .build()
+            ).collect(Collectors.toList()));
+
+            dto.setExperiences(savedCV.getExperiences().stream().map(i ->
+                    ExperienceDTO.builder()
+                            .ta("Others".equals(i.getTa()) ? i.getTaOther() : i.getTa())
+                            .indication("Others".equals(i.getIndication()) ? i.getIndicationOther() : i.getIndication())
+                            .phase("Others".equals(i.getPhase()) ? i.getPhaseOther() : i.getPhase())
+                            .role(i.getRole())
+                            .globalOrLocal(i.getGlobalOrLocal().getLabel())
+                            .workingDetails(i.getWorkingDetails())
+                            .build()
+            ).collect(Collectors.toList()));
+//                    response.setHeader("Content-Disposition", "attachment; filename=\"cv.pdf\"");
+//                    response.setContentType("application/pdf");
+            String outputFileName = "CV_"+savedCV.getId()+"_" + SessionUtil.getUserId() + ".docx";
+            Files.createDirectories(Paths.get(prop.getCvUploadDir()).toAbsolutePath().normalize());
+//                        curriculumVitaeReportService.generateReport(dto, prop.getCvUploadDir() + outputFileName, savedCV.getId());
+            boolean result = curriculumVitaeReportService.assembleDocument(dto, prop.getCvUploadDir() + outputFileName);
+            log.info("output : {}{}, Generate Result : {}", prop.getCvUploadDir(), outputFileName, result);
+            if(result) {
+                documentConverter.toHTML(new FileInputStream(prop.getCvUploadDir() + outputFileName), response.getOutputStream());
+            } else {
+                response.sendError(500);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

@@ -11,7 +11,7 @@
 </th:block>
 
 <th:block layout:fragment="custom_css">
-    <link href="@{/static/plugins/select2/css/select2.min.css}" rel="stylesheet">
+    <link th:href="@{/default/plugins/select2/css/select2.min.css}" rel="stylesheet">
 </th:block>
 
 <th:block layout:fragment="content_body">
@@ -124,7 +124,7 @@
 </th:block>
 
 <th:block layout:fragment="custom_js">
-    <script th:src="@{/static/plugins/select2/js/select2.min.js}"></script>
+    <script th:src="@{/default/plugins/select2/js/select2.min.js}"></script>
     <!--Bootstrap Wizard [ OPTIONAL ]-->
 <!--    <script th:src="@{/default/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js}"></script>-->
     <script>
@@ -237,6 +237,16 @@
                     $("#experiences"+index+"\\.indicationOther").attr("disabled", "disabled");
                 }
             });
+            $("select.skill-cert").change(function(e) {
+                var val = $(this).val();
+                var index = $(this).data("index");
+                var cindex = $(this).data("cindex");
+                if("Others" == val) {
+                    $("#languages"+index+"\\.languageCertifications"+cindex+"\\.certificateProgramOther").val("").removeAttr("disabled");
+                } else {
+                    $("#languages"+index+"\\.languageCertifications"+cindex+"\\.certificateProgramOther").attr("disabled", "disabled");
+                }
+            }).trigger("change");
             $("select.phase-list").change(function(e) {
                 var val = $(this).val();
                 var index = $(this).data("index");

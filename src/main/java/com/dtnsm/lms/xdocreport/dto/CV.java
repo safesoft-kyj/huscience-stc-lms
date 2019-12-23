@@ -4,11 +4,13 @@ import fr.opensagres.xdocreport.document.images.IImageProvider;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class CV {
+public class CV implements Serializable {
+    private static final long serialVersionUID = -2677710895849019558L;
     private String engName;
     private IImageProvider sign;
     private String signDate;
