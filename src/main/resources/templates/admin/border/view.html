@@ -85,9 +85,9 @@
                     <hr class="bg-gray"/>
                     <div class="input-group pull-right">
                         <p>
-                            <a th:href="@{/admin/border/edit/{id}(id=${border.getId()})}"
+                            <a th:href="@{/admin/border/{typeId}/edit/{id}(typeId=${typeId}, id=${border.getId()})}"
                                class="btn btn-warning" th:text="#{label.edit}">수정</a>
-                            <a th:href="@{/admin/border/list/{typeId}(typeId=${border.getBorderMaster().getId()})}"
+                            <a th:href="@{/admin/border/{typeId}(typeId=${typeId})}"
                                class="btn btn-success" th:text="#{label.list}">목록</a>
                         </p>
                     </div>

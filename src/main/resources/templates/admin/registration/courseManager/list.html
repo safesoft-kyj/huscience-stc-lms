@@ -83,9 +83,9 @@
                                     <td th:text="${manager.getRegisterDate()}"></td>
                                     <td>
                                         <div class="form-inline">
-                                            <a th:text="#{label.active}" th:href="@{/admin/registration/courseManager/updateActive/{userId}(userId=${manager.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Active" data-container="body"></a>
-                                            <a th:text="#{label.edit}" th:href="@{/admin/registration/courseManager/edit/{userId}(userId=${manager.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
-                                            <a th:text="#{label.delete}" th:href="@{/admin/registration/courseManager/delete/{userId}(userId=${manager.getUserId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                            <a th:text="#{label.active}" th:href="@{/admin/registration/courseManager/updateActive(userId=${manager.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Active" data-container="body"></a>
+                                            <a th:text="#{label.edit}" th:href="@{/admin/registration/courseManager/edit(userId=${manager.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                            <a th:text="#{label.delete}" th:href="@{/admin/registration/courseManager/delete(userId=${manager.getUserId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
                                         </div>
                                     </td>
                                 </tr>

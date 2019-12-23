@@ -4,6 +4,8 @@ spring:
   devtools:
     livereload:
       enabled: true
+    restart:
+      enabled: true
   thymeleaf:
     cache: false
     check-template: true

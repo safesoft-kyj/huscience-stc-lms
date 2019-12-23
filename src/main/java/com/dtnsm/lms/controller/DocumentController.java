@@ -142,10 +142,8 @@ public class DocumentController {
         return "content/document/view";
     }
 
-
-
     @GetMapping("/add/{templateId}")
-    public String noticeAdd(@PathVariable("templateId") int templateId, Model model) {
+    public String documentAdd(@PathVariable("templateId") int templateId, Model model) {
 
         DocumentTemplate template = templateService.getById(templateId);
 
@@ -161,6 +159,28 @@ public class DocumentController {
         model.addAttribute("mailList", userService.getAccountList());
 
         return "content/document/add";
+    }
+
+    @GetMapping("/addAccount/{templateId}/{docId}")
+    public String noticeAdd(@PathVariable("templateId") int templateId
+            , @PathVariable("docId") long docId
+            , Model model) {
+
+        DocumentTemplate template = templateService.getById(templateId);
+
+        Document document = new Document();
+        document.setTemplate(template);
+        document.setTitle("[" + template.getTitle() + "]");
+        document.setContent(template.getContent());
+        document.setCourseAccount(courseAccountService.getById(docId));
+
+        pageInfo.setPageTitle(template.getTitle());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("document", document);
+        model.addAttribute("mailList", userService.getAccountList());
+
+        return "content/document/addAccount";
     }
 
     @GetMapping("/popupCourse/{typeId}")
@@ -181,6 +201,50 @@ public class DocumentController {
         model.addAttribute("completeList", courseComplteList);
 
         return "content/document/popupCourse";
+    }
+
+    // 외부교육 보고서 작성 처리
+    @PostMapping("/addAccount-post")
+    @Transactional
+    public String addAccountPost(@Valid Document document
+            , @RequestParam(value = "mailList", required = false, defaultValue = "0") String[] mails
+            , @RequestParam("files") MultipartFile[] files
+            , BindingResult result) {
+        if(result.hasErrors()) {
+            //return "document/add/" + document.getTemplate().getId();
+            return "redirect:/document/add/" + document.getTemplate().getId() + '/' + document.getCourseAccount().getId();
+        }
+
+        DocumentTemplate template = templateService.getById(document.getTemplate().getId());
+
+        Optional<CourseAccount> optCourseAccount = courseAccountService.getId(document.getCourseAccount().getId());
+
+        if(optCourseAccount.isPresent()) {
+
+            CourseAccount courseAccount = optCourseAccount.get();
+            // 교육과정의 보고서 상태를 진행상태로 변경한다.
+            courseAccount.setReportStatus("0");
+
+            // 상태를 변경하고 저장한다.
+            document.setCourseAccount(courseAccountService.save(courseAccount));
+        }
+
+        document.setAccount(userService.getAccountByUserId(SessionUtil.getUserId()));
+        document.setTemplate(template);
+        Document document1 = documentService.save(document);
+
+        if (files.length > 0) {
+            Arrays.asList(files)
+                    .stream()
+                    .map(file -> documentFileService.storeFile(file, document1))
+                    .collect(Collectors.toList());
+        }
+
+        // 기안 정보 등록
+        Account account = userService.findByUserId(SessionUtil.getUserId());
+        approvalDocumentProcessService.documentRequestProcess(account, document1);
+
+        return "redirect:/approval/mainRequest/process";
     }
 
     @PostMapping("/add-post")

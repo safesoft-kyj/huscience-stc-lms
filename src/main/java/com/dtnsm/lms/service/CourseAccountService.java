@@ -137,6 +137,43 @@ public class CourseAccountService {
         return courseAccountRepository.findByAccount_UserIdAndCourse_CourseMaster_idLikeAndCourse_TitleLike(userId, typeId, title, pageable);
     }
 
+    //교육결재 기안함
+    public Page<CourseAccount> getAllByAccount_UserIdAndIsApprovalAndFnStatusLikeAndRequestTypeLike(String userId, String isApproval, String status, String requestType, Pageable pageable) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
+
+        return courseAccountRepository.findByAccount_UserIdAndIsApprovalAndFnStatusLikeAndRequestTypeLike(userId, isApproval, status, requestType, pageable);
+    }
+
+
+    //교육결재 기안함
+    public Page<CourseAccount> getAllByAccount_UserIdAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(String userId, String typeId, String isApproval, String status, String requestType, String isReport, String reportStatus, Pageable pageable) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
+
+        return courseAccountRepository.findByAccount_UserIdLikeAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(userId, typeId, isApproval, status, requestType, isReport, reportStatus, pageable);
+    }
+
+    // 교육결재 count
+    public long countByCourseRequest(String userId, String typeId, String isApproval, String status, String requestType, String isReport, String reportStatus) {
+        return courseAccountRepository.countByAccount_UserIdLikeAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(userId, typeId, isApproval, status, requestType, isReport, reportStatus);
+    }
+
+
+    //교육결재 기안함
+    public Page<CourseAccount> getAllByAccount_UserIdAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(String userId, String isApproval, String status, String requestType, String isReport, String reportStatus, Pageable pageable) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
+
+        return courseAccountRepository.findByAccount_UserIdAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(userId, isApproval, status, requestType, isReport, reportStatus, pageable);
+    }
+
     // 내신청함
     public Page<CourseAccount> getListUserId(String userId, Pageable pageable) {
 
@@ -156,6 +193,8 @@ public class CourseAccountService {
 
         return courseAccountRepository.findByAccount_UserIdAndFnStatus(userId, status, pageable);
     }
+
+
     //진행중 문서
     public List<CourseAccount> getAllByStatus(String userId, String status) {
         return courseAccountRepository.findByAccount_UserIdAndFnStatus(userId, status);

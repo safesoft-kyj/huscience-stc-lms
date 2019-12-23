@@ -75,7 +75,7 @@
                                 <th><span th:text="#{label.file}"></span></th>
                                 <td class="text-left">
                                     <div th:each="uploadFile : ${border.getBorderFiles()}">
-                                        <a th:href="@{/border/download-file/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>
+                                        <a th:href="@{/border/download-file/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}" target="_blank"></a>
                                     </div>
                                 </td>
                             </tr>
@@ -86,7 +86,7 @@
                     </div>
                     <hr class="bg-gray"/>
                     <div class="input-group pull-right">
-                        <a th:href="@{/border/list/{typeId}(typeId=${border.getBorderMaster().getId()})}"
+                        <a th:href="@{/border/{typeId}(typeId=${border.getBorderMaster().getId()})}"
                            class="btn btn-primary" th:text="#{label.list}">목록</a>
                     </div>
                 </div><!--panel-body End -->

@@ -135,7 +135,8 @@ public class CertificateFileController {
 
         // Try to determine file's content type
         MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
-        String contentType = mimeTypesMap.getContentType(fileName);
+//        String contentType = mimeTypesMap.getContentType(fileName);
+        String contentType = uploadFile.getMimeType();
         // contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 
 
@@ -149,7 +150,8 @@ public class CertificateFileController {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + newFileName + "\"")
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + newFileName + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + newFileName + "\"")
                 .body(resource);
     }
 }

@@ -33,7 +33,7 @@ public class CustomerAdminController {
         pageInfo.setParentTitle("협약기관");
     }
 
-    @GetMapping("/list")
+    @GetMapping("")
     public String list(Model model) {
 
         pageInfo.setPageId("m-customer-list");
@@ -78,7 +78,7 @@ public class CustomerAdminController {
 
         customerService.save(customer);
 
-        return "redirect:/admin/customer/list";
+        return "redirect:/admin/customer";
     }
 
 
@@ -105,7 +105,7 @@ public class CustomerAdminController {
         customer.setAccount(userService.findByUserId(SessionUtil.getUserId()));
         customerService.save(customer);
 
-        return "redirect:/admin/customer/list";
+        return "redirect:/admin/customer";
     }
 
     @GetMapping("/delete/{id}")
@@ -116,6 +116,23 @@ public class CustomerAdminController {
 
         customerService.delete(cust);
 
-        return "redirect:/admin/customer/list";
+        return "redirect:/admin/customer";
+    }
+
+    @GetMapping("/view/{id}")
+    public String viewPage(@PathVariable("id") long id, Model model) {
+
+        Customer oldCustomer = customerService.getCustomerById(id).get();
+
+        oldCustomer.setViewCnt(oldCustomer.getViewCnt() + 1);
+
+        Customer customer= customerService.save(oldCustomer);
+
+        pageInfo.setPageTitle("협약기관");
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("customer", customer);
+
+        return "admin/customer/view";
     }
 }

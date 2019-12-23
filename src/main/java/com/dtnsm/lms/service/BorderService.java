@@ -141,7 +141,6 @@ public class BorderService {
 
         border.setViewCnt(border.getViewCnt() + 1);
         borderRepository.save(border);
-
     }
 
     private List<Border> getBlankBorder() {

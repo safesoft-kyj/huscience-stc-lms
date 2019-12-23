@@ -1,5 +1,6 @@
 package com.dtnsm.lms.controller;
 
+import com.dtnsm.lms.domain.Course;
 import com.dtnsm.lms.domain.CourseCertificateInfo;
 import com.dtnsm.lms.domain.Schedule;
 import com.dtnsm.lms.domain.ScheduleFile;
@@ -9,6 +10,7 @@ import com.dtnsm.lms.service.ScheduleService;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
+import com.dtnsm.lms.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -48,7 +50,7 @@ public class ScheduleController {
         pageInfo.setParentTitle("교육과정기준정보");
     }
 
-    @GetMapping("/list/{sctype}")
+    @GetMapping("/{sctype}")
     public String scList(@PathVariable("sctype") ScheduleType sctype, Model model) {
 
         if (sctype == ScheduleType.MATRIX) {
@@ -67,13 +69,15 @@ public class ScheduleController {
         return "admin/schedule/list";
     }
 
-    @GetMapping("/view/{sctype}/{id}")
+    @GetMapping("/{sctype}/view")
     public String scView(@PathVariable("sctype") ScheduleType sctype
-            , @PathVariable("id") long id
+            , @RequestParam("id") long id
             , Model model) {
 
         Schedule schedule = scheduleService.getById(id);
-        schedule.setViewCnt(schedule.getViewCnt() + 1);
+        //schedule.setViewCnt(schedule.getViewCnt() + 1);
+        scheduleService.updateViewCnt(id, SessionUtil.getUserId());
+
 
         Schedule border1= scheduleService.save(schedule);
 
@@ -85,24 +89,38 @@ public class ScheduleController {
         return "admin/schedule/view/" + sctype;
     }
 
-    @GetMapping("/updateActive/{id}")
-    public String updateActive(@PathVariable("id") long id) {
-
-        // 일정을 초기화 한다.
-        for(Schedule schedule : scheduleService.getList()) {
-            schedule.setIsActive(0);
-            scheduleService.save(schedule);
-        }
+    @GetMapping("/{sctype}/updateActive")
+    public String updateActive(@RequestParam("id") long id) {
 
         // 요청된 설문을 기본 설문으로 변경한다.
         Schedule schedule = scheduleService.getById(id);
+
+        // 일정을 초기화 한다.
+        for(Schedule tmpSchedule : scheduleService.getListBySctypeOrderByCreatedDateDesc(schedule.getSctype())) {
+            tmpSchedule.setIsActive(0);
+            scheduleService.save(tmpSchedule);
+        }
+
+//        if (schedule.getIsActive() == 0) {
+//            // 교육과정을 신청할 수 있는 상태로 변경한다.
+//            schedule.setIsActive(1);
+//        } else if (schedule.getIsActive() == 1) {
+//
+//            // 직원이 신청한 내역이 있으면 Active를 변경할 수 없다.
+////            if(course.getCourseAccountList().size() <= 0) {
+////                course.setActive(0);
+////            }
+//
+//            schedule.setIsActive(0);
+//        }
+
         schedule.setIsActive(1);
         scheduleService.save(schedule);
 
-        return "redirect:/admin/schedule/list/" + schedule.getSctype();
+        return "redirect:/admin/schedule/" + schedule.getSctype();
     }
 
-    @GetMapping("/add/{sctype}")
+    @GetMapping("/{sctype}/add")
     public String scAdd(@PathVariable("sctype") ScheduleType sctype, Model model) {
 
         Schedule schedule = new Schedule();
@@ -115,12 +133,13 @@ public class ScheduleController {
 
         model.addAttribute(pageInfo);
         model.addAttribute("schedule", schedule);
+        model.addAttribute("sctype", sctype);
         model.addAttribute("yearList", DateUtil.getYearList());
 
         return "admin/schedule/add";
     }
 
-    @PostMapping("/add-post")
+    @PostMapping("/{sctype}/add-post")
     public String scAddPost(@Valid Schedule schedule
             , @RequestParam("files") MultipartFile[] files
             , BindingResult result) {
@@ -137,11 +156,12 @@ public class ScheduleController {
                 .collect(Collectors.toList());
 
 //        status.setComplete();
-        return "redirect:/admin/schedule/list/" + schedule1.getSctype();
+        return "redirect:/admin/schedule/" + schedule1.getSctype();
     }
 
-    @GetMapping("/edit/{id}")
-    public String noticeEdit(@PathVariable("id") long id
+    @GetMapping("/{sctype}/edit")
+    public String noticeEdit(@PathVariable("sctype") ScheduleType sctype
+            , @RequestParam("id") long id
             , Model model) {
 
         pageInfo.setPageId("m-border-edit");
@@ -150,14 +170,16 @@ public class ScheduleController {
         Schedule schedule = scheduleService.getById(id);
 
         model.addAttribute(pageInfo);
+        model.addAttribute("sctype", sctype);
         model.addAttribute("yearList", DateUtil.getYearList());
         model.addAttribute("schedule", schedule);
 
         return "admin/schedule/edit";
     }
 
-    @PostMapping("/edit-post/{id}")
-    public String noticeEditPost(@PathVariable("id") long id, @Valid Schedule schedule
+    @PostMapping("/{sctype}/edit-post/{id}")
+    public String noticeEditPost(@PathVariable("sctype") ScheduleType sctype
+            , @PathVariable("id") long id, @Valid Schedule schedule
             , @RequestParam("files") MultipartFile[] files
             , BindingResult result) {
         if(result.hasErrors()) {
@@ -169,6 +191,8 @@ public class ScheduleController {
         List<ScheduleFile>  scheduleFiles= oldSchedule.getScheduleFiles();
         schedule.setScheduleFiles(scheduleFiles);
         schedule.setIsActive(oldSchedule.getIsActive());
+        schedule.setScheduleViewAccounts(oldSchedule.getScheduleViewAccounts());
+        schedule.setViewCnt(oldSchedule.getViewCnt());
 
         Schedule schedule1 = scheduleService.save(schedule);
 
@@ -178,30 +202,37 @@ public class ScheduleController {
                 .map(file -> fileService.storeFile(file, schedule1))
                 .collect(Collectors.toList());
 
-        return "redirect:/admin/schedule/list/" + schedule1.getSctype();
+        return "redirect:/admin/schedule/" + schedule1.getSctype();
     }
 
-    @GetMapping("/delete/{id}")
-    public String noticeDelete(@PathVariable("id") long id) {
+    @GetMapping("/{sctype}/delete/{id}")
+    public String noticeDelete(@PathVariable("sctype") ScheduleType sctype, @PathVariable("id") long id, HttpServletRequest request) {
 
         Schedule schedule = scheduleService.getById(id);
 
         scheduleService.delete(schedule);
 
-        return "redirect:/admin/schedule/list/CALENDAR";
+        // 이전 URL를 리턴한다.
+        String refUrl = request.getHeader("referer");
+        return "redirect:" +  refUrl;
     }
 
-    @GetMapping("/delete-file/{schedule_id}/{file_id}")
-    public String noticeDeleteFile(@PathVariable long schedule_id, @PathVariable long file_id, HttpServletRequest request){
+    @GetMapping("/{sctype}/delete-file/{schedule_id}/{file_id}")
+    public String noticeDeleteFile(@PathVariable("sctype") ScheduleType sctype
+            , @PathVariable long schedule_id
+            , @PathVariable long file_id
+            , HttpServletRequest request){
 
         // db및 파일 삭제
         fileService.deleteFile(file_id);
 
-        return "redirect:/admin/schedule/edit/" + schedule_id;
+        // 이전 URL를 리턴한다.
+        String refUrl = request.getHeader("referer");
+        return "redirect:" +  refUrl;
 
     }
 
-    @GetMapping("/download-file/{id}")
+    @GetMapping("/{sctype}/download-file/{id}")
     @ResponseBody
     public ResponseEntity<Resource> downloadFile(@PathVariable long id, HttpServletRequest request){
 
@@ -211,9 +242,9 @@ public class ScheduleController {
         Resource resource = fileService.loadFileAsResource(file.getSaveName());
 
         // Try to determine file's content type
-        String contentType = mimeTypesMap.getContentType(file.getSaveName());
+//        String contentType = mimeTypesMap.getContentType(file.getSaveName());
         // contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-
+        String contentType = file.getMimeType();
 
         // Fallback to the default content type if type could not be determined
         if(contentType.equals("")) {
@@ -225,6 +256,7 @@ public class ScheduleController {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + newFileName + "\"")
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + newFileName + "\"")
                 .body(resource);
     }

@@ -53,10 +53,10 @@ public interface CourseAccountOrderRepository extends JpaRepository<CourseAccoun
     List<CourseAccountOrder> findAllByFnUser_UserIdAndFnStatus(String userId, String fStatus);
 
     // 사용자별 미결문서(fNext = '1', fStatus = '0')
-    Page<CourseAccountOrder> findAllByFnUser_UserIdAndFnNextAndFnStatus(String userId, String fNext, String fStatus, Pageable pageable);
+    Page<CourseAccountOrder> findAllByFnUser_UserIdAndFnNextLikeAndFnStatusLikeAndFnSeqGreaterThan(String userId, String fNext, String fStatus, int seq, Pageable pageable);
 
     // 사용자별 미결문서(fNext = '1', fStatus = '0')
-    List<CourseAccountOrder> findAllByFnUser_UserIdAndFnNextAndFnStatus(String userId, String fNext, String fStatus);
+    List<CourseAccountOrder> findAllByFnUser_UserIdAndFnNextLikeAndFnStatusLikeAndFnSeqGreaterThan(String userId, String fNext, String fStatus, int seq);
 
 
     // 결재 차수의 미결문서(fNext = '1', fStatus = '0', fSeq = 1 or 2)
@@ -66,6 +66,12 @@ public interface CourseAccountOrderRepository extends JpaRepository<CourseAccoun
     List<CourseAccountOrder> findAllByFnUser_UserIdAndFnNextAndFnStatusAndFnSeq(String userId, String fNext, String fStatus, int fSeq);
 
 
+    // 사용자별 미결문서(fNext = '1', fStatus = '0')
+    Page<CourseAccountOrder> findAllByFnUser_UserIdAndFnNextLikeAndAndCourseAccount_FnStatusLikeAndFnStatusLikeAndFnSeqGreaterThan(String userId, String fNext, String parentFstatus, String fStatus, int seq, Pageable pageable);
+
+    List<CourseAccountOrder> findAllByFnUser_UserIdAndFnNextLikeAndAndCourseAccount_FnStatusLikeAndFnStatusLikeAndFnSeqGreaterThan(String userId, String fNext, String parentFstatus, String fStatus, int seq);
+
+    long countByFnUser_UserIdAndFnNextLikeAndAndCourseAccount_FnStatusLikeAndFnStatusLikeAndFnSeqGreaterThan(String userId, String fNext, String parentFstatus, String fStatus, int seq);
 
 
 }

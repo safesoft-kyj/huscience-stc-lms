@@ -1,5 +1,7 @@
 package com.dtnsm.lms.repository;
 
+import com.dtnsm.lms.domain.CourseAccount;
+import com.dtnsm.lms.domain.CourseAccountOrder;
 import com.dtnsm.lms.domain.DocumentAccountOrder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +15,14 @@ public interface DocumentAccountOrderRepository extends JpaRepository<DocumentAc
     DocumentAccountOrder findById(long id);
 
     DocumentAccountOrder findByDocumentAccount_IdAndFnSeq(long fNo, int seq);
+
+
+    // 사용자별 미결문서(fNext = '1', fStatus = '0')
+    Page<DocumentAccountOrder> findAllByFnUser_UserIdAndFnNextLikeAndAndDocument_FnStatusLikeAndFnStatusLikeAndFnSeqGreaterThan(String userId, String fNext, String parentFstatus, String fStatus, int seq, Pageable pageable);
+
+    List<DocumentAccountOrder> findAllByFnUser_UserIdAndFnNextLikeAndAndDocument_FnStatusLikeAndFnStatusLikeAndFnSeqGreaterThan(String userId, String fNext, String parentFstatus, String fStatus, int seq);
+
+    long countAllByFnUser_UserIdAndFnNextLikeAndAndDocument_FnStatusLikeAndFnStatusLikeAndFnSeqGreaterThan(String userId, String fNext, String parentFstatus, String fStatus, int seq);
 
     // 사용자가 결재한 모든 문서
     Page<DocumentAccountOrder> findAllByFnUser_UserIdAndFnSeqGreaterThan(String userId, int seq, Pageable pageable);

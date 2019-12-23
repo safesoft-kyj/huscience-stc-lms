@@ -99,6 +99,15 @@ public class CourseAccount extends AuditorEntity<String> {
     @ColumnDefault("'0'")
     private String isCommit = "0";
 
+    // 보고서 작성 유무(외부교육인 경우 작성해야 함)
+    @Column(length = 1)
+    @ColumnDefault("'0'")
+    private String isReport = "0";
+
+    // 외부교육은 보고서 작성이 있음으로 상태값을 관리한다. 0: 진행중, 1: 승인, 2:기각, 9:미진행
+    @Column(length = 1)
+    @ColumnDefault("'9'")
+    private String reportStatus = "9";
 
 //    @Column(nullable = true)
 //    @ManyToOne
@@ -108,6 +117,9 @@ public class CourseAccount extends AuditorEntity<String> {
 
     @OneToOne(mappedBy = "courseAccount")
     private CourseCertificateLog courseCertificateLog;
+
+    @OneToMany(mappedBy = "courseAccount", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Document> documents = new ArrayList<>();
 
     @OneToMany(mappedBy = "courseAccount", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CourseSectionAction> courseSectionActions = new ArrayList<>();

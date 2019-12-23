@@ -49,8 +49,8 @@
 <!--                                </div>-->
                                 <div class="col-sm-12 text-right">
                                     <th:block th:if="${#strings.equalsIgnoreCase(isAdd, 'Y')}">
-                                        <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/survey/add/{courseId}(courseId=__${courseId}__)}"><i class="demo-pli-add"></i> Add</a>
-                                        <a class="btn btn-primary" th:href="@{/admin/course/list/{typeId}(typeId=${typeId})}"><i class="demo-pli-back"></i> Back</a>
+                                        <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/survey/add(typeId=${typeId}, courseId=${courseId})}"><i class="demo-pli-add"></i> Add</a>
+                                        <a class="btn btn-primary" th:href="@{/admin/course/{typeId}(typeId=${typeId})}"><i class="demo-pli-back"></i> Back</a>
                                     </th:block>
                                 </div>
                             </div>
@@ -72,13 +72,13 @@
                                         <td th:text="${border.getName()}"></a></td>
                                         <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy-MMM-dd')} : ${border.getCreatedDate()}" class="text-center"></td>
                                         <td class="text-center">
-                                            <a th:href="@{/admin/course/survey/view/{id}(id=${border.getId()})}"><span class="badge badge-mint" th:text="#{label.title.survey}"></span></a>
-                                            <a th:href="@{/admin/course/survey/report/{id}(id=${border.getId()})}"><span class="badge badge-info" th:text="#{label.title.report}"></span></a>
+                                            <a th:href="@{/admin/course/{typeId}/{courseId}/survey/view(typeId=${typeId}, courseId=${courseId}, surveyId=${border.getId()})}"><span class="badge badge-mint" th:text="#{label.title.survey}"></span></a>
+                                            <a th:href="@{/admin/course/{typeId}/{courseId}/survey/report(typeId=${typeId}, courseId=${courseId}, surveyId=${border.getId()})}"><span class="badge badge-info" th:text="#{label.title.report}"></span></a>
                                             <!--                                            <a class="label label-warning" th:href="@{/admin/course/section/add/{id}(id=${border.getId()})}" th:text="#{label.course.add}">강의등록</a>-->
                                         </td>
                                         <td class="text-center">
-                                            <a th:text="#{label.edit}" th:href="@{/admin/course/survey/edit/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
-                                            <a th:text="#{label.delete}" th:href="@{/admin/course/survey/delete/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                            <a th:text="#{label.edit}" th:href="@{/admin/course/{typeId}/{courseId}/survey/edit/{id}(typeId=${typeId}, courseId=${courseId}, id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                            <a th:text="#{label.delete}" th:href="@{/admin/course/{typeId}/{courseId}/survey/delete/{id}(typeId=${typeId}, courseId=${courseId}, id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
                                         </td>
                                     </tr>
                                     </tbody>

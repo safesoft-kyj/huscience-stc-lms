@@ -1,5 +1,6 @@
 package com.dtnsm.lms;
 
+import com.dtnsm.lms.domain.DTO.CommonUtilities;
 import com.dtnsm.lms.properties.FileUploadProperties;
 import com.dtnsm.lms.properties.ImageUploadProperties;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -27,7 +28,10 @@ import javax.sql.DataSource;
 public class LmsApplication {
 
     public static void main(String[] args) {
+
         SpringApplication.run(LmsApplication.class, args);
+
+        CommonUtilities.applyLicense();
     }
 
     @Bean

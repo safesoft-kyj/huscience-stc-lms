@@ -87,7 +87,7 @@
                         <div class="col-sm-12">
                             <p class="text-right">
                                 <button class="btn btn-primary" onclick="saveAsPdf();">PDF저장</button>
-                                <a class="btn btn-primary" th:href="@{/admin/course/quiz/list/{courseId}(courseId=${courseQuiz.getCourse().getId()})}"><i class="demo-pli-back"></i> Back</a>
+                                <a class="btn btn-primary" th:href="@{/admin/course/{typeId}/{courseId}/quiz(typeId=${typeId}, courseId=${courseId})}"><i class="demo-pli-back"></i> Back</a>
                             </p>
                         </div>
                     </div>
@@ -99,7 +99,7 @@
                             <table id="demo-dt-basic1" class="table" cellspacing="0" width="100%" style="margin-top:0">
                                 <tr>
                                     <td class="text-left" colspan="7">
-                                        <h3 class="title text-info"><span th:text="${pageInfo.getPageTitle() + ' 시험결과분석 - 오답(1:오답, 0:정답)'}"></span></h3>
+                                        <h3 class="title text-info"><span th:text="${courseTitle + ' 시험결과분석 - 오답(1:오답, 0:정답)'}"></span></h3>
                                     </td>
                                 </tr>
                                 <tr>

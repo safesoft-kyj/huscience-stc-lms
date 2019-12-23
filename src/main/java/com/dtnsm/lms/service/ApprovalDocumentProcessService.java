@@ -77,7 +77,6 @@ public class ApprovalDocumentProcessService {
 
         Document saveDocument = documentService.save(document);
 
-
         // 내결재사항을 추가한다.
         DocumentAccountOrder documentAccountOrder = new DocumentAccountOrder();
         documentAccountOrder.setFnUser(account);
@@ -162,6 +161,7 @@ public class ApprovalDocumentProcessService {
                 courseAccount.setCourseStatus(CourseStepStatus.complete);
                 courseAccount.setIsAttendance("1");
                 courseAccount.setIsCommit("1");
+                courseAccount.setReportStatus("1");
 
                 String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
                 courseAccount.setCertificateNo(certificateNo);
@@ -251,6 +251,7 @@ public class ApprovalDocumentProcessService {
                 courseAccount.setCourseStatus(CourseStepStatus.complete);
                 courseAccount.setIsAttendance("1");
                 courseAccount.setIsCommit("1");
+                courseAccount.setReportStatus("1");
                 String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
                 courseAccount.setCertificateNo(certificateNo);
 
@@ -284,7 +285,7 @@ public class ApprovalDocumentProcessService {
         }
     }
 
-    // 전자결재 2차 기각 처리
+    // 전자결재 2차 기각 처리(참석보고서는 관리자 승인이 없음으로 사용되지 않음)
     public void documentReject2Proces(DocumentAccountOrder documentAccountOrder) {
 
         int finalCount = documentAccountOrder.getDocument().getFnFinalCount();

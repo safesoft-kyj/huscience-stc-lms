@@ -23,20 +23,4 @@
                 bUseModeChanger : true,
             }
         });
-
-        //전송버튼
-        $("#submit-all").click(function(){
-
-            var title = $("#title").val();
-
-            if(!title) {
-                alert('제목을 입력하세요');
-                return;
-            }
-
-            //id가 smarteditor인 textarea에 에디터에서 대입
-            obj.getById["editor"].exec("UPDATE_CONTENTS_FIELD", []);
-            //폼 submit
-            $("#boardFrm").submit();
-        });
     });

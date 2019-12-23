@@ -35,7 +35,7 @@
                 <div class="panel-body">
                     <!--===================================================-->
                     <!--End Horizontal Form-->
-                    <form class="form-horizontal" action="#" th:action="@{/admin/code/minor-update-post/{id}(id=${elMinor.getMinorCd()})}" th:object="${elMinor}" method="post">
+                    <form class="form-horizontal" action="#" th:action="@{/admin/code/minor/update-post/{id}(id=${elMinor.getMinorCd()})}" th:object="${elMinor}" method="post">
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Major Code</label>
                             <div class="col-sm-9">
@@ -66,8 +66,9 @@
                             </div>
                             <span th:if="${#fields.hasErrors('seq')}" th:errors="*{seq}"></span>
                         </div>
-                        <div class="panel-footer text-right">
-                            <button class="btn btn-success" type="submit">Submit</button>
+                        <div class="input-group pull-right">
+                            <button class="btn btn-primary" type="submit" th:text="#{label.save}">저장</button>
+                            <a th:href="@{/admin/code/minor}" class="btn btn-success" th:text="#{label.list}">목록</a>
                         </div>
                     </form>
                 </div><!--panel-body End -->

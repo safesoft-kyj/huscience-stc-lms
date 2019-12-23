@@ -1,5 +1,6 @@
 package com.dtnsm.lms.service;
 
+import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.domain.Document;
 import com.dtnsm.lms.domain.DocumentFile;
 import com.dtnsm.lms.repository.DocumentRepository;
@@ -27,6 +28,18 @@ public class DocumentService {
     public List<Document> getListByUserId(String userId) {
         return documentRepository.findAllByAccount_UserId(userId);
     }
+
+
+    //교육결재 기안함(2019/12/19)
+    public Page<Document> getAllByAccount_UserIdAndFnStatusLike(String userId, String status, Pageable pageable) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
+
+        return documentRepository.findByAccount_UserIdAndFnStatusLike(userId, status, pageable);
+    }
+
 
     public Page<Document> getPageListByUserId(String userId, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);

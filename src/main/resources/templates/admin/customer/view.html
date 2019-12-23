@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-body">
+                    <table class="table table-bordered" cellspacing="0" width="100%">
+                        <colgroup><col width="15%" /><col width="85%" /></colgroup>
+                        <tr>
+                            <th th:text="#{label.customer.name}" class="text-center">협약기관명</th>
+                            <td th:text="${customer.getName()}"></td>
+                        </tr>
+                        <tr>
+                            <th th:text="#{label.customer.date}" class="text-center">협약 체결 일자</th>
+                            <td th:text="${customer.getCondate()}"></td>
+                        </tr>
+                        <tr>
+                            <th th:text="#{label.customer.condition}" class="text-center">협약 특혜</th>
+                            <td th:text="${customer.getCondition()}"></td>
+                        </tr>
+                        <tr>
+                            <th th:text="#{label.homepage}" class="text-center">홈페이지</th>
+                            <td><a th:href="${customer.homepage}" target="_blank"><span th:text="${customer.homepage}"></span></a></td>
+                        </tr>
+                        <tr>
+                            <th th:text="#{label.createby}" class="text-center">작성자</th>
+                            <td th:text="${customer.getAccount().getName()}"></td>
+                        </tr>
+                        <tr>
+                            <th th:text="#{label.createdate}" class="text-center">작성일</th>
+                            <td th:text="${customer.getCreatedDate()} ? ${#dates.format(customer.getCreatedDate(), 'yyyy/MM/dd HH:mm:ss')} : ${customer.getCreatedDate()}"></td>
+                        </tr>
+<!--                        <tr>-->
+<!--                            <th>읽음</th>-->
+<!--                            <td th:text="${customer.getViewCnt()}"></td>-->
+<!--                        </tr>-->
+                    </table>
+<!--                    <hr class="bg-gray"/>-->
+                    <div class="input-group pull-right">
+                        <a th:href="@{/admin/customer}" class="btn btn-primary"><i class="demo-pli-back"></i> 목록</a>
+                    </div>
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+</th:block>
+
+</html>
+
+

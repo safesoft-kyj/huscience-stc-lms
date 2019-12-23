@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-body">
+                    <!--===================================================-->
+                    <!--End Horizontal Form-->
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/document/addAccount-post}" th:object="${document}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" th:field="*{id}" id="id" name="id">
+                        <input type="hidden" th:field="*{template.id}">
+                        <input type="hidden" th:field="*{courseAccount.id}">
+
+                        <!-- 외부교육참석보고서 -->
+                        <!-- 외부교육 과정개설 신청후 외부교육을 참조한다. -->
+                        <!-- TODO : 교육참석보고서 Template ID가 변경될 경우 수정 -->
+                        <th:block th:if="${document.getTemplate().getId() == 1}">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label text-center" for="courseName">교육과정</label>
+                                <div class="col-sm-9">
+                                    <!--                                    <input type="text" th:text="${document.getCourseAccount().getId()}" id="courseAccount" placeholder="제목" class="form-control col-sm-4" readonly>-->
+                                    <label th:text="${document.getCourseAccount().getCourse().getTitle()}" class="col-sm-10 control-label text-left"  id="courseName">
+                                </div>
+                            </div>
+                        </th:block>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label text-center" for="title">보고서명</label>
+                            <div class="col-sm-10">
+                                <input type="text" th:field="*{title}" id="title" placeholder="제목" class="form-control col-sm-10" required="required">
+                            </div>
+                            <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+                        </div>
+
+                        <!-- 부서별 교육신청시 -->
+<!--                        <th:block th:if="${document.getTemplate().getId() == 217}">-->
+<!--                            <div class="form-group">-->
+<!--                                <label class="col-sm-2 control-label" for="mailList" th:text="#{label.course.account.add}">교육수강생</label>-->
+<!--                                <div class="col-sm-9">-->
+<!--                                    <select class="form-control" name="mailList" id="mailList" multiple="multiple">-->
+<!--                                        <option th:each="user : ${mailList}" th:value="${user.getUserId()}" th:text="${user.getName()}"></option>-->
+<!--                                    </select>-->
+<!--                                </div>-->
+<!--                                <div class="col-sm-1 pull-right">-->
+<!--                                    <a class="btn btn-primary" id="btnOrg" th:text="#{label.organization}">조직도</a>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </th:block>-->
+
+                        <div id="editSection"></div>
+
+                        <div class="form-group">
+<!--                            <label class="col-sm-2 control-label" for="editor">내용</label>-->
+                            <div class="col-sm-12">
+                                <textarea class="form-control" th:field="*{content}" name="content" id="editor" style="width: 100%; height: 500px;" required></textarea>
+                            </div>
+                            <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="files"><i class="fa fa-file text-info"></i> 파일 업로드</label>
+                            <div class="col-sm-10">
+                                <input type="file" name="files" id="files">
+                            </div>
+                        </div>
+                        <div class="panel-footer text-right">
+                            <button class="btn btn-primary" type="submit" id="submit-all">
+                                <i class="fa fa-upload-cloud"></i> 저장
+                            </button>
+                            <a th:href="@{/document/list}" class="btn btn-success">
+                                <i class="fa fa-upload-cloud"></i> 목록
+                            </a>
+                        </div>
+                    </form>
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+
+</th:block>
+
+<th:block layout:fragment="custom_js">
+
+    <script type="text/javascript" th:src="@{/editor/js/HuskyEZCreator.js}" charset="utf-8"></script>
+<!--    <script type="text/javascript" th:src="@{/default/js/custom/border-editor.js}" charset="utf-8"></script>-->
+
+
+    <script th:inline="javascript">
+
+        $(function(){
+            //전역변수
+            var obj = [];
+            //스마트에디터 프레임생성
+            nhn.husky.EZCreator.createInIFrame({
+                oAppRef: obj,
+                elPlaceHolder: "editor",
+                sSkinURI: "/editor/SmartEditor2Skin.html",
+                htParams : {
+                    // 툴바 사용 여부
+                    bUseToolbar : true,
+                    // 입력창 크기 조절바 사용 여부
+                    bUseVerticalResizer : true,
+                    // 모드 탭(Editor | HTML | TEXT) 사용 여부
+                    bUseModeChanger : true,
+                }
+            });
+
+            //전송버튼
+            $("#submit-all").click(function(){
+
+                var id = $("#courseAccount").val();
+
+                if(id == 0) {
+                    alert('외부교육 과정을 꼭 선택하셔야 합니다.');
+                    return false;
+                }
+
+                //id가 smarteditor인 textarea에 에디터에서 대입
+                obj.getById["editor"].exec("UPDATE_CONTENTS_FIELD", []);
+                //폼 submit
+                $("#boardFrm").submit();
+            });
+
+            $('#title').focus();
+        });
+
+
+
+        $('#mailList').chosen({width:'100%'});
+
+        $("#btnOrg").on("click", function() {
+            var url = "/admin/depart/treeView";
+            // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+            var popupX = (window.screen.width / 2) - (800 / 2);
+            // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
+            var popupY= (window.screen.height / 2) - (550 / 2);
+
+            var name = "조직도";
+            var option = "width = 800, height = 550, top = 100, left = 200, menubar=no,directories=no, location = no, scrollbars=no, resizable=no"
+            option += ", left=" + popupX + ", top=" + popupY;
+            window.open(url, name, option);
+        });
+
+
+        // 조직도에서 사용자 ID를 받아 온다(배열로 받아옴)
+        function selectMailList(selectOptionArray) {
+
+            // 싱글값 변경
+            // $('#select-id').val("22").trigger('chosen:updated');
+            // 여러값 변경시는 배열로 전달
+            $('#mailList').val(selectOptionArray).trigger('chosen:updated');
+        }
+
+        $("#btnCourse").on("click", function() {
+            var url = "/document/popupCourse/BC0104";
+            // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+            var popupX = (window.screen.width / 2) - (800 / 2);
+            // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
+            var popupY= (window.screen.height / 2) - (550 / 2);
+
+            var name = "조직도";
+            var option = "width = 800, height = 550, top = 100, left = 200, menubar=no,directories=no, location = no, scrollbars=no, resizable=no"
+            option += ", left=" + popupX + ", top=" + popupY;
+            window.open(url, name, option);
+        });
+
+
+        // 조직도에서 사용자 ID를 받아 온다(배열로 받아옴)
+        function selectCourse(courseDocId, courseName) {
+
+            // 싱글값 변경
+            // $('#select-id').val("22").trigger('chosen:updated');
+            // 여러값 변경시는 배열로 전달
+            $('#courseAccount').val(courseDocId);
+            $('#courseName').val(courseName);
+        }
+    </script>
+</th:block>
+
+</html>

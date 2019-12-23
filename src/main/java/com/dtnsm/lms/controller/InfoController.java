@@ -7,6 +7,7 @@ import com.dtnsm.lms.domain.ScheduleFile;
 import com.dtnsm.lms.domain.constant.ScheduleType;
 import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.PageInfo;
+import com.dtnsm.lms.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -121,6 +122,9 @@ public class InfoController {
                 titleList.add(schedule1.getTitle());
             }
 
+            // 읽음 증가
+            scheduleService.updateViewCnt(schedule.getId(), SessionUtil.getUserId());
+
             model.addAttribute("scheduleFileId", scheduleFile.getId());
 //            model.addAttribute("titleList", titleList);
         } else {
@@ -190,6 +194,8 @@ public class InfoController {
 //        Schedule schedule =  scheduleService.getTop1BySctypeOrderByCreatedDateDesc(ScheduleType.MATRIX);
 
         Schedule schedule = scheduleService.getByIsActive(ScheduleType.MATRIX, 1);
+        // 읽음 증가
+        scheduleService.updateViewCnt(schedule.getId(), SessionUtil.getUserId());
 
         pageInfo.setPageId("m-mypage-myinfo");
         pageInfo.setPageTitle(schedule.getTitle());

@@ -1,8 +1,10 @@
 package com.dtnsm.lms.service;
 
-import com.dtnsm.lms.domain.Schedule;
+import com.dtnsm.lms.auth.UserServiceImpl;
+import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.ScheduleType;
 import com.dtnsm.lms.repository.ScheduleRepository;
+import com.dtnsm.lms.repository.ScheduleViewAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,12 @@ public class ScheduleService {
 
     @Autowired
     ScheduleRepository scheduleRepository;
+
+    @Autowired
+    ScheduleViewAccountRepository scheduleViewAccountRepository;
+
+    @Autowired
+    UserServiceImpl userService;
 
     /*
         Calenda 연 일정
@@ -62,6 +70,30 @@ public class ScheduleService {
         return scheduleRepository.findBySctypeAndIsActive(sctype, isActive);
     }
 
+    // 조회수 증가
+    public void updateViewCnt(long scheduleId, String userId) {
+
+        List<ScheduleViewAccount> scheduleViewAccounts = scheduleViewAccountRepository.findAllBySchedule_IdAndAccount_UserId(scheduleId, userId);
+
+
+        // 최초 읽음수만 증가 시킨다.
+        if(scheduleViewAccounts.size() > 0) return;
+
+
+        Schedule schedule = getById(scheduleId);
+        Account account = userService.getAccountByUserId(userId);
+
+        if (account == null || schedule == null) return;
+        scheduleViewAccountRepository.save(new ScheduleViewAccount(schedule, account));
+
+        schedule.setViewCnt(schedule.getViewCnt() + 1);
+        scheduleRepository.save(schedule);
+    }
+
+    public List<ScheduleViewAccount> getAllScheduleAccountByScheduleId(long scheduleId) {
+        List<ScheduleViewAccount> scheduleViewAccounts = scheduleViewAccountRepository.findAllBySchedule_IdOrderByCreatedByDesc(scheduleId);
+        return scheduleViewAccounts;
+    }
 
      /*
         Employee Training Matrix 연 일정

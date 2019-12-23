@@ -36,7 +36,7 @@ public class BorderMasterController {
 
     }
 
-    @GetMapping("/list")
+    @GetMapping("")
     public String listPage(@PageableDefault Pageable pageable, Model model) {
 
         Page<BorderMaster> borders = borderMasterService.getPageList(pageable);
@@ -87,7 +87,7 @@ public class BorderMasterController {
 
         borderMasterService.save(borderMaster);
 
-        return "redirect:/admin/border-master/list";
+        return "redirect:/admin/border-master";
     }
 
     @GetMapping("/edit/{id}")
@@ -110,7 +110,7 @@ public class BorderMasterController {
         }
         borderMasterService.save(elBorder);
 
-        return "redirect:/admin/border-master/list";
+        return "redirect:/admin/border-master";
     }
 
     @GetMapping("/delete/{id}")
@@ -120,6 +120,6 @@ public class BorderMasterController {
 
         borderMasterService.delete(border);
 
-        return "redirect:/admin/border-master/list";
+        return "redirect:/admin/border-master";
     }
 }
