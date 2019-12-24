@@ -1,6 +1,5 @@
 package com.dtnsm.lms.xdocreport;
 
-import com.dtnsm.lms.util.DocumentLicense;
 import com.dtnsm.lms.xdocreport.dto.CV;
 import com.groupdocs.assembly.DataSourceInfo;
 import com.groupdocs.assembly.DocumentAssembler;
@@ -9,15 +8,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.*;
 
 @Component
 @Slf4j
 public class CurriculumVitaeReportService {
-    private InputStream is = CurriculumVitaeReportService.class.getResourceAsStream("CV2.docx");
+
     @Value("${groupdocs.license}")
     private String license;
 
@@ -33,9 +29,18 @@ public class CurriculumVitaeReportService {
     }
 
     public boolean assembleDocument(CV cv, String targetPath) {
-        FileOutputStream os = null;
         try {
-            os = new FileOutputStream(targetPath);
+            FileOutputStream os = new FileOutputStream(targetPath);
+            return assembleDocument(cv, os);
+        } catch (Exception e) {
+            log.error("error : {}", e);
+            return false;
+        }
+    }
+
+    public boolean assembleDocument(CV cv, OutputStream os) {
+        try {
+            InputStream is = CurriculumVitaeReportService.class.getResourceAsStream("CV2.docx");
             DataSourceInfo dataSourceInfo = new DataSourceInfo(cv, "cv");
             DocumentAssembler assembler = new DocumentAssembler();
             return assembler.assembleDocument(is, os, dataSourceInfo);

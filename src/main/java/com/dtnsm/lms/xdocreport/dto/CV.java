@@ -1,9 +1,10 @@
 package com.dtnsm.lms.xdocreport.dto;
 
-import fr.opensagres.xdocreport.document.images.IImageProvider;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.util.ObjectUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
 public class CV implements Serializable {
     private static final long serialVersionUID = -2677710895849019558L;
     private String engName;
-    private IImageProvider sign;
+    private ByteArrayInputStream sign;
     private String signDate;
 
     private List<EducationDTO> educations;
@@ -23,4 +24,20 @@ public class CV implements Serializable {
     private List<LanguageDTO> languages;
     private List<ComputerKnowledgeDTO> computerKnowledges;
     private List<ExperienceDTO> experiences;
+
+    public boolean isLicenses() {
+        return !ObjectUtils.isEmpty(licenses);
+    }
+
+    public boolean isCertification() {
+        return !ObjectUtils.isEmpty(certifications);
+    }
+
+    public boolean isMemberships() {
+        return !ObjectUtils.isEmpty(memberships);
+    }
+
+    public boolean isExperiences() {
+        return !ObjectUtils.isEmpty(experiences);
+    }
 }

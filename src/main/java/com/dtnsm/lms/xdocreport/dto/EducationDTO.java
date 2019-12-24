@@ -38,4 +38,12 @@ public class EducationDTO {
         this.mastersName = mastersName;
         this.phdName = phdName;
     }
+
+    public boolean isMasters() {
+        return mastersDegree != null && !"".equals(mastersDegree);
+    }
+
+    public boolean isPhd() {
+        return phdDegree != null && !"".equals(phdDegree);
+    }
 }

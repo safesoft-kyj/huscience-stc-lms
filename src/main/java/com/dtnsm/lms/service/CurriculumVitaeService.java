@@ -79,6 +79,10 @@ public class CurriculumVitaeService {
                     }
                 }
             }
+
+            if(!ObjectUtils.isEmpty(cv.getRemoveExperiences())) {
+                cvExperienceRepository.deleteAll(cv.getRemoveExperiences());
+            }
         }
 
         if(!ObjectUtils.isEmpty(cv.getParentId())) {

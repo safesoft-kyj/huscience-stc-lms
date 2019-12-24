@@ -45,6 +45,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 //import com.dtnsm.lms.xdocreport.CurriculumVitaeReportService;
 
@@ -93,7 +95,7 @@ public class MyPageCvJdController {
                 model.addAttribute("cv", cv);
                 return "content/mypage/cv/current";
             } else {
-                return "redirect:/mypage/cv/edit?id=" + currentCV.get().getId();
+                return "redirect:/mypage/cv/" + currentCV.get().getId() +"/preview";
             }
         } else {
             return "redirect:/mypage/cv/edit";
@@ -449,8 +451,8 @@ public class MyPageCvJdController {
             }
 
 //            if (status != CurriculumVitaeStatus.TEMP) {
-//                Optional<Signature> optionalSignature = signatureRepository.findById(SessionUtil.getUserId());
-//                cv.setBase64sign(optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "");
+                Optional<Signature> optionalSignature = signatureRepository.findById(SessionUtil.getUserId());
+                cv.setBase64sign(optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "");
 //                cv.setSignDate(new Date());
 //            }
 
@@ -485,8 +487,9 @@ public class MyPageCvJdController {
             dto.setEngName(savedCV.getAccount().getEngName());
             dto.setSignDate(!StringUtils.isEmpty(savedCV.getSignDate()) ? DateUtil.getDateToString(savedCV.getSignDate(), "dd-MMM-yyyy").toUpperCase() : null);
             if (!StringUtils.isEmpty(savedCV.getBase64sign())) {
-                dto.setSign(new ByteArrayImageProvider(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(savedCV.getBase64sign()))));
+                dto.setSign(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(savedCV.getBase64sign())));
             }
+            dto.setSignDate(DateUtil.getDateToString(new Date(), "dd-MMM-yyyy").toUpperCase());
 
             dto.setEducations(savedCV.getEducations().stream().map(e ->
                     EducationDTO.builder()
@@ -499,6 +502,7 @@ public class MyPageCvJdController {
                             .mastersThesisTitle(e.getMastersThesisTitle())
                             .mastersName(e.getMastersName())
                             .phdDegree(e.getPhdDegree())
+                            .phdThesisTitle(e.getPhdThesisTitle())
                             .phdName(e.getPhdName())
                             .build())
                     .collect(Collectors.toList()));
@@ -520,8 +524,9 @@ public class MyPageCvJdController {
 
             dto.setLicenses(savedCV.getLicenses().stream().map(i ->
                     LicenseDTO.builder()
+                            .licenseName(i.getNameOfLicense())
                             .licenseNo(i.getLicenseNo())
-                            .licenseInCountry(i.getLicenseInCountry())
+                            .licenseInCountry("Others".equals(i.getLicenseInCountry()) ? i.getLicenseInCountryOther() : i.getLicenseInCountry())
                             .build()
             ).collect(Collectors.toList()));
 
@@ -543,7 +548,7 @@ public class MyPageCvJdController {
 
             dto.setLanguages(savedCV.getLanguages().stream().map(i ->
                     LanguageDTO.builder()
-                            .language(i.getLanguage())
+                            .language("Others".equals(i.getLanguage()) ? i.getLanguageOther() : i.getLanguage())
                             .level(i.getLevel().getLabel())
                             .certificateProgramList(i.getLanguageCertifications().stream().map(c -> c.getCertificateProgram()).collect(Collectors.toList()))
                             .build()
@@ -562,26 +567,31 @@ public class MyPageCvJdController {
                             .ta("Others".equals(i.getTa()) ? i.getTaOther() : i.getTa())
                             .indication("Others".equals(i.getIndication()) ? i.getIndicationOther() : i.getIndication())
                             .phase("Others".equals(i.getPhase()) ? i.getPhaseOther() : i.getPhase())
-                            .role(i.getRole())
+                            .roles(Stream.of(i.getRole()).map(r -> r.equals("Others") ? i.getRoleOther() : r).collect(Collectors.toList()))
                             .globalOrLocal(i.getGlobalOrLocal().getLabel())
                             .workingDetails(i.getWorkingDetails())
                             .build()
             ).collect(Collectors.toList()));
+
 //                    response.setHeader("Content-Disposition", "attachment; filename=\"cv.pdf\"");
 //                    response.setContentType("application/pdf");
-            String outputFileName = "CV_"+savedCV.getId()+"_" + SessionUtil.getUserId() + ".docx";
-            Files.createDirectories(Paths.get(prop.getCvUploadDir()).toAbsolutePath().normalize());
+//            String outputFileName = "CV_"+savedCV.getId()+"_" + SessionUtil.getUserId() + ".docx";
+//            Files.createDirectories(Paths.get(prop.getCvUploadDir()).toAbsolutePath().normalize());
 //                        curriculumVitaeReportService.generateReport(dto, prop.getCvUploadDir() + outputFileName, savedCV.getId());
-            boolean result = curriculumVitaeReportService.assembleDocument(dto, prop.getCvUploadDir() + outputFileName);
-            log.info("output : {}{}, Generate Result : {}", prop.getCvUploadDir(), outputFileName, result);
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            boolean result = curriculumVitaeReportService.assembleDocument(dto, os);
+            log.info("Generate Result : {}", result);
             if(result) {
-                documentConverter.toHTML(new FileInputStream(prop.getCvUploadDir() + outputFileName), response.getOutputStream());
+                log.info("Word to HTML...");
+                documentConverter.toHTML(new ByteArrayInputStream(os.toByteArray()), response.getOutputStream());
+                log.info("Word to HTML...Done.");
             } else {
                 response.sendError(500);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
+            log.error("error : {}", e);
         }
     }
 
