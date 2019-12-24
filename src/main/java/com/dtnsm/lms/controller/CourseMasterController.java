@@ -43,7 +43,7 @@ public class CourseMasterController {
         pageInfo.setParentTitle("교육과정기준정보");
     }
 
-    @GetMapping("/list")
+    @GetMapping("")
     public String listPage(@PageableDefault Pageable pageable, Model model) {
 
         pageInfo.setPageId("m-course-list-page");
@@ -58,18 +58,18 @@ public class CourseMasterController {
     }
 
 
-    @GetMapping("/view/{id}")
-    public String viewPage(@PathVariable("id") String id, Model model) {
-
-        CourseMaster oldCourse = courseMasterService.getById(id);
-
-        pageInfo.setPageId("m-course-edit");
-        pageInfo.setPageTitle("교육과정유형");
-        model.addAttribute(pageInfo);
-        model.addAttribute("course", courseMasterService.save(oldCourse));
-
-        return "admin/course-master/view";
-    }
+//    @GetMapping("/view/{id}")
+//    public String viewPage(@PathVariable("id") String id, Model model) {
+//
+//        CourseMaster oldCourse = courseMasterService.getById(id);
+//
+//        pageInfo.setPageId("m-course-edit");
+//        pageInfo.setPageTitle("교육과정유형");
+//        model.addAttribute(pageInfo);
+//        model.addAttribute("course", courseMasterService.save(oldCourse));
+//
+//        return "admin/course-master/view";
+//    }
 
     @GetMapping("/add")
     public String add(Model model) {
@@ -97,7 +97,7 @@ public class CourseMasterController {
 
         courseMasterService.save(courseMaster);
 
-        return "redirect:/admin/course-master/list";
+        return "redirect:/admin/course-master";
     }
 
     @GetMapping("/edit/{id}")
@@ -123,7 +123,7 @@ public class CourseMasterController {
         }
         courseMasterService.save(elCourse);
 
-        return "redirect:/admin/course-master/list";
+        return "redirect:/admin/course-master";
     }
 
     @GetMapping("/delete/{id}")
@@ -133,7 +133,7 @@ public class CourseMasterController {
 
         courseMasterService.delete(course);
 
-        return "redirect:/admin/course-master/list";
+        return "redirect:/admin/course-master";
     }
 
 

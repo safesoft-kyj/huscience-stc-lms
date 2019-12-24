@@ -1,10 +1,13 @@
 package com.dtnsm.lms.service;
 
+import com.dtnsm.lms.domain.CourseAccountOrder;
 import com.dtnsm.lms.domain.DocumentAccountOrder;
 import com.dtnsm.lms.repository.DocumentAccountOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -77,4 +80,21 @@ public class DocumentAccountOrderService {
     public List<DocumentAccountOrder> getAllByNext(String userId, String fNext, String fStatus, int fSeq){
         return documentAccountOrderRepository.findAllByFnUser_UserIdAndFnNextAndFnStatusAndFnSeq(userId, fNext, fStatus, fSeq);
     }
+
+    // 사용자별 미결문서(fNext = '1', fStatus = '0') 2019/12/19
+    public Page<DocumentAccountOrder> getAllByFnUser_UserIdAndFnNextLikeAndAndCourseAccount_FnStatusLikeAndFnStatusLikeAndFnSeqGreaterThan(String userId, String fNext, String parentFstatus, String fStatus, int seq, Pageable pageable) {
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
+        return documentAccountOrderRepository.findAllByFnUser_UserIdAndFnNextLikeAndAndDocument_FnStatusLikeAndFnStatusLikeAndFnSeqGreaterThan(userId, fNext, parentFstatus, fStatus, seq, pageable);
+    }
+
+    public List<DocumentAccountOrder> getAllByFnUser_UserIdAndFnNextLikeAndAndCourseAccount_FnStatusLikeAndFnStatusLikeAndFnSeqGreaterThan(String userId, String fNext, String parentFstatus, String fStatus, int seq) {
+        return documentAccountOrderRepository.findAllByFnUser_UserIdAndFnNextLikeAndAndDocument_FnStatusLikeAndFnStatusLikeAndFnSeqGreaterThan(userId, fNext, parentFstatus, fStatus, seq);
+    }
+
+    public long countByDocumentRequest(String userId, String fNext, String parentFstatus, String fStatus, int seq) {
+        return documentAccountOrderRepository.countAllByFnUser_UserIdAndFnNextLikeAndAndDocument_FnStatusLikeAndFnStatusLikeAndFnSeqGreaterThan(userId, fNext, parentFstatus, fStatus, seq);
+    }
+
 }

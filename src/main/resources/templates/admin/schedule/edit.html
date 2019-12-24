@@ -35,7 +35,7 @@
                 <div class="panel-body">
                     <!--===================================================-->
                     <!--End Horizontal Form-->
-                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/schedule/edit-post/{id}(id=${schedule.getId()})}" th:object="${schedule}" method="post" enctype="multipart/form-data">
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/schedule/{sctype}/edit-post/{id}(sctype=${sctype}, id=${schedule.getId()})}" th:object="${schedule}" method="post" enctype="multipart/form-data">
                         <input type="hidden" th:field="*{id}" id="id" name="id">
                         <input type="hidden" th:field="*{sctype}" id="type" name="type">
                         <div class="form-group">
@@ -78,12 +78,12 @@
                                             <tbody>
                                             <tr th:each="uploadFile : ${schedule.getScheduleFiles()}">
                                                 <td>
-                                                    <a th:href="@{/admin/schedule/download-file/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>
+                                                    <a th:href="@{/admin/schedule/{sctype}/download-file/{id}(sctype=${sctype}, id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>
                                                 </td>
                                                 <td th:text="${uploadFile.getSize()}" class="text-center"></td>
                                                 <td class="text-center col-sm-2">
                                                     <a class="btn btn-xs btn-danger"
-                                                       th:href="@{/admin/schedule/delete-file/{schedule_id}/{file_id}(schedule_id=${schedule.getId()}, file_id=${uploadFile.getId()})}"><i class="demo-psi-trash"></i></a>
+                                                       th:href="@{/admin/schedule/{sctype}/delete-file/{schedule_id}/{file_id}(sctype=${sctype}, schedule_id=${schedule.getId()}, file_id=${uploadFile.getId()})}"><i class="demo-psi-trash"></i></a>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -127,13 +127,38 @@
 <!--    <script th:src="@{/default/plugins/dropzone/dropzone.min.js}"></script>-->
 
     <script type="text/javascript" th:src="@{/editor/js/HuskyEZCreator.js}" charset="utf-8"></script>
-    <script type="text/javascript" th:src="@{/default/js/custom/border-editor.js}" charset="utf-8"></script>
+<!--    <script type="text/javascript" th:src="@{/default/js/custom/border-editor.js}" charset="utf-8"></script>-->
 
 <!--    <script type="text/javascript" th:src="@{/default/js/custom/border-file.js}" charset="utf-8"></script>-->
 
 <!--    <script type="text/javascript" th:src="@{/default/js/custom/border-add.js}" charset="utf-8"></script>-->
 
     <script>
+        $(function(){
+            //전역변수
+            var obj = [];
+            //스마트에디터 프레임생성
+            nhn.husky.EZCreator.createInIFrame({
+                oAppRef: obj,
+                elPlaceHolder: "editor",
+                sSkinURI: "/editor/SmartEditor2Skin.html",
+                htParams : {
+                    // 툴바 사용 여부
+                    bUseToolbar : true,
+                    // 입력창 크기 조절바 사용 여부
+                    bUseVerticalResizer : true,
+                    // 모드 탭(Editor | HTML | TEXT) 사용 여부
+                    bUseModeChanger : true,
+                }
+            });
+
+            //전송버튼
+            $("#boardFrm").submit(function(e){
+
+                //id가 smarteditor인 textarea에 에디터에서 대입
+                obj.getById["editor"].exec("UPDATE_CONTENTS_FIELD", []);
+            });
+        });
 
     </script>
 

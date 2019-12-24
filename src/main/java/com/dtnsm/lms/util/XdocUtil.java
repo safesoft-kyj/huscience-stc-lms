@@ -4,7 +4,6 @@ import com.dtnsm.common.entity.Signature;
 import com.dtnsm.common.repository.SignatureRepository;
 import com.dtnsm.lms.domain.Project;
 import com.dtnsm.lms.properties.FileUploadProperties;
-import com.querydsl.sql.dml.Mapper;
 import fr.opensagres.poi.xwpf.converter.pdf.PdfConverter;
 import fr.opensagres.poi.xwpf.converter.pdf.PdfOptions;
 import fr.opensagres.xdocreport.converter.ConverterTypeTo;
@@ -13,26 +12,15 @@ import fr.opensagres.xdocreport.converter.Options;
 import fr.opensagres.xdocreport.core.XDocReportException;
 import fr.opensagres.xdocreport.document.IXDocReport;
 import fr.opensagres.xdocreport.document.images.ByteArrayImageProvider;
-import fr.opensagres.xdocreport.document.images.ClassPathImageProvider;
-import fr.opensagres.xdocreport.document.images.FileImageProvider;
 import fr.opensagres.xdocreport.document.images.IImageProvider;
 import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
 import fr.opensagres.xdocreport.template.IContext;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
 import fr.opensagres.xdocreport.template.formatter.FieldsMetadata;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
 
 
 public  class XdocUtil {
@@ -251,5 +239,39 @@ public  class XdocUtil {
             e.printStackTrace();
         }
     }
+
+    // group docs
+
+//    public static void viewDoc(FileUploadProperties prop) {
+//
+//        String srcDocument = prop.getXdocUploadDir() + "Update field.docx";
+//        String docReport = prop.getXdocUploadDir() + "Update field_report.docx";
+//        try {
+////            Manager manager = new DataStorage().getManagers().iterator().next();
+//
+//            //List<Project> projects = new ArrayList<>();
+//
+//            Project project = new Project("Gildong Hong");
+//            project.setCourseTitle("KGCP/ICH-GCP Practice");
+//            project.setCertiNo("DTNSM-GCP-2019001");
+//            project.setCourseDate("On 04 MAR 2019");
+//            project.setFirstUserName("Lim, Hyunjin / QMO of Dt&SanoMedics");
+//            project.setSecondUserName("Kim, Kwangho / Registered Director of Dt&SanoMedics");
+//            project.setSopName("SOP-TM0002_RD08 v1.1");
+//            project.setEffectiveDate("04-MAR-2019");
+//
+//            InputStream in = new FileInputStream(srcDocument);
+//
+//            OutputStream out = new FileOutputStream(new File(docReport));
+//
+//            DocumentAssembler assembler = new DocumentAssembler();
+//
+//            assembler.setOptions(DocumentAssemblyOptions.UPDATE_FIELDS_AND_FORMULAS);
+//            assembler.assembleDocument(in, out, new DataSourceInfo( project, "project"));
+//        } catch (Exception exp) {
+//            System.out.println("Exception: " + exp.getMessage());
+//        }
+//    }
+
 
 }

@@ -1,5 +1,6 @@
 package com.dtnsm.lms.repository;
 
+import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.domain.Document;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +10,11 @@ import java.util.List;
 
 
 public interface DocumentRepository extends JpaRepository<Document, Long> {
+
+
+    // 결재 조회
+    Page<Document> findByAccount_UserIdAndFnStatusLike(String userId, String status, Pageable pageable);
+
 
     // 어드민 조회
     List<Document> findAllByTemplate_Id(String templateId);

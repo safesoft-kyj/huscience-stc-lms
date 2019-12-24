@@ -107,7 +107,7 @@
                                 <th><span th:text="#{label.file}">첨부파일</span></th>
                                 <td colspan="3">
                                     <div th:each="sections : ${course.getCourseFiles()}">
-                                        <a th:href="@{/admin/course/download-file/{id}(id=${sections.getId()})}" th:text="${sections.getFileName()}"></a>
+                                        <a th:href="@{/admin/course/{typeId}/download-file/{id}(typeId=${typeId}, id=${sections.getId()})}" th:text="${sections.getFileName()}"></a>
                                     </div>
                                 </td>
                             </tr>
@@ -228,7 +228,7 @@
                         <div class="col-sm-12 input-group pull-right">
                             <p class="text-right">
 <!--                                <a th:href="@{/admin/course/edit/{id}(id=${course.getId()})}" class="btn btn-success" th:text="#{label.edit}">수정</a>-->
-                                <a th:href="@{/admin/course/list/{typeId}(typeId=${course.getCourseMaster().getId()})}" class="btn btn-success" th:text="#{label.list}">목록</a>
+                                <a th:href="@{/admin/course/{typeId}(typeId=${typeId})}" class="btn btn-success" th:text="#{label.list}">목록</a>
                             </p>
                         </div>
                     </div>

@@ -3,13 +3,16 @@ package com.dtnsm.lms.domain;
 import com.dtnsm.lms.auth.AuditorCreateEntity;
 import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import com.dtnsm.lms.domain.constant.TrainingType;
+import com.dtnsm.lms.util.DateUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.poi.hpsf.Decimal;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.text.DecimalFormat;
 import java.util.Date;
 
 @Entity
@@ -55,4 +58,14 @@ public class CourseTrainingLog extends AuditorCreateEntity<String> {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Account account;
+
+    // 디지털 바이터 서식으로 리턴
+    public String getCompleteDateFormat() {
+        return DateUtil.getDateToString(this.completeDate, "dd-MMM-yyyy");
+    }
+
+    public String getTrainingTimeFormat() {
+        DecimalFormat formatter = new DecimalFormat("##0.0#");
+        return formatter.format(trainingTime * 1.0/3600);
+    }
 }

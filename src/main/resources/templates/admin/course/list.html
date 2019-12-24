@@ -54,10 +54,10 @@
                                     <span class="text-danger">(강의,시험, 설문을 등록후 대상자를 추가하세요)</span>&nbsp;&nbsp;
                                     <!-- self 교육 : 온라인 교육, 그외:오프라인 교육 -->
                                     <th:block th:if="${#strings.equalsIgnoreCase(typeId, 'BC0101')}">
-                                        <a class="btn btn-purple" th:href="@{/admin/course/addOnline/{typeId}(typeId=${typeId})}"><i class="demo-pli-add"></i> Add</a>
+                                        <a class="btn btn-purple" th:href="@{/admin/course/{typeId}/addOnline(typeId=${typeId})}"><i class="demo-pli-add"></i> Add</a>
                                     </th:block>
                                     <th:block th:unless="${#strings.equalsIgnoreCase(typeId, 'BC0101')}">
-                                        <a class="btn btn-purple" th:href="@{/admin/course/addOffLine/{typeId}(typeId=${typeId})}"><i class="demo-pli-add"></i> Add</a>
+                                        <a class="btn btn-purple" th:href="@{/admin/course/{typeId}/addOffLine(typeId=${typeId})}"><i class="demo-pli-add"></i> Add</a>
                                     </th:block>
                                 </div>
                             </div>
@@ -87,7 +87,7 @@
                                             <th:block th:if="${border.getActive() == 1}">
                                                 <span class="badge badge-info" th:text="#{label.active}"></span>
                                             </th:block>
-                                            <a th:href="@{/admin/course/view/{id}(id=${border.getId()})}" th:text="${border.getTitle()}"></a>
+                                            <a th:href="@{/admin/course/{typeId}/view/{id}(typeId=${typeId}, id=${border.getId()})}" th:text="${border.getTitle()}"></a>
                                         </td>
 
                                         <!-- 신청기간은 Self와 Class 교육만 있음 -->
@@ -133,35 +133,35 @@
                                         </td>
 
                                         <td class="text-center">
-                                            <a th:href="@{/admin/course/section/list/{courseId}(courseId=${border.getId()})}"><span class="badge badge-mint" th:text="${border.getSections().size()}"></span></a>
+                                            <a th:href="@{/admin/course/{typeId}/{courseId}/section(typeId=${typeId}, courseId=${border.getId()})}"><span class="badge badge-mint" th:text="${border.getSections().size()}"></span></a>
 <!--                                            <a class="label label-warning" th:href="@{/admin/course/section/add/{id}(id=${border.getId()})}" th:text="#{label.course.add}">강의등록</a>-->
                                         </td>
                                         <td class="text-center">
-                                            <a  th:if="${border.getIsQuiz().equals('Y')}"  th:href="@{/admin/course/quiz/list/{courseId}(courseId=${border.getId()})}"><span class="badge badge-success" th:text="${border.getQuizzes().size()}"></span></a>
+                                            <a  th:if="${border.getIsQuiz().equals('Y')}"  th:href="@{/admin/course/{typeId}/{courseId}/quiz(typeId=${typeId}, courseId=${border.getId()})}"><span class="badge badge-success" th:text="${border.getQuizzes().size()}"></span></a>
 <!--                                            <a class="label label-purple" th:if="${border.getIsQuiz().equals('Y')}" th:href="@{/admin/course/quiz/add/{id}(id=${border.getId()})}" th:text="#{label.course.add}">시험등록</a>-->
                                         </td>
                                         <td class="text-center">
-                                            <a th:if="${border.getIsSurvey().equals('Y')}" th:href="@{/admin/course/survey/list/{courseId}(courseId=${border.getId()})}"><span class="badge badge-warning" th:text="${border.getSurveys().size()}"></span></a>
+                                            <a th:if="${border.getIsSurvey().equals('Y')}" th:href="@{/admin/course/{typeId}/{courseId}/survey(typeId=${typeId}, courseId=${border.getId()})}"><span class="badge badge-warning" th:text="${border.getSurveys().size()}"></span></a>
 <!--                                            <a class="label label-mint" th:if="${border.getIsSurvey().equals('Y')}" th:href="@{/admin/course/survey/add/{id}(id=${border.getId()})}" th:text="#{label.course.add}">설문등록</a>-->
                                         </td>
                                         <td class="text-center">
-                                            <a th:href="@{/admin/course/account/list/{courseId}(courseId=${border.getId()})}"><span class="badge badge-warning" th:text="${border.getCourseAccountList().size()}"></span></a>
+                                            <a th:href="@{/admin/course/{typeId}/{courseId}/account(typeId=${typeId}, courseId=${border.getId()})}"><span class="badge badge-warning" th:text="${border.getCourseAccountList().size()}"></span></a>
                                             <!--                                            <a class="label label-mint" th:if="${border.getIsSurvey().equals('Y')}" th:href="@{/admin/course/survey/add/{id}(id=${border.getId()})}" th:text="#{label.course.add}">설문등록</a>-->
                                         </td>
                                         <td class="text-center">
                                             <th:block th:if="${border.getActive() == 1}">
-                                                <a th:text="#{label.noActive}" th:href="@{/admin/course/updateActive/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Active" data-container="body"></a>
+                                                <a th:text="#{label.noActive}" th:href="@{/admin/course/{typeId}/updateActive/{id}(typeId=${typeId}, id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Active" data-container="body"></a>
                                             </th:block>
                                             <th:block th:if="${border.getActive() == 0}">
-                                                <a th:text="#{label.active}" th:href="@{/admin/course/updateActive/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Active" data-container="body"></a>
+                                                <a th:text="#{label.active}" th:href="@{/admin/course/{typeId}/updateActive/{id}(typeId=${typeId}, id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Active" data-container="body"></a>
                                             </th:block>
                                             <th:block th:if="${#strings.equalsIgnoreCase(typeId, 'BC0101')}">
-                                                <a th:text="#{label.edit}" th:href="@{/admin/course/editOnLine/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                                <a th:text="#{label.edit}" th:href="@{/admin/course/{typeId}/editOnLine/{id}(typeId=${typeId}, id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
                                             </th:block>
                                             <th:block th:unless="${#strings.equalsIgnoreCase(typeId, 'BC0101')}">
-                                                <a th:text="#{label.edit}" th:href="@{/admin/course/editOffLine/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                                <a th:text="#{label.edit}" th:href="@{/admin/course/{typeId}/editOffLine/{id}(typeId=${typeId}, id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
                                             </th:block>
-                                            <a th:text="#{label.delete}" th:href="@{/admin/course/delete/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                            <a th:text="#{label.delete}" th:href="@{/admin/course/{typeId}/delete/{id}(typeId=${typeId}, id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -171,29 +171,29 @@
                                         th:with="start=${T(Math).floor(borders.number/10)*10 + 1},
                 last=(${start + 9 < borders.totalPages ? start + 9 : borders.totalPages})">
                                         <li>
-                                            <a th:href="@{/admin/course/list/{typeId}(typeId=${typeId}, page=1)}" aria-label="First">
+                                            <a th:href="@{/admin/course/{typeId}(typeId=${typeId}, page=1)}" aria-label="First">
                                                 <span aria-hidden="true">First</span>
                                             </a>
                                         </li>
 
                                         <li th:class="${borders.first} ? 'disabled'">
-                                            <a th:href="${borders.first} ? '#' :@{/admin/course/list/{typeId}(typeId=${typeId}, page=${borders.number})}" aria-label="Previous">
+                                            <a th:href="${borders.first} ? '#' :@{/admin/course/{typeId}(typeId=${typeId}, page=${borders.number})}" aria-label="Previous">
                                                 <span aria-hidden="true">&lt;</span>
                                             </a>
                                         </li>
 
                                         <li th:each="page: ${#numbers.sequence(start, last)}" th:class="${page == borders.number + 1} ? 'active'">
-                                            <a th:text="${page}" th:href="@{/admin/course/list/{typeId}(typeId=${typeId}, page=${page})}"></a>
+                                            <a th:text="${page}" th:href="@{/admin/course/{typeId}(typeId=${typeId}, page=${page})}"></a>
                                         </li>
 
                                         <li th:class="${borders.last} ? 'disabled'">
-                                            <a th:href="${borders.last} ? '#' : @{/admin/course/list/{typeId}(typeId=${typeId}, page=${borders.number + 2})}" aria-label="Next">
+                                            <a th:href="${borders.last} ? '#' : @{/admin/course/{typeId}(typeId=${typeId}, page=${borders.number + 2})}" aria-label="Next">
                                                 <span aria-hidden="true">&gt;</span>
                                             </a>
                                         </li>
 
                                         <li>
-                                            <a th:href="@{/admin/course/list/{typeId}(typeId=${typeId}, page=${borders.totalPages})}" aria-label="Last">
+                                            <a th:href="@{/admin/course/{typeId}(typeId=${typeId}, page=${borders.totalPages})}" aria-label="Last">
                                                 <span aria-hidden="true">Last</span>
                                             </a>
                                         </li>

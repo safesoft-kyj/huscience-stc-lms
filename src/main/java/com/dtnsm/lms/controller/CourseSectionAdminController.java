@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 
 @Controller
-@RequestMapping("/admin/course/section")
+@RequestMapping("/admin/course")
 public class CourseSectionAdminController {
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseSectionAdminController.class);
@@ -61,6 +61,7 @@ public class CourseSectionAdminController {
     private String majorCode = "BC03";
     private String minorCode = "BC0301";
 
+
     public CourseSectionAdminController() {
         pageInfo.setParentId("m-course");
         pageInfo.setParentTitle("교육과정");
@@ -68,45 +69,50 @@ public class CourseSectionAdminController {
         //courseMaster = courseMasterService.getById("A01");
     }
 
-    @GetMapping("/list/{courseId}")
-    public String list(@PathVariable("courseId") Long courseId, Model model) {
+    @GetMapping("/{typeId}/{courseId}/section")
+    public String list(@PathVariable("typeId") String typeId, @PathVariable("courseId") Long courseId, Model model) {
 
         Course course = courseService.getCourseById(courseId);
 
         pageInfo.setPageId("m-course-list-page");
-        pageInfo.setPageTitle("<a href='/admin/course/list/" + course.getCourseMaster().getId() + "'>" + course.getCourseMaster().getCourseName() + "</a> > 강의");
+        pageInfo.setPageTitle(String.format("<a href='/admin/course/%s/'>%s</a> > %s", typeId, course.getCourseMaster().getCourseName(), "강의"));
         model.addAttribute(pageInfo);
         model.addAttribute("borders", sectionService.getAllByCourseId(courseId));
-        model.addAttribute("typeId", course.getCourseMaster().getId());
+
         model.addAttribute("gubunId", course.getCourseMaster().getCourseGubun().getMinorCd());
+        model.addAttribute("typeId", typeId);
+        model.addAttribute("courseId", courseId);
 
         return "admin/course/section/list";
     }
 
-    @GetMapping("/add/{courseId}")
-    public String noticeAdd(@PathVariable("courseId") Long courseId, Model model) {
+    @GetMapping("/{typeId}/{courseId}/section/add")
+    public String noticeAdd(@PathVariable("typeId") String typeId, @PathVariable("courseId") Long courseId, Model model) {
 
         Course course = courseService.getCourseById(courseId);
         CourseSection courseSection = new CourseSection();
         courseSection.setCourse(course);
 
-        pageInfo.setPageTitle(course.getTitle());
+        pageInfo.setPageTitle(String.format("<a href='/admin/course/%s/'>%s</a> > %s", typeId, course.getCourseMaster().getCourseName(), "강의"));
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseSection", courseSection);
 //        model.addAttribute("codeList", codeService.getMinorList(majorCode));
         model.addAttribute("minorCode", minorCode);
         model.addAttribute("id", courseId);
+        model.addAttribute("typeId", typeId);
+        model.addAttribute("courseId", courseId);
 
         return "admin/course/section/add";
     }
 
 
 
-    @PostMapping("/add-post")
+    @PostMapping("/{typeId}/{courseId}/section/add-post")
     public String noticeAddPost(@Valid CourseSection courseSection
+            , @PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId
             , @RequestParam("files") MultipartFile[] files
-            , @RequestParam("courseId") Long courseId
             , BindingResult result) {
         if(result.hasErrors()) {
             return "admin/course/section/add";
@@ -128,32 +134,38 @@ public class CourseSectionAdminController {
         // 강의 시간의 변경시 과정의 시간을 업데이트 한다.
         courseService.updateCourseHour(course);
 
-        return "redirect:/admin/course/section/list/" + courseSection1.getCourse().getId();
+        return String.format("redirect:/admin/course/%s/%s/section"
+                , courseSection1.getCourse().getCourseMaster().getId()
+                , courseSection1.getCourse().getId());
     }
 
-    @GetMapping("/edit/{id}")
-    public String noticeEdit(@PathVariable("id") long id, Model model) {
+    @GetMapping("/{typeId}/{courseId}/section/edit/{id}")
+    public String noticeEdit(@PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId, @PathVariable("id") long id, Model model) {
 
         CourseSection courseSection = sectionService.getCourseSectionById(id);
-
-        pageInfo.setPageTitle(courseSection.getName());
+        Course course = courseService.getCourseById(courseId);
+        pageInfo.setPageTitle(String.format("<a href='/admin/course/%s/'>%s</a> > %s", typeId, course.getCourseMaster().getCourseName(), "강의"));
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseSection", courseSection);
 //        model.addAttribute("codeList", codeService.getMinorList(majorCode));
+        model.addAttribute("typeId", typeId);
+        model.addAttribute("courseId", courseId);
         model.addAttribute("id", courseSection.getId());
 
         return "admin/course/section/edit";
     }
 
-    @PostMapping("/edit-post/{id}")
+    @PostMapping("/{typeId}/{courseId}/section/edit-post/{id}")
     public String noticeEditPost(@PathVariable("id") long id
+            , @PathVariable("typeId") String typeId
             , @RequestParam("files") MultipartFile[] files
             , @Valid CourseSection courseSection
             , BindingResult result) {
         if(result.hasErrors()) {
             courseSection.setId(id);
-            return "/admin/course/section/list/" + courseSection.getId();
+            return "admin/course/section/edit";
         }
         CourseSection oldCourseSection = sectionService.getCourseSectionById(id);
 
@@ -173,54 +185,66 @@ public class CourseSectionAdminController {
                 .map(file -> fileService.storeFile(file, courseSection1))
                 .collect(Collectors.toList());
 
-        return "redirect:/admin/course/section/list/" + courseSection1.getCourse().getId();
+        return String.format("redirect:/admin/course/%s/%s/section"
+                , courseSection1.getCourse().getCourseMaster().getId()
+                , courseSection1.getCourse().getId());
     }
 
-    @GetMapping("/view/{id}")
-    public String viewPage(@PathVariable("id") long id, Model model) {
+    @GetMapping("/{typeId}/{courseId}/section/view/{id}")
+    public String viewPage(@PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId, @PathVariable("id") long id, Model model) {
 
         CourseSection courseSection = sectionService.getCourseSectionById(id);
 
-        pageInfo.setPageId("self");
-        pageInfo.setPageTitle(courseSection.getName());
+        Course course = courseService.getCourseById(courseId);
+        pageInfo.setPageTitle(String.format("<a href='/admin/course/%s/'>%s</a> > %s", typeId, course.getCourseMaster().getCourseName(), "강의"));
 
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courseSection.getSectionFiles());
         model.addAttribute("courseId", courseSection.getCourse().getId());
+        model.addAttribute("typeId", typeId);
+        model.addAttribute("courseId", courseId);
 
         return "admin/course/section/view";
     }
 
 
-    @GetMapping("/delete/{id}")
-    public String noticeDelete(@PathVariable("id") long id) {
+    @GetMapping("/{typeId}/{courseId}/section/delete/{id}")
+    public String noticeDelete(@PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId, @PathVariable("id") long id, HttpServletRequest request) {
 
         CourseSection courseSection = sectionService.getCourseSectionById(id);
-
-        Long courseId = courseSection.getCourse().getId();
 
         // 과정 신청된 내역이 있으면 삭제 하지 않는다.
         if (courseSection.getCourse().getCourseAccountList().size() <= 0) {
             sectionService.deleteSection(courseSection);
         }
 
-        return "redirect:/admin/course/section/list/" + courseId;
+        // 이전 URL를 리턴한다.
+        String refUrl = request.getHeader("referer");
+        return "redirect:" +  refUrl;
     }
 
-
-    @GetMapping("/delete-file/{section_id}/{file_id}")
-    public String noticeDeleteFile(@PathVariable long section_id, @PathVariable long file_id, HttpServletRequest request){
+    @GetMapping("/{typeId}/{courseId}/section/delete-file/{section_id}/{file_id}")
+    public String noticeDeleteFile(@PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId
+            , @PathVariable long section_id, @PathVariable long file_id, HttpServletRequest request){
 
         // db및 파일 삭제
         fileService.deleteFile(file_id);
 
-        return "redirect:/admin/course/section/edit/" + section_id;
+        CourseSection courseSection = sectionService.getCourseSectionById(section_id);
 
+        // 이전 URL를 리턴한다.
+        String refUrl = request.getHeader("referer");
+        return "redirect:" +  refUrl;
     }
 
-    @GetMapping("/download-file/{id}")
+    @GetMapping("/{typeId}/{courseId}/section/download-file/{id}")
     @ResponseBody
-    public ResponseEntity<Resource> downloadFile(@PathVariable long id, HttpServletRequest request){
+    public ResponseEntity<Resource> downloadFile(@PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId
+            , @PathVariable long id, HttpServletRequest request){
 
         CourseSectionFile courseSectionFile =  fileService.getUploadFile(id);
 

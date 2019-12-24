@@ -44,6 +44,9 @@ public class Schedule extends AuditorCreateEntity<String> {
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ScheduleFile> scheduleFiles = new ArrayList<>();
 
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ScheduleViewAccount> scheduleViewAccounts = new ArrayList<>();
+
     public Schedule(){}
 
     public Schedule(String title, String content) {

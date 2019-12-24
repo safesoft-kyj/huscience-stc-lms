@@ -38,10 +38,10 @@
 
             <!--Submenu-->
             <ul class="collapse">
-                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0101')}" th:text="#{label.title.notice}">공지사항</a></li>
-                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0102')}" th:text="#{label.title.news}">법령정보</a></li>
-                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0103')}" th:text="#{label.title.guide}">가이드라인</a></li>
-                <li><a href="#" data-th-href="@{/border/list/{typeId}(typeId='BA0104')}" th:text="#{label.title.pds}">자료실</a></li>
+                <li><a href="#" data-th-href="@{/border/{typeId}(typeId='BA0101')}" th:text="#{label.title.notice}">공지사항</a></li>
+                <li><a href="#" data-th-href="@{/border/{typeId}(typeId='BA0102')}" th:text="#{label.title.news}">법령정보</a></li>
+                <li><a href="#" data-th-href="@{/border/{typeId}(typeId='BA0103')}" th:text="#{label.title.guide}">가이드라인</a></li>
+                <li><a href="#" data-th-href="@{/border/{typeId}(typeId='BA0104')}" th:text="#{label.title.pds}">자료실</a></li>
             </ul>
         </li>
 
@@ -74,37 +74,39 @@
 
             <!--Submenu-->
             <ul class="collapse">
-
-                <li><a href="#" data-th-href="@{/approval/listApprProcess}">미결함 <span class="badge badge-purple" id="course-my-approval"></span></a></li>
-                <li><a href="#" data-th-href="@{/approval/listMyProcess}">내진행함 <span class="badge badge-purple" id="course-my-process"></span></a></li>
-                <li><a href="#" data-th-href="@{/approval/listMyComplete}">내완료함</a></li>
-                <li><a href="#" data-th-href="@{/approval/listMyReject}">내반려함</a></li>
-                <li><a href="#" data-th-href="@{/approval/listMyAll}">내전체함</a></li>
-                <li><a href="#" data-th-href="@{/approval/listApprAll}">결재함</a></li>
+                <li><a href="#" data-th-href="@{/approval/mainRequest1}">내부결재</a></li>
+                <li><a href="#" data-th-href="@{/approval/mainRequest2}">외부결재</a></li>
+                <li><a href="#" data-th-href="@{/approval/mainApproval}">결재함</a></li>
+<!--                <li><a href="#" data-th-href="@{/approval/listApprProcess}">미결함 <span class="badge badge-purple" id="course-my-approval"></span></a></li>-->
+<!--                <li><a href="#" data-th-href="@{/approval/listMyProcess}">내진행함 <span class="badge badge-purple" id="course-my-process"></span></a></li>-->
+<!--                <li><a href="#" data-th-href="@{/approval/listMyComplete}">내완료함</a></li>-->
+<!--                <li><a href="#" data-th-href="@{/approval/listMyReject}">내반려함</a></li>-->
+<!--                <li><a href="#" data-th-href="@{/approval/listMyAll}">내전체함</a></li>-->
+<!--                <li><a href="#" data-th-href="@{/approval/listApprAll}">결재함</a></li>-->
 <!--                <li th:text="${T(com.dtnsm.lms.util.GlobalUtil).apprProcessCount()}"></li>-->
 <!--                <li><a href="#app-process" data-toggle="tab">결재요청 <span class="badge badge-purple" th:text="${app1List.size()}"></span></a></li>-->
             </ul>
 
         </li>
 
-        <li>
-            <a href="#">
-                <i class="demo-pli-home"></i>
-                <span class="menu-title">전자결재</span>
-                <i class="arrow"></i>
-            </a>
+<!--        <li>-->
+<!--            <a href="#">-->
+<!--                <i class="demo-pli-home"></i>-->
+<!--                <span class="menu-title">전자결재</span>-->
+<!--                <i class="arrow"></i>-->
+<!--            </a>-->
 
-            <!--Submenu-->
-            <ul class="collapse">
-                <li><a href="#" data-th-href="@{/document/templateView}">기안작성</a></li>
-                <li><a href="#" data-th-href="@{/approval/document/listApprProcess}">미결함 <span class="badge badge-purple" id="document-my-approval"></span></a></li>
-                <li><a href="#" data-th-href="@{/approval/document/listMyProcess}">내진행함 <span class="badge badge-purple" id="document-my-process"></span></a></li>
-                <li><a href="#" data-th-href="@{/approval/document/listMyComplete}">내완료함</a></li>
-                <li><a href="#" data-th-href="@{/approval/document/listMyReject}">내반려함</a></li>
-                <li><a href="#" data-th-href="@{/approval/document/listMyAll}">내전체함</a></li>
-                <li><a href="#" data-th-href="@{/approval/document/listApprAll}">결재함</a></li>
-            </ul>
-        </li>
+<!--            &lt;!&ndash;Submenu&ndash;&gt;-->
+<!--            <ul class="collapse">-->
+<!--                <li><a href="#" data-th-href="@{/document/templateView}">기안작성</a></li>-->
+<!--                <li><a href="#" data-th-href="@{/approval/document/listApprProcess}">미결함 <span class="badge badge-purple" id="document-my-approval"></span></a></li>-->
+<!--                <li><a href="#" data-th-href="@{/approval/document/listMyProcess}">내진행함 <span class="badge badge-purple" id="document-my-process"></span></a></li>-->
+<!--                <li><a href="#" data-th-href="@{/approval/document/listMyComplete}">내완료함</a></li>-->
+<!--                <li><a href="#" data-th-href="@{/approval/document/listMyReject}">내반려함</a></li>-->
+<!--                <li><a href="#" data-th-href="@{/approval/document/listMyAll}">내전체함</a></li>-->
+<!--                <li><a href="#" data-th-href="@{/approval/document/listApprAll}">결재함</a></li>-->
+<!--            </ul>-->
+<!--        </li>-->
 
         <!--Menu list item-->
         <li>
@@ -176,10 +178,10 @@
             <!--Submenu-->
             <ul class="collapse">
 
-                <li><a href="#" data-th-href="@{/admin/course/list/{typeId}(typeId='BC0101')}">Self교육</a></li>
-                <li><a href="#" data-th-href="@{/admin/course/list/{typeId}(typeId='BC0102')}">Class교육</a></li>
-                <li><a href="#" data-th-href="@{/admin/course/list/{typeId}(typeId='BC0103')}">부서교육</a></li>
-                <li><a href="#" data-th-href="@{/admin/course/list/{typeId}(typeId='BC0104')}">외부교육</a></li>
+                <li><a href="#" data-th-href="@{/admin/course/{typeId}(typeId='BC0101')}">Self training</a></li>
+                <li><a href="#" data-th-href="@{/admin/course/{typeId}(typeId='BC0102')}">Class training</a></li>
+                <li><a href="#" data-th-href="@{/admin/course/{typeId}(typeId='BC0103')}">부서별 교육</a></li>
+                <li><a href="#" data-th-href="@{/admin/course/{typeId}(typeId='BC0104')}">외부 교육</a></li>
             </ul>
         </li>
 
@@ -192,13 +194,14 @@
 
             <!--Submenu-->
             <ul class="collapse">
-                <li><a href="#" data-th-href="@{/admin/registration/courseManager/list}">교육과정관리자</a></li>
-                <li><a href="#" data-th-href="@{/admin/course-master/list}">교육유형</a></li>
-                <li><a href="#" data-th-href="@{/admin/survey/list}">설문</a></li>
-                <li><a href="#" data-th-href="@{/admin/certificate/number/list}">수료증채번</a></li>
-                <li><a href="#" data-th-href="@{/admin/certificate/info/list}">수료증정보</a></li>
-                <li><a href="#" data-th-href="@{/admin/schedule/list/{sctype}(sctype=${T(com.dtnsm.lms.domain.constant.ScheduleType).CALENDAR})}">연간일정</a></li>
-                <li><a href="#" data-th-href="@{/admin/schedule/list/{sctype}(sctype=${T(com.dtnsm.lms.domain.constant.ScheduleType).MATRIX})}">Employee Matrix</a></li>
+                <li><a href="#" data-th-href="@{/admin/registration/courseManager}">교육과정관리자</a></li>
+                <li><a href="#" data-th-href="@{/admin/course-master}">교육과정유형</a></li>
+                <li><a href="#" data-th-href="@{/admin/survey}">설문</a></li>
+                <li><a href="#" data-th-href="@{/admin/certificate/number}">수료증채번</a></li>
+                <li><a href="#" data-th-href="@{/admin/certificate/info}">수료증정보</a></li>
+                <li><a href="#" data-th-href="@{/admin/schedule/{sctype}(sctype=${T(com.dtnsm.lms.domain.constant.ScheduleType).CALENDAR})}">연간일정</a></li>
+                <li><a href="#" data-th-href="@{/admin/schedule/{sctype}(sctype=${T(com.dtnsm.lms.domain.constant.ScheduleType).MATRIX})}">Employee Matrix</a></li>
+                <li><a href="#" data-th-href="@{/admin/document/template}">결재양식등록</a></li>
             </ul>
         </li>
 
@@ -211,33 +214,31 @@
 
             <!--Submenu-->
             <ul class="collapse">
-                <li><a href="#" data-th-href="@{/admin/approval/listApprProcess}">진행함 <span class="badge badge-purple" id="course-my-process2"></span></a></li>
-                <li><a href="#" data-th-href="@{/admin/approval/listApprComplete}">완료함</a></li>
-                <li><a href="#" data-th-href="@{/admin/approval/listApprReject}">반려함</a></li>
+                <li><a href="#" data-th-href="@{/admin/approval/mainRequest1}">내부결재</a></li>
+                <li><a href="#" data-th-href="@{/admin/approval/mainRequest2}">외부결재</a></li>
+<!--                <li><a href="#" data-th-href="@{/admin/approval/listApprProcess}">진행함 <span class="badge badge-purple" id="course-my-process2"></span></a></li>-->
+<!--                <li><a href="#" data-th-href="@{/admin/approval/listApprComplete}">완료함</a></li>-->
+<!--                <li><a href="#" data-th-href="@{/admin/approval/listApprReject}">반려함</a></li>-->
+<!--                <li><a href="#" data-th-href="@{/admin/approval/document/listApprComplete}">완료함</a></li>-->
             </ul>
         </li>
 
+<!--        <li>-->
+<!--            <a href="#">-->
+<!--                <i class="demo-pli-gear"></i>-->
+<!--                <span class="menu-title">전자결재</span>-->
+<!--                <i class="arrow"></i>-->
+<!--            </a>-->
 
-        <li>
-            <a href="#">
-                <i class="demo-pli-gear"></i>
-                <span class="menu-title">전자결재</span>
-                <i class="arrow"></i>
-            </a>
+<!--            &lt;!&ndash;Submenu&ndash;&gt;-->
+<!--            <ul class="collapse">-->
+<!--                <li><a href="#" data-th-href="@{/admin/document/template/list}">보고서양식등록</a></li>-->
+<!--                <li><a href="#" data-th-href="@{/admin/approval/document/listApprProcess}">진행함 <span class="badge badge-purple" id="document-my-process2"></span></a></li>-->
+<!--                <li><a href="#" data-th-href="@{/admin/approval/document/listApprComplete}">완료함</a></li>-->
+<!--                <li><a href="#" data-th-href="@{/admin/approval/document/listApprReject}">반려함</a></li>-->
 
-            <!--Submenu-->
-            <ul class="collapse">
-                <li><a href="#" data-th-href="@{/admin/document/template/list}">결재양식등록</a></li>
-                <li><a href="#" data-th-href="@{/admin/approval/document/listApprProcess}">진행함 <span class="badge badge-purple" id="document-my-process2"></span></a></li>
-                <li><a href="#" data-th-href="@{/admin/approval/document/listApprComplete}">완료함</a></li>
-                <li><a href="#" data-th-href="@{/admin/approval/document/listApprReject}">반려함</a></li>
-
-            </ul>
-        </li>
-
-
-
-
+<!--            </ul>-->
+<!--        </li>-->
 
         <li>
             <a href="#">
@@ -248,15 +249,15 @@
 
             <!--Submenu-->
             <ul class="collapse">
-                <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0101')}" th:text="#{label.title.notice}">공지사항</a></li>
-                <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0102')}" th:text="#{label.title.news}">법령정보</a></li>
-                <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0103')}" th:text="#{label.title.guide}">가이드라인</a></li>
-                <li><a href="#" data-th-href="@{/admin/border/list/{typeId}(typeId='BA0104')}" th:text="#{label.title.pds}">자료실</a></li>
+                <li><a href="#" data-th-href="@{/admin/border/{typeId}(typeId='BA0101')}" th:text="#{label.title.notice}">공지사항</a></li>
+                <li><a href="#" data-th-href="@{/admin/border/{typeId}(typeId='BA0102')}" th:text="#{label.title.news}">법령정보</a></li>
+                <li><a href="#" data-th-href="@{/admin/border/{typeId}(typeId='BA0103')}" th:text="#{label.title.guide}">가이드라인</a></li>
+                <li><a href="#" data-th-href="@{/admin/border/{typeId}(typeId='BA0104')}" th:text="#{label.title.pds}">자료실</a></li>
             </ul>
         </li>
 
         <li>
-            <a href="#" data-th-href="@{/admin/customer/list}">
+            <a href="#" data-th-href="@{/admin/customer}">
                 <i class="demo-pli-gear"></i>
                 <span class="menu-title">협약기관</span>
 <!--                <i class="arrow"></i>-->
@@ -330,9 +331,9 @@
 
             <!--Submenu-->
             <ul class="collapse">
-                <li><a data-th-href="@{/admin/code/major-list}">Major Code</a></li>
-                <li><a data-th-href="@{/admin/code/minor-list}">Minor Code</a></li>
-                <li><a href="#" data-th-href="@{/admin/border-master/list}">게시판</a></li>
+                <li><a data-th-href="@{/admin/code/major}">Major Code</a></li>
+                <li><a data-th-href="@{/admin/code/minor}">Minor Code</a></li>
+                <li><a href="#" data-th-href="@{/admin/border-master}">게시판</a></li>
             </ul>
         </li>
 
@@ -345,8 +346,8 @@
 
             <!--Submenu-->
             <ul class="collapse">
-                <li><a href="#" data-th-href="@{/admin/registration/account/list}">사용자</a></li>
-                <li><a href="#" data-th-href="@{/admin/registration/role/list}">Role</a></li>
+                <li><a href="#" data-th-href="@{/admin/registration/account}">사용자</a></li>
+                <li><a href="#" data-th-href="@{/admin/registration/role}">Role</a></li>
                 <!--                <li><a href="#" data-th-href="@{/admin/registration/accountRole/list}">사용자별Role관리</a></li>-->
 
             </ul>
@@ -362,7 +363,7 @@
             <!--Submenu-->
             <ul class="collapse">
                 <!--                <li><a href="#" data-th-href="@{/admin/depart/treeView}">조직도</a></li>-->
-                <li><a href="#" data-th-href="@{/admin/depart/list}">부서조회</a></li>
+<!--                <li><a href="#" data-th-href="@{/admin/depart}">부서조회</a></li>-->
                 <li><a href="#" data-th-href="@{/admin/user/list}">사원조회</a></li>
             </ul>
         </li>

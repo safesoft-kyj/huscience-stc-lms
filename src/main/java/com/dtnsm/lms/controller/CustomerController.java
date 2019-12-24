@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/customer")
@@ -27,7 +28,7 @@ public class CustomerController {
         pageInfo.setParentTitle("협약기관");
     }
 
-    @GetMapping("/list-page")
+    @GetMapping("")
     public String listPage(@PageableDefault Pageable pageable, Model model) {
 
         Page<Customer> customers = customerService.getCustomerPageList(pageable);
@@ -40,8 +41,8 @@ public class CustomerController {
         return "content/customer/list-page";
     }
 
-    @GetMapping("/view/{id}")
-    public String viewPage(@PathVariable("id") long id, Model model) {
+    @GetMapping("/view")
+    public String viewPage(@RequestParam("id") long id, Model model) {
 
         Customer oldCustomer = customerService.getCustomerById(id).get();
 

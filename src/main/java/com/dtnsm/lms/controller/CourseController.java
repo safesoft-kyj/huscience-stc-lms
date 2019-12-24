@@ -3,6 +3,7 @@ package com.dtnsm.lms.controller;
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.service.*;
+import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 import org.slf4j.LoggerFactory;
@@ -214,18 +215,22 @@ public class CourseController {
         Resource resource = fileService.loadFileAsResource(courseFile.getSaveName());
 
         // Try to determine file's content type
-        String contentType = mimeTypesMap.getContentType(courseFile.getSaveName());
+//        String contentType = mimeTypesMap.getContentType(courseFile.getSaveName());
         // contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-
+        String contentType = courseFile.getMimeType();
 
         // Fallback to the default content type if type could not be determined
         if(contentType.equals("")) {
             contentType = "application/octet-stream";
         }
 
+        // 한글파일명 깨짐 현상 해소
+        String newFileName = FileUtil.getNewFileName(request, courseFile.getFileName());
+
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + courseFile.getFileName() + "\"")
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + courseFile.getFileName() + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + newFileName + "\"")
                 .body(resource);
     }
 }

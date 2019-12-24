@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.activation.MimetypesFileTypeMap;
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -49,15 +48,15 @@ public class DocumentTemplateController {
 
     public DocumentTemplateController() {
         pageInfo.setParentId("m-document");
-        pageInfo.setParentTitle("전자결재");
+        pageInfo.setParentTitle("교육과정기준정보");
     }
 
 
     // 전자결재 양식 조회
-    @GetMapping("/list")
+    @GetMapping("")
     public String listPage(Model model) {
 
-        String pageTitle = "전자결재 조회";
+        String pageTitle = "결재양식등록";
         pageInfo.setPageTitle(pageTitle);
 
         List<DocumentTemplate> documents = templateService.getList();
@@ -75,7 +74,7 @@ public class DocumentTemplateController {
 
         DocumentTemplate template = templateService.getById(id);
 
-        pageInfo.setPageTitle("전자결재");
+        pageInfo.setPageTitle("결재양식등록");
 
         model.addAttribute(pageInfo);
         model.addAttribute("border", template);
@@ -85,28 +84,26 @@ public class DocumentTemplateController {
 
     // 전자결재 양식 등록
     @GetMapping("/add")
-    public String noticeAdd(DocumentTemplate template, Model model) {
+    public String noticeAdd(Model model) {
 
-        pageInfo.setPageTitle("결재양식");
+        pageInfo.setPageTitle("결재양식등록");
 
         model.addAttribute(pageInfo);
-        model.addAttribute("border", template);
+        model.addAttribute("border", new DocumentTemplate());
 
         return "admin/document/template/add";
     }
 
     // 전자결재 양식 저장
     @PostMapping("/add-post")
-    @Transactional
-    public String noticeAddPost(@Valid DocumentTemplate template
-            , BindingResult result) {
+    public String noticeAddPost(@Valid DocumentTemplate template, BindingResult result) {
         if(result.hasErrors()) {
             return "admin/document/template/add";
         }
 
         templateService.save(template);
 
-        return "redirect:/admin/document/template/list";
+        return "redirect:/admin/document/template";
     }
 
     // 전자결재 양식 수정
@@ -115,7 +112,7 @@ public class DocumentTemplateController {
 
         DocumentTemplate template = templateService.getById(id);
 
-        pageInfo.setPageTitle(template.getTitle());
+        pageInfo.setPageTitle("결재양식등록");
 
         model.addAttribute(pageInfo);
         model.addAttribute("border", template);
@@ -136,7 +133,7 @@ public class DocumentTemplateController {
 
         templateService.save(template);
 
-        return "redirect:/admin/document/template/list";
+        return "redirect:/admin/document/template";
     }
 
     // 전자결재 양식 삭제
@@ -147,7 +144,7 @@ public class DocumentTemplateController {
 
         templateService.delete(template);
 
-        return "redirect:/admin/document/template/list";
+        return "redirect:/admin/document/template";
     }
 
 }

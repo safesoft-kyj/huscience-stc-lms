@@ -15,13 +15,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 
 @Controller
-@RequestMapping("/admin/course/account")
+@RequestMapping("/admin/course")
 public class CourseAccountAdminController {
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseAccountAdminController.class);
@@ -53,13 +54,14 @@ public class CourseAccountAdminController {
         //courseMaster = courseMasterService.getById("A01");
     }
 
-    @GetMapping("/list/{courseId}")
-    public String list(@PathVariable("courseId") Long courseId, Model model) {
+    @GetMapping("/{typeId}/{courseId}/account")
+    public String list(@PathVariable("typeId") String typeId, @PathVariable("courseId") Long courseId, Model model) {
 
         Course course = courseService.getCourseById(courseId);
 
         pageInfo.setPageId("m-course-list-page");
-        pageInfo.setPageTitle(course.getTitle());
+        pageInfo.setPageTitle(String.format("<a href='/admin/course/%s/'>%s</a> > %s", typeId, course.getCourseMaster().getCourseName(), "수강생"));
+
         model.addAttribute(pageInfo);
         model.addAttribute("borders", course.getCourseAccountList());
         model.addAttribute("typeId", course.getCourseMaster().getId());
@@ -67,10 +69,11 @@ public class CourseAccountAdminController {
         return "admin/course/account/list";
     }
 
-    @GetMapping("/add/{courseId}")
-    public String courseAccountAdd(@PathVariable("courseId") Long courseId, Model model) {
+    @GetMapping("/{typeId}/{courseId}/account/add/{courseId}")
+    public String courseAccountAdd(@PathVariable("typeId") String typeId, @PathVariable("courseId") Long courseId, Model model) {
 
-        pageInfo.setPageTitle("수강생");
+        Course course = courseService.getCourseById(courseId);
+        pageInfo.setPageTitle(String.format("<a href='/admin/course/%s/'>%s</a> > %s", typeId, course.getCourseMaster().getCourseName(), "수강생"));
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseId", courseId);
@@ -80,8 +83,9 @@ public class CourseAccountAdminController {
         return "admin/course/account/add";
     }
 
-    @PostMapping("/add-post")
-    public String courseAccountAddPost(@RequestParam(value = "") long courseId
+    @PostMapping("/{typeId}/{courseId}/account/add-post")
+    public String courseAccountAddPost(@PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId
             , @RequestParam(value = "mailList", required = false, defaultValue = "0") String[] mails) {
 
         Course course = courseService.getCourseById(courseId);
@@ -121,23 +125,30 @@ public class CourseAccountAdminController {
                 }
             }
         }
-        return "redirect:/admin/course/account/list/" + courseId;
+
+        return String.format("redirect:/admin/course/%s/%s/account"
+                , typeId
+                , courseId);
     }
 
 
-    @GetMapping("/delete/{id}")
-    public String noticeDelete(@PathVariable("id") long docId) {
+    @GetMapping("/{typeId}/{courseId}/account/delete/{id}")
+    public String noticeDelete(@PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId
+            , @PathVariable("id") long docId, HttpServletRequest request) {
 
         CourseAccount courseAccount = courseAccountService.getById(docId);
         courseAccountService.delete(courseAccount);
 
-        return "redirect:/admin/course/account/list/" + courseAccount.getCourse().getId();
+        // 이전 URL를 리턴한다.
+        String refUrl = request.getHeader("referer");
+        return "redirect:" +  refUrl;
     }
 
 
     // 교육참석처리
-    @GetMapping("/updateAttendance/{id}")
-    public String updateAttendance(@PathVariable("id") long docId) {
+    @GetMapping("/{typeId}/{courseId}/account/updateAttendance/{id}")
+    public String updateAttendance(@PathVariable("id") long docId, HttpServletRequest request) {
 
         CourseAccount courseAccount = courseAccountService.getById(docId);
 
@@ -176,7 +187,9 @@ public class CourseAccountAdminController {
 
         courseAccount = courseAccountService.save(courseAccount);
 
-        return "redirect:/admin/course/account/list/" + courseAccount.getCourse().getId();
+        // 이전 URL를 리턴한다.
+        String refUrl = request.getHeader("referer");
+        return "redirect:" +  refUrl;
     }
 
 

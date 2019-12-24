@@ -48,8 +48,8 @@
 <!--                                    <span th:text="#{label.list.title(${borders.getTotalElements()})}"></span>-->
 <!--                                </div>-->
                                 <div class="col-sm-12 text-right">
-                                    <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/account/add/{courseId}(courseId=__${courseId}__)}"><i class="demo-pli-add"></i> Add</a>
-                                    <a class="btn btn-primary" th:href="@{/admin/course/list/{typeId}(typeId=${typeId})}"><i class="demo-pli-back"></i> Back</a>
+                                    <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/account/add/{courseId}(typeId=${typeId}, courseId=${courseId})}"><i class="demo-pli-add"></i> Add</a>
+                                    <a class="btn btn-primary" th:href="@{/admin/course/{typeId}(typeId=${typeId})}"><i class="demo-pli-back"></i> Back</a>
                                 </div>
                             </div>
                             <div class="table-responsive">
@@ -113,12 +113,12 @@
                                                 <th:block th:if="${#strings.equalsIgnoreCase(typeId, 'BC0102')}">
                                                     <!-- 전자결재가 완료된 경우만 참석처리를 할 수 있다. -->
                                                     <th:block th:if="${#strings.equalsIgnoreCase(border.getFnStatus(), '1')}">
-                                                        <a th:href="@{/admin/course/account/updateAttendance/{id}(id=${border.getId()})}"><span class="badge badge-mint">참석처리</span></a>
+                                                        <a th:href="@{/admin/course/{typeId}/{courseId}/account/updateAttendance/{id}(typeId=${typeId}, courseId=${courseId}, id=${border.getId()})}"><span class="badge badge-mint">참석처리</span></a>
                                                     </th:block>
                                                 </th:block>
                                                 <!-- 부서별교육인 경우 -->
                                                 <th:block th:if="${#strings.equalsIgnoreCase(typeId, 'BC0103')}">
-                                                    <a th:href="@{/admin/course/account/updateAttendance/{id}(id=${border.getId()})}"><span class="badge badge-mint">참석처리</span></a>
+                                                    <a th:href="@{/admin/course/{typeId}/{courseId}/account/updateAttendance/{id}(typeId=${typeId}, courseId=${courseId}, id=${border.getId()})}"><span class="badge badge-mint">참석처리</span></a>
                                                 </th:block>
                                                 <!--                                                </th:block>-->
                                             </th:block>
@@ -127,7 +127,7 @@
                                             <!--                                            </th:block>-->
                                         </td>
                                         <td class="text-center">
-                                            <a th:text="#{label.delete}" th:href="@{/admin/course/account/delete/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                            <a th:text="#{label.delete}" th:href="@{/admin/course/{typeId}/{courseId}/account/delete/{id}(typeId=${typeId}, courseId=${courseId}, id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
                                         </td>
                                     </tr>
                                     </tbody>

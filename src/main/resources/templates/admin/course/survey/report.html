@@ -51,7 +51,7 @@
                             <p class="text-right">
 <!--                                <button class="btn btn-primary" id="pdfsave">PDF저장</button>-->
                                 <button class="btn btn-primary" onclick="saveAsPdf();">PDF저장</button>
-                                <a class="btn btn-primary" th:href="@{/admin/course/survey/list/{courseId}(courseId=${courseId})}"><i class="demo-pli-back"></i> Back</a>
+                                <a class="btn btn-primary" th:href="@{/admin/course/{typeId}/{courseId}/survey(typeId=${typeId}, courseId=${courseId})}"><i class="demo-pli-back"></i> Back</a>
                             </p>
                         </div>
                     </div>
@@ -63,7 +63,7 @@
                                 <table id="demo-dt-basic1" class="table" cellspacing="0" width="100%" style="margin-top:0">
                                     <tr>
                                         <td class="text-left" colspan="7">
-                                            <h3 class="title text-info"><span th:text="${pageInfo.getPageTitle() + ' 설문'}"></span></h3>
+                                            <h3 class="title text-info"><span th:text="${courseTitle + ' 설문'}"></span></h3>
                                         </td>
                                     </tr>
                                     <th:block th:each="border, index : ${borders}">

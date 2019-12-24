@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <style>
+        .table-head {
+            background: #3A444E;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <!--Default Tabs (Left Aligned)-->
+                    <!--===================================================-->
+                    <div class="tab-base">
+                        <!--Nav Tabs-->
+                        <ul class="nav nav-tabs">
+                            <li>
+                                <a data-toggle="tab" href="#all">전체 <span class="badge badge-purple" th:text="${requestCount5}">0</span></a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#request">요청 <span class="badge badge-purple" th:text="${requestCount1}">0</span></a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#process">진행 <span class="badge badge-purple" th:text="${requestCount2}">0</span></a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#complete">완료 <span class="badge badge-purple" th:text="${requestCount3}">0</span></a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#reject">반려 <span class="badge badge-purple" th:text="${requestCount4}">0</span></a>
+                            </li>
+                        </ul>
+
+                        <!--Tabs Content-->
+                        <div class="tab-content">
+                            <div id="all" class="tab-pane fade">
+                                <div id="all-content"></div>
+                            </div>
+                            <div id="request" class="tab-pane fade">
+
+                            </div>
+                            <div id="process" class="tab-pane fade">
+
+                            </div>
+                            <div id="complete" class="tab-pane fade">
+
+                            </div>
+                            <div id="reject" class="tab-pane fade">
+                            </div>
+                            <div th:switch="${borders}" id="dataList">
+                                <div th:case="null">No customer yet!</div>
+                                <div th:case="*"><!-- 미결문서 -->
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <span th:text="#{label.list.title(${borders.getTotalElements()})}"></span>
+                                        </div>
+                                    </div>
+                                    <hr class="table-head">
+                                    <div class="table-responsive">
+                                        <table id="customer-list-page" class="table" cellspacing="0" width="100%">
+                                            <thead>
+                                            <tr style="background: #FAFAFA;">
+                                                <th class="text-center col-sm-1" th:text="#{label.no}">번호</th>
+                                                <th class="text-center col-sm-1" th:text="#{label.course.type}">유형</th>
+                                                <th class="text-center col-sm-4" th:text="#{label.subject}">과정명</th>
+                                                <th class="text-center col-sm-1" th:text="#{label.requestdate}">신청일</th>
+                                                <th class="text-center col-sm-1" th:text="#{label.requestby}">신청자</th>
+                                                <th class="text-center col-sm-3" th:text="#{label.status}">상태</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="border, index : ${borders}">
+                                                <td th:text="${index.count}" class="text-center"></td>
+                                                <td class="text-center">
+                                                    <span th:text="${border.getCourse().getCourseMaster().getCourseName()}"></span>&nbsp;
+                                                </td>
+                                                <td>
+                                                    <a th:href="@{/course/approval/{id}(id=${border.getId()})}">
+                                                        <span th:text="${border.getCourse().getTitle()}"></span>
+                                                    </a>
+                                                </td>
+                                                <td th:text="${border.getRequestDate()}" class="text-center"></td>
+                                                <td th:text="${border.getAccount().getName()}" class="text-center"></td>
+                                                <td class="text-center">
+                                                    <th:block th:if="${#strings.equalsIgnoreCase(border.getIsApproval(), '1')}">
+                                                        <div th:switch="${border.getFnStatus()}">
+                                                            <span th:case="${'0'}" class="text-info" th:text="${'진행중'}"></span>
+                                                            <span th:case="${'1'}" class="text-success" th:text="${'완료'}"></span>
+                                                            <span th:case="${'2'}" class="text-danger" th:text="${'반려'}"></span>
+                                                        </div>
+                                                    </th:block>
+                                                    <th:block th:if="${#strings.equalsIgnoreCase(border.getIsApproval(), '0')}">
+                                                        <span class="text-success" th:text="${'완료'}"></span>
+                                                    </th:block>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <nav style="text-align: center;">
+                                            <ul class="pagination"
+                                                th:with="start=${T(Math).floor(borders.number/10)*10 + 1}, last=(${start + 9 < borders.totalPages ? start + 9 : borders.totalPages})">
+                                                <li>
+                                                    <a th:href="@{/admin/approval/mainRequest1/{status}(page=1, status=${status})}" aria-label="First">
+                                                        <span aria-hidden="true">First</span>
+                                                    </a>
+                                                </li>
+
+                                                <li th:class="${borders.first} ? 'disabled'">
+                                                    <a th:href="${borders.first} ? '#' :@{/admin/approval/mainRequest1/{status}(page=${borders.number}, status=${status})}" aria-label="Previous">
+                                                        <span aria-hidden="true">&lt;</span>
+                                                    </a>
+                                                </li>
+                                                <li th:each="page: ${#numbers.sequence(start, last)}" th:class="${page == borders.number + 1} ? 'active'">
+                                                    <a th:text="${page}" th:href="@{/admin/approval/mainRequest1/{status}(page=${page}, status=${status})}"></a>
+                                                </li>
+                                                <li th:class="${borders.last} ? 'disabled'">
+                                                    <a th:href="${borders.last} ? '#' : @{/admin/approval/mainRequest1/{status}(page=${borders.number + 2}, status=${status})}" aria-label="Next">
+                                                        <span aria-hidden="true">&gt;</span>
+                                                    </a>
+                                                </li>
+
+                                                <li>
+                                                    <a th:href="@{/admin/approval/mainRequest1/{status}(page=${borders.totalPages}, status=${status})}" aria-label="Last">
+                                                        <span aria-hidden="true">Last</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </div>
+                            </div><!--switch End -->
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+    <script th:inline="javascript">
+        var status = [[${status}]];
+
+        $(document).ready(function() {
+
+            var name = $('#status').text();
+            $(".tab-base a[href='#" + status + "']").tab("show");
+
+            $('a[data-toggle="tab"]').click('shown.bs.tab', function (e) {
+                e.preventDefault();
+                var target = $(e.target).attr("href") // activated tab
+                location.href = '/admin/approval/mainRequest1/' + target.replace('#', '');
+            });
+        });
+
+    </script>
+</th:block>
+
+</html>
+
+

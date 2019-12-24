@@ -179,8 +179,8 @@ public class CourseQuizActionAdminController {
         // db및 파일 삭제
         fileService.deleteFile(file_id);
 
-        return "redirect:/admin/course/quiz/edit/" + quiz_id;
-
+        // 이전 URL를 리턴한다.
+        String refUrl = request.getHeader("referer");
+        return "redirect:" +  refUrl;
     }
-
 }

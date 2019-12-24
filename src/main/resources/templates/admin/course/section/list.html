@@ -48,8 +48,8 @@
 <!--                                    <span th:text="#{label.list.title(${borders.getTotalElements()})}"></span>-->
 <!--                                </div>-->
                                 <div class="col-sm-12 text-right">
-                                    <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/section/add/{courseId}(courseId=__${courseId}__)}"><i class="demo-pli-add"></i> Add</a>
-                                    <a class="btn btn-primary" th:href="@{/admin/course/list/{typeId}(typeId=${typeId})}"><i class="demo-pli-back"></i> Back</a>
+                                    <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/section/add(typeId=${typeId}, courseId=${courseId}}"><i class="demo-pli-add"></i> Add</a>
+                                    <a class="btn btn-primary" th:href="@{/admin/course/{typeId}(typeId=${typeId})}"><i class="demo-pli-back"></i> Back</a>
                                 </div>
                             </div>
                             <div class="table-responsive">
@@ -85,15 +85,15 @@
                                         <th:block th:if="${#strings.equalsIgnoreCase(gubunId, 'BC0101')}">
                                         <td class="text-center">
                                             <div th:each="uploadFile : ${border.getSectionFiles()}">
-                                                <a th:href="@{/admin/course/section/download-file/{id}(id=${uploadFile.getId()})}"><span class="badge badge-mint" th:text="#{label.download}"></span></a>
+                                                <a th:href="@{/admin/course/{typeId}/{courseId}/section/download-file/{id}(typeId=${typeId}, courseId=${courseId}, id=${uploadFile.getId()})}"><span class="badge badge-mint" th:text="#{label.download}"></span></a>
                                             </div>
                                         </td>
                                         </th:block>
                                         <td th:text="${border.getHour()}" class="text-center"></td>
                                         <td th:text="${border.getMinute()}" class="text-center"></td>
                                         <td class="text-center">
-                                            <a th:text="#{label.edit}" th:href="@{/admin/course/section/edit/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
-                                            <a th:text="#{label.delete}" th:href="@{/admin/course/section/delete/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                            <a th:text="#{label.edit}" th:href="@{/admin/course/{typeId}/{courseId}/section/edit/{id}(typeId=${typeId}, courseId=${courseId}, id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                            <a th:text="#{label.delete}" th:href="@{/admin/course/{typeId}/{courseId}/section/delete/{id}(typeId=${typeId}, courseId=${courseId}, id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
                                         </td>
                                     </tr>
                                     </tbody>

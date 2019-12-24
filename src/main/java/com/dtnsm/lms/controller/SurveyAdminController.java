@@ -44,7 +44,7 @@ public class SurveyAdminController {
         pageInfo.setParentTitle("교육과정기준정보");
     }
 
-    @GetMapping("/list")
+    @GetMapping("")
     public String list(Model model) {
 
         pageInfo.setPageId("m-survey-list");
@@ -102,7 +102,7 @@ public class SurveyAdminController {
             }
         }
 
-        return "redirect:/admin/survey/list";
+        return "redirect:/admin/survey";
     }
 
     @GetMapping("/edit/{id}")
@@ -126,7 +126,7 @@ public class SurveyAdminController {
             , BindingResult result) {
         if(result.hasErrors()) {
             survey.setId(id);
-            return "/admin/survey/list";
+            return "/admin/survey";
         }
 
         Survey oldSurvey = surveyService.getSurveyById(id);
@@ -158,7 +158,7 @@ public class SurveyAdminController {
             }
         }
 
-        return "redirect:/admin/survey/list";
+        return "redirect:/admin/survey";
     }
 
     @GetMapping("/delete/{id}")
@@ -230,6 +230,6 @@ public class SurveyAdminController {
 
         surveyService.saveSurvey(survey);
 
-        return "redirect:/admin/survey/list/";
+        return "redirect:/admin/survey";
     }
 }

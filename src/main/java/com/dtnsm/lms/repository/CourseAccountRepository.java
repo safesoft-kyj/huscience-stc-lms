@@ -13,7 +13,26 @@ import java.util.List;
 public interface CourseAccountRepository extends JpaRepository<CourseAccount, Long>, QuerydslPredicateExecutor<CourseAccount> {
 
 
-    //  status 0:진행중, 1:최종승인, 2:최종기각
+
+
+    //  status 0:진행중, 1:최종승인, 2:최종기각, 9:결재없음
+
+    List<CourseAccount> findByAccount_UserIdAndIsApprovalAndFnStatusLikeAndRequestTypeLike(String userId, String isApproval, String status, String requestType);
+
+    Page<CourseAccount> findByAccount_UserIdAndIsApprovalAndFnStatusLikeAndRequestTypeLike(String userId, String isApproval, String status, String requestType, Pageable pageable);
+
+    Page<CourseAccount> findByAccount_UserIdAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(String userId, String isApproval, String status, String requestType, String isReport, String reportStatus, Pageable pageable);
+
+    List<CourseAccount> findByAccount_UserIdAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(String userId, String isApproval, String status, String requestType, String isReport, String reportStatus);
+
+
+
+    Page<CourseAccount> findByAccount_UserIdLikeAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(String userId, String typeId, String isApproval, String status, String requestType, String isReport, String reportStatus, Pageable pageable);
+
+    List<CourseAccount> findByAccount_UserIdLikeAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(String userId, String typeId, String isApproval, String status, String requestType, String isReport, String reportStatus);
+
+    long countByAccount_UserIdLikeAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(String userId, String typeId, String isApproval, String status, String requestType, String isReport, String reportStatus);
+
     List<CourseAccount> findByAccount_UserIdAndFnStatus(String userId, String status);
 
     Page<CourseAccount> findByAccount_UserIdAndFnStatus(String userId, String status, Pageable pageable);

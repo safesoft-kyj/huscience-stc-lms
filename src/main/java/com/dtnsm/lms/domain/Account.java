@@ -1,6 +1,5 @@
 package com.dtnsm.lms.domain;
 
-import com.dtnsm.common.entity.Signature;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;

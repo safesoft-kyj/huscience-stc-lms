@@ -2,8 +2,6 @@ package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.*;
-import com.dtnsm.lms.domain.constant.LmsAlarmGubun;
-import com.dtnsm.lms.domain.constant.LmsAlarmType;
 import com.dtnsm.lms.domain.constant.ScheduleType;
 import com.dtnsm.lms.mybatis.service.CourseMapperService;
 import com.dtnsm.lms.service.*;
@@ -12,7 +10,6 @@ import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -109,7 +106,7 @@ public class MainController {
 
 
         // 교육신청 미결건
-        List<CourseAccountOrder> courseAccountOrders1 = courseAccountOrderService.getAllByNext(userId, "1", "0");
+        List<CourseAccountOrder> courseAccountOrders1 = courseAccountOrderService.getAllByFnUser_UserIdAndFnNextLikeAndFnStatusLike(userId, "1", "0", 0);
 
         // 교육신청 진행건
         List<CourseAccount> courseAccountOrders2 = courseAccountService.getAllByStatus(userId, "0");

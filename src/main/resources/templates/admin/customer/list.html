@@ -46,7 +46,8 @@
                                     <a class="btn btn-purple" th:href="@{/admin/customer/add}"><i class="demo-pli-add"></i> Add</a>
                                 </div>
                             </div>
-                            <table id="demo-dt-basic" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                            <hr class="table-head">
+                            <table id="demo-dt-basic" class="table" cellspacing="0" width="100%">
                                 <thead>
                                 <tr>
                                     <th class="text-center">#</th>
@@ -62,7 +63,7 @@
                                 <tbody>
                                 <tr th:each="customer, index : ${customers}">
                                     <td th:text="${customers.size() - index.index}" class="text-center"></td>
-                                    <td><a th:href="@{/customer/view/{id}(id=${customer.getId()})}" th:text="${customer.getName()}"></a></td>
+                                    <td><a th:href="@{/admin/customer/view/{id}(id=${customer.getId()})}" th:text="${customer.getName()}"></a></td>
                                     <td th:text="${customer.getCondate()}"></td>
                                     <td th:text="${customer.getCondition()}"></td>
                                     <td><a th:href="${customer.homepage}" target="_blank"><span th:text="${customer.homepage}"></span></a></td>

@@ -44,7 +44,7 @@
                     <br>
                     <!--===================================================-->
                     <!--End Horizontal Form-->
-                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/add-post}" th:object="${course}" method="post" enctype="multipart/form-data" >
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/{typeId}/add-post(typeId=${typeId})}" th:object="${course}" method="post" enctype="multipart/form-data" >
                         <input type="hidden" th:field="*{id}" id="id" name="id">
                         <input type="hidden" th:field="*{courseMaster.id}" id="type-id" name="type-id">
                         <input type="hidden" th:field="*{place}" value="">
@@ -182,7 +182,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="editor" th:text="#{label.course.introduce}">소개</label>
                             <div class="col-sm-10">
-                                <textarea class="form-control" th:field="*{content}" name="content" id="editor" style="width: 100%; height: 300px;" required></textarea>
+                                <textarea class="form-control" th:field="*{content}" name="content" id="editor" style="width: 100%; height: 300px;"></textarea>
                             </div>
                             <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
                         </div>
@@ -193,10 +193,8 @@
                             </div>
                         </div>
                         <div class="panel-footer text-right">
-                            <button class="btn btn-primary" type="submit" id="submit-all"  th:text="#{label.save}">
-                                <i class="fa fa-upload-cloud"></i> 저장
-                            </button>
-                            <a th:href="@{/admin/course/list/{typeId}(typeId=${course.getCourseMaster().getId()})}" class="btn btn-success" th:text="#{label.list}">
+                            <button class="btn btn-primary" type="submit"><i class="fa fa-upload-cloud"></i> <span th:text="#{label.save}"></span></button>
+                            <a th:href="@{/admin/course/{typeId}(typeId=${course.getCourseMaster().getId()})}" class="btn btn-success" th:text="#{label.list}">
                                 <i class="fa fa-upload-cloud"></i> 목록
                             </a>
                         </div>
@@ -246,7 +244,7 @@
             });
 
             //전송버튼
-            $("#submit-all").click(function(){
+            $("#boardFrm").submit(function(e){
 
                 var title = $("#title").val();
 
@@ -276,7 +274,7 @@
                 //id가 smarteditor인 textarea에 에디터에서 대입
                 // obj2.getById["agenda"].exec("UPDATE_CONTENTS_FIELD", []);
                 //폼 submit
-                $("#boardFrm").submit();
+                // $("#boardFrm").submit();
             });
 
             // self 교육등록시에는 상시를 활성화시키고 기간을 숨긴다.

@@ -104,9 +104,7 @@
 <!--                                <i class="fa fa-upload-cloud"></i> 저장-->
 <!--                            </button>-->
 
-                            <button class="btn btn-primary" type="submit" id="submit-all">
-                                <i class="fa fa-upload-cloud"></i> 저장
-                            </button>
+                            <button class="btn btn-primary" type="submit"><i class="fa fa-upload-cloud"></i> <span th:text="#{label.save}"></span></button>
                             <a th:href="@{/admin/border/list/{typeId}(typeId=${border.getBorderMaster().getId()})}" class="btn btn-success">
                                 <i class="fa fa-upload-cloud"></i> 목록
                             </a>
@@ -123,9 +121,45 @@
 
 
     <script type="text/javascript" th:src="@{/editor/js/HuskyEZCreator.js}" charset="utf-8"></script>
-    <script type="text/javascript" th:src="@{/default/js/custom/border-editor.js}" charset="utf-8"></script>
+<!--    <script type="text/javascript" th:src="@{/default/js/custom/border-editor.js}" charset="utf-8"></script>-->
 
     <script>
+
+        $(function(){
+
+            //전역변수
+            var obj = [];
+            //스마트에디터 프레임생성
+            nhn.husky.EZCreator.createInIFrame({
+                oAppRef: obj,
+                elPlaceHolder: "editor",
+                sSkinURI: "/editor/SmartEditor2Skin.html",
+                htParams : {
+                    // 툴바 사용 여부
+                    bUseToolbar : true,
+                    // 입력창 크기 조절바 사용 여부
+                    bUseVerticalResizer : true,
+                    // 모드 탭(Editor | HTML | TEXT) 사용 여부
+                    bUseModeChanger : true,
+                }
+            });
+
+            //전송버튼
+            $("#boardFrm").submit(function(e){
+
+                // var title = $("#title").val();
+                //
+                // if(!title) {
+                //     alert('제목이 입력되지 않았습니다.');
+                //     e.preventDefault();
+                //     return false;
+                // }
+
+                //id가 smarteditor인 textarea에 에디터에서 대입
+                obj.getById["editor"].exec("UPDATE_CONTENTS_FIELD", []);
+            });
+        });
+
 
         $('#mailList').chosen({width:'100%'});
 

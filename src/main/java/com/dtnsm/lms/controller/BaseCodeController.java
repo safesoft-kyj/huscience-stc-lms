@@ -28,7 +28,7 @@ public class BaseCodeController {
     }
 
 
-    @GetMapping("/major-list")
+    @GetMapping("/major")
     public String majorList(Model model) {
 
         pageInfo.setPageId("m-admincode-major-list");
@@ -39,7 +39,7 @@ public class BaseCodeController {
         return "admin/code/major-list";
     }
 
-    @GetMapping("/major-add")
+    @GetMapping("/major/add")
     public String majorAdd(ElMajor elbMajor, Model model) {
 
         pageInfo.setPageId("m-admincode-major-add");
@@ -50,7 +50,7 @@ public class BaseCodeController {
         return "admin/code/major-add";
     }
 
-    @PostMapping("/major-add-post")
+    @PostMapping("/major/add-post")
     public String majorAddPost(@Valid ElMajor elbMajor, BindingResult result) {
         if(result.hasErrors()) {
             return "admin/code/major-add";
@@ -58,11 +58,11 @@ public class BaseCodeController {
 
         codeService.majorSave(elbMajor);
 
-        return "redirect:/admin/code/major-list";
+        return "redirect:/admin/code/major";
     }
 
 
-    @GetMapping("/major-edit/{id}")
+    @GetMapping("/major/edit/{id}")
     public String majorEdit(@PathVariable("id") String id, Model model) {
         ElMajor elMajor = codeService.getMajorById(id);
 
@@ -75,7 +75,7 @@ public class BaseCodeController {
         return "admin/code/major-update";
     }
 
-    @PostMapping("/major-update-post/{id}")
+    @PostMapping("/major/update-post/{id}")
     public String majorEditPost(@PathVariable("id") String id, @Valid ElMajor elMajor, BindingResult result) {
         if(result.hasErrors()) {
             elMajor.setMajorCd(id);
@@ -84,7 +84,7 @@ public class BaseCodeController {
 
         codeService.majorSave(elMajor);
 
-        return "redirect:/admin/code/major-list";
+        return "redirect:/admin/code/major";
     }
 
     @GetMapping("/major-delete/{id}")
@@ -94,7 +94,7 @@ public class BaseCodeController {
 
         codeService.majorDelete(elMajor);
 
-        return "redirect:/admin/code/major-list";
+        return "redirect:/admin/code/major";
     }
 
 
@@ -103,7 +103,7 @@ public class BaseCodeController {
 
      */
 
-    @GetMapping("/minor-list")
+    @GetMapping("/minor")
     public String minorList(Model model) {
 
         pageInfo.setPageId("m-admincode-minor-list");
@@ -116,7 +116,7 @@ public class BaseCodeController {
         return "admin/code/minor-list";
     }
 
-    @GetMapping("/minor-add")
+    @GetMapping("/minor/add")
     public String minorAdd(ElMinor elMinor, Model model) {
 
         pageInfo.setPageId("m-admincode-minor-add");
@@ -128,7 +128,7 @@ public class BaseCodeController {
         return "admin/code/minor-add";
     }
 
-    @PostMapping("/minor-add-post")
+    @PostMapping("/minor/add-post")
     public String minorAddPost(@Valid ElMinor elMinor, BindingResult result) {
         if(result.hasErrors()) {
             return "admin/code/minor-add";
@@ -140,10 +140,10 @@ public class BaseCodeController {
 
         codeService.minorSave(elMinor);
 
-        return "redirect:/admin/code/minor-list";
+        return "redirect:/admin/code/minor";
     }
 
-    @GetMapping("/minor-edit/{id}")
+    @GetMapping("/minor/edit/{id}")
     public String minorEditForm(@PathVariable("id") String minorCd, Model model) {
 
         ElMinor elMinor = codeService.getMinorById(minorCd);
@@ -157,7 +157,7 @@ public class BaseCodeController {
         return "admin/code/minor-update";
     }
 
-    @PostMapping("/minor-update-post/{id}")
+    @PostMapping("/minor/update-post/{id}")
     public String minorEditPost(@PathVariable("id") String minorCd, @Valid ElMinor elMinor, BindingResult result) {
         if(result.hasErrors()) {
             elMinor.setMinorCd (minorCd);
@@ -166,14 +166,14 @@ public class BaseCodeController {
 
         codeService.minorSave(elMinor);
 
-        return "redirect:/admin/code/minor-list";
+        return "redirect:/admin/code/minor";
     }
 
-    @GetMapping("/minor-delete")
+    @GetMapping("/minor/delete")
     public String minorDelete(@RequestParam("id") String minorCd) {
 
         codeService.minorDelete(minorCd);
 
-        return "redirect:/admin/code/minor-list";
+        return "redirect:/admin/code/minor";
     }
 }

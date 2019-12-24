@@ -36,17 +36,24 @@
             <!-- Basic Data Tables -->
             <!--===================================================-->
             <div class="panel">
-                <div class="panel-heading">
-                    <h3 class="panel-title"></h3>
-                </div>
                 <div class="panel-body">
                     <div th:switch="${elMajors}">
                         <h2 th:case="null">No customer yet!</h2>
                         <div th:case="*">
-                            <h2></h2>
-                            <table id="demo-dt-basic" class="table table-striped table-bordered" cellspacing="0" width="100%">
+
+                            <div class="row" style="margin-bottom: 5px;" >
+                                <div class="col-sm-6">
+<!--                                    <span th:text="#{label.list.title(${elMajors.size()})}"></span>-->
+                                </div>
+                                <div class="col-sm-6 text-right">
+                                    <a class="btn btn-purple" th:href="@{/admin/code/major/add}"><i class="demo-pli-add"></i> Add</a>
+                                </div>
+                            </div>
+
+                            <table id="demo-dt-basic" class="table table-bordered table-condensed" cellspacing="0" width="100%">
                                 <thead>
                                 <tr>
+                                    <th th:text="#{label.no}">Major Code</th>
                                     <th>Major Code</th>
                                     <th>Major 명</th>
                                     <th>코드타입</th>
@@ -54,21 +61,21 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="elMajor : ${elMajors}">
+                                <tr th:each="elMajor, index : ${elMajors}">
+                                    <td th:text="${index.count}"></td>
                                     <td th:text="${elMajor.getMajorCd()}"></td>
                                     <td th:text="${elMajor.getMajorNm()}"></td>
                                     <td th:text="${elMajor.getType()}"></td>
                                     <td>
                                         <div class="form-inline">
-                                            <a th:text="#{label.edit}" th:href="@{/admin/code/major-edit/{id}(id=${elMajor.getMajorCd()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
-                                            <a th:text="#{label.delete}" th:href="@{/admin/code/major-delete/{id}(id=${elMajor.getMajorCd()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                            <a th:text="#{label.edit}" th:href="@{/admin/code/major/edit/{id}(id=${elMajor.getMajorCd()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                            <a th:text="#{label.delete}" th:href="@{/admin/code/major/delete/{id}(id=${elMajor.getMajorCd()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
                                         </div>
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <p><a href="/admin/code/major-add">Add a new Major Code</a></p>
                     </div><!--switch End -->
                 </div><!--panel-body End -->
             </div><!-- panel End -->

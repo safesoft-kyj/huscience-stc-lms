@@ -85,7 +85,7 @@ public class CourseAdminController {
     }
 
 
-    @GetMapping("/list/{typeId}")
+    @GetMapping("/{typeId}")
     public String listPage(@PathVariable("typeId") String typeId
             , @RequestParam(value = "searchType", defaultValue = "all") String searchType
             , @RequestParam(value = "searchText", defaultValue = "") String searchText
@@ -119,26 +119,27 @@ public class CourseAdminController {
     }
 
 
-    @GetMapping("/view/{id}")
-    public String noticeView(@PathVariable("id") long id, Model model) {
+    @GetMapping("/{typeId}/view/{id}")
+    public String noticeView(@PathVariable("typeId") String typeId, @PathVariable("id") long id, Model model) {
 
         Course oldCourse = courseService.getCourseById(id);
         oldCourse.setViewCnt(oldCourse.getViewCnt() + 1);
 
         Course course= courseService.save(oldCourse);
 
-        pageInfo.setPageTitle(course.getCourseMaster().getCourseName() + " 상세");
+        pageInfo.setPageTitle(course.getCourseMaster().getCourseName());
 
         model.addAttribute(pageInfo);
         model.addAttribute("course", course);
+        model.addAttribute("typeId", typeId);
 
         return "admin/course/view";
     }
 
 
     //  부서별 교육신청서를 조회한다.
-    @GetMapping("/popupDocument/{id}")
-    public String popupCourse(@PathVariable("id") int id, Model model, Pageable pageable) {
+    @GetMapping("/{typeId}/popupDocument/{id}")
+    public String popupCourse(@PathVariable("typeId") String typeId, @PathVariable("id") int id, Model model, Pageable pageable) {
 
         Page<Document> documentPorcessList = documentAccountService.getAllByDocument_Template_IdAndIsCommit(id, "0", pageable);
         Page<Document> documentComplteList = documentAccountService.getAllByDocument_Template_IdAndIsCommit(id, "1", pageable);
@@ -159,7 +160,7 @@ public class CourseAdminController {
     }
 
     // On Line 교육 등록(self 교육)
-    @GetMapping("/addOnline/{typeId}")
+    @GetMapping("/{typeId}/addOnline")
     public String addOnLine(@PathVariable("typeId") String typeId, Model model) {
 
         CourseMaster courseMaster = courseMasterService.getById(typeId);
@@ -181,12 +182,13 @@ public class CourseAdminController {
         model.addAttribute("course", course);
         model.addAttribute("id", typeId);
         model.addAttribute("surveys", surveys);
+        model.addAttribute("typeId", typeId);
 
         return "admin/course/addOnLine";
     }
 
     // Off Line 교육 등록(class, 부서별, 외부 교육)
-    @GetMapping("/addOffLine/{typeId}")
+    @GetMapping("/{typeId}/addOffLine")
     public String addOffLine(@PathVariable("typeId") String typeId, Model model) {
 
         CourseMaster courseMaster = courseMasterService.getById(typeId);
@@ -206,15 +208,17 @@ public class CourseAdminController {
 
         model.addAttribute(pageInfo);
         model.addAttribute("course", course);
-        model.addAttribute("id", typeId);
+        model.addAttribute("typeId", typeId);
         model.addAttribute("surveys", surveys);
+
 
         return "admin/course/addOffLine";
     }
 
 
-    @PostMapping("/add-post")
+    @PostMapping("/{typeId}/add-post")
     public String noticeAddPost(@Valid Course course
+            , @PathVariable("typeId") String typeId
             , @RequestParam(value = "activeSurvey", required = false, defaultValue = "") Long surveyId
             , @RequestParam(value = "documentId", required = false, defaultValue = "0") long documentId
             , @RequestParam(value = "passCount", required = false, defaultValue = "0") int passCount
@@ -224,10 +228,10 @@ public class CourseAdminController {
             , @RequestParam(value = "quiz_file", required = false) MultipartFile quiz_file
             , BindingResult result) {
         if(result.hasErrors()) {
-            return "redirect:/admin/course/list/" + course.getCourseMaster().getId();
+            return "redirect:/admin/course/list/" + typeId;
         }
 
-        course.setCourseMaster(courseMasterService.getById(course.getCourseMaster().getId()));
+        course.setCourseMaster(courseMasterService.getById(typeId));
 
         // isAlways : 1:상시, 2:기간 => 상시인 경우 오늘부터 최대일자로 기간을 설정한다.
         if(course.getIsAlways().equals("1")) {
@@ -322,7 +326,7 @@ public class CourseAdminController {
 //            }
 //        }
 
-        return "redirect:/admin/course/list/" + course1.getCourseMaster().getId();
+        return "redirect:/admin/course/" + course1.getCourseMaster().getId();
     }
 
     // 첨부파일 업로드
@@ -336,8 +340,8 @@ public class CourseAdminController {
 //        return "redirect:/admin/course/list/" + course.getCourseMaster().getId();
 //    }
 
-    @GetMapping("/editOnLine/{id}")
-    public String editOnLine(@PathVariable("id") long id, Model model) {
+    @GetMapping("/{typeId}/editOnLine/{id}")
+    public String editOnLine(@PathVariable("typeId") String typeId, @PathVariable("id") long id, Model model) {
 
         Course course = courseService.getCourseById(id);
         pageInfo.setPageTitle(course.getCourseMaster().getCourseName());
@@ -358,14 +362,13 @@ public class CourseAdminController {
         model.addAttribute("course", course);
         model.addAttribute("id", course.getId());
         model.addAttribute("surveys", surveys);
-
-        String typeId = course.getCourseMaster().getId();
+        model.addAttribute("typeId", typeId);
 
         return "admin/course/editOnLine";
     }
 
-    @GetMapping("/editOffLine/{id}")
-    public String editOffLine(@PathVariable("id") long id, Model model) {
+    @GetMapping("/{typeId}/editOffLine/{id}")
+    public String editOffLine(@PathVariable("typeId") String typeId, @PathVariable("id") long id, Model model) {
 
         Course course = courseService.getCourseById(id);
         pageInfo.setPageTitle(course.getCourseMaster().getCourseName());
@@ -373,21 +376,21 @@ public class CourseAdminController {
         model.addAttribute(pageInfo);
         model.addAttribute("course", course);
         model.addAttribute("id", course.getId());
-
-        String typeId = course.getCourseMaster().getId();
+        model.addAttribute("typeId", typeId);
 
         return "admin/course/editOffLine";
     }
 
-    @PostMapping("/edit-post/{id}")
-    public String noticeEditPost(@PathVariable("id") long id
+    @PostMapping("/{typeId}/edit-post/{id}")
+    public String noticeEditPost(@PathVariable("typeId") String typeId
+            , @PathVariable("id") long id
             , @Valid Course course
             , @RequestParam(value = "documentId", required = false, defaultValue = "0") long documentId
             , @RequestParam("files") MultipartFile[] files
             , BindingResult result) {
         if(result.hasErrors()) {
             course.setId(id);
-            return "redirect:/admin/course/list/" + course.getCourseMaster().getId();
+            return "redirect:/admin/course/list/" + typeId;
         }
 
         Course oldCourse = courseService.getCourseById(id);
@@ -510,12 +513,12 @@ public class CourseAdminController {
                 .map(file -> courseFileService.storeFile(file, course1))
                 .collect(Collectors.toList());
 
-        return "redirect:/admin/course/list/" + course1.getCourseMaster().getId();
+        return "redirect:/admin/course/" + typeId;
     }
 
 
-    @GetMapping("/updateActive/{id}")
-    public String updateActive(@PathVariable("id") long id) {
+    @GetMapping("/{typeId}/updateActive/{id}")
+    public String updateActive(@PathVariable("typeId") String typeId, @PathVariable("id") long id) {
 
         Course course = courseService.getCourseById(id);
 
@@ -532,19 +535,15 @@ public class CourseAdminController {
             course.setActive(0);
         }
 
-        course = courseService.save(course);
+        courseService.save(course);
 
-        String courseMastId = course.getCourseMaster().getId();
-
-        return "redirect:/admin/course/list/" + courseMastId;
+        return "redirect:/admin/course/" + typeId;
     }
 
-    @GetMapping("/delete/{id}")
-    public String noticeDelete(@PathVariable("id") long id) {
+    @GetMapping("/{typeId}/delete/{id}")
+    public String noticeDelete(@PathVariable("typeId") String typeId, @PathVariable("id") long id, HttpServletRequest request) {
 
         Course course = courseService.getCourseById(id);
-
-        String courseMastId = course.getCourseMaster().getId();
 
         // 과정 신청된 내역이 있으면 삭제 하지 않는다.
         if (course.getCourseAccountList().size() <= 0) {
@@ -552,23 +551,28 @@ public class CourseAdminController {
             courseService.delete(course);
         }
 
-        return "redirect:/admin/course/list/" + courseMastId;
+        // 이전 URL를 리턴한다.
+        String refUrl = request.getHeader("referer");
+        return "redirect:" +  refUrl;
     }
 
 
-    @GetMapping("/delete-file/{course_id}/{file_id}")
-    public String noticeDeleteFile(@PathVariable long course_id, @PathVariable long file_id, HttpServletRequest request){
+    @GetMapping("/{typeId}/delete-file/{course_id}/{file_id}")
+    public String noticeDeleteFile(@PathVariable("typeId") String typeId, @PathVariable long course_id, @PathVariable long file_id, HttpServletRequest request){
 
         // db및 파일 삭제
         fileService.deleteFile(file_id);
 
-        return "redirect:/admin/course/list/" + course_id;
+        Course course = courseService.getCourseById(course_id);
 
+        // 이전 URL를 리턴한다.
+        String refUrl = request.getHeader("referer");
+        return "redirect:" +  refUrl;
     }
 
-    @GetMapping("/download-file/{id}")
+    @GetMapping("/{typeId}/download-file/{id}")
     @ResponseBody
-    public ResponseEntity<Resource> downloadFile(@PathVariable long id, HttpServletRequest request){
+    public ResponseEntity<Resource> downloadFile(@PathVariable("typeId") String typeId, @PathVariable long id, HttpServletRequest request){
 
         CourseFile courseSection = fileService.getUploadFile(id);
 

@@ -1,5 +1,7 @@
 package com.dtnsm.lms.controller.RestController;
 
+import com.dtnsm.lms.domain.Border;
+import com.dtnsm.lms.domain.BorderFile;
 import com.dtnsm.lms.domain.BorderViewAccount;
 import com.dtnsm.lms.service.BorderService;
 import com.dtnsm.lms.util.DateUtil;
@@ -66,6 +68,33 @@ public class BorderRestController {
 
                 i++;
             }
+            sb.append("</table>");
+
+            return sb.toString();
+        } else {
+
+            return "";
+        }
+    }
+
+    @GetMapping("/borderView")
+    public String borderView(@RequestParam("borderId") long borderId){
+
+        Border border = borderService.getBorderById(borderId);
+
+        if (border != null) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("<table class='table table-bordered'>");
+            sb.append("<tr><th class='text-center'>제목</th><td class='text-center'>" + border.getTitle() + "</td></tr>");
+            sb.append("<tr><th class='text-center'>작성일</th><td class='text-center'>" + DateUtil.getDateToString(border.getCreatedDate(), "yyyy-MM-dd HH:mm") + "</td></tr>");
+            sb.append("<tr><th class='text-center'>읽음</th><td class='text-center'>" + border.getViewCnt() + "</td></tr>");
+            sb.append("<tr><th class='text-center'>읽음</th><td class='text-center'>" + border.getViewCnt() + "</td></tr>");
+            sb.append("<tr><th class='text-center'>첨부파일</th><td class='text-center'>");
+            for (BorderFile uploadFile : border.getBorderFiles()) {
+                sb.append("<a href='@{/border/download-file/" + uploadFile.getId() + "'>" + uploadFile.getFileName() + "</a>");
+            }
+            sb.append("</td></tr>");
+            sb.append("<tr><td class='text-center' colspa='2' style='height:400px; vertical-align:top; overflow-scrolling: auto'>" + border.getContent() + "</td></tr>");
             sb.append("</table>");
 
             return sb.toString();

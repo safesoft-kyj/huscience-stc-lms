@@ -47,7 +47,7 @@ public class CertificateInfoController {
         pageInfo.setParentTitle("교육과정기준정보");
     }
 
-    @GetMapping("/list")
+    @GetMapping("")
     public String list(Model model) {
 
         pageInfo.setPageId("m-course-list-page");
@@ -81,7 +81,7 @@ public class CertificateInfoController {
 
         courseCertificateInfoRepository.save(courseCertificateInfo);
 
-        return "redirect:/admin/certificate/info/list";
+        return "redirect:/admin/certificate/info";
     }
 
     @GetMapping("/edit/{id}")
@@ -108,7 +108,7 @@ public class CertificateInfoController {
 
         CourseCertificateInfo newCourseCertificateInfo1 = courseCertificateInfoRepository.save(courseCertificateInfo);
 
-        return "redirect:/admin/certificate/info/list";
+        return "redirect:/admin/certificate/info";
     }
 
     @GetMapping("/delete/{id}")
@@ -118,7 +118,7 @@ public class CertificateInfoController {
 
         courseCertificateInfoRepository.delete(courseCertificateInfo);
 
-        return "redirect:/admin/certificate/info/list";
+        return "redirect:/admin/certificate/info";
     }
 
     @GetMapping("/updateActive/{id}")
@@ -135,6 +135,6 @@ public class CertificateInfoController {
         courseCertificateInfo.setIsActive(1);
         courseCertificateInfoRepository.save(courseCertificateInfo);
 
-        return "redirect:/admin/certificate/info/list/";
+        return "redirect:/admin/certificate/info";
     }
 }

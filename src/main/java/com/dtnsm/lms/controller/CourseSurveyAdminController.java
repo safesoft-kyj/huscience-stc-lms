@@ -15,12 +15,13 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin/course/survey")
+@RequestMapping("/admin/course")
 public class CourseSurveyAdminController {
     @Autowired
     CodeService codeService;
@@ -50,15 +51,19 @@ public class CourseSurveyAdminController {
         pageInfo.setParentTitle("교육과정");
     }
 
-    @GetMapping("/list/{courseId}")
-    public String list(@PathVariable("courseId") Long courseId, Model model) {
+    @GetMapping("/{typeId}/{courseId}/survey")
+    public String list( @PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId
+            , Model model) {
 
         Course course = courseService.getCourseById(courseId);
+        pageInfo.setPageTitle(String.format("<a href='/admin/course/%s'>%s</a> > %s", typeId , course.getCourseMaster().getCourseName(), "설문"));
+
         // 설문조사 여부가 Y 인경우만 Add 버튼 활성화
         String isAdd = course.getIsSurvey();
 
-        pageInfo.setPageId("m-course-list-page");
-        pageInfo.setPageTitle("<a href='/admin/course/list/" + course.getCourseMaster().getId() + "'>" + course.getCourseMaster().getCourseName() + "</a> > 설문");
+
+
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courseSurveyService.getAllByCourseId(courseId));
         model.addAttribute("isAdd", isAdd);
@@ -67,14 +72,15 @@ public class CourseSurveyAdminController {
         return "admin/course/survey/list";
     }
 
-    @GetMapping("/add/{courseId}")
-    public String noticeAdd(@PathVariable("courseId") Long courseId, Model model) {
+    @GetMapping("/{typeId}/{courseId}/survey/add")
+    public String noticeAdd(@PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId, Model model) {
 
         course = courseService.getCourseById(courseId);
         CourseSurvey courseSurvey = new CourseSurvey();
         courseSurvey.setCourse(course);
 
-        pageInfo.setPageTitle(course.getTitle());
+        pageInfo.setPageTitle(String.format("<a href='/admin/course/%s'>%s</a> > %s", typeId , course.getCourseMaster().getCourseName(), "설문"));
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseSurvey", courseSurvey);
@@ -84,8 +90,10 @@ public class CourseSurveyAdminController {
         return "admin/course/survey/add";
     }
 
-    @PostMapping("/add-post")
+    @PostMapping("/{typeId}/{courseId}/survey/add-post")
     public String noticeAddPost(@Valid CourseSurvey courseSurvey
+            , @PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId
             , @RequestParam("id") Long id
             , BindingResult result) {
         if(result.hasErrors()) {
@@ -101,15 +109,20 @@ public class CourseSurveyAdminController {
         // 선택된 설문을 복사한다.
         courseSurveyService.CopySurveyQuestion(courseSurvey1);
 
-        return "redirect:/admin/course/list/" + courseSurvey1.getCourse().getCourseMaster().getId();
+        return String.format("redirect:/admin/course/%s/%s/survey"
+                , courseSurvey1.getCourse().getCourseMaster().getId()
+                , courseSurvey1.getCourse().getId());
     }
 
-    @GetMapping("/edit/{id}")
-    public String noticeEdit(@PathVariable("id") long id, Model model) {
+    @GetMapping("/{typeId}/{courseId}/survey/edit/{id}")
+    public String noticeEdit(@PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId
+            , @PathVariable("id") long id, Model model) {
 
         CourseSurvey courseSurvey = courseSurveyService.getCourseSurveyById(id);
 
-        pageInfo.setPageTitle(courseSurvey.getName());
+        Course course = courseService.getCourseById(courseId);
+        pageInfo.setPageTitle(String.format("<a href='/admin/course/%s'>%s</a> > %s", typeId , course.getCourseMaster().getCourseName(), "설문"));
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseSurvey", courseSurvey);
@@ -119,8 +132,10 @@ public class CourseSurveyAdminController {
         return "admin/course/survey/edit";
     }
 
-    @PostMapping("/edit-post/{id}")
-    public String noticeEditPost(@PathVariable("id") long id
+    @PostMapping("/{typeId}/{courseId}/survey/edit-post/{id}")
+    public String noticeEditPost(@PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId
+            , @PathVariable("id") long id
             , @Valid CourseSurvey courseSurvey
             , BindingResult result) {
         if(result.hasErrors()) {
@@ -138,32 +153,37 @@ public class CourseSurveyAdminController {
         // 선택된 설문을 복사한다.
         courseSurveyService.CopySurveyQuestion(courseSurvey1);
 
-
-        return "redirect:/admin/course/survey/list/" + courseSurvey1.getCourse().getId();
+        return String.format("redirect:/admin/course/%s/%s/survey"
+                , courseSurvey.getCourse().getCourseMaster().getId()
+                , courseSurvey.getCourse().getId());
     }
 
-    @GetMapping("/delete/{id}")
-    public String noticeDelete(@PathVariable("id") long id) {
+    @GetMapping("/{typeId}/{courseId}/survey/delete/{id}")
+    public String noticeDelete(@PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId
+            , @PathVariable("id") long id, HttpServletRequest request) {
 
         CourseSurvey courseSurvey = courseSurveyService.getCourseSurveyById(id);
-
-        Long courseId = courseSurvey.getCourse().getId();
 
         // 과정 신청된 내역이 있으면 삭제 하지 않는다.
         if (courseSurvey.getCourse().getCourseAccountList().size() <= 0) {
             courseSurveyService.deleteQuiz(courseSurvey);
         }
 
-        return "redirect:/admin/course/survey/list/" + courseId;
+        // 이전 URL를 리턴한다.
+        String refUrl = request.getHeader("referer");
+        return "redirect:" +  refUrl;
     }
 
-    @GetMapping("/view/{id}")
-    public String viewPage(@PathVariable("id") long id, Model model) {
+    @GetMapping("/{typeId}/{courseId}/survey/view")
+    public String viewPage(@PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId
+            , @RequestParam("surveyId") long surveyId, Model model) {
 
-        CourseSurvey courseSurvey = courseSurveyService.getCourseSurveyById(id);
+        CourseSurvey courseSurvey = courseSurveyService.getCourseSurveyById(surveyId);
 
-        pageInfo.setPageId("self");
-        pageInfo.setPageTitle(courseSurvey.getName());
+        Course course = courseService.getCourseById(courseId);
+        pageInfo.setPageTitle(String.format("<a href='/admin/course/%s'>%s</a> > %s", typeId , course.getCourseMaster().getCourseName(), "설문"));
 
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courseSurvey.getQuestions());
@@ -173,14 +193,16 @@ public class CourseSurveyAdminController {
     }
 
     // Report
-    @GetMapping("/report/{id}")
-    public String reportPage(@PathVariable("id") long id, Model model) {
+    @GetMapping("/{typeId}/{courseId}/survey/report")
+    public String reportPage(@PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId
+            , @RequestParam("surveyId") long surveyId, Model model) {
 
-        CourseSurvey courseSurvey = courseSurveyService.getCourseSurveyById(id);
+        CourseSurvey courseSurvey = courseSurveyService.getCourseSurveyById(surveyId);
 
-        List<ReportForm1> borders = reportMapperService.getSurveyReport(courseSurvey.getCourse().getId());
+        List<ReportForm1> borders = reportMapperService.getSurveyReport(courseId);
 
-        List<ReportForm3> shoutQuestionsAnswer = reportMapperService.getSurveyReport2(courseSurvey.getCourse().getId());
+        List<ReportForm3> shoutQuestionsAnswer = reportMapperService.getSurveyReport2(courseId);
 
 
         List<CourseSurveyQuestion> shoutQuestions = new ArrayList<>();
@@ -190,14 +212,15 @@ public class CourseSurveyAdminController {
             }
         }
 
-        pageInfo.setPageId("self");
-        pageInfo.setPageTitle(courseSurvey.getName());
+        Course course = courseService.getCourseById(courseId);
+        pageInfo.setPageTitle(String.format("<a href='/admin/course/%s'>%s</a> > %s", typeId , course.getCourseMaster().getCourseName(), "설문"));
 
         model.addAttribute(pageInfo);
         model.addAttribute("borders", borders);
         model.addAttribute("shoutQuestions", shoutQuestions);
         model.addAttribute("shoutQuestionsAnswer", shoutQuestionsAnswer);
-        model.addAttribute("courseId", courseSurvey.getCourse().getId());
+        model.addAttribute("courseId", courseId);
+        model.addAttribute("courseTitle", courseSurvey.getCourse().getTitle());
 
         return "admin/course/survey/report";
     }

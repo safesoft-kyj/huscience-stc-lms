@@ -59,7 +59,7 @@ public class BorderController {
         pageInfo.setParentTitle("학습지원");
     }
 
-    @GetMapping("/list/{typeId}")
+    @GetMapping("/{typeId}")
     public String listPage(@PathVariable("typeId") String typeId
             , @RequestParam(value = "searchType", defaultValue = "all") String searchType
             , @RequestParam(value = "searchText", defaultValue = "") String searchText
@@ -86,13 +86,14 @@ public class BorderController {
 
 
         model.addAttribute(pageInfo);
+        model.addAttribute("typeId", typeId);
         model.addAttribute("borders", borders);
 
         return "content/border/list";
     }
 
 
-    @GetMapping("/view/{id}")
+    @GetMapping("/{typeId}/view/{id}")
     public String viewPage(@PathVariable("id") long id, Model model) {
 
         Border border = borderService.getBorderById(id);
@@ -116,19 +117,23 @@ public class BorderController {
         resource = borderFileService.loadFileAsResource(borderFile.getSaveName());
 
         // Try to determine file's content type
-        contentType = mimeTypesMap.getContentType(borderFile.getSaveName());
+//        contentType = mimeTypesMap.getContentType(borderFile.getSaveName());
+
+        contentType = borderFile.getMimeType();
         // contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 
 
         // Fallback to the default content type if type could not be determined
-//        if(contentType.equals("")) {
-//            contentType = "application/octet-stream";
-//        }
+        if(contentType.equals("")) {
+            contentType = "application/octet-stream";
+        }
 
         // 한글파일명 깨짐 현상 해소
         String newFileName = FileUtil.getNewFileName(request, borderFile.getFileName());
 
+
         return ResponseEntity.ok()
+                //                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + newFileName + "\"")
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + newFileName + "\"")
                 .contentType(MediaType.parseMediaType(contentType))
                 .body(resource);

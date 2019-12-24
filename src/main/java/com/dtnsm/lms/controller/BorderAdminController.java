@@ -99,7 +99,7 @@ public class BorderAdminController {
 //        return "admin/border/list";
 //    }
 
-    @GetMapping("/list/{typeId}")
+    @GetMapping("/{typeId}")
     public String listPage(@PathVariable("typeId") String typeId
             , @RequestParam(value = "searchType", defaultValue = "all") String searchType
             , @RequestParam(value = "searchText", defaultValue = "") String searchText
@@ -133,20 +133,21 @@ public class BorderAdminController {
     }
 
 
-    @GetMapping("/view/{id}")
-    public String noticeView(@PathVariable("id") long id, Model model) {
+    @GetMapping("/{typeId}/view/{id}")
+    public String noticeView(@PathVariable("typeId") String typeId, @PathVariable("id") long id, Model model) {
 
         Border border = borderService.getBorderById(id);
 
         pageInfo.setPageTitle(border.getBorderMaster().getBorderName());
 
         model.addAttribute(pageInfo);
+        model.addAttribute("typeId", typeId);
         model.addAttribute("border", border);
 
         return "admin/border/view";
     }
 
-    @GetMapping("/add/{typeId}")
+    @GetMapping("/{typeId}/add")
     public String noticeAdd(@PathVariable("typeId") String typeId, Model model) {
 
         this.borderMaster = borderMasterService.getById(typeId);
@@ -159,7 +160,7 @@ public class BorderAdminController {
 
         model.addAttribute(pageInfo);
         model.addAttribute("border", border);
-        model.addAttribute("id", typeId);
+        model.addAttribute("typeId", typeId);
 
         return "admin/border/add";
     }
@@ -198,7 +199,7 @@ public class BorderAdminController {
             mailService.send(mail);
         }
 
-        return "redirect:/admin/border/list/" + border1.getBorderMaster().getId();
+        return "redirect:/admin/border/" + border1.getBorderMaster().getId();
     }
 
     // 첨부파일 업로드
@@ -212,8 +213,8 @@ public class BorderAdminController {
         return "redirect:/admin/border/list/" + border.getBorderMaster().getId();
     }
 
-    @GetMapping("/edit/{id}")
-    public String noticeEdit(@PathVariable("id") long id, Model model) {
+    @GetMapping("/{typeId}/edit/{id}")
+    public String noticeEdit(@PathVariable("typeId") String typeId, @PathVariable("id") long id, Model model) {
 
         Border border = borderService.getBorderById(id);
 
@@ -221,6 +222,7 @@ public class BorderAdminController {
 
         model.addAttribute(pageInfo);
         model.addAttribute("border", border);
+        model.addAttribute("typeId", typeId);
         model.addAttribute("id", border.getId());
 
         return "admin/border/edit";
@@ -230,10 +232,12 @@ public class BorderAdminController {
     public String noticeEditPost(@PathVariable("id") long id, @Valid Border border, @RequestParam("files") MultipartFile[] files, BindingResult result) {
         if(result.hasErrors()) {
             border.setId(id);
-            return "/admin/border/list/" + border.getBorderMaster().getId();
+            return "/admin/border/" + border.getBorderMaster().getId();
         }
 
-        List<BorderFile> borderFiles = borderService.getBorderById(id).getBorderFiles();
+        Border oldBorder = borderService.getBorderById(id);
+
+
         if (!border.getIsNotice().equals("1")) {
             border.setFromDate("1900-01-01");
             border.setToDate("1900-01-01");
@@ -242,8 +246,9 @@ public class BorderAdminController {
         }
 
         border.setAccount(userService.findByUserId(SessionUtil.getUserId()));
-
-        border.setBorderFiles(borderFiles);
+        border.setBorderFiles(oldBorder.getBorderFiles());
+        border.setBorderViewAccounts(oldBorder.getBorderViewAccounts());
+        border.setViewCnt(oldBorder.getViewCnt());
 
         Border border1 = borderService.save(border);
 
@@ -252,7 +257,7 @@ public class BorderAdminController {
                 .map(file -> borderFileService.storeFile(file, border1))
                 .collect(Collectors.toList());
 
-        return "redirect:/admin/border/list/" + border1.getBorderMaster().getId();
+        return "redirect:/admin/border/" + border1.getBorderMaster().getId();
     }
 
     @GetMapping("/delete/{id}")
@@ -270,17 +275,19 @@ public class BorderAdminController {
 
         borderService.delete(border);
 
-        return "redirect:/admin/border/list/" + borderMastId;
+        return "redirect:/admin/border/" + borderMastId;
     }
 
 
     @GetMapping("/delete-file/{border_id}/{file_id}")
-    public String noticeDeleteFile(@PathVariable int border_id, @PathVariable int file_id, HttpServletRequest request){
+    public String noticeDeleteFile(@PathVariable long border_id, @PathVariable int file_id, HttpServletRequest request){
 
         // db및 파일 삭제
         borderFileService.deleteFile(file_id);
 
-        return "redirect:/admin/border/edit/" + border_id;
+        Border border = borderService.getBorderById(border_id);
+
+        return "redirect:/admin/border/" + border.getBorderMaster().getId() +  "/edit/" + border_id;
 
     }
 
@@ -308,7 +315,8 @@ public class BorderAdminController {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + newFileName + "\"")
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + newFileName + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + newFileName + "\"")
                 .body(resource);
     }
 

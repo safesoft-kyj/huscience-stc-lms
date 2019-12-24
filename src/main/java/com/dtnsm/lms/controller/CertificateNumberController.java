@@ -39,7 +39,7 @@ public class CertificateNumberController {
         pageInfo.setParentTitle("교육과정기준정보");
     }
 
-    @GetMapping("/list")
+    @GetMapping("")
     public String list(Model model) {
 
         pageInfo.setPageId("m-course-list-page");
@@ -72,7 +72,7 @@ public class CertificateNumberController {
 
         courseCertificateNumberRepository.save(courseCertificateNumber);
 
-        return "redirect:/admin/certificate/number/list";
+        return "redirect:/admin/certificate/number";
     }
 
     @GetMapping("/edit/{id}")
@@ -94,7 +94,7 @@ public class CertificateNumberController {
         }
         courseCertificateNumberRepository.save(courseCertificateNumber);
 
-        return "redirect:/admin/certificate/number/list";
+        return "redirect:/admin/certificate/number";
     }
 
     @GetMapping("/delete/{id}")
@@ -104,6 +104,6 @@ public class CertificateNumberController {
 
         courseCertificateNumberRepository.delete(courseCertificateNumber);
 
-        return "redirect:/admin/certificate/number/list";
+        return "redirect:/admin/certificate/number";
     }
 }

@@ -45,7 +45,7 @@
                 <div class="panel-body">
                     <!--===================================================-->
                     <!--End Horizontal Form-->
-                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/section/edit-post/{id}(id=${courseSection.getId()})}" th:object="${courseSection}" method="post" enctype="multipart/form-data" >
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/{typeId}/{courseId}/section/edit-post/{id}(typeId=${typeId}, courseId=${courseId}, id=${courseSection.getId()})}" th:object="${courseSection}" method="post" enctype="multipart/form-data" >
                         <input type="hidden" th:value="${id}" id="id" name="id">
 <!--                        <input type="hidden" th:field="*{type}" id="type" >-->
 <!--                        <div class="form-group">-->
@@ -126,7 +126,7 @@
                                                 </td>
                                                 <td th:text="${uploadFile.getSize()}" class="text-center"></td>
                                                 <td class="text-center col-sm-2">
-                                                    <a class="btn btn-xs btn-danger" th:href="@{/admin/course/section/delete-file/{section_id}/{file_id}(section_id=${courseSection.getId()}, file_id=${uploadFile.getId()})}"><i class="demo-psi-trash"></i></a>
+                                                    <a class="btn btn-xs btn-danger" th:href="@{/admin/course/{typeId}/{courseId}/section/delete-file/{section_id}/{file_id}(typeId=${typeId}, courseId=${courseId}, section_id=${courseSection.getId()}, file_id=${uploadFile.getId()})}"><i class="demo-psi-trash"></i></a>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -146,7 +146,7 @@
                             <button class="btn btn-primary" type="submit" id="submit-all" th:text="#{label.save}">
                                 <i class="fa fa-upload-cloud"></i> 저장
                             </button>
-                            <a class="btn btn-primary" th:href="@{/admin/course/section/list/{courseId}(courseId=${courseSection.getCourse().getId()})}"><i class="demo-pli-back"></i> Back</a>
+                            <a class="btn btn-primary" th:href="@{/admin/course/{typeId}/{courseId}/section(typeId=${typeId}, courseId=${courseId})}"><i class="demo-pli-back"></i> Back</a>
                         </div>
                     </form>
                 </div><!--panel-body End -->

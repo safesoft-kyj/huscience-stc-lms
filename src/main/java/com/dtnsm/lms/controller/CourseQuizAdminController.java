@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin/course/quiz")
+@RequestMapping("/admin/course")
 public class CourseQuizAdminController {
 
     @Autowired
@@ -65,13 +65,14 @@ public class CourseQuizAdminController {
         pageInfo.setParentTitle("교육과정");
     }
 
-    @GetMapping("/list/{courseId}")
-    public String list(@PathVariable("courseId") Long courseId, Model model) {
+    @GetMapping("/{typeId}/{courseId}/quiz")
+    public String list(@PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId, Model model) {
 
         course = courseService.getCourseById(courseId);
 
         pageInfo.setPageId("m-course-list-page");
-        pageInfo.setPageTitle("<a href='/admin/course/list/" + course.getCourseMaster().getId() + "'>" + course.getCourseMaster().getCourseName() + "</a> > 시험");
+        pageInfo.setPageTitle(String.format("<a href='/admin/course/%s/'>%s</a> > %s", typeId, course.getCourseMaster().getCourseName(), "시험"));
 
         // 설문조사 여부가 Y 인경우만 Add 버튼 활성화
         String isAdd = course.getIsQuiz();
@@ -84,34 +85,38 @@ public class CourseQuizAdminController {
         return "admin/course/quiz/list";
     }
 
-    @GetMapping("/add/{courseId}")
-    public String noticeAdd(@PathVariable("courseId") Long courseId, Model model) {
+    @GetMapping("/{typeId}/{courseId}/quiz/add")
+    public String noticeAdd(@PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId, Model model) {
 
         course = courseService.getCourseById(courseId);
         CourseQuiz courseQuiz = new CourseQuiz();
         courseQuiz.setCourse(course);
 
-        pageInfo.setPageTitle(course.getTitle());
+        pageInfo.setPageTitle(String.format("<a href='/admin/course/%s/'>%s</a> > %s", typeId, course.getCourseMaster().getCourseName(), "시험"));
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseQuiz", courseQuiz);
 //        model.addAttribute("codeList", codeService.getMinorList(majorCode));
-        model.addAttribute("id", courseId);
+        model.addAttribute("typeId", typeId);
+        model.addAttribute("courseId", courseId);
 
 
         return "admin/course/quiz/add";
     }
 
-    @PostMapping("/add-post")
+    @PostMapping("/{typeId}/{courseId}/quiz/add-post")
     public String noticeAddPost(@Valid CourseQuiz quiz
-            , @RequestParam("id") Long id
+            , @PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId
+//            , @RequestParam("id") Long id
             , @RequestParam("file") MultipartFile file
             , BindingResult result) {
         if(result.hasErrors()) {
-            return "admin/course/section/add/" + id;
+            return "admin/course/section/add/" + courseId;
         }
 
-        Course course = courseService.getCourseById(id);
+        Course course = courseService.getCourseById(courseId);
         quiz.setCourse(course);
         quiz.setMinute(Math.round(quiz.getHour() * 60));
         quiz.setSecond(Math.round(quiz.getMinute() * 60));
@@ -141,35 +146,42 @@ public class CourseQuizAdminController {
             }
         }
 
-        return "redirect:/admin/course/list/" + quiz1.getCourse().getCourseMaster().getId();
+        return String.format("redirect:/admin/course/%s/%s/quiz"
+                , quiz.getCourse().getCourseMaster().getId()
+                , quiz.getCourse().getId());
     }
 
-    @GetMapping("/edit/{id}")
-    public String noticeEdit(@PathVariable("id") long id, Model model) {
+    @GetMapping("/{typeId}/{courseId}/quiz/edit/{id}")
+    public String noticeEdit(@PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId, @PathVariable("id") long id, Model model) {
 
         CourseQuiz courseQuiz = quizService.getCourseQuizById(id);
 
-        pageInfo.setPageTitle(courseQuiz.getName());
+        pageInfo.setPageTitle(String.format("<a href='/admin/course/%s/'>%s</a> > %s", typeId, course.getCourseMaster().getCourseName(), "시험"));
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseQuiz", courseQuiz);
 //        model.addAttribute("codeList", codeService.getMinorList(majorCode));
         model.addAttribute("id", courseQuiz.getId());
+        model.addAttribute("typeId", typeId);
+        model.addAttribute("courseId", courseId);
 
         return "admin/course/quiz/edit";
     }
 
-    @PostMapping("/edit-post/{id}")
-    public String noticeEditPost(@PathVariable("id") long id
+    @PostMapping("/{typeId}/{courseId}/quiz/edit-post/{id}")
+    public String noticeEditPost(@PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId
+//            , @PathVariable("id") long id
             , @Valid CourseQuiz courseQuiz
             , @RequestParam("file") MultipartFile file
             , BindingResult result) {
         if(result.hasErrors()) {
-            course.setId(id);
-            return "/admin/course/list/" + courseQuiz.getCourse().getId();
+            course.setId(courseQuiz.getId());
+            return "/admin/course/list/" + courseId;
         }
 
-        CourseQuiz courseQuizOld = quizService.getCourseQuizById(id);
+        CourseQuiz courseQuizOld = quizService.getCourseQuizById(courseQuiz.getId());
 
         Course course = courseQuizOld.getCourse();
         courseQuiz.setCourse(course);
@@ -202,52 +214,66 @@ public class CourseQuizAdminController {
             }
         }
 
-        return "redirect:/admin/course/quiz/list/" + courseQuiz1.getCourse().getId();
+        return String.format("redirect:/admin/course/%s/%s/quiz"
+                , courseQuiz1.getCourse().getCourseMaster().getId()
+                , courseQuiz1.getCourse().getId());
     }
 
-    @GetMapping("/delete/{id}")
-    public String noticeDelete(@PathVariable("id") long id) {
+    @GetMapping("/{typeId}/{courseId}/quiz/delete/{id}")
+    public String noticeDelete(@PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId
+            , @PathVariable("id") long id, HttpServletRequest request) {
 
         CourseQuiz courseQuiz = quizService.getCourseQuizById(id);
-
-        Long courseId = courseQuiz.getCourse().getId();
 
         // 과정 신청된 내역이 있으면 삭제 하지 않는다.
         if (courseQuiz.getCourse().getCourseAccountList().size() <= 0) {
             quizService.deleteQuiz(courseQuiz);
         }
 
-        return "redirect:/admin/course/quiz/list/" + courseId;
+        // 이전 URL를 리턴한다.
+        String refUrl = request.getHeader("referer");
+        return "redirect:" +  refUrl;
     }
 
-    @GetMapping("/delete-file/{quiz_id}/{file_id}")
-    public String noticeDeleteFile(@PathVariable long quiz_id, @PathVariable long file_id, HttpServletRequest request){
+    @GetMapping("/{typeId}/{courseId}/quiz/delete-file/{quiz_id}/{file_id}")
+    public String noticeDeleteFile(@PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId
+            , @PathVariable long quiz_id
+            , @PathVariable long file_id
+            , HttpServletRequest request){
 
         // db및 파일 삭제
         fileService.deleteFile(file_id);
 
-        return "redirect:/admin/course/quiz/edit/" + quiz_id;
-
+        // 이전 URL를 리턴한다.
+        String refUrl = request.getHeader("referer");
+        return "redirect:" +  refUrl;
     }
 
-    @GetMapping("/view/{id}")
-    public String viewPage(@PathVariable("id") long id, Model model) {
+    @GetMapping("/{typeId}/{courseId}/quiz/view")
+    public String viewPage(@PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId
+            , @RequestParam("quizId") long quizId
+            , Model model) {
 
-        CourseQuiz courseQuiz = quizService.getCourseQuizById(id);
+        CourseQuiz courseQuiz = quizService.getCourseQuizById(quizId);
 
         pageInfo.setPageId("self");
-        pageInfo.setPageTitle(courseQuiz.getName());
+        pageInfo.setPageTitle(String.format("<a href='/admin/course/%s/'>%s</a> > %s", typeId, course.getCourseMaster().getCourseName(), "시험"));
 
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courseQuiz.getQuizQuestions());
-        model.addAttribute("courseId", courseQuiz.getCourse().getId());
+        model.addAttribute("courseId", courseId);
 
         return "admin/course/quiz/view";
     }
 
-    @GetMapping("/download-file/{id}")
+    @GetMapping("/{typeId}/{courseId}/quiz/download-file/{id}")
     @ResponseBody
-    public ResponseEntity<Resource> downloadFile(@PathVariable long id, HttpServletRequest request){
+    public ResponseEntity<Resource> downloadFile(@PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId
+            , @PathVariable long id, HttpServletRequest request){
 
         CourseQuizFile courseQuizFile =  fileService.getUploadFile(id);
 
@@ -274,8 +300,11 @@ public class CourseQuizAdminController {
     }
 
     // Report
-    @GetMapping("/report/{id}")
-    public String reportPage(@PathVariable("id") long quizId, Model model) {
+    @GetMapping("/{typeId}/{courseId}/quiz/report")
+    public String reportPage(@PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId
+            , @RequestParam("quizId") long quizId
+            , Model model) {
 
         CourseQuiz courseQuiz = quizService.getCourseQuizById(quizId);
 
@@ -283,11 +312,12 @@ public class CourseQuizAdminController {
         List<QuizReportForm1> questionList = reportMapperService.getQuizReport(courseQuiz.getCourse().getId(), quizId);
 
         pageInfo.setPageId("self");
-        pageInfo.setPageTitle(courseQuiz.getName());
+        pageInfo.setPageTitle(String.format("<a href='/admin/course/%s/'>%s</a> > %s", typeId, course.getCourseMaster().getCourseName(), "시험"));
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseQuiz", courseQuiz);
         model.addAttribute("questionList", questionList);
+        model.addAttribute("courseTitle", courseQuiz.getCourse().getTitle());
 
         return "admin/course/quiz/report";
     }

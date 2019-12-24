@@ -155,13 +155,13 @@
             } else {
                 saveSectionSecond();
                 update_flag = '1';
-                closeWindow();
-                alert('학습이 종료 되었습니다.');
+                //closeWindow();
+                //alert('학습이 종료 되었습니다.');
             }
 
             if (RemainDate < 0) {
                 // 시간이 종료 되었으면..
-                clearInterval(tid);   // 타이머 해제
+                //clearInterval(tid);   // 타이머 해제
             } else {
                 curr_second += 1;
                 RemainDate = RemainDate - 1000; // 남은시간 -1초

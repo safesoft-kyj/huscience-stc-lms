@@ -46,8 +46,8 @@
                 <div class="panel-body">
                     <!--===================================================-->
                     <!--End Horizontal Form-->
-                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/quiz/add-post}" th:object="${courseQuiz}" method="post" enctype="multipart/form-data" >
-                        <input type="hidden" th:value="${id}" id="id" name="id">
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/{typeId}/{courseId}/quiz/add-post(typeId=${typeId}, courseId=${courseId})}" th:object="${courseQuiz}" method="post" enctype="multipart/form-data" >
+<!--                        <input type="hidden" th:value="${id}" id="id" name="id">-->
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="name" th:text="#{label.course.quiz.name}">시험명</label>
                             <div class="col-sm-10">
@@ -77,7 +77,7 @@
                             <button class="btn btn-primary" type="submit" id="submit-all" th:text="#{label.save}">
                                 <i class="fa fa-upload-cloud"></i> 저장
                             </button>
-                            <a class="btn btn-primary" th:href="@{/admin/course/quiz/list/{courseId}(courseId=${courseQuiz.getCourse().getId()})}"><i class="demo-pli-back"></i> Back</a>
+                            <a class="btn btn-primary" th:href="@{/admin/course/{typeId}/{courseId}/quiz(typeId=${typeId}, courseId=${courseId})}"><i class="demo-pli-back"></i> Back</a>
                         </div>
                     </form>
                 </div><!--panel-body End -->

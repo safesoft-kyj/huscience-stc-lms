@@ -42,10 +42,10 @@ public class ApprovalRestController {
         Map<String, String > map = new HashMap<>();
 
 
-        courseAccountOrderService.getAllByNext(userId, "1", "0");
+        courseAccountOrderService.getAllByFnUser_UserIdAndFnNextLikeAndFnStatusLike(userId, "1", "0", 0);
 
         // 교육결재 미결건
-        List<CourseAccountOrder> courseAccountList = courseAccountOrderService.getAllByNext(userId, "1", "0");
+        List<CourseAccountOrder> courseAccountList = courseAccountOrderService.getAllByFnUser_UserIdAndFnNextLikeAndFnStatusLike(userId, "1", "0", 0);
 
         // 교육결재 미결건
         List<CourseAccount> courseAccountList3 = courseAccountService.getAllByStatus("0");

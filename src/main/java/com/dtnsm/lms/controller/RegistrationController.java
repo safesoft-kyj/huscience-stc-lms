@@ -114,7 +114,7 @@ public class RegistrationController {
 
         mailService.send(mail);
 
-        return "redirect:/admin/registration/account/list";
+        return "redirect:/admin/registration/account";
     }
 
 
@@ -147,10 +147,10 @@ public class RegistrationController {
 
         Account saveAccount = userRepository.save(oldAccount);
 
-        return "redirect:/admin/registration/account/list";
+        return "redirect:/admin/registration/account";
     }
 
-    @GetMapping("/account/list")
+    @GetMapping("/account")
     public String accountList(Model model) {
 
         pageInfo.setPageTitle("사용자");
@@ -215,7 +215,7 @@ public class RegistrationController {
             userService.updateAccountByGroupwareInfo(saveAccount.getUserId());
         }
 
-        return "redirect:/admin/registration/account/list";
+        return "redirect:/admin/registration/account";
     }
 
     @GetMapping("/account/delete/{id}")
@@ -225,7 +225,7 @@ public class RegistrationController {
 
         userService.deleteAccount(account);
 
-        return "redirect:/admin/registration/account/list";
+        return "redirect:/admin/registration/account";
     }
 
 
@@ -253,10 +253,10 @@ public class RegistrationController {
 
         roleService.save(role);
 
-        return "redirect:/admin/registration/role/list/";
+        return "redirect:/admin/registration/role";
     }
 
-    @GetMapping("/role/list")
+    @GetMapping("/role")
     public String list(Model model) {
 
         pageInfo.setPageId("m-info-month");
@@ -291,7 +291,7 @@ public class RegistrationController {
 
         roleService.save(role);
 
-        return "redirect:/admin/registration/role/list";
+        return "redirect:/admin/registration/role";
     }
 
     @GetMapping("/role/delete/{id}")
@@ -301,7 +301,7 @@ public class RegistrationController {
 
         roleService.delete(role);
 
-        return "redirect:/admin/registration/role/list";
+        return "redirect:/admin/registration/role";
     }
 
     /*
@@ -311,7 +311,7 @@ public class RegistrationController {
     @GetMapping("/accountRole/list")
     public String accountRoleList(Model model) {
 
-        pageInfo.setPageId("m-info-month");
+
         pageInfo.setPageTitle("사용자별 Role");
 
         List<Account> accounts = userService.getAccountList();
@@ -331,7 +331,7 @@ public class RegistrationController {
     public String courseManagerAdd(CourseManager courseManager, Model model) {
 
 
-        pageInfo.setPageId("m-info-month");
+        pageInfo.setParentTitle("교육과정기준정보");
         pageInfo.setPageTitle("교육과정관리자");
 
         model.addAttribute(pageInfo);
@@ -350,15 +350,15 @@ public class RegistrationController {
 
         courseManagerService.save(courseManager);
 
-        return "redirect:/admin/registration/courseManager/list/";
+        return "redirect:/admin/registration/courseManager";
     }
 
 
-    @GetMapping("/courseManager/edit/{userId}")
-    public String courseManagerUpdate(@PathVariable("userId") String userId, Model model) {
+    @GetMapping("/courseManager/edit")
+    public String courseManagerUpdate(@RequestParam("userId") String userId, Model model) {
         CourseManager courseManager = courseManagerService.getByUserId(userId);
 
-        pageInfo.setPageId("m-customer-edit");
+        pageInfo.setParentTitle("교육과정기준정보");
         pageInfo.setPageTitle("교육과정관리자");
         model.addAttribute(pageInfo);
         model.addAttribute("accountList", userService.getAccountList());
@@ -368,8 +368,8 @@ public class RegistrationController {
         return "admin/registration/courseManager/edit";
     }
 
-    @GetMapping("/courseManager/updateActive/{userId}")
-    public String updateActive(@PathVariable("userId") String userId) {
+    @GetMapping("/courseManager/updateActive")
+    public String updateActive(@RequestParam("userId") String userId) {
 
         // 모든 설문을 초기화 한다.
         for(CourseManager courseManager : courseManagerService.getList()) {
@@ -382,27 +382,27 @@ public class RegistrationController {
         courseManager.setIsActive(1);
         courseManagerService.save(courseManager);
 
-        return "redirect:/admin/registration/courseManager/list/";
+        return "redirect:/admin/registration/courseManager";
     }
 
     @PostMapping("/courseManager/edit-post/{userId}")
     public String courseManagerUpdatePost(@PathVariable("userId") String userId, @Valid CourseManager courseManager, BindingResult result) {
         if(result.hasErrors()) {
             courseManager.setAccount(courseManager.getAccount());
-            return "content/registration/courseManager/edit" + userId;
+            return "admin/registration/courseManager/edit";
         }
 
         CourseManager oldCourseManager = courseManagerService.getByUserId(userId);
         courseManager.setIsActive(oldCourseManager.getIsActive());
         courseManagerService.save(courseManager);
 
-        return "redirect:/admin/registration/courseManager/list";
+        return "redirect:/admin/registration/courseManager";
     }
 
-    @GetMapping("/courseManager/list")
+    @GetMapping("/courseManager")
     public String courseManagerList(Model model) {
 
-        pageInfo.setPageId("m-info-month");
+        pageInfo.setParentTitle("교육과정기준정보");
         pageInfo.setPageTitle("교육과정관리자");
 
         List<CourseManager> managers = courseManagerService.getList();
@@ -414,13 +414,13 @@ public class RegistrationController {
     }
 
 
-    @GetMapping("/courseManager/delete/{userId}")
-    public String deleteRole(@PathVariable("userId") String userId) {
+    @GetMapping("/courseManager/delete")
+    public String deleteRole(@RequestParam("userId") String userId) {
 
         CourseManager courseManager = courseManagerService.getByUserId(userId);
 
         courseManagerService.delete(courseManager);
 
-        return "redirect:/admin/registration/courseManager/list";
+        return "redirect:/admin/registration/courseManager";
     }
 }

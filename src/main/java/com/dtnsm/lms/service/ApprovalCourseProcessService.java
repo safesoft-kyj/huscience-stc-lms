@@ -637,6 +637,11 @@ public class ApprovalCourseProcessService {
                 courseAccount.setIsAttendance("1"); // 교육참석유무(0:미참석, 1:참석) => 기본값 0
             }
 
+            // 외부교육이면 isReport(교육보고서 작성유무) 를 1로 설정한다.
+            if (course.getCourseMaster().getId().equals("BC0104")) {  // self
+                courseAccount.setIsReport("1");
+            }
+
             if (course.getIsAlways().equals("0")) {     // 상시교육이 아닌경우는 과정 교육일자를 기준으로 교육일자를 생성한다.
                 fromDate = course.getFromDate();
                 toDate = course.getToDate();
@@ -677,6 +682,12 @@ public class ApprovalCourseProcessService {
             saveCourseAccount.setRequestDate(DateUtil.getTodayString());
             saveCourseAccount.setRequestType(requestType);
 
+            // 외부 교육인 경우는 외부교육참석보고서를 교육완료일 기준 3일이내 작성해야한다.
+            if (course.getCourseMaster().getId().equals("BC0104")) {  // 외부교육
+                // 보고서 작성 유무
+                saveCourseAccount.setIsReport("1");
+            }
+
 //            if (course.getIsAlways().equals("1")) {     // 상시교육일 경우는 신청시점부터 교육일자를 산정하여 생성한다.
 //                fromDate = DateUtil.getTodayString();
 //                toDate = DateUtil.getStringDateAddDay(fromDate, course.getDay());
@@ -691,9 +702,9 @@ public class ApprovalCourseProcessService {
 //                courseAccount = courseAccountSelfProcess(courseAccount);
 //            } else if (course.getCourseMaster().getId().equals("BC0102")) {  // class 교육
 //                courseAccount = courseAccountClassProcess(courseAccount);
-//            } else if (course.getCourseMaster().getId().equals("BC0103")) {  // 외부교육
+//            } else if (course.getCourseMaster().getId().equals("BC0104")) {  // 외부교육
 //                courseAccount = courseAccountOtherProcess(courseAccount);
-//            } else if (course.getCourseMaster().getId().equals("BC0104")) {  // 부서별교육
+//            } else if (course.getCourseMaster().getId().equals("BC0103")) {  // 부서별교육
 //                courseAccount = courseAccountDeptProcess(courseAccount);
 //            }
 

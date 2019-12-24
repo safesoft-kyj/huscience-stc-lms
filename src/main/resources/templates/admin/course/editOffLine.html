@@ -35,7 +35,7 @@
                 <div class="panel-body">
                     <!--===================================================-->
                     <!--End Horizontal Form-->
-                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/edit-post/{id}(id=${course.getId()})}" th:object="${course}" method="post" enctype="multipart/form-data">
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/{typeId}/edit-post/{id}(typeId=${typeId}, id=${course.getId()})}" th:object="${course}" method="post" enctype="multipart/form-data">
                         <input type="hidden" th:field="*{id}" id="id" name="id">
                         <input type="hidden" th:field="*{courseMaster.id}" id="type-id" name="type-id">
                         <div class="form-group">
@@ -160,7 +160,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="editor" th:text="#{label.course.introduce}">소개</label>
                             <div class="col-sm-10">
-                                <textarea class="form-control" th:field="*{content}" name="content" id="editor" style="width: 100%; height: 300px;" required></textarea>
+                                <textarea class="form-control" th:field="*{content}" name="content" id="editor" style="width: 100%; height: 300px;"></textarea>
                             </div>
                             <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
                         </div>
@@ -181,11 +181,11 @@
                                             <tbody>
                                             <tr th:each="uploadFile : ${course.getCourseFiles()}">
                                                 <td>
-                                                    <a th:href="@{/admin/course/download-file/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>
+                                                    <a th:href="@{/admin/course/download-file/{id}(typeid=${typeId}, id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>
                                                 </td>
                                                 <td th:text="${uploadFile.getSize()}" class="text-center"></td>
                                                 <td class="text-center col-sm-2">
-                                                   <a class="btn btn-xs btn-danger" th:href="@{/admin/course/delete-file/{course_id}/{file_id}(course_id=${course.getId()}, file_id=${uploadFile.getId()})}"><i class="demo-psi-trash"></i></a>
+                                                   <a class="btn btn-xs btn-danger" th:href="@{/admin/course/{typeId}/delete-file/{course_id}/{file_id}(typeId=${typeId}, course_id=${course.getId()}, file_id=${uploadFile.getId()})}"><i class="demo-psi-trash"></i></a>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -282,10 +282,8 @@
 <!--                            <button id="dz-upload-btn" class="btn btn-primary" type="submit">-->
 <!--                                <i class="fa fa-upload-cloud"></i> 저장-->
 <!--                            </button>-->
-                            <button class="btn btn-primary" type="submit" id="submit-all" th:text="#{label.save}">
-                                <i class="fa fa-upload-cloud"></i> 저장
-                            </button>
-                            <a th:href="@{/admin/course/list/{typeId}(typeId=${course.getCourseMaster().getId()})}" class="btn btn-success" th:text="#{label.list}">
+                            <button class="btn btn-primary" type="submit"><i class="fa fa-upload-cloud"></i> <span th:text="#{label.save}"></span></button>
+                            <a th:href="@{/admin/course/{typeId}(typeId=${course.getCourseMaster().getId()})}" class="btn btn-success" th:text="#{label.list}">
                                 <i class="fa fa-upload-cloud"></i> 목록
                             </a>
                         </div>
@@ -330,7 +328,7 @@
             });
 
             //전송버튼
-            $("#submit-all").click(function(){
+            $("#boardFrm").submit(function(e){
 
                 var title = $("#title").val();
 
@@ -359,7 +357,7 @@
                 //id가 smarteditor인 textarea에 에디터에서 대입
                 // obj2.getById["agenda"].exec("UPDATE_CONTENTS_FIELD", []);
                 //폼 submit
-                $("#boardFrm").submit();
+                // $("#boardFrm").submit();
             });
         });
 
