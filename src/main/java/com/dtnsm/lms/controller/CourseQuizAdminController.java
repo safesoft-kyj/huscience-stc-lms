@@ -151,9 +151,9 @@ public class CourseQuizAdminController {
                 , quiz.getCourse().getId());
     }
 
-    @GetMapping("/{typeId}/{courseId}/quiz/edit/{id}")
+    @GetMapping("/{typeId}/{courseId}/quiz/edit")
     public String noticeEdit(@PathVariable("typeId") String typeId
-            , @PathVariable("courseId") Long courseId, @PathVariable("id") long id, Model model) {
+            , @PathVariable("courseId") Long courseId, @RequestParam("id") long id, Model model) {
 
         CourseQuiz courseQuiz = quizService.getCourseQuizById(id);
 

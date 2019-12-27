@@ -1,13 +1,13 @@
 package com.dtnsm.lms.controller;
 
+import com.dtnsm.common.repository.SignatureRepository;
 import com.dtnsm.lms.auth.UserServiceImpl;
-import com.dtnsm.lms.domain.CourseAccount;
-import com.dtnsm.lms.domain.CourseAccountOrder;
-import com.dtnsm.lms.domain.Document;
-import com.dtnsm.lms.domain.DocumentAccountOrder;
+import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.*;
+import com.dtnsm.lms.util.DateUtil;
+import com.dtnsm.lms.util.GlobalUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +16,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.activation.MimetypesFileTypeMap;
+import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/approval")
@@ -38,10 +43,22 @@ public class ApprovalController {
     CourseAccountOrderService courseAccountOrderService;
 
     @Autowired
+    DocumentTemplateService templateService;
+
+    @Autowired
     DocumentService documentService;
 
     @Autowired
     DocumentAccountOrderService documentAccountOrderService;
+
+    @Autowired
+    private DocumentCourseAccountService documentCourseAccountService;
+
+    @Autowired
+    private DocumentFileService documentFileService;
+
+    @Autowired
+    ApprovalDocumentProcessService approvalDocumentProcessService;
 
     @Autowired
     CourseSectionService courseSectionService;
@@ -56,7 +73,11 @@ public class ApprovalController {
     UserMapperService userMapperService;
 
     @Autowired
+    SignatureRepository signatureRepository;
+
+    @Autowired
     private CourseSectionFileService courseSectionFileService;
+
 
     @Autowired
     private ApprovalCourseProcessService approvalCourseProcessService;
@@ -72,10 +93,8 @@ public class ApprovalController {
     }
 
     // 내부결재기안함(Class 교육만 진행한다)
-    @GetMapping({"/mainRequest1", "/mainRequest1/{status}"})
-    public String mainRequest1(@PathVariable Optional<String> status, @PageableDefault Pageable pageable, Model model) {
-
-        String fStatus = status.isPresent() ? status.get() : "all";
+    @GetMapping("/mainRequest1")
+    public String mainRequest1(@RequestParam(value = "status", required = false, defaultValue = "all") String status, @PageableDefault Pageable pageable, Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
         pageInfo.setPageTitle("내부결재");
@@ -102,22 +121,22 @@ public class ApprovalController {
 
 
         // 교육 결재 상태(status) : 0: 진행중, 1: 승인, 2:기각, 9:미진행
-        if (fStatus.equals("request")) {
+        if (status.equals("request")) {
             courseAccountList = courseAccountService.getAllByAccount_UserIdAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(
                     userId, "BC0102", "1","9", "0", "0", "9", pageable);
 
 //            documentList = documentService.getAllByAccount_UserIdAndFnStatusLike(userId, "9", pageable);
-        } else if (fStatus.equals("process")) {
+        } else if (status.equals("process")) {
             courseAccountList = courseAccountService.getAllByAccount_UserIdAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(
                     userId, "BC0102","1","0", "1", "0", "9", pageable);
 
 //            documentList = documentService.getAllByAccount_UserIdAndFnStatusLike(userId, "0", pageable);
-        } else if(fStatus.equals("complete")) {
+        } else if(status.equals("complete")) {
             courseAccountList = courseAccountService.getAllByAccount_UserIdAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(
                     userId, "BC0102","1","1", "%", "0", "9", pageable);
 
 //            documentList = documentService.getAllByAccount_UserIdAndFnStatusLike(userId, "1", pageable);
-        } else if (fStatus.equals("reject")) {
+        } else if (status.equals("reject")) {
             courseAccountList = courseAccountService.getAllByAccount_UserIdAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(
                     userId, "BC0102","1","2", "%", "0", "9", pageable);
 
@@ -130,7 +149,8 @@ public class ApprovalController {
         }
 
         model.addAttribute(pageInfo);
-        model.addAttribute("status", fStatus);
+        model.addAttribute("status", status);
+        model.addAttribute("requestName", "mainRequest1");
         // 요청중 문서
         model.addAttribute("requestCount1", requestCount1);
         // 진행중 문서
@@ -144,10 +164,8 @@ public class ApprovalController {
     }
 
     // 외부결재기안함(외부교육만 진행한다)
-    @GetMapping({"/mainRequest2", "/mainRequest2/{status}"})
-    public String mainRequest2(@PathVariable Optional<String> status, @PageableDefault Pageable pageable, Model model) {
-
-        String fStatus = status.isPresent() ? status.get() : "all";
+    @GetMapping("/mainRequest2")
+    public String mainRequest2(@RequestParam(value = "status", required = false, defaultValue = "all") String status, @PageableDefault Pageable pageable, Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
         pageInfo.setPageTitle("외부결재");
@@ -170,37 +188,37 @@ public class ApprovalController {
 //                userId, "BC0104","1","2", "%", "1", "2");
 
         long requestCount5 = courseAccountService.countByCourseRequest(
-                userId, "BC0104","1","1", "%", "1", "1");
+                userId, "BC0104","1","1", "%", "1", "%");
 
 //        long requestCount6 = courseAccountService.countByCourseRequest(
 //                userId, "BC0104","1","%", "%", "1", "%");
 
         // 교육 결재 상태(status) : 0: 진행중, 1: 승인, 2:기각, 9:미진행
-        if (fStatus.equals("request")) {
+        if (status.equals("request")) {
             courseAccountList = courseAccountService.getAllByAccount_UserIdAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(
                     userId, "BC0104","1","9", "0", "1", "9", pageable);
 
 //            documentList = documentService.getAllByAccount_UserIdAndFnStatusLike(userId, "9", pageable);
-        } else if (fStatus.equals("process")) {
+        } else if (status.equals("process")) {
             courseAccountList = courseAccountService.getAllByAccount_UserIdAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(
                     userId, "BC0104","1","0", "1", "1", "9", pageable);
 //            courseAccountList2 = courseAccountService.getAllByAccount_UserIdAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(
 //                    userId, "BC0104", "1","1", "1", "1", "0", pageable);
 
 //            documentList = documentService.getAllByAccount_UserIdAndFnStatusLike(userId, "0", pageable);
-        } else if(fStatus.equals("complete")) {
+        } else if(status.equals("complete")) {
             courseAccountList = courseAccountService.getAllByAccount_UserIdAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(
                     userId, "BC0104","1","1", "%", "1", "1", pageable);
 
 //            documentList = documentService.getAllByAccount_UserIdAndFnStatusLike(userId, "1", pageable);
-        } else if (fStatus.equals("reject")) {
+        } else if (status.equals("reject")) {
             courseAccountList = courseAccountService.getAllByAccount_UserIdAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(
                     userId, "BC0104","1","2", "%", "1", "2", pageable);
 
 //            documentList = documentService.getAllByAccount_UserIdAndFnStatusLike(userId, "2", pageable);
-        } else if (fStatus.equals("report")) {
+        } else if (status.equals("report")) {
             courseAccountList = courseAccountService.getAllByAccount_UserIdAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(
-                    userId, "BC0104","1","1", "%", "1", "1", pageable);
+                    userId, "BC0104","1","1", "%", "1", "%", pageable);
 
 //            documentList = documentService.getAllByAccount_UserIdAndFnStatusLike(userId, "2", pageable);
         } else {
@@ -211,7 +229,8 @@ public class ApprovalController {
         }
 
         model.addAttribute(pageInfo);
-        model.addAttribute("status", fStatus);
+        model.addAttribute("status", status);
+        model.addAttribute("requestName", "mainRequest2");
         // 요청중 문서
         model.addAttribute("requestCount1", requestCount1);
         // 진행중 문서
@@ -227,10 +246,8 @@ public class ApprovalController {
     }
 
     // 기안함
-    @GetMapping({"/mainApproval", "/mainApproval/{status}"})
-    public String mainApproval(@PathVariable Optional<String> status, @PageableDefault Pageable pageable, Model model) {
-
-        String fStatus = status.isPresent() ? status.get() : "all";
+    @GetMapping("/mainApproval")
+    public String mainApproval(@RequestParam(value = "status", required = false, defaultValue = "all") String status, @PageableDefault Pageable pageable, Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
         pageInfo.setPageTitle("결재함");
@@ -254,26 +271,26 @@ public class ApprovalController {
 
 
         // 전자 결재 상태(status) : 0: 진행중, 1: 승인, 2:기각, 9:미진행
-        if (fStatus.equals("request")) {
+        if (status.equals("request")) {
             courseAccountOrderList = courseAccountOrderService.getAllByFnUser_UserIdAndFnNextLikeAndAndCourseAccount_FnStatusLikeAndFnStatusLikeAndFnSeqGreaterThan(
                     userId, "1", "0", "0", 0);
 
             documentAccountOrderList = documentAccountOrderService.getAllByFnUser_UserIdAndFnNextLikeAndAndCourseAccount_FnStatusLikeAndFnStatusLikeAndFnSeqGreaterThan(
                     userId, "1", "0", "0", 0);
-        } else if (fStatus.equals("process")) {
+        } else if (status.equals("process")) {
             courseAccountOrderList = courseAccountOrderService.getAllByFnUser_UserIdAndFnNextLikeAndAndCourseAccount_FnStatusLikeAndFnStatusLikeAndFnSeqGreaterThan(
                     userId, "%", "0", "%", 0);
 
             documentAccountOrderList = documentAccountOrderService.getAllByFnUser_UserIdAndFnNextLikeAndAndCourseAccount_FnStatusLikeAndFnStatusLikeAndFnSeqGreaterThan(
                     userId, "%", "0", "%", 0);
 
-        } else if (fStatus.equals("complete")) {
+        } else if (status.equals("complete")) {
             courseAccountOrderList = courseAccountOrderService.getAllByFnUser_UserIdAndFnNextLikeAndAndCourseAccount_FnStatusLikeAndFnStatusLikeAndFnSeqGreaterThan(
                         userId, "%", "1", "%", 0);
 
             documentAccountOrderList = documentAccountOrderService.getAllByFnUser_UserIdAndFnNextLikeAndAndCourseAccount_FnStatusLikeAndFnStatusLikeAndFnSeqGreaterThan(
                     userId, "%", "1", "%", 0);
-        } else if (fStatus.equals("reject")) {
+        } else if (status.equals("reject")) {
             courseAccountOrderList = courseAccountOrderService.getAllByFnUser_UserIdAndFnNextLikeAndAndCourseAccount_FnStatusLikeAndFnStatusLikeAndFnSeqGreaterThan(
                     userId, "%", "2", "%",0);
 
@@ -289,7 +306,8 @@ public class ApprovalController {
         }
 
         model.addAttribute(pageInfo);
-        model.addAttribute("status", fStatus);
+        model.addAttribute("status", status);
+        model.addAttribute("requestName", "mainApproval");
         // 요청중 문서
         model.addAttribute("requestCount1", requestCount1);
         // 진행중 문서
@@ -298,6 +316,206 @@ public class ApprovalController {
         model.addAttribute("documents", documentAccountOrderList);
 
         return "content/approval/mainApproval";
+    }
+
+    // 교육신청 결재현황
+    @GetMapping("/{requestName}/approvalCourse/{id}")
+    public String approvalCourse(@PathVariable("requestName") String requestName
+            , @RequestParam(value = "status", required = false, defaultValue = "all") String status
+            , @PathVariable("id") long id, Model model) {
+
+        CourseAccount courseAccount = courseAccountService.getById(id);
+
+        pageInfo.setPageTitle(courseAccount.getCourse().getCourseMaster().getCourseName());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("course", courseAccount.getCourse());
+        model.addAttribute("courseAccount", courseAccount);
+
+        return "content/approval/approvalCourse";
+    }
+
+    // 참석보고서 결재현황
+    @GetMapping("/{requestName}/approvalDocument/{id}")
+    public String approvalDocument(@PathVariable("requestName") String requestName
+            , @RequestParam(value = "status", required = false, defaultValue = "all") String status
+            , @PathVariable("id") long docId, Model model) {
+
+        Document document = documentService.getById(docId);
+
+        pageInfo.setPageTitle(document.getTemplate().getTitle());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("document", document);
+        model.addAttribute("signature", GlobalUtil.getSignature(signatureRepository, SessionUtil.getUserId()));
+
+        return "content/approval/approvalDocument";
+    }
+
+    // 참석보고서 작성
+    @GetMapping("/{requestName}/addDocument")
+    public String addDocumentAccount(@PathVariable("requestName") String requestName
+            , @RequestParam(value = "status", required = false, defaultValue = "all") String status
+            , @RequestParam("templateId") int templateId
+            , @RequestParam("docId") long docId
+            , Model model) {
+
+        DocumentTemplate template = templateService.getById(templateId);
+
+        Document document = new Document();
+        document.setTemplate(template);
+        document.setTitle("[" + template.getTitle() + "]");
+        document.setContent(template.getContent());
+        document.setCourseAccount(courseAccountService.getById(docId));
+
+        pageInfo.setPageTitle(template.getTitle());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("document", document);
+        model.addAttribute("requestName", requestName);
+        model.addAttribute("status", status);
+
+        return "content/approval/addDocument";
+    }
+
+    // 외부교육 보고서 작성 처리
+    @PostMapping("/{requestName}/addDocument-post")
+    @Transactional
+    public String addAccountPost(@Valid Document document
+            , @PathVariable("requestName") String requestName
+            , @RequestParam("status") String status
+            , @RequestParam(value = "mailList", required = false, defaultValue = "0") String[] mails
+            , @RequestParam("files") MultipartFile[] files
+            , BindingResult result) {
+        if(result.hasErrors()) {
+            //return "document/add/" + document.getTemplate().getId();
+            return "redirect:/document/add/" + document.getTemplate().getId() + '/' + document.getCourseAccount().getId();
+        }
+
+        DocumentTemplate template = templateService.getById(document.getTemplate().getId());
+
+        Optional<CourseAccount> optCourseAccount = courseAccountService.getId(document.getCourseAccount().getId());
+
+        if(optCourseAccount.isPresent()) {
+
+            CourseAccount courseAccount = optCourseAccount.get();
+            // 교육과정의 보고서 상태를 진행상태로 변경한다.
+            courseAccount.setReportStatus("0");
+
+            // 상태를 변경하고 저장한다.
+            document.setCourseAccount(courseAccountService.save(courseAccount));
+        }
+
+        document.setAccount(userService.getAccountByUserId(SessionUtil.getUserId()));
+        document.setTemplate(template);
+        Document document1 = documentService.save(document);
+
+        if (files.length > 0) {
+            Arrays.asList(files)
+                    .stream()
+                    .map(file -> documentFileService.storeFile(file, document1))
+                    .collect(Collectors.toList());
+        }
+
+        // 기안 정보 등록
+        Account account = userService.findByUserId(SessionUtil.getUserId());
+        approvalDocumentProcessService.documentRequestProcess(account, document1);
+
+        // 이전 URL를 리턴한다.
+        return String.format("redirect:/approval/%s?status=%s", requestName, status);
+    }
+
+    // 참석보고서 수정
+    @GetMapping("/{requestName}/editDocument")
+    public String editDocumentAccount(@PathVariable("requestName") String requestName
+            , @RequestParam(value = "status", required = false, defaultValue = "all") String status
+            , @RequestParam("id") long id, Model model) {
+
+        Document document = documentService.getById(id);
+
+        pageInfo.setPageTitle(document.getTitle());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("document", document);
+        model.addAttribute("requestName", requestName);
+        model.addAttribute("status", status);
+        model.addAttribute("id", document.getId());
+
+        return "content/approval/editDocument";
+    }
+
+    @PostMapping("/{requestName}/editDocument-post/{id}")
+    public String noticeEditPost(@PathVariable("id") long id
+            , @PathVariable("requestName") String requestName
+            , @RequestParam("status") String status
+            , @Valid Document document
+            , @RequestParam(value = "mailList", required = false, defaultValue = "0") String[] mails
+            , @RequestParam("files") MultipartFile[] files
+            , BindingResult result) {
+        if(result.hasErrors()) {
+            document.setId(id);
+            return "/content/document/list";
+        }
+
+        Document oldDocument = documentService.getById(id);
+
+
+        if (oldDocument != null) {
+
+            // 다음결재자가 결재를 하지 않은 경우는 수정한다.
+            if (oldDocument.getFnCurrSeq() <= 1) {
+
+                // 제목, 내용, 첨부파일만 수정을 허용한다.
+                document.setFnStatus(oldDocument.getFnStatus());
+                document.setFnCurrSeq(oldDocument.getFnCurrSeq());
+                document.setFnFinalCount(oldDocument.getFnFinalCount());
+                document.setIsCommit(oldDocument.getIsCommit());
+                document.setAccount(oldDocument.getAccount());
+                document.setFnWdate(DateUtil.getTodayDate());
+                document.setRequestDate(oldDocument.getRequestDate());
+                document.setCourseAccount(oldDocument.getCourseAccount());
+                document.setDocumentFiles(oldDocument.getDocumentFiles());
+                document.setDocumentCourseAccountList(oldDocument.getDocumentCourseAccountList());
+                document.setDocumentAccountOrders(oldDocument.getDocumentAccountOrders());
+
+                Document document1 = documentService.save(document);
+
+                Arrays.asList(files)
+                        .stream()
+                        .map(file -> documentFileService.storeFile(file, document1))
+                        .collect(Collectors.toList());
+
+            }
+        }
+
+        // 이전 URL를 리턴한다.
+        return String.format("redirect:/approval/%s?status=%s", requestName, status);
+    }
+
+    @GetMapping("/{requestName}/deleteDocument")
+    public String deleteDocument(@PathVariable("requestName") String requestName
+            , @RequestParam(value = "status", required = false, defaultValue = "all") String status
+            , @RequestParam("id") long id, HttpServletRequest request) {
+
+        Document document = documentService.getById(id);
+
+        // 다음결재자가 결재를 하지 않은 경우는 삭제한다.
+        if (document != null) {
+
+            if (document.getFnCurrSeq() <= 1) {
+
+                // 보고서 작성 삭제시 교육과정 상태값을 작성전으로 변경한다.
+                CourseAccount courseAccount = document.getCourseAccount();
+                courseAccount.setReportStatus("9");
+                courseAccountService.save(courseAccount);
+
+                documentService.delete(document);
+            }
+        }
+
+        // 이전 URL를 리턴한다.
+        String refUrl = request.getHeader("referer");
+        return "redirect:" +  refUrl;
     }
 
 
@@ -514,6 +732,22 @@ public class ApprovalController {
         // 완결
 
         return "redirect:/approval/mainApproval/all";
+    }
+
+
+    // 팀장 결재전 삭제 기능
+    @GetMapping("/deleteCourseAccount/{id}")
+    public String noticeDelete(@PathVariable("id") long docId, HttpServletRequest request) {
+
+        CourseAccount courseAccount = courseAccountService.getById(docId);
+
+        if (courseAccount.getAccount().getUserId().equals(SessionUtil.getUserId()) && courseAccount.getFnCurrSeq() <= 1) {
+            courseAccountService.delete(courseAccount);
+        }
+
+        // 이전 URL를 리턴한다.
+        String refUrl = request.getHeader("referer");
+        return "redirect:" +  refUrl;
     }
 
 }

@@ -139,9 +139,10 @@ public class CourseSectionAdminController {
                 , courseSection1.getCourse().getId());
     }
 
-    @GetMapping("/{typeId}/{courseId}/section/edit/{id}")
+    @GetMapping("/{typeId}/{courseId}/section/edit")
     public String noticeEdit(@PathVariable("typeId") String typeId
-            , @PathVariable("courseId") Long courseId, @PathVariable("id") long id, Model model) {
+            , @PathVariable("courseId") Long courseId
+            , @RequestParam("id") long id, Model model) {
 
         CourseSection courseSection = sectionService.getCourseSectionById(id);
         Course course = courseService.getCourseById(courseId);

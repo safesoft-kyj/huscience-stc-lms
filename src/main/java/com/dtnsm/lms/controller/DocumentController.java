@@ -244,7 +244,7 @@ public class DocumentController {
         Account account = userService.findByUserId(SessionUtil.getUserId());
         approvalDocumentProcessService.documentRequestProcess(account, document1);
 
-        return "redirect:/approval/mainRequest/process";
+        return "redirect:/approval/mainRequest2/report";
     }
 
     @PostMapping("/add-post")
@@ -339,7 +339,8 @@ public class DocumentController {
             , @Valid Document document
             , @RequestParam(value = "mailList", required = false, defaultValue = "0") String[] mails
             , @RequestParam("files") MultipartFile[] files
-            , BindingResult result) {
+            , BindingResult result
+            , HttpServletRequest request) {
         if(result.hasErrors()) {
             document.setId(id);
             return "/content/document/list";
@@ -376,11 +377,13 @@ public class DocumentController {
             }
         }
 
-        return "redirect:/approval/document/listMyProcess";
+        // 이전 URL를 리턴한다.
+        String refUrl = request.getHeader("referer");
+        return "redirect:" +  refUrl;
     }
 
     @GetMapping("/delete/{id}")
-    public String noticeDelete(@PathVariable("id") long id) {
+    public String noticeDelete(@PathVariable("id") long id, HttpServletRequest request) {
 
         Document document = documentService.getById(id);
 
@@ -389,12 +392,18 @@ public class DocumentController {
 
             if (document.getFnCurrSeq() <= 1) {
 
-                documentService.delete(document);
+                // 보고서 작성 삭제시 교육과정 상태값을 작성전으로 변경한다.
+                CourseAccount courseAccount = document.getCourseAccount();
+                courseAccount.setReportStatus("9");
+                courseAccountService.save(courseAccount);
 
+                documentService.delete(document);
             }
         }
 
-        return "redirect:/approval/document/listMyProcess";
+        // 이전 URL를 리턴한다.
+        String refUrl = request.getHeader("referer");
+        return "redirect:" +  refUrl;
     }
 
 

@@ -114,10 +114,10 @@ public class CourseSurveyAdminController {
                 , courseSurvey1.getCourse().getId());
     }
 
-    @GetMapping("/{typeId}/{courseId}/survey/edit/{id}")
+    @GetMapping("/{typeId}/{courseId}/survey/edit")
     public String noticeEdit(@PathVariable("typeId") String typeId
             , @PathVariable("courseId") Long courseId
-            , @PathVariable("id") long id, Model model) {
+            , @RequestParam("id") long id, Model model) {
 
         CourseSurvey courseSurvey = courseSurveyService.getCourseSurveyById(id);
 

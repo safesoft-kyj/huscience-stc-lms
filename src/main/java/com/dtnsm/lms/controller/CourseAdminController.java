@@ -508,6 +508,7 @@ public class CourseAdminController {
         Course course1 = courseService.save(course);
 
 
+
         Arrays.asList(files)
                 .stream()
                 .map(file -> courseFileService.storeFile(file, course1))

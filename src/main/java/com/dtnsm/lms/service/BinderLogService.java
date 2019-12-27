@@ -2,10 +2,7 @@ package com.dtnsm.lms.service;
 
 import com.dtnsm.common.repository.SignatureRepository;
 import com.dtnsm.lms.auth.UserServiceImpl;
-import com.dtnsm.lms.domain.Account;
-import com.dtnsm.lms.domain.CourseAccount;
-import com.dtnsm.lms.domain.CourseSection;
-import com.dtnsm.lms.domain.CourseTrainingLog;
+import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.TrainingType;
 import com.dtnsm.lms.mybatis.dto.UserVO;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
@@ -73,7 +70,10 @@ public class BinderLogService {
             courseTrainingLog.setCompleteDate(DateUtil.getTodayDate());
             courseTrainingLog.setIsUpload("0");
             courseTrainingLog.setTrainingTime(courseSection.getSecond());
-            courseTrainingLog.setCourseSectionAction(courseSection.getCourseSectionActions().get(0));
+
+            for (CourseSectionAction action : courseSection.getCourseSectionActions()) {
+                courseTrainingLog.setCourseSectionAction(action);
+            }
 
             // Self training  이면
             if (courseAccount.getCourse().getCourseMaster().getId().equals("BC0101")) {

@@ -68,10 +68,10 @@
                             <div class="col-sm-10">
                                 <div id="demo-dp-range">
                                     <div class="input-daterange input-group" id="datepicker">
-                                        <input type="text" th:field="*{requestFromDate}" id="requestFromDate" placeholder="From" class="form-control" required="required">
+                                        <input type="text" th:field="*{requestFromDate}" id="requestFromDate" placeholder="From" class="form-control">
                                         <span th:if="${#fields.hasErrors('requestFromDate')}" th:errors="*{requestFromDate}"></span>
                                         <span class="input-group-addon">to</span>
-                                        <input type="text" th:field="*{requestToDate}" id="requestToDate" placeholder="To" class="form-control" required="required">
+                                        <input type="text" th:field="*{requestToDate}" id="requestToDate" placeholder="To" class="form-control">
                                         <span th:if="${#fields.hasErrors('requestToDate')}" th:errors="*{requestToDate}"></span>
                                     </div>
                                 </div>
@@ -149,11 +149,11 @@
                             </div>
                             <label class="col-sm-2 control-label" for="passCount" th:text="#{label.course.quiz.pathCount}">합격문항수</label>
                             <div class="col-sm-2">
-                                <input type="number" name="passCount" id="passCount" placeholder="" class="form-control" required="required">
+                                <input type="number" name="passCount" id="passCount" placeholder="" class="form-control">
                             </div>
                             <label class="col-sm-2 control-label" for="examHour">시험시간</label>
                             <div class="col-sm-2">
-                                <input type="number" step=".01" name="examHour" id="examHour" placeholder="example hour" class="form-control" required="required">
+                                <input type="number" step=".01" name="examHour" id="examHour" placeholder="example hour" class="form-control">
                             </div>
                         </div>
                         <div class="form-group">

@@ -69,7 +69,7 @@ public class CourseAccountAdminController {
         return "admin/course/account/list";
     }
 
-    @GetMapping("/{typeId}/{courseId}/account/add/{courseId}")
+    @GetMapping("/{typeId}/{courseId}/account/add")
     public String courseAccountAdd(@PathVariable("typeId") String typeId, @PathVariable("courseId") Long courseId, Model model) {
 
         Course course = courseService.getCourseById(courseId);

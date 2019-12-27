@@ -110,7 +110,8 @@
 <!--                                                        교육신청-->
 <!--                                                    </td>-->
                                                     <td>
-                                                        <a th:href="@{/course/approvalAppr1/{id}(id=${border.getId()})}">
+<!--                                                        <a th:href="@{/course/approvalAppr1/{id}(id=${border.getId()})}">-->
+                                                        <a th:href="@{/approval/{requestName}/approvalCourse/{id}(requestName=${requestName}, status=${status}, id=${border.getCourseAccount().getId()})}">
                                                             <span th:text="${border.getCourseAccount().getCourse().getTitle()}"></span>
                                                         </a>
                                                     </td>
@@ -215,7 +216,7 @@
             $('a[data-toggle="tab"]').click('shown.bs.tab', function (e) {
                 e.preventDefault();
                 var target = $(e.target).attr("href") // activated tab
-                location.href = '/approval/mainApproval/' + target.replace('#', '');
+                location.href = '/approval/mainApproval?status=' + target.replace('#', '');
             });
 
 

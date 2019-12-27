@@ -67,10 +67,10 @@
                             <div class="col-sm-10">
                                 <div id="demo-dp-range">
                                     <div class="input-daterange input-group" id="datepicker">
-                                        <input type="text" th:field="*{requestFromDate}" id="requestFromDate" placeholder="From" class="form-control" required="required">
+                                        <input type="text" th:field="*{requestFromDate}" id="requestFromDate" placeholder="From" class="form-control">
                                         <span th:if="${#fields.hasErrors('requestFromDate')}" th:errors="*{requestFromDate}"></span>
                                         <span class="input-group-addon">to</span>
-                                        <input type="text" th:field="*{requestToDate}" id="requestToDate" placeholder="To" class="form-control" required="required">
+                                        <input type="text" th:field="*{requestToDate}" id="requestToDate" placeholder="To" class="form-control">
                                         <span th:if="${#fields.hasErrors('requestToDate')}" th:errors="*{requestToDate}"></span>
                                     </div>
                                 </div>
@@ -81,10 +81,10 @@
                             <div class="col-sm-10">
                                 <div id="demo-dp-range2">
                                     <div class="input-daterange input-group" id="datepicker2">
-                                        <input type="text" th:field="*{fromDate}" id="fromDate" placeholder="From" class="form-control" required="required">
+                                        <input type="text" th:field="*{fromDate}" id="fromDate" placeholder="From" class="form-control">
                                         <span th:if="${#fields.hasErrors('fromDate')}" th:errors="*{fromDate}"></span>
                                         <span class="input-group-addon">to</span>
-                                        <input type="text" th:field="*{toDate}" id="toDate" placeholder="To" class="form-control" required="required">
+                                        <input type="text" th:field="*{toDate}" id="toDate" placeholder="To" class="form-control">
                                         <span th:if="${#fields.hasErrors('toDate')}" th:errors="*{toDate}"></span>
                                     </div>
                                 </div>

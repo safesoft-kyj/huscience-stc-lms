@@ -37,6 +37,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/mypage/**",
                         "/base/**",
                         "/photoFile/**",
+                        "/approval/**",
                         "/file_uploader/**",
                         "/file_uploader_html5/**",
                         "/content/**",

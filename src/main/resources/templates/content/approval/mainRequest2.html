@@ -93,9 +93,9 @@
                                         <table id="customer-list-page" class="table" cellspacing="0" width="100%">
                                             <thead>
                                             <tr style="background: #FAFAFA;">
-                                                <th class="text-center col-sm-1" th:text="#{label.no}">번호</th>
+                                                <th class="text-center" th:text="#{label.no}">번호</th>
                                                 <th class="text-center col-sm-1" th:text="#{label.course.type}">유형</th>
-                                                <th class="text-center col-sm-4" th:text="#{label.course.name}">과정명</th>
+                                                <th class="text-center col-sm-3" th:text="#{label.course.name}">과정명</th>
                                                 <th class="text-center col-sm-1" th:text="#{label.requestdate}">신청일</th>
                                                 <th class="text-center col-sm-1" th:text="#{label.requestby}">신청자</th>
                                                 <th class="text-center col-sm-1" th:text="#{label.course.request}">교육신청</th>
@@ -110,7 +110,7 @@
                                                     <span th:text="${border.getCourse().getCourseMaster().getCourseName()}"></span>&nbsp;
                                                 </td>
                                                 <td>
-                                                    <a th:href="@{/course/approval/{id}(id=${border.getId()})}">
+                                                    <a th:href="@{/approval/{requestName}/approvalCourse/{id}(requestName=${requestName}, status=${status}, id=${border.getId()})}">
                                                         <span th:text="${border.getCourse().getTitle()}"></span>
                                                     </a>
                                                 </td>
@@ -140,23 +140,36 @@
                                                         </th:block>
                                                     </div>
 
+                                                    <!-- 사용자 수정 삭제 -->
+                                                    <th:block th:if="${(#strings.equalsIgnoreCase(status, 'request') or #strings.equalsIgnoreCase(status, 'process')) and border.getFnCurrSeq() <= 1}">
+                                                        <a th:text="#{label.delete}" th:href="@{/approval/{requestName}/deleteCourseAccount(requestName=${requestName}, id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                                    </th:block>
+
                                                     <!-- 교육참석보고서 일경우 -->
                                                     <th:block th:if="${#strings.equalsIgnoreCase(border.getIsReport(), '1')}">
 
                                                         <div th:if="${#strings.equalsIgnoreCase(status, 'report')}">
 
-                                                            <th:block th:if="${#strings.equalsIgnoreCase(border.getReportStatus(), '0')}">
-                                                                <a class="btn btn-info"  th:href="@{/document/addAccount/1/{id}(id=${border.getId()})}">
+                                                            <!-- 미작성(교육신청결재는 완료되고 보고서 결재는 미진행된 것을 찾는다 -->
+                                                            <th:block th:if="${#strings.equalsIgnoreCase(border.getFnStatus(), '1') and #strings.equalsIgnoreCase(border.getReportStatus(), '9')}">
+                                                                <a class="btn btn-info"  th:href="@{/approval/{requestName}/addDocument(requestName=${requestName}, status=${status}, templateId=1, docId=${border.getId()})}">
                                                                     <i class="demo-pli-inbox-into"></i> 참석보고서 작성
                                                                 </a>
                                                             </th:block>
-                                                            <th:block th:if="${#strings.equalsIgnoreCase(border.getReportStatus(), '1')}">
-                                                                <th:block th:each="doc, index : ${border.getDocuments()}">
-                                                                    <a class="btn btn-info"  th:href="@{/document/approval/{id}(id=${doc.getId()})}">
-                                                                        <i class="demo-pli-inbox-into"></i> <span th:text="${'참석보고서'}"></span>
-                                                                    </a>
+
+                                                            <th:block th:each="doc, index : ${border.getDocuments()}">
+
+                                                                <a class="btn btn-info"  th:href="@{/approval/{requestName}/approvalDocument/{id}(requestName=${requestName}, status=${status}, id=${doc.getId()})}">
+                                                                    <i class="demo-pli-inbox-into"></i> <span th:text="${'참석보고서'}"></span>
+                                                                </a>
+
+                                                                <!-- 진행중 -->
+                                                                <th:block th:if="${#strings.equalsIgnoreCase(doc.getFnStatus(), '0') and doc.getFnCurrSeq() <= 1}">
+                                                                    <a th:text="#{label.edit}" th:href="@{/approval/{requestName}/editDocument(requestName=${requestName}, status=${status}, id=${doc.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                                                    <a th:text="#{label.delete}" th:href="@{/approval/{requestName}/deleteDocument(requestName=${requestName}, status=${status}, id=${doc.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
                                                                 </th:block>
                                                             </th:block>
+
                                                         </div>
                                                     </th:block>
                                                 </td>
@@ -207,27 +220,27 @@
                                             <ul class="pagination"
                                                 th:with="start=${T(Math).floor(borders.number/10)*10 + 1}, last=(${start + 9 < borders.totalPages ? start + 9 : borders.totalPages})">
                                                 <li>
-                                                    <a th:href="@{/approval/mainRequest2/{status}(page=1, status=${status})}" aria-label="First">
+                                                    <a th:href="@{/approval/{requestName}(requestName=${requestName}, page=1, status=${status})}" aria-label="First">
                                                         <span aria-hidden="true">First</span>
                                                     </a>
                                                 </li>
 
                                                 <li th:class="${borders.first} ? 'disabled'">
-                                                    <a th:href="${borders.first} ? '#' :@{/approval/mainRequest2/{status}(page=${borders.number}, status=${status})}" aria-label="Previous">
+                                                    <a th:href="${borders.first} ? '#' :@{/approval/{requestName}(requestName=${requestName}, page=${borders.number}, status=${status})}" aria-label="Previous">
                                                         <span aria-hidden="true">&lt;</span>
                                                     </a>
                                                 </li>
                                                 <li th:each="page: ${#numbers.sequence(start, last)}" th:class="${page == borders.number + 1} ? 'active'">
-                                                    <a th:text="${page}" th:href="@{/approval/mainRequest2/{status}(page=${page}, status=${status})}"></a>
+                                                    <a th:text="${page}" th:href="@{/approval/{requestName}(requestName=${requestName}, page=${page}, status=${status})}"></a>
                                                 </li>
                                                 <li th:class="${borders.last} ? 'disabled'">
-                                                    <a th:href="${borders.last} ? '#' : @{/approval/mainRequest2/{status}(page=${borders.number + 2}, status=${status})}" aria-label="Next">
+                                                    <a th:href="${borders.last} ? '#' : @{/approval/{requestName}(requestName=${requestName}, page=${borders.number + 2}, status=${status})}" aria-label="Next">
                                                         <span aria-hidden="true">&gt;</span>
                                                     </a>
                                                 </li>
 
                                                 <li>
-                                                    <a th:href="@{/approval/mainRequest2/{status}(page=${borders.totalPages}, status=${status})}" aria-label="Last">
+                                                    <a th:href="@{/approval/{requestName}(requestName=${requestName}, page=${borders.totalPages}, status=${status})}" aria-label="Last">
                                                         <span aria-hidden="true">Last</span>
                                                     </a>
                                                 </li>
@@ -264,7 +277,7 @@
             $('a[data-toggle="tab"]').click('shown.bs.tab', function (e) {
                 e.preventDefault();
                 var target = $(e.target).attr("href") // activated tab
-                location.href = '/approval/mainRequest2/' + target.replace('#', '');
+                location.href = '/approval/mainRequest2?status=' + target.replace('#', '');
             });
         });
 

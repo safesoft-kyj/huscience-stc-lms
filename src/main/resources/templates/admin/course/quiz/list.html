@@ -77,7 +77,7 @@
                                             <!--                                            <a class="label label-warning" th:href="@{/admin/course/section/add/{id}(id=${border.getId()})}" th:text="#{label.course.add}">강의등록</a>-->
                                         </td>
                                         <td class="text-center">
-                                            <a th:text="#{label.edit}" th:href="@{/admin/course/{typeId}/{courseId}/quiz/edit/{id}(typeId=${typeId}, courseId=${courseId}, id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                            <a th:text="#{label.edit}" th:href="@{/admin/course/{typeId}/{courseId}/quiz/edit(typeId=${typeId}, courseId=${courseId}, id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
                                             <a th:text="#{label.delete}" th:href="@{/admin/course/{typeId}/{courseId}/quiz/delete/{id}(typeId=${typeId}, courseId=${courseId}, id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
                                         </td>
                                     </tr>

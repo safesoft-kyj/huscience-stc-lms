@@ -34,7 +34,7 @@
                 <div class="panel-body">
                     <!--===================================================-->
                     <!--End Horizontal Form-->
-                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/document/addAccount-post}" th:object="${document}" method="post" enctype="multipart/form-data">
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/approval/{requestName}/editDocument-post/{id}(requestName=${requestName}, status=${status}, id=${document.getId()})}" th:object="${document}" method="post" enctype="multipart/form-data">
                         <input type="hidden" th:field="*{id}" id="id" name="id">
                         <input type="hidden" th:field="*{template.id}">
                         <input type="hidden" th:field="*{courseAccount.id}">
@@ -80,7 +80,7 @@
                         <div class="form-group">
 <!--                            <label class="col-sm-2 control-label" for="editor">내용</label>-->
                             <div class="col-sm-12">
-                                <textarea class="form-control" th:field="*{content}" name="content" id="editor" style="width: 100%; height: 500px;" required></textarea>
+                                <textarea class="form-control" th:field="*{content}" name="content" id="editor" style="width: 100%; height: 500px;"></textarea>
                             </div>
                             <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
                         </div>
@@ -91,10 +91,8 @@
                             </div>
                         </div>
                         <div class="panel-footer text-right">
-                            <button class="btn btn-primary" type="submit" id="submit-all">
-                                <i class="fa fa-upload-cloud"></i> 저장
-                            </button>
-                            <a th:href="@{/document/list}" class="btn btn-success">
+                            <button class="btn btn-primary" type="submit"><i class="fa fa-upload-cloud"></i> 저장</button>
+                            <a href="javascript:history.back();" class="btn btn-success">
                                 <i class="fa fa-upload-cloud"></i> 목록
                             </a>
                         </div>
@@ -112,7 +110,7 @@
 <!--    <script type="text/javascript" th:src="@{/default/js/custom/border-editor.js}" charset="utf-8"></script>-->
 
 
-    <script th:inline="javascript">
+    <script>
 
         $(function(){
             //전역변수
@@ -133,7 +131,7 @@
             });
 
             //전송버튼
-            $("#submit-all").click(function(){
+            $("#boardFrm").submit(function(e){
 
                 var id = $("#courseAccount").val();
 
@@ -144,63 +142,12 @@
 
                 //id가 smarteditor인 textarea에 에디터에서 대입
                 obj.getById["editor"].exec("UPDATE_CONTENTS_FIELD", []);
-                //폼 submit
-                $("#boardFrm").submit();
             });
+
 
             $('#title').focus();
         });
 
-
-
-        $('#mailList').chosen({width:'100%'});
-
-        $("#btnOrg").on("click", function() {
-            var url = "/admin/depart/treeView";
-            // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
-            var popupX = (window.screen.width / 2) - (800 / 2);
-            // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
-            var popupY= (window.screen.height / 2) - (550 / 2);
-
-            var name = "조직도";
-            var option = "width = 800, height = 550, top = 100, left = 200, menubar=no,directories=no, location = no, scrollbars=no, resizable=no"
-            option += ", left=" + popupX + ", top=" + popupY;
-            window.open(url, name, option);
-        });
-
-
-        // 조직도에서 사용자 ID를 받아 온다(배열로 받아옴)
-        function selectMailList(selectOptionArray) {
-
-            // 싱글값 변경
-            // $('#select-id').val("22").trigger('chosen:updated');
-            // 여러값 변경시는 배열로 전달
-            $('#mailList').val(selectOptionArray).trigger('chosen:updated');
-        }
-
-        $("#btnCourse").on("click", function() {
-            var url = "/document/popupCourse/BC0104";
-            // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
-            var popupX = (window.screen.width / 2) - (800 / 2);
-            // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
-            var popupY= (window.screen.height / 2) - (550 / 2);
-
-            var name = "조직도";
-            var option = "width = 800, height = 550, top = 100, left = 200, menubar=no,directories=no, location = no, scrollbars=no, resizable=no"
-            option += ", left=" + popupX + ", top=" + popupY;
-            window.open(url, name, option);
-        });
-
-
-        // 조직도에서 사용자 ID를 받아 온다(배열로 받아옴)
-        function selectCourse(courseDocId, courseName) {
-
-            // 싱글값 변경
-            // $('#select-id').val("22").trigger('chosen:updated');
-            // 여러값 변경시는 배열로 전달
-            $('#courseAccount').val(courseDocId);
-            $('#courseName').val(courseName);
-        }
     </script>
 </th:block>
 

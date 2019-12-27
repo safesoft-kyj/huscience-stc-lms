@@ -106,7 +106,7 @@
                                                     <span th:text="${border.getCourse().getCourseMaster().getCourseName()}"></span>&nbsp;
                                                 </td>
                                                 <td>
-                                                    <a th:href="@{/course/approval/{id}(id=${border.getId()})}">
+                                                    <a th:href="@{/approval/{requestName}/approvalCourse/{id}(requestName=${requestName}, status=${status}, id=${border.getId()})}">
                                                         <span th:text="${border.getCourse().getTitle()}"></span>
                                                     </a>
                                                 </td>
@@ -125,6 +125,7 @@
                                                     </th:block>
                                                 </td>
                                                 <td>
+
                                                     <div th:switch="${border.getCourseStatus()}">
                                                         <th:block th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).none}">
                                                             <!--                                                <a class="btn btn-info" th:href="|javascript:checkRequest('${courseAccount.getCourse().getId()}', '${courseAccount.getAccount().getUserId()}')|"><i class="demo-pli-inbox-into"></i> 교육신청</a>-->
@@ -133,6 +134,12 @@
                                                             </a>
                                                         </th:block>
                                                     </div>
+
+                                                    <!-- 사용자 수정 삭제 -->
+                                                    <th:block th:if="${(#strings.equalsIgnoreCase(status, 'request') or #strings.equalsIgnoreCase(status, 'process')) and border.getFnCurrSeq() <= 1}">
+                                                        <a th:text="#{label.edit}" th:href="@{/admin/course/{typeId}/{courseId}/section/edit(typeId=${typeId}, courseId=${courseId}, id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                                        <a th:text="#{label.delete}" th:href="@{/approval/deleteCourseAccount/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                                    </th:block>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -141,27 +148,27 @@
                                             <ul class="pagination"
                                                 th:with="start=${T(Math).floor(borders.number/10)*10 + 1}, last=(${start + 9 < borders.totalPages ? start + 9 : borders.totalPages})">
                                                 <li>
-                                                    <a th:href="@{/approval/mainRequest1/{status}(page=1, status=${status})}" aria-label="First">
+                                                    <a th:href="@{/approval/{requestName}(requestName=${requestName}, page=1, status=${status})}" aria-label="First">
                                                         <span aria-hidden="true">First</span>
                                                     </a>
                                                 </li>
 
                                                 <li th:class="${borders.first} ? 'disabled'">
-                                                    <a th:href="${borders.first} ? '#' :@{/approval/mainRequest1/{status}(page=${borders.number}, status=${status})}" aria-label="Previous">
+                                                    <a th:href="${borders.first} ? '#' :@{/approval/{requestName}(requestName=${requestName}, page=${borders.number}, status=${status})}" aria-label="Previous">
                                                         <span aria-hidden="true">&lt;</span>
                                                     </a>
                                                 </li>
                                                 <li th:each="page: ${#numbers.sequence(start, last)}" th:class="${page == borders.number + 1} ? 'active'">
-                                                    <a th:text="${page}" th:href="@{/approval/mainRequest1/{status}(page=${page}, status=${status})}"></a>
+                                                    <a th:text="${page}" th:href="@{/approval/{requestName}(requestName=${requestName}, page=${page}, status=${status})}"></a>
                                                 </li>
                                                 <li th:class="${borders.last} ? 'disabled'">
-                                                    <a th:href="${borders.last} ? '#' : @{/approval/mainRequest1/{status}(page=${borders.number + 2}, status=${status})}" aria-label="Next">
+                                                    <a th:href="${borders.last} ? '#' : @{/approval/{requestName}(requestName=${requestName}, page=${borders.number + 2}, status=${status})}" aria-label="Next">
                                                         <span aria-hidden="true">&gt;</span>
                                                     </a>
                                                 </li>
 
                                                 <li>
-                                                    <a th:href="@{/approval/mainRequest1/{status}(page=${borders.totalPages}, status=${status})}" aria-label="Last">
+                                                    <a th:href="@{/approval/{requestName}(requestName=${requestName}, page=${borders.totalPages}, status=${status})}" aria-label="Last">
                                                         <span aria-hidden="true">Last</span>
                                                     </a>
                                                 </li>
@@ -193,7 +200,7 @@
             $('a[data-toggle="tab"]').click('shown.bs.tab', function (e) {
                 e.preventDefault();
                 var target = $(e.target).attr("href") // activated tab
-                location.href = '/approval/mainRequest1/' + target.replace('#', '');
+                location.href = '/approval/mainRequest1?status=' + target.replace('#', '');
             });
         });
 

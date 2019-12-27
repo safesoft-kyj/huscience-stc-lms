@@ -105,4 +105,5 @@ image-file:
   course: D://elearning//images//course//
   pdf: D://elearning//images//pdf//
 
-
+groupdocs:
+  license: C:\\dev\\license\\GroupDocs.Total.Java.lic
