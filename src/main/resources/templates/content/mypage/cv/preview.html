@@ -30,8 +30,16 @@
         <div id="page-content">
 
             <div class="panel">
+                <div class="panel-heading">
+                    <h5 class="panel-title">
+                        <div class="pull-right">
+                            <a class="btn btn-info" th:href="@{/mypage/cv/edit(id=${id})}">Edit</a>
+                            <button type="button" id="publishBtn" class="btn btn-primary" name="publish">Publish</button>
+                        </div>
+                    </h5>
+                </div>
                 <div class="panel-body">
-                    <div id="preview_cv">잠시만 기다려 주세요. CV 생성 중 입니다..</div>
+                    <div id="preview_cv">잠시만 기다려 주세요. CV 미리보기 생성 중 입니다..</div>
                     <input th:type="hidden" id="cvId" th:value="${id}"/>
                 </div>
             </div>
