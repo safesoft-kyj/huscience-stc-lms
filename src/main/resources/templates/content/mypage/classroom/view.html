@@ -65,14 +65,22 @@
                                                 <td class="text-center" th:text="#{label.title.section}"}></td>
                                                 <td class="text-left" th:text="${sectionAction.getCourseSection().getName()}"}></td>
                 <!--                                <td class="text-center" th:text="${section.getFromDate() + ' ~ ' + section.getToDate()}"></td>-->
-                                                <td class="text-center" th:text="${sectionAction.getCourseSection().getMinute()} + '분'"}></td>
+                                                <td class="text-center">
+                                                    <span th:text="${sectionAction.getCourseSection().getMinute()} + '분'"}></td>
                 <!--                                <td class="text-center" th:text="${section.getTeacher()}"}></td>-->
                                                 <td class="text-center" >
 
                                                     <div class="progress">
-                                                        <div id="time"  class="progress-bar progress-bar-info"
-                                                             th:attr="style=${'width:' + T(Math).round((sectionAction.getTotalUseSecond()*1.0) / sectionAction.getCourseSection().getSecond() * 100) + '%'}"
-                                                             th:text="${T(Math).round((sectionAction.getTotalUseSecond()*1.0) / sectionAction.getCourseSection().getSecond() * 100) + ' %'}">0%</div>
+                                                        <th:block th:if="${sectionAction.getTotalUseSecond() > sectionAction.getCourseSection().getSecond() }">
+                                                            <div id="time"  class="progress-bar progress-bar-info"
+                                                                 th:attr="style=${'width:100%'}"
+                                                                 th:text="${'100%'}">0%</div>
+                                                        </th:block>
+                                                        <th:block th:if="${sectionAction.getTotalUseSecond() > sectionAction.getCourseSection().getSecond() }">
+                                                            <div id="time2"  class="progress-bar progress-bar-info"
+                                                                 th:attr="style=${'width:' + T(Math).round((sectionAction.getTotalUseSecond()*1.0) / sectionAction.getCourseSection().getSecond() * 100) + '%'}"
+                                                                 th:text="${T(Math).round((sectionAction.getTotalUseSecond()*1.0) / sectionAction.getCourseSection().getSecond() * 100) + ' %'}">0%</div>
+                                                        </th:block>
                                                     </div>
                                                 </td>
                                                 <td class="text-center" >
@@ -92,7 +100,10 @@
 
 
                                                     <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE')}">
-                                                        <span class="label label-table label-success" th:text="#{label.course.section.commit}">학습종료</span>
+                                                        <th:block th:inline="text" th:each="sectionFile : ${sectionAction.getCourseSection().getSectionFiles()}">
+                                                            <a href="#" class="label label-table label-success" id="popupBtn1"
+                                                               th:onclick="|javascript:popupPdfView('${sectionFile.getId()}', '${sectionAction.getId()}');return false;|" target="_blank" th:text="#{label.course.section.request}">학습하기</a>
+                                                        </th:block>
                                                     </th:block>
 
                                                     <th:block th:unless="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE') or #strings.isEmpty(sectionAction.getStatus())}">

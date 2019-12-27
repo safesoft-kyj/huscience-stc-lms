@@ -18,6 +18,7 @@ import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -69,7 +70,7 @@ public class CourseScheduler {
 //    @Scheduled(cron = "0 0/50 11 * * *")
 
     // 매일 오전 2시 10분에 실행
-//    @Scheduled(cron = "0 10 2 * * *")
+    @Scheduled(cron = "0 10 2 * * *")
     public void updateStatus() {
 
         log.info("================================================");
@@ -168,7 +169,7 @@ public class CourseScheduler {
  */
     // 매일 오전 2시 20분에 실행한다.
     // 그룹웨어 사용자를 추가한다.
-//    @Scheduled(cron = "0 20 2 * * *")
+    @Scheduled(cron = "0 20 2 * * *")
     public void updateGroupwareUser() {
 
         // 그룹웨어 사용자 정보로 Account 계정의 정보를 생성하거나 업데이트 한다.
@@ -199,7 +200,7 @@ public class CourseScheduler {
 
     // 매일 2시 30분에 실행
     // 외부교육 ToDate 익일 새벽에 외부교육참석보고서 작성 Alarm 발송 대상자 조회
-//    @Scheduled(cron = "0 40 2 * * *")
+    @Scheduled(cron = "0 40 2 * * *")
     public void sendCourseToDateAlarm() {
 
         // 교육일이 종료되고 교육완료보고서를 작성해야하는 사용자에게 알림 발송(외부교육만)

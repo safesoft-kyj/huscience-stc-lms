@@ -101,7 +101,7 @@ public class CourseController {
         Course course= courseService.save(oldCourse);
 
         pageInfo.setPageId("self");
-        pageInfo.setPageTitle(course.getCourseMaster().getCourseName() + " 상세");
+        pageInfo.setPageTitle(course.getCourseMaster().getCourseName());
 
         Account account = userService.getAccountByUserId(SessionUtil.getUserId());
 

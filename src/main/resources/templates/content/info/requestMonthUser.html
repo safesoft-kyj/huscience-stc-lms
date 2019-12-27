@@ -17,6 +17,15 @@
     <link href='/default/plugins/fullcalendar4.3.1/list/main.css' rel='stylesheet' />
     <link th:href="@{/default/plugins/fullcalendar/nifty-skin/fullcalendar-nifty.min.css}" rel="stylesheet">
 
+    <style>
+        #container .fc-row.fc-widget-header table th {
+            background-color: #46525E;
+            color: #fff;
+            /*background-color: #42A5F5;*/
+            /*color: #fff;*/
+        }
+    </style>
+
 </th:block>
 
 <th:block layout:fragment="content_body">
@@ -112,6 +121,7 @@
                 navLinks: true, // can click day/week names to navigate views
                 editable: false,
                 allDayDefault: true,
+                hiddenDays: [ 0, 6 ],
                 eventLimit: true, // allow "more" link when too many events
                 events: {url : "/info/api/month/requestCalendarUser"}
             });

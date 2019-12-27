@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <style>
+
+        .demo-nifty-panel {
+            min-height: 300px;
+        }
+
+        th {
+            background: #FAFAFA;
+            margin: 10px;
+            text-align: center;
+        }
+
+        td {
+
+        }
+
+        .table-head {
+            background: #3A444E;
+            margin-bottom: 0;
+        }
+
+        .panel-control {
+            float: left;
+        }
+
+    </style>
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content" style="margin-bottom:0">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-body">
+                    <hr class="table-head">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" cellspacing="0" width="100%">
+                            <tbody>
+                            <colgroup><col width="15%" /><col width="35%" /><col width="15%" /><col width="35%" /></colgroup>
+                            <tr>
+                                <th><span th:text="#{label.gubun}">* 구분</span></th>
+                                <td th:text="${course.courseMaster.getCourseName()}" colspan="3"></td>
+                            </tr>
+                            <tr>
+                                <th><span th:text="#{label.course.name}">과정명</span></th>
+                                <td th:text="${course.getTitle()}" colspan="3"></td>
+                            </tr>
+                            <tr>
+                                <th><span th:text="#{label.course.requesperiod}">신청기간</span></th>
+                                <td>
+                                    <th:block th:if="${#strings.equalsIgnoreCase(course.getCourseMaster().getId(), 'BC0101') or #strings.equalsIgnoreCase(course.getCourseMaster().getId(), 'BC0102')}">
+                                        <span th:text="${course.getIsAlways().equals('1') ? '상시' : course.getRequestFromDate() + ' ~ ' + course.getToDate()} "></span>
+                                    </th:block>
+                                </td>
+                                <th><span th:text="#{label.course.period}">교육기간</span></th>
+                                <td th:text="${course.getIsAlways().equals('1') ? '상시' : course.getFromDate() + ' ~ ' + course.getToDate()} "></td>
+                            </tr>
+                            <tr>
+                                <th><span th:text="#{label.course.daycountandtime}">학습일수/시간</span></th>
+                                <td><span th:text="${course.getDay()}"></span> / <span th:text="${course.getHour()}"></span></td>
+                                <th><span th:text="#{label.course.place}">교육장소</span></th>
+                                <td th:text="${course.getPlace().isEmpty() ? '미정' : course.getPlace()}"></td>
+                            </tr>
+                            <tr>
+                                <th><span th:text="#{label.course.team}">참석대상부서</span></th>
+                                <td th:text="${course.getTeam().isEmpty() ? '미정' : course.getTeam()}"></td>
+                                <th><span th:text="#{label.course.peoplecount}">교육정원</span></th>
+                                <td th:text="${course.getCnt() == 0 ? '인원제한없음' : course.getCnt()}"></td>
+                            </tr>
+                            <tr>
+                                <th><span th:text="#{label.course.isbook}">교재 재공 여부</span></th>
+                                <td th:text="${course.getIsBook().equals('Y') ? 'Yes' : 'No'}"></td>
+                                <th><span th:text="#{label.course.iscerti}">수료증 발급 여부</span></th>
+                                <td th:text="${course.getIsCerti().equals('Y') ? 'Yes' : 'No'}"></td>
+                            </tr>
+                            <tr>
+                                <th><span th:text="#{label.course.isquiz}">시험 진행 여부</span></th>
+                                <td th:text="${course.getIsQuiz().equals('Y') ? 'Yes' : 'No' }"></td>
+                                <th><span th:text="#{label.course.issurvey}">설문 진행 여부</span></th>
+                                <td th:text="${course.getIsSurvey().equals('Y') ? 'Yes' : 'No'}"></td>
+                            </tr>
+                            <th:block th:if="${course.getCourseFiles().size()>0}">
+                            <tr>
+                                <th><span th:text="#{label.file}">첨부파일</span></th>
+                                <td colspan="3">
+                                    <div th:each="sections : ${course.getCourseFiles()}">
+                                        <a th:href="@{/admin/course/download-file/{id}(id=${sections.getId()})}" th:text="${sections.getFileName()}"></a>
+                                    </div>
+                                </td>
+                            </tr>
+                            </th:block>
+                            </tbody>
+                        </table>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-12 text-center">
+                            <form id="submit_form" th:action="@{/course/request/{id}(id=${course.getId()})}" method="get">
+                                <div th:switch="${course.getStatus()}">
+                                    <th:block th:case="0" class=""></th:block>
+                                    <span th:case="1" class="btn btn-lg btn-primary">신청대기</span>
+                                    <span th:case="2">
+                                        <th:block th:if="${#strings.isEmpty(account.parentUserId)}">
+                                            <a href="/mypage/myInfo" class="btn btn-lg btn-danger">교육신청 (팀장/부서장을 설정하세요)</a>
+                                        </th:block>
+                                        <th:block th:unless="${#strings.isEmpty(account.parentUserId)}">
+                                            <a href="javascript:checkRequest();" class="btn btn-lg btn-success"><i class="demo-pli-add-cart"></i> 교육신청</a>
+                                        </th:block>
+                                    </span>
+                                    <span th:case="3" class="btn btn-lg btn-purple">교육대기</span>
+                                    <span th:case="4" class="btn btn-lg btn-primary">교육중</span>
+                                    <span th:case="5" class="btn btn-lg btn-dark">교육종료</span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div><!--panel-body End -->
+                <br>
+<!--                <hr class="new-section-sm bord-no">-->
+                <div class="row demo-nifty-panel">
+                    <div class="col-lg-12">
+                        <!--Panel with Tabs-->
+                        <!--===================================================-->
+                        <div class="panel panel-primary">
+                            <!--Panel heading-->
+                            <div class="panel-heading">
+                                <div class="panel-control">
+                                    <!--Nav tabs-->
+                                    <ul class="nav nav-tabs">
+                                        <li class="active"><a data-toggle="tab" href="#demo-tabs-box-1" >소개</a></li>
+                                        <li><a data-toggle="tab" href="#demo-tabs-box-2">목차</a></li>
+                                    </ul>
+
+                                </div>
+<!--                                <h3 class="panel-title">Course Details</h3>-->
+                            </div>
+
+                            <!--Panel body-->
+                            <div class="panel-body">
+                                <!--Tabs content-->
+                                <div class="tab-content">
+                                    <div id="demo-tabs-box-1" class="tab-pane fade active in" style="height:100%; vertical-align:top">
+                                        <div th:utext="${course.getContent()}" colspan="4"></div>
+                                    </div>
+                                    <div id="demo-tabs-box-2" class="tab-pane fade">
+                                        <br>
+                                        <div th:switch="${course.getSections()}">
+                                            <div th:case="null">등록된 강의가 없습니다.</div>
+                                            <div th:case="*">
+                                                <hr class="table-head">
+                                                <table class="table table-bordered" cellspacing="0" width="100%">
+                                                    <colgroup><col width="5%" /><col width="10%" /><col width="40%" /><col width="25%" /><col width="20%" /></colgroup>
+                                                    <thead>
+                                                    <th class="text-center" th:text="#{label.no}">No</th>
+                                                    <th class="text-center" th:text="#{label.gubun}">구분</th>
+                                                    <th class="text-center"><span th:text="#{label.course.section.name}">강의명</th>
+<!--                                                    <th class="text-center" th:text="#{label.period}">학습기간</th>-->
+                                                    <th class="text-center" th:text="#{label.hour}">Date & Times</th>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr th:each="section, index : ${course.getSections()}">
+                                                        <td class="text-center" th:text="${index.count}"></td>
+                                                        <td class="text-center" th:text="#{label.title.section}"></td>
+                                                        <td class="text-left">
+                                                            <!-- class 교육일때는 과정명 + 강의명 + 설명  -->
+                                                            <th:block th:if="${#strings.equalsIgnoreCase(section.getCourse().getCourseMaster().getId(), 'BC0102')}">
+                                                                <div th:text="${section.getCourse().getTitle()}"></div>
+                                                                <div th:text="${section.getName()}"></div>
+                                                                <div th:text="${section.getDescription()}"></div>
+                                                            </th:block>
+                                                            <!-- class 교육외에는 강의명 -->
+                                                            <th:block th:unless="${#strings.equalsIgnoreCase(section.getCourse().getCourseMaster().getId(), 'BC0102')}">
+                                                                <div th:text="#{label.title.section}"></div>
+                                                            </th:block>
+                                                        </td>
+<!--                                                        <td th:text="${sections.getStudyDate()}" class="text-center"></td>-->
+                                                        <td class="text-center" th:text="${section.getHour()}"></td>
+                                                    </tr>
+
+                                                    <tr th:each="quiz, index : ${course.getQuizzes()}">
+                                                        <td class="text-center" th:text="${index.count}"></td>
+                                                        <td class="text-center" th:text="#{label.title.quiz}"></td>
+                                                        <td class="text-left">
+                                                            <span th:text="${quiz.getName()}"></span>
+                                                        </td>
+<!--                                                        <th:block th:if="${#strings.equalsIgnoreCase(course.getFromDate(), course.getToDate())}">-->
+<!--                                                            <td th:text="${course.getFromDate()}" class="text-center"></td>-->
+<!--                                                        </th:block>-->
+<!--                                                        <th:block th:unless="${#strings.equalsIgnoreCase(course.getFromDate(), course.getToDate())}">-->
+<!--                                                            <td th:text="${course.getFromDate() + '~' + course.getToDate()}" class="text-center"></td>-->
+<!--                                                        </th:block>-->
+                                                        <td class="text-center" th:text="${quiz.getHour()}"></td>
+                                                    </tr>
+                                                    <tr th:each="survey, index : ${course.getSurveys()}">
+                                                        <td class="text-center" th:text="${index.count}"></td>
+                                                        <td class="text-center" th:text="#{label.title.survey}"></td>
+                                                        <td class="text-left">
+                                                            <span th:text="${survey.getName()}"></span>
+                                                        </td>
+<!--                                                        <th:block th:if="${#strings.equalsIgnoreCase(course.getFromDate(), course.getToDate())}">-->
+<!--                                                            <td th:text="${course.getFromDate()}" class="text-center"></td>-->
+<!--                                                        </th:block>-->
+<!--                                                        <th:block th:unless="${#strings.equalsIgnoreCase(course.getFromDate(), course.getToDate())}">-->
+<!--                                                            <td th:text="${course.getFromDate() + '~' + course.getToDate()}" class="text-center"></td>-->
+<!--                                                        </th:block>-->
+                                                        <td class="text-center"></td>
+                                                        <!--                                                            <td class="text-center"></td>-->
+                                                    </tr>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--                            <div id="demo-lft-tab-3" class="tab-pane fade" style="height:100%; vertical-align:top">-->
+                                    <!--                                <div th:utext="${course.getAgenda()}" colspan="4"></div>-->
+                                    <!--                            </div>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- panel End -->
+
+
+
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var userId = /*[[${account.userId}]]*/;
+
+        var courseId = /*[[${course.getId()}]]*/;
+
+        function checkRequest() {
+
+            $.ajax({
+                type : 'POST',
+                url : '/api/courseAccount/isVerification',
+                dataType : 'json',
+                data : {
+                    'courseId': courseId,
+                    'userId': userId
+                },
+                error: function(xhr, status, error){
+                    alert(error);
+                },
+                success : function(data){
+
+                    if (data == 1) {
+                        alert('상위결재권자가 지정되지 않았습니다.');
+                        return false;
+                    }
+
+                    if (data == 2) {
+                        alert('교육과정 관리자가 지정되지 않았습니다.');
+                        return false;
+                    }
+
+                    if (data == 3) {
+                        alert('수료증 기준정보가 설정 되지 않았습니다.');
+                        return false;
+                    }
+
+                    if (data == 4) {
+                        alert('이미 신청한 내역이 있습니다.');
+                        return false;
+                    }
+
+                    if (data == 9) {
+                        $('#submit_form').submit();
+                        alert('교육 신청되었습니다.');
+                        return false;
+                    }
+                },
+            });
+
+
+
+
+
+            // $.ajax({
+            //     type : 'get',
+            //     url : '/api/courseAccount/isRequest',
+            //     dataType : 'json',
+            //     data : {
+            //         'courseId': courseId,
+            //         'userId': userId
+            //     },
+            //     error: function(xhr, status, error){
+            //         alert(error);
+            //     },
+            //     success : function(data){
+            //
+            //         if(data == true) alert('이미 신청되었습니다.');
+            //         else {
+            //             $('#submit_form').submit();
+            //             alert('교육 신청되었습니다.');
+            //         }
+            //     },
+            // });
+
+
+            return;
+        }
+        /*]]>*/
+    </script>
+</th:block>
+
+</html>
+
+

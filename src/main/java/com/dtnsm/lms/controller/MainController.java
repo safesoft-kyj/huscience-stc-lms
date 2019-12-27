@@ -105,6 +105,25 @@ public class MainController {
         model.addAttribute("schedule", scheduleService.getByIsActive(ScheduleType.MATRIX, 1));
 
 
+        // 결재함 결재 요청 건수
+        long appRequest = courseAccountOrderService.countByCourseOrderRequest(
+                userId, "%", "0", "%", 0);
+
+        appRequest += documentAccountOrderService.countByDocumentRequest(
+                userId, "%", "0", "%", 0);
+
+        // 교육참석보고서 미결 건수
+        long documentAppRequest = courseAccountService.countByCourseRequest(
+                userId, "BC0104","1","1", "%", "1", "9");
+
+
+        // 결재함 결재 요청 건수
+        model.addAttribute("appRequest", appRequest);
+
+        // 교육참석보고서 미결 건수
+        model.addAttribute("documentAppRequest", documentAppRequest);
+
+
         // 교육신청 미결건
         List<CourseAccountOrder> courseAccountOrders1 = courseAccountOrderService.getAllByFnUser_UserIdAndFnNextLikeAndFnStatusLike(userId, "1", "0", 0);
 

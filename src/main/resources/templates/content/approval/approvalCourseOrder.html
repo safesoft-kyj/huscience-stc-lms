@@ -46,11 +46,16 @@
             <div class="panel">
 
                 <div class="panel-body">
-
-                    <div class="panel-heading text-right">
-                        <a href="javascript:history.back();" class="btn btn-primary">
-                            <i class="demo-pli-back"></i> Back
-                        </a>
+                    <div class="row" th:if="${#strings.equalsIgnoreCase(courseAccountOrder.getFnUser().getUserId(), userId) and #strings.equalsIgnoreCase(courseAccountOrder.getFnNext(), '1') and #strings.equalsIgnoreCase(courseAccountOrder.getFnStatus(), '0')}">
+                        <div class="col-sm-12 input-group pull-right">
+                            <p class="pull-right">
+                                <a th:href="@{/approval/successAppr1/{orderId}(orderId=${courseAccountOrder.getId()})}" class="btn btn-primary"><i class="demo-pli-check"></i> 승인</a>
+                                <a th:href="@{/approval/rejectAppr1/{orderId}(orderId=${courseAccountOrder.getId()})}" class="btn btn-danger"><i class="demo-pli-back"></i> 반려</a>
+                                <a href="javascript:history.back();" class="btn btn-primary">
+                                    <i class="demo-pli-back"></i> Back
+                                </a>
+                            </p>
+                        </div>
                     </div>
                     <hr style="border:1.2px solid #0a6aa1">
                     <h4><strong class="text-info"><i class="demo-pli-dot-vertical"></i> 결재 정보</strong></h4>

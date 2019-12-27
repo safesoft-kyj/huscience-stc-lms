@@ -134,7 +134,8 @@ public class ApprovalDocumentController {
         // 승인 처리
         approvalDocumentProcessService.documentApproval1Proces(documentAccountOrder);
 
-        return "redirect:/approval/document/listApprProcess";
+//        return "redirect:/approval/document/listApprProcess";
+        return "redirect:/approval/mainApproval?status=request";
     }
 
     // 교육신청 반려
@@ -151,7 +152,8 @@ public class ApprovalDocumentController {
 
         model.addAttribute(pageInfo);
 
-        return "redirect:/approval/document/listApprProcess";
+//        return "redirect:/approval/document/listApprProcess";
+        return "redirect:/approval/mainApproval?status=request";
     }
 }
 

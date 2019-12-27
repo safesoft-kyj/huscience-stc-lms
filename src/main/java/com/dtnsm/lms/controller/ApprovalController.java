@@ -188,7 +188,7 @@ public class ApprovalController {
 //                userId, "BC0104","1","2", "%", "1", "2");
 
         long requestCount5 = courseAccountService.countByCourseRequest(
-                userId, "BC0104","1","1", "%", "1", "%");
+                userId, "BC0104","1","1", "%", "1", "9");
 
 //        long requestCount6 = courseAccountService.countByCourseRequest(
 //                userId, "BC0104","1","%", "%", "1", "%");
@@ -315,6 +315,7 @@ public class ApprovalController {
         model.addAttribute("borders", courseAccountOrderList);
         model.addAttribute("documents", documentAccountOrderList);
 
+
         return "content/approval/mainApproval";
     }
 
@@ -332,7 +333,26 @@ public class ApprovalController {
         model.addAttribute("course", courseAccount.getCourse());
         model.addAttribute("courseAccount", courseAccount);
 
+
         return "content/approval/approvalCourse";
+    }
+
+    @GetMapping("/{requestName}/approvalCourseOrder/{id}")
+    public String approvalCourseOrder(@PathVariable("requestName") String requestName
+            , @RequestParam(value = "status", required = false, defaultValue = "all") String status
+            , @PathVariable("id") long id, Model model) {
+
+        CourseAccountOrder courseAccountOrder = courseAccountOrderService.getById(id);
+
+        pageInfo.setPageTitle(courseAccountOrder.getCourseAccount().getCourse().getCourseMaster().getCourseName());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("course", courseAccountOrder.getCourseAccount().getCourse());
+        model.addAttribute("courseAccount", courseAccountOrder.getCourseAccount());
+        model.addAttribute("courseAccountOrder", courseAccountOrder);
+        model.addAttribute("userId", SessionUtil.getUserId());
+
+        return "content/approval/approvalCourseOrder";
     }
 
     // 참석보고서 결재현황
@@ -350,6 +370,25 @@ public class ApprovalController {
         model.addAttribute("signature", GlobalUtil.getSignature(signatureRepository, SessionUtil.getUserId()));
 
         return "content/approval/approvalDocument";
+    }
+
+    // 참석보고서 결재현황
+    @GetMapping("/{requestName}/approvalDocumentOrder/{id}")
+    public String approvalDocumentOrder(@PathVariable("requestName") String requestName
+            , @RequestParam(value = "status", required = false, defaultValue = "all") String status
+            , @PathVariable("id") long id, Model model) {
+
+        DocumentAccountOrder documentAccountOrder = documentAccountOrderService.getById(id);
+
+        pageInfo.setPageTitle(documentAccountOrder.getDocument().getTemplate().getTitle());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("document", documentAccountOrder.getDocument());
+        model.addAttribute("documentAccountOrder", documentAccountOrder);
+        model.addAttribute("signature", GlobalUtil.getSignature(signatureRepository, SessionUtil.getUserId()));
+        model.addAttribute("userId", SessionUtil.getUserId());
+
+        return "content/approval/approvalDocumentOrder";
     }
 
     // 참석보고서 작성
@@ -635,7 +674,7 @@ public class ApprovalController {
         // 승인 처리
         approvalCourseProcessService.courseApproval1Proces(courseAccountOrder);
 
-        return "redirect:/approval/mainApproval/all";
+        return "redirect:/approval/mainApproval?status=request";
     }
 
     // 교육신청 반려
@@ -652,7 +691,7 @@ public class ApprovalController {
 
         model.addAttribute(pageInfo);
 
-        return "redirect:/approval/mainApproval/all";
+        return "redirect:/approval/mainApproval?status=request";
     }
 
 

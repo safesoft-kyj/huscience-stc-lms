@@ -312,7 +312,7 @@
                                                 <tbody>
                                                 <tr th:each="reqMonth, index : ${monthRequestList}">
                                                     <td>
-                                                        <a th:href="@{/course/view/{id}(id=${reqMonth.getId()})}">
+                                                        <a th:href="@{/info/request/add/{id}(id=${reqMonth.getId()})}">
                                                             <span  th:text="${reqMonth.getRequestFromDate()}"></span>&nbsp;
                                                             <th:block th:if="${#strings.length(reqMonth.getTitle()) > 30}">
                                                                 <span th:text="${#strings.substring(reqMonth.getTitle(), 0, 30) + '...'}"></span>
@@ -335,6 +335,7 @@
                 <!-- Main Col -->
                 <div class="col-md-3">
                     <div class="row">
+                        <a th:href="@{/approval/mainApproval?status=request}" style="color:white">
                         <div class="panel panel-warning panel-colorful media middle pad-all">
                             <div class="media-left">
                                 <div class="pad-hor">
@@ -343,16 +344,18 @@
                             </div>
                             <div class="media-body">
                                 <p class="text-2x mar-no text-semibold">
-                                    <a th:href="@{/approval/listApprProcess}" th:text="${courseApprCount}" style="color:white"></a>
-                                    /
-                                    <a th:href="@{/approval/listMyProcess}" th:text="${courseProcessCount}" style="color:white"></a>
+                                    <span th:text="${appRequest + ' 건'}" style="color:white"></span>
                                 </p>
-                                <p class="mar-no">교육신청 미결/진행중</p>
+                                <p class="mar-no">결재함 결재 요청</p>
                             </div>
                         </div>
+                        </a>
                     </div>
+
                     <div class="row">
+                        <a th:href="@{/approval/mainRequest2?status=report}" style="color:white">
                         <div class="panel panel-mint panel-colorful media middle pad-all">
+
                             <div class="media-left">
                                 <div class="pad-hor">
                                     <i class="demo-pli-list-view icon-3x"></i>
@@ -360,13 +363,14 @@
                             </div>
                             <div class="media-body">
                                 <p class="text-2x mar-no text-semibold">
-                                    <a th:href="@{/approval/document/listApprProcess}" th:text="${documentApprCount}" style="color:white"></a>
-                                    /
-                                    <a th:href="@{/approval/document/listMyProcess}" th:text="${documentProcessCount}" style="color:white"></a>
+                                    <span th:text="${documentAppRequest + ' 건'}" style="color:white"></span>
                                 </p>
-                                <p class="mar-no">전자결재 미결 / 진행중</p>
+                                <p class="mar-no">교육참석보고서 미작성</p>
                             </div>
+
                         </div>
+                        </a>
+
                     </div>
                     <div class="row">
                         <div class="panel panel-info panel-colorful media middle pad-all">

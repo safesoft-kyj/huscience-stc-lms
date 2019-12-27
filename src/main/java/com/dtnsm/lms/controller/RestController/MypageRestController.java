@@ -76,12 +76,14 @@ public class MypageRestController {
         int totalSecond = courseSectionAction.getTotalUseSecond() + useSecond;
 
         // 교육수강을 완료하면 완료 처리한다.
-        if (totalSecond > (courseSectionAction.getCourseSection().getSecond())) {
-            totalSecond = courseSectionAction.getCourseSection().getSecond();
+        if (totalSecond > (courseSectionAction.getCourseSection().getSecond()) || courseSectionAction.getRunCount() >= 1) {
+            //totalSecond = courseSectionAction.getCourseSection().getSecond();
 
             courseSectionAction.setStatus(SectionStatusType.COMPLETE);
 
-            courseSectionActionHistory.setUseSecond(courseSectionAction.getCourseSection().getSecond() - courseSectionAction.getTotalUseSecond());
+            //courseSectionActionHistory.setUseSecond(courseSectionAction.getCourseSection().getSecond() - courseSectionAction.getTotalUseSecond());
+            courseSectionActionHistory.setUseSecond(useSecond);
+
 
         } else {
             courseSectionAction.setStatus(SectionStatusType.ONGOING);
@@ -89,6 +91,8 @@ public class MypageRestController {
 
         courseSectionAction.setTotalUseSecond(totalSecond);
         courseSectionAction.setRunCount(courseSectionAction.getRunCount() + 1);
+
+
         CourseSectionAction courseSectionAction1 = courseSectionActionService.save(courseSectionAction);
 
 

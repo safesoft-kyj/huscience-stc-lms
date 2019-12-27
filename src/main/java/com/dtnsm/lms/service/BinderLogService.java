@@ -69,9 +69,17 @@ public class BinderLogService {
             courseTrainingLog.setAccount(courseAccount.getAccount());
             courseTrainingLog.setCompleteDate(DateUtil.getTodayDate());
             courseTrainingLog.setIsUpload("0");
-            courseTrainingLog.setTrainingTime(courseSection.getSecond());
+
 
             for (CourseSectionAction action : courseSection.getCourseSectionActions()) {
+
+                // 학습시간이 지정시간보다 큰경우는 학습시간으로 아니면 지정시간으로 저장한다.
+                if ( action.getTotalUseSecond() > courseSection.getSecond() ) {
+                    courseTrainingLog.setTrainingTime(action.getTotalUseSecond());
+                } else {
+                    courseTrainingLog.setTrainingTime(courseSection.getSecond());
+                }
+
                 courseTrainingLog.setCourseSectionAction(action);
             }
 

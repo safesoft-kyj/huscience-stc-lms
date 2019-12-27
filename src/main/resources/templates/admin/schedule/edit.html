@@ -82,7 +82,7 @@
                                                 </td>
                                                 <td th:text="${uploadFile.getSize()}" class="text-center"></td>
                                                 <td class="text-center col-sm-2">
-                                                    <a class="btn btn-xs btn-danger"
+                                                    <a class="btn btn-xs btn-danger" target="_blank"
                                                        th:href="@{/admin/schedule/{sctype}/delete-file/{schedule_id}/{file_id}(sctype=${sctype}, schedule_id=${schedule.getId()}, file_id=${uploadFile.getId()})}"><i class="demo-psi-trash"></i></a>
                                                 </td>
                                             </tr>

@@ -56,6 +56,7 @@
 <!--                                    <th>UserID</th>-->
                                     <th>수료증</th>
 <!--                                    <th>저장 파일명</th>-->
+                                    <th class="min-tablet col-md-1">작성일</th>
                                     <th class="min-tablet col-md-1">사용자</th>
 <!--                                    <th class="min-desktop">용량</th>-->
                                     <th class="text-center col-md-1" th:text="#{label.actions}">Delete</th>
@@ -69,6 +70,7 @@
                                         <a th:href="@{/mypage/certificate/file/downloadFile/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}" target="_blank"></a>
                                     </td>
 <!--                                    <td th:text="${uploadFile.getSaveName()}"></td>-->
+                                    <td th:text="${uploadFile.getCreatedDate()} ? ${#dates.format(uploadFile.getCreatedDate(), 'yyyy-MM-dd')} : ${uploadFile.getCreatedDate()}" class="text-center"></td>
                                     <td th:text="${uploadFile.getAccount().getName()}"></td>
 <!--                                    <td th:text="${uploadFile.getSize()}"></td>-->
                                     <td class="text-center"><a th:href="@{/mypage/certificate/file/delete/{id}(id=${uploadFile.getId()})}">Delete</a></td>

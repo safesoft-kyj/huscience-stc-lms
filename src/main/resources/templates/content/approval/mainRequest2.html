@@ -131,14 +131,14 @@
                                                     </div>
                                                 </td>
                                                 <td class="text-center">
-                                                    <div th:switch="${border.getCourseStatus()}">
+                                                    <span th:switch="${border.getCourseStatus()}">
                                                         <th:block th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).none}">
                                                             <!--                                                <a class="btn btn-info" th:href="|javascript:checkRequest('${courseAccount.getCourse().getId()}', '${courseAccount.getAccount().getUserId()}')|"><i class="demo-pli-inbox-into"></i> 교육신청</a>-->
                                                             <a class="btn btn-info"  th:href="@{/course/view/{id}(id=${border.getCourse().getId()})}">
                                                                 <i class="demo-pli-inbox-into"></i> 교육신청
                                                             </a>
                                                         </th:block>
-                                                    </div>
+                                                    </span>
 
                                                     <!-- 사용자 수정 삭제 -->
                                                     <th:block th:if="${(#strings.equalsIgnoreCase(status, 'request') or #strings.equalsIgnoreCase(status, 'process')) and border.getFnCurrSeq() <= 1}">
@@ -159,12 +159,21 @@
 
                                                             <th:block th:each="doc, index : ${border.getDocuments()}">
 
-                                                                <a class="btn btn-info"  th:href="@{/approval/{requestName}/approvalDocument/{id}(requestName=${requestName}, status=${status}, id=${doc.getId()})}">
+                                                                <th:block th:if="${#strings.equalsIgnoreCase(doc.getFnStatus(), '1')}">
+                                                                <a class="btn btn-success"  th:href="@{/approval/{requestName}/approvalDocument/{id}(requestName=${requestName}, status=${status}, id=${doc.getId()})}">
                                                                     <i class="demo-pli-inbox-into"></i> <span th:text="${'참석보고서'}"></span>
                                                                 </a>
-
+                                                                </th:block>
+                                                                <th:block th:if="${#strings.equalsIgnoreCase(doc.getFnStatus(), '2')}">
+                                                                    <a class="btn btn-danger"  th:href="@{/approval/{requestName}/approvalDocument/{id}(requestName=${requestName}, status=${status}, id=${doc.getId()})}">
+                                                                        <i class="demo-pli-inbox-into"></i> <span th:text="${'참석보고서(기각)'}"></span>
+                                                                    </a>
+                                                                </th:block>
                                                                 <!-- 진행중 -->
                                                                 <th:block th:if="${#strings.equalsIgnoreCase(doc.getFnStatus(), '0') and doc.getFnCurrSeq() <= 1}">
+                                                                    <a class="btn btn-warning"  th:href="@{/approval/{requestName}/approvalDocument/{id}(requestName=${requestName}, status=${status}, id=${doc.getId()})}">
+                                                                        <i class="demo-pli-inbox-into"></i> <span th:text="${'참석보고서'}"></span>
+                                                                    </a>
                                                                     <a th:text="#{label.edit}" th:href="@{/approval/{requestName}/editDocument(requestName=${requestName}, status=${status}, id=${doc.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
                                                                     <a th:text="#{label.delete}" th:href="@{/approval/{requestName}/deleteDocument(requestName=${requestName}, status=${status}, id=${doc.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
                                                                 </th:block>

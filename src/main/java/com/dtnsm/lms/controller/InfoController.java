@@ -1,9 +1,7 @@
 package com.dtnsm.lms.controller;
 
-import com.dtnsm.lms.domain.Course;
-import com.dtnsm.lms.domain.CourseSectionFile;
-import com.dtnsm.lms.domain.Schedule;
-import com.dtnsm.lms.domain.ScheduleFile;
+import com.dtnsm.lms.auth.UserServiceImpl;
+import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.ScheduleType;
 import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.PageInfo;
@@ -40,6 +38,9 @@ public class InfoController {
 
     @Autowired
     CodeService codeService;
+
+    @Autowired
+    UserServiceImpl userService;
 
     private PageInfo pageInfo = new PageInfo();
 
@@ -139,7 +140,7 @@ public class InfoController {
     }
 
 
-    // 교육 신청
+    // 교육 신청 리스트
     @GetMapping("/request")
     public String noticeListMulti(@RequestParam(value = "typeId", defaultValue = "") String typeId
             , @RequestParam(value = "gubunId", defaultValue = "") String gubunId
@@ -169,6 +170,28 @@ public class InfoController {
         model.addAttribute("courseTypeList", codeService.getMinorList("BC01")); // onLine, offLine 구분
 
         return "content/info/request";
+    }
+
+    // 교육 신청 상세
+    @GetMapping("/request/add/{id}")
+    public String viewPage(@PathVariable("id") long id, Model model) {
+
+        Course oldCourse = courseService.getCourseById(id);
+
+        oldCourse.setViewCnt(oldCourse.getViewCnt() + 1);
+
+        Course course= courseService.save(oldCourse);
+
+        pageInfo.setPageId("self");
+        pageInfo.setPageTitle(course.getCourseMaster().getCourseName());
+
+        Account account = userService.getAccountByUserId(SessionUtil.getUserId());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("course", course);
+        model.addAttribute("account", account);
+
+        return "content/info/view";
     }
 
     // 교육 신청

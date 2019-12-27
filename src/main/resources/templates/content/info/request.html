@@ -167,7 +167,7 @@
                                             <th:block th:case="0" class="btn btn-lg btn-primary"></th:block>
                                             <span th:case="1" class="btn btn-lg btn-primary">신청대기</span>
                                             <span th:case="2">
-                                                <a th:href="@{/course/view/{id}(id=${border.getId()})}" class="btn btn-lg btn-warning">교육신청</a>
+                                                <a th:href="@{/info/request/add/{id}(id=${border.getId()})}" class="btn btn-lg btn-warning">교육신청</a>
                                             </span>
                                             <span th:case="3" class="btn btn-lg btn-purple">교육대기</span>
                                             <span th:case="4" class="btn btn-lg btn-mint">교육중</span>

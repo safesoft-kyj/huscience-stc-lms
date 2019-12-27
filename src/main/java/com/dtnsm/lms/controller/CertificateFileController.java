@@ -52,13 +52,7 @@ public class CertificateFileController {
         pageInfo.setParentTitle("마이페이지");
     }
 
-    @GetMapping("/")
-    public String controllerMain() {
-        return "수료증 업로드";
-    }
-
-
-    @GetMapping("/list")
+    @GetMapping("")
     public String minorList(Model model) {
 
         pageInfo.setPageId("m-border-add");
@@ -99,7 +93,7 @@ public class CertificateFileController {
 //            e.printStackTrace();
 //        }
 
-        return "redirect:/mypage/certificate/file/list";
+        return "redirect:/mypage/certificate/file";
     }
 
     // 멀티파일 업로드
@@ -111,7 +105,7 @@ public class CertificateFileController {
                 .map(file -> fileService.storeFile(file))
                 .collect(Collectors.toList());
 
-        return "redirect:/mypage/certificate/file/list";
+        return "redirect:/mypage/certificate/file";
     }
 
     @GetMapping("/delete/{id}")
@@ -120,7 +114,7 @@ public class CertificateFileController {
         //  테이블및 파일 삭제
         fileService.deleteFile(id);
 
-        return "redirect:/mypage/certificate/file/list";
+        return "redirect:/mypage/certificate/file";
     }
 
     @GetMapping("/downloadFile/{id}")
