@@ -1,5 +1,6 @@
 package com.dtnsm.lms.controller;
 
+import com.dtnsm.lms.component.CourseScheduler;
 import com.dtnsm.lms.domain.ElMinor;
 import com.dtnsm.lms.service.CodeService;
 import com.dtnsm.lms.domain.CourseMaster;
@@ -36,6 +37,10 @@ public class CourseMasterController {
     @Autowired
     CodeService codeService;
 
+    @Autowired
+    CourseScheduler courseScheduler;
+
+
     private PageInfo pageInfo = new PageInfo();
 
     public CourseMasterController() {
@@ -70,6 +75,17 @@ public class CourseMasterController {
 //
 //        return "admin/course-master/view";
 //    }
+
+    @GetMapping("/courseStatusUpdate")
+    public String courseStatusUpdate(Model model) {
+
+        pageInfo.setPageTitle("그룹웨어 사용자 업데이트");
+
+        courseScheduler.updateStatus();
+        model.addAttribute(pageInfo);
+
+        return "redirect:/admin/course-master";
+    }
 
     @GetMapping("/add")
     public String add(Model model) {

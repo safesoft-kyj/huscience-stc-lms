@@ -85,8 +85,53 @@
                             <button class="btn btn-primary" type="submit" id="submit-all" th:text="#{label.save}">
                                 <i class="fa fa-upload-cloud"></i> 저장
                             </button>
+                            <a th:href="@{/admin/survey}" class="btn btn-success" th:text="#{label.list}">
+                                <i class="fa fa-upload-cloud"></i> 목록
+                            </a>
                         </div>
                     </form>
+
+                    <div th:switch="${survey.getSurveyQuestions()}">
+                        <h2 th:case="null">등록된 설문내용이 없습니다.</h2>
+                        <div th:case="*">
+                            <h4>등록된 질문</h4>
+                            <table id="demo-dt-basic" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                                <thead>
+                                <tr>
+                                    <th class="text-center">#</th>
+                                    <th class="text-center">질문</th>
+                                    <th class="text-center">ex1</th>
+                                    <th class="text-center">ex2</th>
+                                    <th class="text-center">ex3</th>
+                                    <th class="text-center">ex4</th>
+                                    <th class="text-center">ex5</th>
+                                    <th class="text-center">ex1 score</th>
+                                    <th class="text-center">ex2 score</th>
+                                    <th class="text-center">ex3 score</th>
+                                    <th class="text-center">ex4 score</th>
+                                    <th class="text-center">ex5 score</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="q, index : ${survey.getSurveyQuestions()}">
+                                    <td class="text-center" th:text="${index.count}"></td>
+                                    <td class="text-left" th:text="${q.getQuestion()}"></td>
+                                    <td class="text-center" th:text="${q.getEx1()}"></td>
+                                    <td class="text-center" th:text="${q.getEx2()}"></td>
+                                    <td class="text-center" th:text="${q.getEx3()}"></td>
+                                    <td class="text-center" th:text="${q.getEx4()}"></td>
+                                    <td class="text-center" th:text="${q.getEx5()}"></td>
+                                    <td class="text-center" th:text="${q.getEx1_score()}"></td>
+                                    <td class="text-center" th:text="${q.getEx2_score()}"></td>
+                                    <td class="text-center" th:text="${q.getEx3_score()}"></td>
+                                    <td class="text-center" th:text="${q.getEx4_score()}"></td>
+                                    <td class="text-center" th:text="${q.getEx5_score()}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </div><!--panel-body End -->
             </div><!-- panel End -->
         </div><!-- Page content End -->

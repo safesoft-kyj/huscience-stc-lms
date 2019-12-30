@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CourseService {
@@ -197,7 +198,10 @@ public class CourseService {
 
     public Course getCourseById(Long id) {
 
-        return courseRepository.findById(id).get();
+        Optional<Course> course = courseRepository.findById(id);
+
+        if (course.isPresent()) return course.get();
+        else return null;
     }
 
     public Course save(Course elCourse){

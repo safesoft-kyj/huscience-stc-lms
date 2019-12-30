@@ -2,6 +2,7 @@ package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.component.ExcelReader;
 import com.dtnsm.lms.domain.*;
+import com.dtnsm.lms.repository.SurveyQuestionRepository;
 import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
@@ -20,6 +21,7 @@ import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/survey")
@@ -30,6 +32,9 @@ public class SurveyAdminController {
 
     @Autowired
     private SurveyFileService fileService;
+
+    @Autowired
+    private SurveyQuestionRepository surveyQuestionRepository;
 
 
     @Autowired
@@ -88,6 +93,7 @@ public class SurveyAdminController {
             try {
                 List<SurveyQuestion> courseQuizQuestions = excelReader.readFileToList(file, SurveyQuestion::fromQuiz);
 
+
                 for (SurveyQuestion quizQuestion : courseQuizQuestions) {
                     // 시험문제와 연결한다.
 
@@ -102,7 +108,7 @@ public class SurveyAdminController {
             }
         }
 
-        return "redirect:/admin/survey";
+        return "redirect:/admin/survey/edit/" + quiz1.getId();
     }
 
     @GetMapping("/edit/{id}")
@@ -158,7 +164,7 @@ public class SurveyAdminController {
             }
         }
 
-        return "redirect:/admin/survey";
+        return "redirect:/admin/survey/edit/" + survey1.getId();
     }
 
     @GetMapping("/delete/{id}")
@@ -168,11 +174,27 @@ public class SurveyAdminController {
 
         surveyService.deleteSurvey(survey);
 
-        return "redirect:/admin/survey/list";
+        return "redirect:/admin/survey";
     }
 
     @GetMapping("/delete-file/{survey_id}/{file_id}")
     public String noticeDeleteFile(@PathVariable long survey_id, @PathVariable long file_id, HttpServletRequest request){
+
+
+        Survey survey = surveyService.getSurveyById(survey_id);
+
+        // 문제 삭제
+        for (SurveyQuestion surveyQuestion : survey.getSurveyQuestions()) {
+
+            Optional<SurveyQuestion> surveyQuestion1 = surveyQuestionRepository.findById(surveyQuestion.getId());
+
+            if(surveyQuestion1.isPresent()) surveyQuestionRepository.delete(surveyQuestion1.get());
+        }
+
+        survey.getSurveyQuestions().clear();
+
+        surveyService.saveSurvey(survey);
+
 
         // db및 파일 삭제
         fileService.deleteFile(file_id);
@@ -205,7 +227,7 @@ public class SurveyAdminController {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + newFileName + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + newFileName + "\"")
                 .body(resource);
     }
 

@@ -1,13 +1,11 @@
 package com.dtnsm.lms.service;
 
-import com.dtnsm.lms.domain.CourseQuiz;
-import com.dtnsm.lms.domain.CourseQuizFile;
-import com.dtnsm.lms.domain.Survey;
-import com.dtnsm.lms.domain.SurveyFile;
+import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.exception.FileDownloadException;
 import com.dtnsm.lms.exception.FileUploadException;
 import com.dtnsm.lms.properties.FileUploadProperties;
 import com.dtnsm.lms.repository.SurveyFileRepository;
+import com.dtnsm.lms.repository.SurveyQuestionRepository;
 import com.dtnsm.lms.util.FileUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +29,9 @@ public class SurveyFileService {
 
     @Autowired
     SurveyFileRepository fileRepository;
+
+    @Autowired
+    SurveyQuestionRepository surveyQuestionRepository;
 
     private final Path fileLocation;
 
@@ -118,12 +119,13 @@ public class SurveyFileService {
         return courseQuizFile;
     }
 
-    @Transactional
+//    @Transactional
     public void deleteFile(long id) {
 
         SurveyFile surveyFile = getUploadFile(id);
 
         deleteFile(surveyFile);
+
 
         fileRepository.delete(surveyFile);
     }

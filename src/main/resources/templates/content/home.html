@@ -80,7 +80,7 @@
                                 <div class="panel height-fix-pannel">
                                     <div class="panel-body">
                                         <h5 class="col-md-6" th:text="${borders_name}" style="padding-bottom: 10px">공지사항</h5>
-                                        <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="/border/list/BA0101">more ></a></small>
+                                        <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="/border/BA0101">more ></a></small>
                                         <div class="row">
                                             <div class="col-md-12" th:switch="${borders}">
                                                 <h2 th:case="null">No customer yet!</h2>
@@ -89,7 +89,7 @@
                                                         <tbody>
                                                         <tr th:each="border, index : ${borders}">
                                                             <td>
-                                                                <a th:href="@{/border/view/{id}(id=${border.getId()})}">
+                                                                <a th:href="@{/border/BA0101/view/{id}(id=${border.getId()})}">
                                                                     <th:block th:if="${#strings.length(border.getTitle()) > 30}">
                                                                         <span th:text="${#strings.substring(border.getTitle(), 0, 30) + '...'}"></span>
                                                                     </th:block>
@@ -149,7 +149,7 @@
                                 <div class="panel height-fix-pannel">
                                     <div class="panel-body">
                                         <h5 class="col-md-6" th:text="${borders3_name}" style="padding-bottom: 10px">가이드라인</h5>
-                                        <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="/border/list/BA0102">more ></a></small>
+                                        <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="/border/BA0102">more ></a></small>
 
                                         <div th:switch="${borders2}">
                                             <h2 th:case="null"></h2>
@@ -158,7 +158,7 @@
                                                     <tbody>
                                                     <tr th:each="border, index : ${borders3}">
                                                         <td>
-                                                            <a th:href="@{/border/view/{id}(id=${border.getId()})}">
+                                                            <a th:href="@{/border/BA0102/view/{id}(id=${border.getId()})}">
                                                                 <th:block th:if="${#strings.length(border.getTitle()) > 30}">
                                                                     <span th:text="${#strings.substring(border.getTitle(), 0, 30) + '...'}"></span>
                                                                 </th:block>
@@ -275,7 +275,7 @@
                                 <div class="panel height-fix-pannel">
                                     <div class="panel-body">
                                         <h5 class="col-md-6" th:text="${borders2_name}" style="padding-bottom: 10px">법령정보</h5>
-                                        <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="/border/list/BA0104">more ></a></small>
+                                        <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="/border/BA0104">more ></a></small>
 
                                         <div th:switch="${borders2}">
                                             <h2 th:case="null"></h2>
@@ -284,7 +284,7 @@
                                                     <tbody>
                                                     <tr th:each="border, index : ${borders2}">
                                                         <td>
-                                                            <a th:href="@{/border/view/{id}(id=${border.getId()})}">
+                                                            <a th:href="@{/border/BA0104/view/{id}(id=${border.getId()})}">
                                                                 <th:block th:if="${#strings.length(border.getTitle()) > 30}">
                                                                     <span th:text="${#strings.substring(border.getTitle(), 0, 30) + '...'}"></span>
                                                                 </th:block>

@@ -3,7 +3,10 @@ package com.dtnsm.lms.domain;
 import com.dtnsm.lms.auth.AuditorCreateEntity;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.streaming.SXSSFRow;
 
 import javax.persistence.*;
 
@@ -91,21 +94,71 @@ public class SurveyQuestion extends AuditorCreateEntity<String> {
         this.ex5_score = ex5_score.intValue();
     }
 
+    public SurveyQuestion(String question, String surveyGubun
+            , String ex1, String ex2
+            , Double ex1_score, Double ex2_score) {
+        this.question = question;
+        this.surveyGubun = surveyGubun;
+        this.ex1 = ex1;
+        this.ex2 = ex2;
+        this.ex3 = "";
+        this.ex4 = "";
+        this.ex5 = "";
+        this.ex1_score = ex1_score.intValue();
+        this.ex2_score = ex2_score.intValue();
+        this.ex3_score = 0;
+        this.ex4_score = 0;
+        this.ex5_score = 0;
+    }
+
     // 엑셀 파일업로드(시험문제)
     public static SurveyQuestion fromQuiz(Row row) {
-        return new SurveyQuestion(
-                row.getCell(0).getStringCellValue()     // 질문
-                , row.getCell(1).getStringCellValue()   // 구분(S:주관식, M:객관식)
-                , row.getCell(2).getStringCellValue()   // ex1
-                , row.getCell(3).getStringCellValue()   // ex2
-                , row.getCell(4).getStringCellValue()   // ex3
-                , row.getCell(5).getStringCellValue()   // ex4
-                , row.getCell(6).getStringCellValue()   // ex5
-                , row.getCell(7).getNumericCellValue()   // ex1_score
-                , row.getCell(8).getNumericCellValue()   // ex2_score
-                , row.getCell(9).getNumericCellValue()   // ex3_score
-                , row.getCell(10).getNumericCellValue()   // ex4_score
-                , row.getCell(11).getNumericCellValue()   // ex5_score
-        );
+
+        if (row.getCell(0).getCellType() == CellType.BLANK) return null;
+
+//        for (int i=0; i< row.getLastCellNum(); i++) {
+//            System.out.println(String.valueOf(i) + " : " +  row.getCell(i).getCellType());
+//
+//        }
+
+        // self 트레이닝 설문인 경우
+        if (row.getCell(4).getCellType() == CellType.NUMERIC) {
+
+            return new SurveyQuestion(
+                    row.getCell(0).getStringCellValue()     // 질문
+                    , row.getCell(1).getStringCellValue()   // 구분(S:주관식, M:객관식)
+                    , row.getCell(2).getStringCellValue()   // ex1
+                    , row.getCell(3).getStringCellValue()   // ex2
+                    , row.getCell(4).getNumericCellValue()   // ex1_score
+                    , row.getCell(5).getNumericCellValue()   // ex2_score
+            );
+        } else {    // self 외 설문인 경우
+            return new SurveyQuestion(
+                    row.getCell(0).getStringCellValue()     // 질문
+                    , row.getCell(1).getStringCellValue()   // 구분(S:주관식, M:객관식)
+                    , row.getCell(2).getStringCellValue()   // ex1
+                    , row.getCell(3).getStringCellValue()   // ex2
+                    , row.getCell(4).getStringCellValue()   // ex3
+                    , row.getCell(5).getStringCellValue()   // ex4
+                    , row.getCell(6).getStringCellValue()   // ex5
+                    , row.getCell(7).getNumericCellValue()   // ex1_score
+                    , row.getCell(8).getNumericCellValue()   // ex2_score
+                    , row.getCell(9).getNumericCellValue()   // ex3_score
+                    , row.getCell(10).getNumericCellValue()   // ex4_score
+                    , row.getCell(11).getNumericCellValue()   // ex5_score
+            );
+        }
     }
+
+//    // 엑셀 파일업로드(시험문제)
+//    public static SurveyQuestion selfFromQuiz(Row row) {
+//        return new SurveyQuestion(
+//                row.getCell(0).getStringCellValue()     // 질문
+//                , row.getCell(1).getStringCellValue()   // 구분(S:주관식, M:객관식)
+//                , row.getCell(2).getStringCellValue()   // ex1
+//                , row.getCell(3).getStringCellValue()   // ex2
+//                , row.getCell(4).getNumericCellValue()   // ex1_score
+//                , row.getCell(5).getNumericCellValue()   // ex2_score
+//        );
+//    }
 }

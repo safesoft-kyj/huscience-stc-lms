@@ -76,7 +76,7 @@
                                                                  th:attr="style=${'width:100%'}"
                                                                  th:text="${'100%'}">0%</div>
                                                         </th:block>
-                                                        <th:block th:if="${sectionAction.getTotalUseSecond() > sectionAction.getCourseSection().getSecond() }">
+                                                        <th:block th:unless="${sectionAction.getTotalUseSecond() > sectionAction.getCourseSection().getSecond() }">
                                                             <div id="time2"  class="progress-bar progress-bar-info"
                                                                  th:attr="style=${'width:' + T(Math).round((sectionAction.getTotalUseSecond()*1.0) / sectionAction.getCourseSection().getSecond() * 100) + '%'}"
                                                                  th:text="${T(Math).round((sectionAction.getTotalUseSecond()*1.0) / sectionAction.getCourseSection().getSecond() * 100) + ' %'}">0%</div>
