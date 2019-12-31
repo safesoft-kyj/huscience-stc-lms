@@ -213,7 +213,7 @@ public class SurveyAdminController {
         Resource resource = fileService.loadFileAsResource(surveyFile.getSaveName());
 
         // Try to determine file's content type
-        String contentType = mimeTypesMap.getContentType(surveyFile.getSaveName());
+        String contentType = surveyFile.getMimeType();
         // contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 
 

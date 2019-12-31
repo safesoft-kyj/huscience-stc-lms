@@ -28,6 +28,14 @@ public class LmsNotificationService {
         return lmsNotificationRepository.findAllByAccount_UserId(userId);
     }
 
+    public List<LmsNotification> getAllByCourseIdAndUserNotification(Long courseId, String userId) {
+        return lmsNotificationRepository.findAllByCourse_IdAndAccount_UserId(courseId, userId);
+    }
+
+    public List<LmsNotification> getAllByCourseIdNotification(Long courseId) {
+        return lmsNotificationRepository.findAllByCourse_Id(courseId);
+    }
+
     public List<LmsNotification> getTop5ByUserNotification(String userId) {
         return lmsNotificationRepository.findTop5ByAccount_UserIdOrderByCreatedDateDesc(userId);
     }

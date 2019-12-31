@@ -130,7 +130,7 @@
                                             <a href="/mypage/myInfo" class="btn btn-lg btn-danger">교육신청 (팀장/부서장을 설정하세요)</a>
                                         </th:block>
                                         <th:block th:unless="${#strings.isEmpty(account.parentUserId)}">
-                                            <a href="javascript:checkRequest();" class="btn btn-lg btn-success"><i class="demo-pli-add-cart"></i> 교육신청</a>
+                                            <button type="submit" class="btn btn-lg btn-success"><i class="demo-pli-add-cart"></i> 교육신청</button>
                                         </th:block>
                                     </span>
                                     <span th:case="3" class="btn btn-lg btn-purple">교육대기</span>
@@ -259,51 +259,68 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
         var userId = /*[[${account.userId}]]*/;
-
         var courseId = /*[[${course.getId()}]]*/;
+
+
+        $(function() {
+
+
+            $("#submit_form").submit(function (e) {
+
+                var val = checkRequest();
+
+
+                if (val == 1) {
+                    alert('상위결재권자가 지정되지 않았습니다.');
+                    e.preventDefault();
+                    return  false;
+                }
+
+                if (val == 2) {
+                    alert('교육과정 관리자가 지정되지 않았습니다.');
+                    e.preventDefault();
+                    return false;
+                }
+
+                if (val == 3) {
+                    alert('수료증 기준정보가 설정 되지 않았습니다.');
+                    e.preventDefault();
+                    return false;
+                }
+
+                if (val == 4) {
+                    alert('이미 신청한 내역이 있습니다.');
+                    e.preventDefault();
+                    return false;
+                }
+
+            });
+        });
 
         function checkRequest() {
 
-            $.ajax({
-                type : 'POST',
-                url : '/api/courseAccount/isVerification',
-                dataType : 'json',
-                data : {
+            var returnValue = 0;
+
+             $.ajax({
+                type: 'POST',
+                async: false,   // true:비동기, false:동기
+                url: '/api/courseAccount/isVerification',
+                dataType: 'json',
+                data: {
                     'courseId': courseId,
                     'userId': userId
                 },
-                error: function(xhr, status, error){
-                    alert(error);
+                error: function (xhr, status, error) {
+                alert(error);
                 },
-                success : function(data){
+                success: function (data) {
+                returnValue = data;
 
-                    if (data == 1) {
-                        alert('상위결재권자가 지정되지 않았습니다.');
-                        return false;
-                    }
-
-                    if (data == 2) {
-                        alert('교육과정 관리자가 지정되지 않았습니다.');
-                        return false;
-                    }
-
-                    if (data == 3) {
-                        alert('수료증 기준정보가 설정 되지 않았습니다.');
-                        return false;
-                    }
-
-                    if (data == 4) {
-                        alert('이미 신청한 내역이 있습니다.');
-                        return false;
-                    }
-
-                    if (data == 9) {
-                        $('#submit_form').submit();
-                        alert('교육 신청되었습니다.');
-                        return false;
-                    }
                 },
             });
+
+            return returnValue;
+        }
 
 
 
@@ -330,9 +347,6 @@
             //     },
             // });
 
-
-            return;
-        }
         /*]]>*/
     </script>
 </th:block>

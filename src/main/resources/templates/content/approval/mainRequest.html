@@ -134,7 +134,7 @@
                                                     <div th:switch="${border.getCourseStatus()}">
                                                         <th:block th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).none}">
                                                             <!--                                                <a class="btn btn-info" th:href="|javascript:checkRequest('${courseAccount.getCourse().getId()}', '${courseAccount.getAccount().getUserId()}')|"><i class="demo-pli-inbox-into"></i> 교육신청</a>-->
-                                                            <a class="btn btn-info"  th:href="@{/course/view/{id}(id=${border.getCourse().getId()})}">
+                                                            <a class="btn btn-info"  th:href="@{/info/request/add/{id}(id=${border.getCourse().getId()})}">
                                                                 <i class="demo-pli-inbox-into"></i> 교육신청
                                                             </a>
                                                         </th:block>

@@ -107,10 +107,10 @@ public class MainController {
 
         // 결재함 결재 요청 건수
         long appRequest = courseAccountOrderService.countByCourseOrderRequest(
-                userId, "%", "0", "%", 0);
+                userId, "1", "0", "0", 0);
 
         appRequest += documentAccountOrderService.countByDocumentRequest(
-                userId, "%", "0", "%", 0);
+                userId, "1", "0", "0", 0);
 
         // 교육참석보고서 미결 건수
         long documentAppRequest = courseAccountService.countByCourseRequest(
@@ -150,6 +150,9 @@ public class MainController {
         model.addAttribute("app2CommitList", documentAccountOrders2);
 
 
+
+
+
         // 교육결재 1차 미결건수
         model.addAttribute("courseApprCount", courseAccountOrders1.size());
 
@@ -164,11 +167,11 @@ public class MainController {
         model.addAttribute("documentProcessCount", documentAccountOrders2.size());
 
 
-        // 과정그룹별 과정 수
-        model.addAttribute("courseMasterList", courseMasterService.getList());
-
-        // 과정그룹별 과정 수
-        model.addAttribute("courseCountVO", courseMapperService.getCourseCount());
+//        // 과정그룹별 과정 수
+//        model.addAttribute("courseMasterList", courseMasterService.getList());
+//
+//        // 과정그룹별 과정 수
+//        model.addAttribute("courseCountVO", courseMapperService.getCourseCount());
 
         model.addAttribute(pageInfo);
 

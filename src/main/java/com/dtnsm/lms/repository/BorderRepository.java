@@ -2,6 +2,7 @@ package com.dtnsm.lms.repository;
 
 import com.dtnsm.lms.domain.Border;
 import com.dtnsm.lms.domain.CVEducation;
+import com.dtnsm.lms.domain.CVExperience;
 import com.dtnsm.lms.domain.Course;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +14,7 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import java.util.List;
 
 
-public interface BorderRepository extends JpaRepository<Border, Long>, CustomBorderRepository {
+public interface BorderRepository extends JpaRepository<Border, Long>, QuerydslPredicateExecutor<Border> {
 
     Page<Border> findAllByBorderMaster_Id(String typeId, Pageable pageable);
 

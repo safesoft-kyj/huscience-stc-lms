@@ -367,7 +367,7 @@ public class ApprovalController {
 
         model.addAttribute(pageInfo);
         model.addAttribute("document", document);
-        model.addAttribute("signature", GlobalUtil.getSignature(signatureRepository, SessionUtil.getUserId()));
+//        model.addAttribute("signature", GlobalUtil.getSignature(signatureRepository, SessionUtil.getUserId()));
 
         return "content/approval/approvalDocument";
     }
@@ -385,7 +385,7 @@ public class ApprovalController {
         model.addAttribute(pageInfo);
         model.addAttribute("document", documentAccountOrder.getDocument());
         model.addAttribute("documentAccountOrder", documentAccountOrder);
-        model.addAttribute("signature", GlobalUtil.getSignature(signatureRepository, SessionUtil.getUserId()));
+//        model.addAttribute("signature", GlobalUtil.getSignature(signatureRepository, SessionUtil.getUserId()));
         model.addAttribute("userId", SessionUtil.getUserId());
 
         return "content/approval/approvalDocumentOrder";

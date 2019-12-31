@@ -163,8 +163,12 @@ public class ApprovalDocumentProcessService {
                 courseAccount.setIsCommit("1");
                 courseAccount.setReportStatus("1");
 
-                String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
-                courseAccount.setCertificateNo(certificateNo);
+                if (courseAccount.getCourse().getIsCerti().equals("Y")) {
+                    String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
+                    courseAccount.setCertificateNo(certificateNo);
+                } else {
+                    courseAccount.setCertificateNo("");
+                }
 
                 courseAccountService.save(courseAccount);
 
@@ -252,8 +256,14 @@ public class ApprovalDocumentProcessService {
                 courseAccount.setIsAttendance("1");
                 courseAccount.setIsCommit("1");
                 courseAccount.setReportStatus("1");
-                String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
-                courseAccount.setCertificateNo(certificateNo);
+
+
+                if (courseAccount.getCourse().getIsCerti().equals("Y")) {
+                    String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
+                    courseAccount.setCertificateNo(certificateNo);
+                } else {
+                    courseAccount.setCertificateNo("");
+                }
 
                 courseAccountService.save(courseAccount);
 

@@ -81,22 +81,21 @@ public class CourseScheduler {
 
         for(Course course : courseList) {
 
-            Date requestFromDate = DateUtil.getStringToDate(course.getRequestFromDate());
-            Date requestToDate = DateUtil.getStringToDate(course.getRequestToDate());
-            Date fromDate = DateUtil.getStringToDate(course.getFromDate());
-            Date toDate = DateUtil.getStringToDate(course.getToDate());
-            Date toDay = DateUtil.getToday();
-
-            int todayReqFromCompare = toDay.compareTo(requestFromDate);  // 1 : 현재일이 크다, -1 : 요청시작일이 크다
-            int todayReqToCompare = toDay.compareTo(requestToDate);      // 1 : 현재일이 크다ㅣ
-            int todayFromCompare = toDay.compareTo(fromDate);
-            int todayToCompare = toDay.compareTo(toDate);
-
-
             int status = 0;
 
             // 부서별 교육(BC0103), 외부교육(BC0104) 은 신청기간이 없음으로 처리하지 않는다.
             if(course.getCourseMaster().getId().equals("BC0101") || course.getCourseMaster().getId().equals("BC0102")) {
+
+                Date requestFromDate = DateUtil.getStringToDate(course.getRequestFromDate());
+                Date requestToDate = DateUtil.getStringToDate(course.getRequestToDate());
+                Date fromDate = DateUtil.getStringToDate(course.getFromDate());
+                Date toDate = DateUtil.getStringToDate(course.getToDate());
+                Date toDay = DateUtil.getToday();
+
+                int todayReqFromCompare = toDay.compareTo(requestFromDate);  // 1 : 현재일이 크다, -1 : 요청시작일이 크다
+                int todayReqToCompare = toDay.compareTo(requestToDate);      // 1 : 현재일이 크다ㅣ
+                int todayFromCompare = toDay.compareTo(fromDate);
+                int todayToCompare = toDay.compareTo(toDate);
 
                 if (todayReqFromCompare < 0)
                     status = 1; // 신청기간이전 : 신청대기
@@ -242,7 +241,7 @@ public class CourseScheduler {
         }
     }
 
-    // 매일 2시 30분에 실행
+    // 매일 2시 40분에 실행
     // 외부교육 ToDate 익일 새벽에 외부교육참석보고서 작성 Alarm 발송 대상자 조회
     @Scheduled(cron = "0 40 2 * * *")
     public void sendCourseToDateAlarm() {

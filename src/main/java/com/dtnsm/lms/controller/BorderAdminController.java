@@ -1,10 +1,9 @@
 package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.auth.UserService;
-import com.dtnsm.lms.domain.Border;
-import com.dtnsm.lms.domain.BorderFile;
-import com.dtnsm.lms.domain.BorderMaster;
-import com.dtnsm.lms.domain.BorderViewAccount;
+import com.dtnsm.lms.domain.*;
+import com.dtnsm.lms.domain.constant.CurriculumVitaeStatus;
+import com.dtnsm.lms.repository.BorderRepository;
 import com.dtnsm.lms.repository.BorderViewAccountRepository;
 import com.dtnsm.lms.service.BorderFileService;
 import com.dtnsm.lms.service.BorderMasterService;
@@ -16,11 +15,14 @@ import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
+import com.querydsl.core.BooleanBuilder;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -55,6 +57,9 @@ public class BorderAdminController {
 
     @Autowired
     BorderService borderService;
+
+    @Autowired
+    BorderRepository borderRepository;
 
     @Autowired
     private BorderFileService borderFileService;
@@ -112,18 +117,30 @@ public class BorderAdminController {
         String borderName = borderMasterService.getById(typeId).getBorderName();
         pageInfo.setPageTitle(borderName);
 
+        searchText = searchText.trim();
+
         Page<Border> borders;
 
-        if(searchType.equals("all") && searchText.equals("")) {
-            borders = borderService.getPageList(typeId, pageable);
-        } else if (searchType.equals("all") && !searchText.equals("")) {
-            borders = borderService.getPageListByTitleLikeOrContentLike(typeId, searchText, searchText, pageable);
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "isNotice", "createdDate"));
+
+        BooleanBuilder builder = new BooleanBuilder();
+        QBorder border = QBorder.border;
+        builder.and(border.borderMaster.id.eq(typeId));
+
+        if(searchType.equals("all")) {
+//            borders = borderService.getPageList(typeId, pageable);
+//            borders = borderService.getPageListByTitleLikeOrContentLike(typeId, searchText, searchText, pageable);
+            builder.and(border.title.contains(searchText).or(border.content.contains(searchText)));
         } else if (searchType.equals("subject")) {
-            borders = borderService.getPageListByTitleLike(typeId, searchText, pageable);
-        } else {
-            borders = borderService.getPageListByContentLike(typeId, searchText, pageable);
+//            borders = borderService.getPageListByTitleLike(typeId, searchText, pageable);
+            builder.and(border.title.contains(searchText));
+        } else if (searchType.equals("content")) {
+//            borders = borderService.getPageListByContentLike(typeId, searchText, pageable);
+            builder.and(border.content.contains(searchText));
         }
 
+        borders = borderRepository.findAll(builder, pageable);
 
         model.addAttribute(pageInfo);
         model.addAttribute("borders", borders);

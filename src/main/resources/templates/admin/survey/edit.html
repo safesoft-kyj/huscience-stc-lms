@@ -65,7 +65,7 @@
                                                 </td>
                                                 <td th:text="${uploadFile.getSize()}" class="text-center"></td>
                                                 <td class="text-center col-sm-2">
-                                                    <a class="btn btn-xs btn-danger" th:href="@{/admin/survey/delete-file/{survey_id}/{file_id}(survey_id=${survey.getId()}, file_id=${uploadFile.getId()})}"><i class="demo-psi-trash"></i></a>
+                                                    <a class="btn btn-xs btn-danger" th:href="@{/admin/survey/delete-file/{survey_id}/{file_id}(survey_id=${survey.getId()}, file_id=${uploadFile.getId()})}" target="_blank"><i class="demo-psi-trash"></i></a>
                                                 </td>
                                             </tr>
                                             </tbody>

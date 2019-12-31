@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <style>
+
+        .sign {
+            min-height: 90px;
+        }
+
+
+        .hide-div {
+            min-height: 90px;
+        }
+
+    </style>
+
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content" style="margin-bottom:0">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+
+                <div class="panel-body">
+
+                    <div class="panel-heading text-right">
+                        <a href="javascript:history.back();" class="btn btn-primary">
+                            <i class="demo-pli-back"></i> Back
+                        </a>
+                    </div>
+                    <hr style="border:1.2px solid #0a6aa1">
+                    <h4><strong class="text-info"><i class="demo-pli-dot-vertical"></i> 결재 정보</strong></h4>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <table class="table table-striped table-bordered" cellspacing="0" width="100%">
+                                <tbody>
+                                <tr>
+                                    <td>신청일자</td>
+                                    <td th:text="${courseAccount.getFnWdate()} ? ${#dates.format(courseAccount.getFnWdate(), 'yyyy-MM-dd')} : ${courseAccount.getFnWdate()}"></td>
+                                </tr>
+                                <tr>
+                                    <td>신청부서</td>
+                                    <td th:text="${courseAccount.getAccount().getOrgDepart()}"></td>
+                                </tr>
+                                <tr>
+                                    <td>신 청 자</td>
+                                    <td th:text="${courseAccount.getAccount().getName()}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <th:block th:if="${courseAccount.getFnFinalCount() < 2}">
+                            <div class="col-sm-3"></div>
+                        </th:block>
+                        <div class="col-sm-5">
+                            <table class="table table-bordered" cellspacing="0" width="100%">
+                                <colgroup>
+                                    <col width="10%">
+                                    <col width="30%">
+                                    <col width="30%">
+                                    <col width="30%">
+                                </colgroup>
+                                <tbody>
+                                <tr>
+                                    <td rowspan="3" style="vertical-align: middle" class="text-center" >
+                                        <div>결<br/><br/>재</div>
+                                    </td>
+                                    <th:block th:each="border, index : ${courseAccount.getCourseAccountOrders()}">
+                                        <th:block th:if="${border.getFnKind().equals('1')}">
+                                            <td th:text="${border.getFnUser().getName()}" class="text-center">
+                                            </td>
+                                        </th:block>
+                                    </th:block>
+                                </tr>
+                                <tr>
+                                    <th:block th:each="border, index : ${courseAccount.getCourseAccountOrders()}">
+                                        <th:block th:if="${border.getFnKind().equals('1')}">
+                                            <td th:switch="${border.getFnStatus()}" class="text-center" style="vertical-align: middle">
+                                                <div th:case="${'0'}" class="text-info sign" th:text="${''}"></div>
+                                                <th:block th:case="${'1'}">
+                                                    <th:block th:if="${#strings.isEmpty(border.getSignature())}">
+                                                        <div class="sign"><br><br>승인</div>
+                                                    </th:block>
+                                                    <th:block th:unless="${#strings.isEmpty(border.getSignature())}">
+                                                        <img class="text-success sign" th:src="${border.getSignature()}">
+                                                    </th:block>
+                                                </th:block>
+                                                <div th:case="${'2'}" class="text-danger sign"><br><br>반려</div>
+                                            </td>
+                                        </th:block>
+                                    </th:block>
+                                </tr>
+                                <tr>
+                                    <th:block th:each="border, index : ${courseAccount.getCourseAccountOrders()}">
+                                        <th:block th:if="${border.getFnKind().equals('1')}">
+                                            <td th:text="${border.getFnDate()} ? ${#dates.format(border.getFnDate(), 'yyyy-MM-dd')} : ${border.getFnDate()}" class="text-center"></td>
+                                            </td>
+                                        </th:block>
+                                    </th:block>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-sm-3">
+                            <th:block th:if="${courseAccount.getFnFinalCount() >= 2}">
+                                <table class="table table-bordered col-sm-4" cellspacing="0" width="100%">
+                                    <colgroup>
+                                        <col width="10%">
+                                        <col width="30%">
+                                        <col width="30%">
+                                        <col width="30%">
+                                    </colgroup>
+                                    <tbody>
+                                    <tr>
+                                        <td rowspan="3" style="vertical-align: middle" class="text-center" >
+                                            <div>관<br/>리<br/>자</div>
+                                        </td>
+
+                                        <th:block th:each="border, index : ${courseAccount.getCourseAccountOrders()}">
+                                            <th:block th:if="${border.getFnKind().equals('2')}">
+                                                <td th:text="${border.getFnUser().getName()}" class="text-center">
+                                                </td>
+                                            </th:block>
+                                        </th:block>
+                                    </tr>
+                                    <tr>
+                                        <th:block th:each="border, index : ${courseAccount.getCourseAccountOrders()}">
+                                            <th:block th:if="${border.getFnKind().equals('2')}">
+                                                <td th:switch="${border.getFnStatus()}" class="text-center" style="vertical-align: middle">
+                                                    <div th:case="${'0'}" class="text-info sign" th:text="${''}"></div>
+                                                    <th:block th:case="${'1'}">
+                                                        <th:block th:if="${#strings.isEmpty(border.getSignature())}">
+                                                            <div class="sign"><br><br>승인</div>
+                                                        </th:block>
+                                                        <th:block th:unless="${#strings.isEmpty(border.getSignature())}">
+                                                            <img class="text-success sign" th:src="${border.getSignature()}">
+                                                        </th:block>
+                                                    </th:block>
+                                                    <div th:case="${'2'}" class="text-danger sign" th:text="${'반려'}"></div>
+                                                </td>
+                                            </th:block>
+                                        </th:block>
+                                    </tr>
+                                    <tr>
+                                        <th:block th:each="border, index : ${courseAccount.getCourseAccountOrders()}">
+                                            <th:block th:if="${border.getFnKind().equals('2')}">
+                                                <td th:text="${border.getFnDate()} ? ${#dates.format(border.getFnDate(), 'yyyy-MM-dd')} : ${'&nbsp;'}" class="text-center"></td>
+                                                </td>
+                                            </th:block>
+                                        </th:block>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </th:block>
+                        </div>
+                    </div>
+
+                    <h4><strong class="text-info"><i class="demo-pli-dot-vertical"></i> 신청과정 정보</strong></h4>
+                    <table class="table table-striped table-bordered" cellspacing="0" width="100%">
+                        <tbody>
+                        <colgroup><col width="10%" /><col width="40%" /><col width="10%" /><col width="40%" /></colgroup>
+                        <tr>
+                            <th><span th:text="#{label.gubun}">구분</span></th>
+                            <td th:text="${course.courseMaster.getCourseName()}" colspan="3"></td>
+                        </tr>
+                        <tr>
+                            <th><span th:text="#{label.course.name}">과정명</span></th>
+                            <td th:text="${course.getTitle()}" colspan="3"></td>
+                        </tr>
+                        <tr>
+                            <th><span th:text="#{label.course.requesperiod}">신청기간</span></th>
+                            <td th:text="${course.getRequestFromDate() + ' ~ ' + course.getToDate()} "></td>
+                            <th><span th:text="#{label.course.period}">교육기간</span></th>
+                            <td th:text="${course.getFromDate() + ' ~ ' + course.getToDate()} "></td>
+                        </tr>
+                        <tr>
+                            <th><span th:text="#{label.course.daycountandtime}">학습일수/시간</span></th>
+                            <td th:text="${course.getDay() + ' / ' + course.getHour() }"></td>
+                            <th><span th:text="#{label.course.place}">교육장소</span></th>
+                            <td th:text="${course.getPlace()}"></td>
+                        </tr>
+                        <tr>
+                            <th><span th:text="#{label.course.peoplecount}">교육정원</span></th>
+                            <td th:text="${course.getCnt()}+'명'"></td>
+                            <th><span th:text="#{label.file}">첨부파일</span></th>
+                            <td>
+                                <div th:each="sections : ${course.getCourseFiles()}">
+                                    <a th:href="@{/admin/course/download-file/{id}(id=${sections.getId()})}" th:text="${sections.getFileName()}"></a>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+
+
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+
+            <div class="row">
+                <div class="col-sm-12">
+
+                    <!--Default Tabs (Left Aligned)-->
+                    <!--===================================================-->
+                    <div class="tab-base">
+
+                        <!--Nav Tabs-->
+                        <ul class="nav nav-tabs">
+                            <li class="active">
+                                <a data-toggle="tab" href="#demo-lft-tab-1">소개</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#demo-lft-tab-2">목차</a>
+                            </li>
+                        </ul>
+
+                        <!--Tabs Content-->
+                        <div class="tab-content">
+                            <div id="demo-lft-tab-1" class="tab-pane fade active in" style="height:100%; vertical-align:top">
+                                <div th:utext="${course.getContent()}" colspan="4"></div>
+                            </div>
+                            <div id="demo-lft-tab-2" class="tab-pane fade">
+                                <table class="table table-striped table-bordered" cellspacing="0" width="100%">
+                                    <colgroup><col width="5%" /><col width="10%" /><col width="35%" /><col width="15%" /><col width="20%" /><col width="10%" /></colgroup>
+                                    <thead>
+                                    <th class="text-center">No</th>
+                                    <th class="text-center">구분</th>
+                                    <th class="text-center">강의명</th>
+<!--                                    <th class="text-center">학습기간</th>-->
+                                    <th class="text-center" th:text="#{label.hour}">Date & Times</th>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="sections, index : ${course.getSections()}">
+                                        <td class="text-center" th:text="${index.count}"></td>
+                                        <td class="text-center" th:text="#{label.title.section}"></td>
+                                        <td class="text-left">
+                                            <div th:text="${sections.getName()}"></div>
+                                            <div th:utext="${sections.getDescription().replaceAll('\r\n', '<br>')}"></div>
+                                        </td>
+<!--                                        <th:block th:if="${#strings.equalsIgnoreCase(course.getFromDate(), course.getToDate())}">-->
+<!--                                            <td th:text="${course.getFromDate()}" class="text-center"></td>-->
+<!--                                        </th:block>-->
+<!--                                        <th:block th:unless="${#strings.equalsIgnoreCase(course.getFromDate(), course.getToDate())}">-->
+<!--                                            <td th:text="${course.getFromDate() + '~' + course.getToDate()}" class="text-center"></td>-->
+<!--                                        </th:block>-->
+                                        <td class="text-center" th:text="${sections.getHour()}"></td>
+                                    </tr>
+
+                                    <tr th:each="quiz, index : ${course.getQuizzes()}">
+                                        <td class="text-center" th:text="${index.count}"></td>
+                                        <td class="text-center" th:text="#{label.title.quiz}"></td>
+                                        <td class="text-center">
+                                            <a th:href="@{/admin/course/quiz/edit/{id}(id=${quiz.getId()})}">
+                                                <span th:text="${quiz.getName()}"></span>
+                                            </a>
+                                        </td>
+<!--                                        <th:block th:if="${#strings.equalsIgnoreCase(quiz.getFromDate(), quiz.getToDate())}">-->
+<!--                                            <td th:text="${quiz.getFromDate()}" class="text-center"></td>-->
+<!--                                        </th:block>-->
+<!--                                        <th:block th:unless="${#strings.equalsIgnoreCase(quiz.getFromDate(), quiz.getToDate())}">-->
+<!--                                            <td th:text="${quiz.getFromDate() + '~' + quiz.getToDate()}" class="text-center"></td>-->
+<!--                                        </th:block>-->
+                                        <td class="text-center" th:text="${quiz.getHour()}"></td>
+                                    </tr>
+                                    <tr th:each="survey, index : ${course.getSurveys()}">
+                                        <td class="text-center" th:text="${index.count}"></td>
+                                        <td class="text-center" th:text="#{label.title.survey}"></td>
+                                        <td class="text-center">
+                                            <a th:href="@{/admin/course/survey/edit/{id}(id=${survey.getId()})}">
+                                                <span th:text="${survey.getName()}"></span>
+                                            </a>
+                                        </td>
+<!--                                        <th:block th:if="${#strings.equalsIgnoreCase(survey.getFromDate(), survey.getToDate())}">-->
+<!--                                            <td th:text="${survey.getFromDate()}" class="text-center"></td>-->
+<!--                                        </th:block>-->
+<!--                                        <th:block th:unless="${#strings.equalsIgnoreCase(survey.getFromDate(), survey.getToDate())}">-->
+<!--                                            <td th:text="${survey.getFromDate() + '~' + survey.getToDate()}" class="text-center"></td>-->
+<!--                                        </th:block>-->
+                                        <td class="text-center"></td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+</th:block>
+
+</html>
+
+

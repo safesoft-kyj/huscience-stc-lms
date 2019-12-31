@@ -110,7 +110,7 @@
                                                     <span th:text="${border.getCourse().getCourseMaster().getCourseName()}"></span>&nbsp;
                                                 </td>
                                                 <td>
-                                                    <a th:href="@{/course/approval/{id}(id=${border.getId()})}">
+                                                    <a th:href="@{/admin/approval/{requestName}/approvalCourse/{id}(requestName=${requestName}, status=${status}, id=${border.getId()})}">
                                                         <span th:text="${border.getCourse().getTitle()}"></span>
                                                     </a>
                                                 </td>
@@ -131,30 +131,46 @@
                                                     </div>
                                                 </td>
                                                 <td class="text-center">
-                                                    <div th:switch="${border.getCourseStatus()}">
-                                                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).none}">
-                                                            <!--                                                <a class="btn btn-info" th:href="|javascript:checkRequest('${courseAccount.getCourse().getId()}', '${courseAccount.getAccount().getUserId()}')|"><i class="demo-pli-inbox-into"></i> 교육신청</a>-->
-                                                            <a class="btn btn-info"  th:href="@{/course/view/{id}(id=${border.getCourse().getId()})}">
-                                                                <i class="demo-pli-inbox-into"></i> 교육신청
-                                                            </a>
-                                                        </th:block>
-                                                    </div>
+<!--                                                    <div th:switch="${border.getCourseStatus()}">-->
+<!--                                                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).none}">-->
+<!--                                                            &lt;!&ndash;                                                <a class="btn btn-info" th:href="|javascript:checkRequest('${courseAccount.getCourse().getId()}', '${courseAccount.getAccount().getUserId()}')|"><i class="demo-pli-inbox-into"></i> 교육신청</a>&ndash;&gt;-->
+<!--                                                            <a class="btn btn-info"  th:href="@{/course/view/{id}(id=${border.getCourse().getId()})}">-->
+<!--                                                                <i class="demo-pli-inbox-into"></i> 교육신청-->
+<!--                                                            </a>-->
+<!--                                                        </th:block>-->
+<!--                                                    </div>-->
 
                                                     <!-- 교육참석보고서 일경우 -->
                                                     <th:block th:if="${#strings.equalsIgnoreCase(border.getIsReport(), '1')}">
 
                                                         <div th:if="${#strings.equalsIgnoreCase(status, 'report')}">
 
-                                                            <th:block th:if="${#strings.equalsIgnoreCase(border.getReportStatus(), '0')}">
-                                                                <a class="btn btn-info"  th:href="@{/document/addAccount/1/{id}(id=${border.getId()})}">
-                                                                    <i class="demo-pli-inbox-into"></i> 참석보고서 작성
-                                                                </a>
-                                                            </th:block>
+<!--                                                            <th:block th:if="${#strings.equalsIgnoreCase(border.getReportStatus(), '0')}">-->
+<!--                                                                <a class="btn btn-info"  th:href="@{/document/addAccount/1/{id}(id=${border.getId()})}">-->
+<!--                                                                    <i class="demo-pli-inbox-into"></i> 참석보고서 작성-->
+<!--                                                                </a>-->
+<!--                                                            </th:block>-->
                                                             <th:block th:if="${#strings.equalsIgnoreCase(border.getReportStatus(), '1')}">
                                                                 <th:block th:each="doc, index : ${border.getDocuments()}">
-                                                                    <a class="btn btn-info"  th:href="@{/document/approval/{id}(id=${doc.getId()})}">
-                                                                        <i class="demo-pli-inbox-into"></i> <span th:text="${'참석보고서'}"></span>
-                                                                    </a>
+
+                                                                    <th:block th:if="${#strings.equalsIgnoreCase(doc.getFnStatus(), '1')}">
+                                                                        <a class="btn btn-success"  th:href="@{/admin/approval/{requestName}/approvalDocument/{id}(requestName=${requestName}, status=${status}, id=${doc.getId()})}">
+                                                                            <i class="demo-pli-inbox-into"></i> <span th:text="${'참석보고서'}"></span>
+                                                                        </a>
+                                                                    </th:block>
+                                                                    <th:block th:if="${#strings.equalsIgnoreCase(doc.getFnStatus(), '2')}">
+                                                                        <a class="btn btn-danger"  th:href="@{/admin/approval/{requestName}/approvalDocument/{id}(requestName=${requestName}, status=${status}, id=${doc.getId()})}">
+                                                                            <i class="demo-pli-inbox-into"></i> <span th:text="${'참석보고서(기각)'}"></span>
+                                                                        </a>
+                                                                    </th:block>
+                                                                    <!-- 진행중 -->
+                                                                    <th:block th:if="${#strings.equalsIgnoreCase(doc.getFnStatus(), '0') and doc.getFnCurrSeq() <= 1}">
+                                                                        <a class="btn btn-warning"  th:href="@{/admin/approval/{requestName}/approvalDocument/{id}(requestName=${requestName}, status=${status}, id=${doc.getId()})}">
+                                                                            <i class="demo-pli-inbox-into"></i> <span th:text="${'참석보고서'}"></span>
+                                                                        </a>
+<!--                                                                        <a th:text="#{label.edit}" th:href="@{/admin/approval/{requestName}/editDocument(requestName=${requestName}, status=${status}, id=${doc.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>-->
+<!--                                                                        <a th:text="#{label.delete}" th:href="@{/admin/approval/{requestName}/deleteDocument(requestName=${requestName}, status=${status}, id=${doc.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>-->
+                                                                    </th:block>
                                                                 </th:block>
                                                             </th:block>
                                                         </div>

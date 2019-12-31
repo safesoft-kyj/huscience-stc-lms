@@ -59,10 +59,10 @@
 <!--                                </div>-->
 <!--                            </form>-->
                             <h3 class="text-info"><i class="fa fa-calendar"></i> <span th:text="${border.getTitle()}"></span></h3>
-                            <table class="table table-striped" cellspacing="0" width="100%" style="height:600px;">
+                            <table class="table table-striped" cellspacing="0" width="100%" style="height:100%;">
                                 <tr style="">
                                     <td>
-                                        <div id="example1"></div>
+                                        <div id="example1" style="height: 720px"></div>
                                     </td>
                                 </tr>
                                 <div th:switch="${border.getContent().isEmpty()}">
@@ -106,7 +106,7 @@
 
             if (id != null) {
                 var options = {
-                    height: "600",
+                    height: "720",
                     page: '1',
                     pdfOpenParams: {
                         view: 'FitV',

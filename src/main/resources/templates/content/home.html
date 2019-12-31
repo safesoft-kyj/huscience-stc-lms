@@ -119,12 +119,12 @@
                                                 <table id="" class="" cellspacing="0" width="100%">
                                                     <tbody>
                                                     <tr th:each="border, index : ${alarmList}">
-                                                        <td class="text-left col-md-4" th:text="${#dates.format(border.getCreatedDate(), 'yyyy/MM/dd hh:mm')}">
+                                                        <td class="text-left col-md-3" th:text="${#dates.format(border.getCreatedDate(), 'yyyy/MM/dd hh:mm')}">
                                                         </td>
                                                         <!--                                                        <td class="text-left col-md-2">-->
                                                         <!--                                                            <span th:utext="${border.getAlarmGubun().getLabel()}"></span>-->
                                                         <!--                                                        </td>-->
-                                                        <td class="text-left col-md-6">
+                                                        <td class="text-left col-md-9">
                                                             <span th:utext="${border.getTitle()}"></span>
                                                         </td>
                                                     </tr>
@@ -182,8 +182,8 @@
                                     <div class="panel-body">
                                         <div class="panel-control">
                                             <ul class="nav nav-tabs">
-                                                <li class="active"><a href="#demo-tabs-box-1" data-toggle="tab">결재요청 <span class="badge badge-purple" th:text="${app1List.size()}"></span></a></li>
-                                                <li class=""><a href="#demo-tabs-box-2" data-toggle="tab">진행중 <span class="badge badge-purple" th:text="${app1CommitList.size()}"></span></a></li>
+                                                <li class="active"><a href="#demo-tabs-box-1" data-toggle="tab">결재요청 <span class="badge badge-purple" th:text="${app1List.size()+app2List.size()}"></span></a></li>
+                                                <li class=""><a href="#demo-tabs-box-2" data-toggle="tab">진행중 <span class="badge badge-purple" th:text="${app1CommitList.size() + app2CommitList.size()}"></span></a></li>
                                             </ul>
                                         </div>
                                         <div class="tab-content">
@@ -194,7 +194,9 @@
                                                         <td class="col-md-3" th:text="${app1.getCourseAccount().getRequestDate()}"></td>
 
                                                         <td class="col-md-9 text-left">
-                                                            <a th:href="@{/course/approvalAppr1/{id}(id=${app1.getId()})}">
+<!--                                                            <a th:href="@{/course/approvalAppr1/{id}(id=${app1.getId()})}">-->
+                                                            <a th:href="@{/approval/mainApproval/approvalCourseOrder/{id}(id=${app1.getId()}, status='request')}">
+
                                                                 <th:block th:if="${#strings.length(app1.getCourseAccount().getCourse().getTitle()) > 30}">
                                                                     <span th:text="${#strings.substring(app1.getCourseAccount().getCourse().getTitle(), 0, 30) + '...'}"></span>
                                                                 </th:block>
@@ -208,7 +210,7 @@
                                                     <tr th:each="app1, index : ${app2List}">
                                                         <td class="col-md-3" th:text="${app1.getDocument().getRequestDate()}"></td>
                                                         <td class="col-md-9 text-left">
-                                                            <a th:href="@{/document/approvalAppr1/{id}(id=${app1.getId()})}">
+                                                            <a th:href="@{/approval/mainApproval/approvalDocumentOrder/{id}(id=${app1.getId()}, status='request')}">
                                                                 <th:block th:if="${#strings.length(app1.getDocument().getTitle()) > 30}">
                                                                     <span th:text="${#strings.substring(app1.getDocument().getTitle(), 0, 30) + '...'}"></span>
                                                                 </th:block>
@@ -230,7 +232,11 @@
                                                         <td class="col-md-3" th:text="${app1.getRequestDate()}"></td>
 
                                                         <td class="col-md-9 text-left">
-                                                            <a th:href="@{/course/approval/{id}(id=${app1.getId()})}">
+<!--                                                            <a th:href="@{/course/approval/{id}(id=${app1.getId()})}">-->
+
+                                                            <th:block th:unless="${app1.getCourse().getCourseMaster().getId().equals('BC0104')}">
+                                                            <a th:href="@{/approval/mainRequest1/approvalCourse/{id}(id=${app1.getId()}, status='process')}">
+
                                                                 <th:block th:if="${#strings.length(app1.getCourse().getTitle()) > 30}">
                                                                     <span th:text="${#strings.substring(app1.getCourse().getTitle(), 0, 30) + '...'}"></span>
                                                                 </th:block>
@@ -238,6 +244,19 @@
                                                                     <span th:text="${app1.getCourse().getTitle()}"></span>
                                                                 </th:block>
                                                             </a>
+                                                            </th:block>
+
+                                                            <th:block th:if="${app1.getCourse().getCourseMaster().getId().equals('BC0104')}">
+                                                                <a th:href="@{/approval/mainRequest2/approvalCourse/{id}(id=${app1.getId()}, status='process')}">
+
+                                                                    <th:block th:if="${#strings.length(app1.getCourse().getTitle()) > 30}">
+                                                                        <span th:text="${#strings.substring(app1.getCourse().getTitle(), 0, 30) + '...'}"></span>
+                                                                    </th:block>
+                                                                    <th:block th:unless="${#strings.length(app1.getCourse().getTitle()) > 30}">
+                                                                        <span th:text="${app1.getCourse().getTitle()}"></span>
+                                                                    </th:block>
+                                                                </a>
+                                                            </th:block>
                                                         </td>
                                                         <!--                                                        <td class="col-md-2" th:text="${app1.getAccount().getName()}"></td>-->
                                                     </tr>
@@ -246,7 +265,9 @@
                                                         <td class="col-md-3" th:text="${app1.getRequestDate()}"></td>
 
                                                         <td class="col-md-9 text-left">
-                                                            <a th:href="@{/document/approval/{id}(id=${app1.getId()})}">
+<!--                                                            <a th:href="@{/document/approval/{id}(id=${app1.getId()})}">-->
+                                                            <a th:href="@{/approval/mainRequest2/approvalDocument/{id}(id=${app1.getId()}, status='report')}">
+
                                                                 <th:block th:if="${#strings.length(app1.getTitle()) > 30}">
                                                                     <span th:text="${#strings.substring(app1.getTitle(), 0, 30) + '...'}"></span>
                                                                 </th:block>
@@ -523,10 +544,10 @@
     <script>
 
         function popupPdfView(id) {
-            var width = 1000;
-            var height = 673;
+            var width = 1500;
+            var height = 900;
 
-            var title = "디티앤사노메딕스";
+            var title = "Employee training matrix";
             var url = "/info/matrix/pdfview/" + id;
             // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
             var popupX = (window.screen.width / 2) - (width / 2);
