@@ -37,12 +37,23 @@
         <!--Page content-->
         <!--===================================================-->
         <div id="page-content">
+            <div class="tab-base">
 
+                <!--Nav Tabs-->
+                <ul class="nav nav-tabs">
+                    <li th:classappend="${status.name() == 'REQUEST' ? 'active' : ''}">
+                        <a href="/employees/review?status=REQUEST">요청</a>
+                    </li>
+                    <li th:classappend="${status.name() == 'REVIEWED' ? 'active' : ''}">
+                        <a href="/employees/review?status=REVIEWED">완료</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
             <!-- Basic Data Tables -->
             <!--===================================================-->
                 <div class="panel">
                     <div class="panel-body">
-                        <div th:switch="${accounts}">
+                        <div th:switch="${trainingRecord}">
                             <div th:case="null">No customer yet!</div>
                             <div th:case="*">
                                 <hr class="table-head">
@@ -50,24 +61,29 @@
                                     <table id="customer-list-page" class="table" cellspacing="0" width="100%">
                                         <thead>
                                         <tr style="background: #FAFAFA;">
-                                            <th class="text-center col-sm-1">번호</th>
-                                            <th class="text-center col-sm-1">아이디</th>
-                                            <th class="text-center col-sm-1">부서</th>
-                                            <th class="text-center col-sm-2">이름</th>
-                                            <th class="text-center col-sm-2">CV</th>
-                                            <th class="text-center col-sm-2">JD</th>
-                                            <th class="text-center col-sm-1">Actions</th>
+                                            <th class="text-center">No.</th>
+                                            <th class="text-center">Name</th>
+                                            <th th:if="${status.name() == 'REQUEST'}" class="text-center">Date of Request</th>
+                                            <th th:if="${status.name() == 'REVIEWED'}" class="text-center">Date of Review</th>
+                                            <th class="text-center">Review Details</th>
+                                            <th class="text-center">Actions</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr th:each="account, index : ${accounts}">
+                                        <tr th:each="tr, index : ${trainingRecord}">
                                             <td th:text="${index.count}" class="text-center"></td>
-                                            <td th:text="${account.userId}" class="text-center"></td>
-                                            <td th:text="${account.orgDepart}" class="text-center"></td>
-                                            <td th:text="${account.engName}" class="text-center"></td>
-                                            <td class="text-center"><a href="/employees/cv"><i class="fa fa-external-link"></i></a> </td>
-                                            <td class="text-center"><a th:href="@{/employees/jd(id=${account.userId})}"><i class="fa fa-external-link"></i></a> </td>
-                                            <td class="text-center"></td>
+                                            <td th:text="${tr.account.engName}" class="text-center"></td>
+                                            <td th:if="${status.name() == 'REQUEST'}" th:text="${#dates.format(tr.requestDate, 'dd-MMM-yyyy')}" class="text-center"></td>
+                                            <td th:if="${status.name() == 'REVIEWED'}" th:text="${#dates.format(tr.dateOfReview, 'dd-MMM-yyyy')}" class="text-center"></td>
+                                            <td class="text-center">
+                                                <span th:if="${tr.curriculumVitae != null}"><i class="fa fa-check-square-o"></i> CV</span>
+                                                <span th:if="${tr.trainingRecordReviewJdList != null && tr.trainingRecordReviewJdList.size() > 0}"><i class="fa fa-check-square-o"></i> JD</span>
+                                                <span th:if="${tr.trainingRecord != null && tr.trainingRecord.sopFileName != null}"><i class="fa fa-check-square-o"></i> Training Lop(SOP)</span>
+                                                <span th:if="${tr.trainingRecord != null && tr.trainingRecord.tmFileName != null}"><i class="fa fa-check-square-o"></i> Training Lop(TM)</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <a class="btn btn-sm btn-info" th:if="${tr.status.name() == 'REQUEST'}" th:href="@{/employees/review/{id}(id=${tr.id})}"><i class="fa fa-eye"></i> Review</a>
+                                            </td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -78,6 +94,8 @@
                         </div><!--switch End -->
                     </div><!--panel-body End -->
                 </div><!-- panel End -->
+                </div>
+            </div>
         </div><!-- Page content End -->
     </div><!-- Content container End -->
 </th:block>

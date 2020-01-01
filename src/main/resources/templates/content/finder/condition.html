@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <!--Select2 [ OPTIONAL ]-->
+    <link th:href="@{/default/plugins/select2/css/select2.min.css}" rel="stylesheet">
+
+    <style>
+        .table-head {
+            background: #3A444E;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+            <div class="panel">
+                <div class="panel-heading">
+                    <h6 class="panel-title">
+                        CV 검색 조건을 선택해 주세요.
+                    </h6>
+                </div>
+                <div class="panel-body">
+                <form method="post" class="col-xs-12" th:object="${cvFindParam}">
+    <!--                <div class="input-group mar-btm">-->
+    <!--                    <input type="text" placeholder="Search" class="form-control input-lg">-->
+    <!--                    <span class="input-group-btn">-->
+    <!--                     <button class="btn btn-primary btn-lg" type="button">Search</button>-->
+    <!--                 </span>-->
+    <!--                </div>-->
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr class="bg-gray-light">
+                            <th>경력</th>
+                            <th>Therapheutic Area</th>
+                            <th>Indication</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                <input type="number" class="form-control" th:field="*{career}" step="1" min="1" max="50" required>
+                            </td>
+                            <td>
+                                <select class="form-control ta-list" th:field="*{ta}">
+                                    <option value="">--- All ---</option>
+                                    <option th:each="taa : ${taList}" th:value="${taa}" th:text="${taa}"></option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-control indication-list" th:field="*{indication}">
+                                    <optgroup th:each="taa : ${taList}" th:label="${taa}">
+                                        <option value="">--- All ---</option>
+                                        <option th:each="indication : ${indicationMap.get(taa)}" th:value="${indication}" th:text="${indication}"></option>
+                                    </optgroup>
+                                </select>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Search</button>
+                    </div>
+                </form>
+                </div>
+            </div>
+            <div class="panel" th:if="${(cvList == null || cvList.size() == 0) && cvFindParam.career > 0}">
+                <div class="panel-body text-center">
+                    ** 검색 결과가 존재하지 않습니다. **
+                </div>
+            </div>
+
+            <div class="panel" th:if="${cvList != null && cvList.size() > 0}">
+                <div class="panel-body">
+                    <div class="pad-hor mar-top">
+                        <h2 class="text-thin mar-no"><span th:text="${cvList.size()}"></span> results found</h2>
+<!--                        <small>Request time  (0.23 seconds)</small>-->
+                    </div>
+
+                    <hr>
+
+                    <ul class="list-group bord-no">
+                        <li class="list-group-item list-item-lg" th:each="cv, stat : ${cvList}">
+                            <div class="media-heading">
+<!--                                <span class="label label-primary v-middle">New</span>-->
+                                <a class="btn-link text-lg text-semibold v-middle" href="#"><span th:text="${cv.account.engName}"></span> </a>
+                            </div>
+<!--                            <p><a class="btn-link text-success" href="#">http://www.example.com/nifty/admin</a></p>-->
+                            <div>
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr class="bg-gray-light">
+                                        <th>No.</th>
+                                        <th>Company Name</th>
+                                        <th>Period</th>
+                                        <th>Clinical Trial Experience</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="ca, stat : ${cv.careerHistories}">
+                                        <td th:text="${stat.index + 1}"></td>
+                                        <td th:text="${ca.companyName}"></td>
+                                        <td th:text="|${#dates.format(ca.startDate, 'dd/MMM/yyyy')} ~ ${ca.present ? 'Present' : #dates.format(ca.endDate, 'dd/MMM/yyyy')}|"></td>
+                                        <td><i th:if="${ca.clinicalTrialExperience}" class="fa fa-check text-success"></i></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+    <script>
+        $("#ta").change(function(e) {
+            var val = $(this).val();
+            if(val) {
+                $("#indication").removeAttr("disabled");
+                var $sel = $("#indication");
+                $('optgroup', $sel).hide();//.addClass('bg-gray');
+                var optgroup = $('optgroup[label="' + val + '"]', $sel);
+                setTimeout(function () {
+                    optgroup.show();//.addClass('bg-gray');
+                    optgroup.find('option:eq(0)').attr("selected", "selected");
+                    $sel.trigger("change");
+                }, 300);
+            } else {
+                $("#indication").attr("disabled", "disabled");
+            }
+
+            // console.log($sel.find("option").eq(0));//.addClass('bg-gray').trigger("change");
+        }).trigger("change");
+    </script>
+</th:block>
+
+</html>
+
+
+
+

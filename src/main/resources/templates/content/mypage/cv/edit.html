@@ -101,7 +101,7 @@
                             <div class="pull-right pad-rgt mar-btm">
                                 <button type="submit" name="prev" class="previous btn btn-primary" th:value="${cv.pos - 1}" th:disabled="${cv.pos == 0}"><i class="fa fa-caret-left"></i> Previous</button>
                                 <button type="submit" name="next" class="next btn btn-primary" th:value="${cv.pos + 1}" th:disabled="${cv.pos == 5}">Next <i class="fa fa-caret-right"></i></button>
-                                <button type="submit" name="_submit" value="TEMP" class="finish btn btn-success" th:disabled="${cv.pos != 5}"><i class="fa fa-check"></i> Finish</button>
+                                <button type="submit" name="_submit" value="TEMP" class="btn btn-success" th:disabled="${cv.pos != 5}"><i class="fa fa-check"></i> Save & Preview</button>
                             </div>
 
                         </form>

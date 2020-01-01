@@ -54,20 +54,20 @@
                         <!--                        <div class="alert alert-info">-->
                         <!--                            <strong>알림!</strong> CV, JD, Training Log 정보가 존재합니다. 매니저에게 <span class="label label-purple">검토</span> 요청을 진행해 주세요.-->
                         <!--                        </div>-->
-                        <div class="alert alert-info" th:if="${trainingRecord == null || trainingRecord.sopFileName == null}">
+                        <div class="alert alert-info" th:if="${(trainingRecordReviewList == null || trainingRecordReviewList.size() == 0) && (trainingRecord == null || trainingRecord.sopFileName == null)}">
                             <strong>알림!</strong> Training Log(SOP) 정보가 존재 하지 않습니다. e-SOP 트레이닝 완료 후 Publish를 진행 해 주세요.
-                        </div>
-                        <div class="alert alert-info" th:if="${trainingRecord == null || trainingRecord.tmFileName == null}">
-                            <strong>알림!</strong> Training Log(TM) 정보가 존재 하지 않습니다. Publish 진행 해 주세요.
-                        </div>
-                        <div class="alert alert-danger" th:if="${cvList == null}">
-                            <strong>알림!</strong> Curriculum Vitae 를 작성해 주세요.
-                        </div>
-                        <div class="alert alert-danger" th:if="${jdList == null}">
-                            <strong>알림!</strong> Job Description 정보가 존재하지 않습니다.
-                        </div>
-                        <form method="post" th:action="@{/binder/review}">
-                        <button class="btn btn-primary" th:if="${jdList != null and cvList != null}"><i class="fa fa-send-o"></i> 검토 요청</button>
+                    </div>
+                    <div class="alert alert-info" th:if="${(trainingRecordReviewList == null || trainingRecordReviewList.size() == 0) && (trainingRecord == null || trainingRecord.tmFileName == null)}">
+                        <strong>알림!</strong> Training Log(TM) 정보가 존재 하지 않습니다. Publish 진행 해 주세요.
+                    </div>
+                    <div class="alert alert-danger" th:if="${(trainingRecordReviewList == null || trainingRecordReviewList.size() == 0) && cv == null}">
+                        <strong>알림!</strong> Curriculum Vitae 를 작성해 주세요.
+                    </div>
+                    <div class="alert alert-danger" th:if="${(trainingRecordReviewList == null || trainingRecordReviewList.size() == 0) && jdList == null}">
+                        <strong>알림!</strong> Job Description 정보가 존재하지 않습니다.
+                    </div>
+                    <form method="post" th:action="@{/binder/review}" th:if="${((trainingRecordReviewList == null || trainingRecordReviewList.size() == 0) && (jdList != null and cv != null && trainingRecord != null)) || (trainingRecordReviewList != null && trainingRecordReviewList.size() > 0 && trainingRecord != null)}">
+                        <button class="btn btn-primary" ><i class="fa fa-send-o"></i> 검토 요청</button>
                         </form>
                         <hr/>
                         <h3 class="text-center">Jeonghwan, Seo</h3>
@@ -87,7 +87,9 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr class="bg-gray-light">
-                                <th rowspan="2">Date of Review<br/>(DD-MMM-YYYY)</th><th rowspan="2">Review Details</th>
+                                <th rowspan="2">Date of Request<br/>(DD-MMM-YYYY)</th>
+                                <th rowspan="2">Date of Review<br/>(DD-MMM-YYYY)</th>
+                                <th rowspan="2">Review Details</th>
                                 <th colspan="2">Reviewed by</th>
                             </tr>
                             <tr class="bg-gray-light">
@@ -96,22 +98,31 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                            <tr th:if="${trainingRecordReviewList == null || trainingRecordReviewList.size() == 0}">
+                                <td colspan="5">Training Record 정보가 없습니다.</td>
+                            </tr>
+                            <tr th:each="tr, stat : ${trainingRecordReviewList}">
+                                <td th:text="${#dates.format(tr.requestDate, 'dd-MMM-yyyy')}"></td>
+                                <td th:text="${#dates.format(tr.dateOfReview, 'dd-MMM-yyyy')}"></td>
+                                <td>
+                                    <span th:if="${tr.curriculumVitae != null}"><i class="fa fa-check-square-o"></i> CV</span>
+                                    <span th:if="${tr.trainingRecordReviewJdList != null && tr.trainingRecordReviewJdList.size() > 0}"><i class="fa fa-check-square-o"></i> JD</span>
+                                    <span th:if="${tr.trainingRecord != null && tr.trainingRecord.sopFileName != null}"><i class="fa fa-check-square-o"></i> Training Lop(SOP)</span>
+                                    <span th:if="${tr.trainingRecord != null && tr.trainingRecord.tmFileName != null}"><i class="fa fa-check-square-o"></i> Training Lop(TM)</span>
+                                </td>
+                                <td class="text-center" th:text="${tr.reviewerName}"></td>
+                                <td class="text-center"><img th:src="${tr.signature}" height="25"/> </td>
                             </tr>
                             </tbody>
                         </table>
 
 
 
-                        <p class="text-main text-semibold">Digital Binder</p>
-                        <p>최초 모든(CV, JD, Log(SOP), Log(TM)) 완료 되면 검토 요청 가능!</p>
-                        <p>이후 입사 후 11개월 되는 시점 부터 검토 요청 가능</p>
-                        <p>Update 검토 인 경우는 변경된 항목(CV, JD...) 만 검토 하는지...</p>
-                        <p>예외) Audit 대응으로 SOP 트레이닝 이후 검토 요청?</p>
+<!--                        <p class="text-main text-semibold">Digital Binder</p>-->
+<!--                        <p>최초 모든(CV, JD, Log(SOP), Log(TM)) 완료 되면 검토 요청 가능!</p>-->
+<!--                        <p>이후 입사 후 11개월 되는 시점 부터 검토 요청 가능</p>-->
+<!--                        <p>Update 검토 인 경우는 변경된 항목(CV, JD...) 만 검토 하는지...</p>-->
+<!--                        <p>예외) Audit 대응으로 SOP 트레이닝 이후 검토 요청?</p>-->
 
                     </div>
                 </div>
@@ -128,10 +139,13 @@
                         <a href="/binder/jd">Job Description</a>
                     </li>
                     <li>
-                        <a data-toggle="tab" href="#demo-stk-rgt-tab-4">Training Log(SOP)</a>
+                        <a href="/binder/sop/trainingLog">Training Log(SOP)</a>
                     </li>
                     <li>
-                        <a data-toggle="tab" href="#demo-stk-rgt-tab-5">Training Log(TM)</a>
+                        <a href="/binder/tm/trainingLog">Training Log(TM)</a>
+                    </li>
+                    <li>
+                        <a href="#">Certification</a>
                     </li>
                 </ul>
             </div>

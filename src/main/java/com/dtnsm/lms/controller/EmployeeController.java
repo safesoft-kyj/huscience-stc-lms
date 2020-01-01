@@ -2,16 +2,19 @@ package com.dtnsm.lms.controller;
 
 import com.dtnsm.common.entity.*;
 import com.dtnsm.common.entity.constant.JobDescriptionStatus;
+import com.dtnsm.common.entity.constant.TrainingRecordStatus;
 import com.dtnsm.common.repository.JobDescriptionVersionRepository;
 import com.dtnsm.common.repository.SignatureRepository;
+import com.dtnsm.common.repository.TrainingRecordRepository;
 import com.dtnsm.common.repository.UserJobDescriptionRepository;
 import com.dtnsm.common.utils.Base64Utils;
 import com.dtnsm.lms.auth.UserService;
-import com.dtnsm.lms.domain.Account;
-import com.dtnsm.lms.domain.CurriculumVitae;
+import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.CurriculumVitaeStatus;
+import com.dtnsm.lms.domain.constant.TrainingRecordReviewStatus;
 import com.dtnsm.lms.properties.FileUploadProperties;
 import com.dtnsm.lms.repository.CurriculumVitaeRepository;
+import com.dtnsm.lms.repository.TrainingRecordReviewRepository;
 import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.JobDescriptionFileService;
 import com.dtnsm.lms.util.DateUtil;
@@ -19,12 +22,15 @@ import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 //import com.dtnsm.lms.xdocreport.JobDescriptionReportService;
 import com.dtnsm.lms.xdocreport.dto.JobDescriptionSign;
+import com.joestelmach.natty.generated.b;
 import com.querydsl.core.BooleanBuilder;
 import fr.opensagres.xdocreport.document.images.ByteArrayImageProvider;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -41,6 +47,7 @@ import java.io.OutputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -51,14 +58,15 @@ public class EmployeeController {
     private final UserJobDescriptionRepository userJobDescriptionRepository;
     private final SignatureRepository signatureRepository;
     private final JobDescriptionFileService jobDescriptionFileService;
-//    private final JobDescriptionReportService jobDescriptionReportService;
+    private final TrainingRecordReviewRepository trainingRecordReviewRepository;
+    private final TrainingRecordRepository trainingRecordRepository;
     private final CurriculumVitaeRepository curriculumVitaeRepository;
     private final FileUploadProperties prop;
     private PageInfo pageInfo = new PageInfo();
 
 
     @GetMapping("/employees/review")
-    public String getTrainingRecordReview(Model model) {
+    public String getTrainingRecordReviewList(@RequestParam(value = "status", required = false, defaultValue = "REQUEST") TrainingRecordReviewStatus status, Model model) {
         pageInfo.setParentId("m-team-dept");
         pageInfo.setParentTitle("Team/Department");
 
@@ -66,11 +74,33 @@ public class EmployeeController {
         pageInfo.setPageTitle("Training Record Review");
         model.addAttribute(pageInfo);
 
+        model.addAttribute("status", status);
+
         Optional<List<Account>> optionalAccounts = userService.findByParentUserId(SessionUtil.getUserId());
         if(optionalAccounts.isPresent()) {
-            model.addAttribute("accounts", optionalAccounts.get());
+            List<Account> accounts = optionalAccounts.get();
+            List<String> userIds = accounts.stream().map(Account::getUserId).collect(Collectors.toList());
+
+            QTrainingRecordReview qTrainingRecordReview = QTrainingRecordReview.trainingRecordReview;
+            BooleanBuilder builder = new BooleanBuilder();
+            builder.and(qTrainingRecordReview.account.userId.in(userIds));
+            builder.and(qTrainingRecordReview.status.eq(status));
+            model.addAttribute("trainingRecord", trainingRecordReviewRepository.findAll(builder, qTrainingRecordReview.id.desc()));
         }
         return "content/employee/list";
+    }
+
+    @GetMapping("/employees/review/{id}")
+    public String getTrainingRecordReview(@PathVariable("id") Integer id, Model model) {
+        pageInfo.setParentId("m-team-dept");
+        pageInfo.setParentTitle("Team/Department");
+
+        pageInfo.setPageId("m-emp");
+        pageInfo.setPageTitle("Training Record Review");
+        model.addAttribute(pageInfo);
+
+        model.addAttribute("trainingRecord", trainingRecordReviewRepository.findById(id).get());
+        return "content/employee/review";
     }
 
     @GetMapping("/employees/cv/{status}")
@@ -135,6 +165,45 @@ public class EmployeeController {
             model.addAttribute("userJobDescriptions", userRepository.getUserJobDescriptionByParentUserId(SessionUtil.getUserId(), status));
         }
         return "content/employee/jd/list";
+    }
+
+    @PostMapping("/employees/review/{id}")
+    @Transactional
+    public String updateTrainingRecordReview(@PathVariable("id") Integer id) {
+        Optional<Signature> optionalSignature = signatureRepository.findById(SessionUtil.getUserId());
+        TrainingRecordReview trainingRecordReview = trainingRecordReviewRepository.findById(id).get();
+        trainingRecordReview.setStatus(TrainingRecordReviewStatus.REVIEWED);
+        trainingRecordReview.setDateOfReview(new Date());
+        trainingRecordReview.setReviewerName(SessionUtil.getUserDetail().getUsername());
+        trainingRecordReview.setSignature(optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : null);
+
+        trainingRecordReviewRepository.save(trainingRecordReview);
+
+        if(!ObjectUtils.isEmpty(trainingRecordReview.getCurriculumVitae())) {
+            CurriculumVitae cv = trainingRecordReview.getCurriculumVitae();
+            cv.setReviewed(true);
+            curriculumVitaeRepository.save(cv);
+        }
+
+        if(!ObjectUtils.isEmpty(trainingRecordReview.getTrainingRecordReviewJdList())) {
+            for(TrainingRecordReviewJd jd : trainingRecordReview.getTrainingRecordReviewJdList()) {
+                UserJobDescription userJobDescription = jd.getUserJobDescription();
+                userJobDescription.setReviewed(true);
+
+                userJobDescriptionRepository.save(userJobDescription);
+            }
+        }
+
+        if(!ObjectUtils.isEmpty(trainingRecordReview.getTrainingRecord())) {
+            TrainingRecord trainingRecord = trainingRecordReview.getTrainingRecord();
+//            if(!ObjectUtils.isEmpty(trainingRecord.getSopFileName())) {
+            trainingRecord.setStatus(TrainingRecordStatus.REVIEWED);
+//            }
+
+            trainingRecordRepository.save(trainingRecord);
+        }
+
+        return "redirect:/employees/review";
     }
 
     @PostMapping("/employees/jd")

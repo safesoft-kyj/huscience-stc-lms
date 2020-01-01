@@ -107,6 +107,7 @@ public class CurriculumVitaeService {
             CVCareerHistory savedCareerHistory = cvCareerHistoryRepository.save(history);
             for(CVTeamDept cvTeamDept : history.getCvTeamDepts()) {
                 cvTeamDept.setCareerHistory(savedCareerHistory);
+                if(isNew) cvTeamDept.setId(null);
                 cvTeamDeptRepository.save(cvTeamDept);
             }
         }

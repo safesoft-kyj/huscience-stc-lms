@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -23,10 +24,14 @@ public class TrainingRecordReview extends AuditorEntity<String> implements Seria
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TR_REVIEW_SEQ_GENERATOR")
     private Integer id;
 
-    @Column(name = "username")
-    private String username;
+//    @Column(name = "username")
+//    private String username;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "username", referencedColumnName = "userId")
+    private Account account;
+
+    @ManyToOne
     @JoinColumn(name = "tr_id", referencedColumnName = "id")
     private TrainingRecord trainingRecord;
 
@@ -41,22 +46,22 @@ public class TrainingRecordReview extends AuditorEntity<String> implements Seria
     @Enumerated(EnumType.STRING)
     private TrainingRecordReviewStatus status;
 
-//    @Column(name = "request_date")
-//    private Date requestDate;
-//
-//    @Column(name = "cv_date_of_review")
-//    private Date cvDateOfReview;
-//
+    @Column(name = "request_date")
+    private Date requestDate;
+
+    @Column(name = "date_of_review")
+    private Date dateOfReview;
+
 //    @Column(name = "jd_date_of_review")
 //    private Date jdDateOfReview;
 //
 //    @Column(name = "tlog_date_of_review")
 //    private Date tlogDateOfReview;
 //
-//    @Column(name = "reviewer_name")
-//    private String reviewerName;
+    @Column(name = "reviewer_name")
+    private String reviewerName;
 //
-//    @Column(name = "signature", columnDefinition = "varchar(max)")
-//    private String signature;
+    @Column(name = "signature", columnDefinition = "varchar(max)")
+    private String signature;
 
 }
