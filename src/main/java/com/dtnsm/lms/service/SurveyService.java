@@ -23,6 +23,7 @@ public class SurveyService {
     @Autowired
     SurveyFileService surveyFileService;
 
+
      /*
         Survey
      */
@@ -41,11 +42,20 @@ public class SurveyService {
 
     public void deleteSurvey(Survey survey) {
 
-        surveyRepository.delete(survey);
+         try {
+             surveyRepository.delete(survey);
 
-        // 첨부파일 삭제
-        for(SurveyFile surveyFile : survey.getSurveyFiles()) {
-            surveyFileService.deleteFile(surveyFile);
+             // 첨부파일 삭제
+             for (SurveyFile surveyFile : survey.getSurveyFiles()) {
+                 surveyFileService.deleteFile(surveyFile);
+             }
+
+             // 문제 삭제
+             for (SurveyQuestion surveyQuestion : survey.getSurveyQuestions()) {
+                 surveyQuestionRepository.delete(surveyQuestion);
+             }
+         } catch (Exception ex) {
+             ex.printStackTrace();
         }
     }
 

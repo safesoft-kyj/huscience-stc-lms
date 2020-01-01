@@ -13,4 +13,7 @@ public interface LmsNotificationRepository extends JpaRepository<LmsNotification
 
     List<LmsNotification> findTop5ByAccount_UserIdOrderByCreatedDateDesc(String userId);
 
+    List<LmsNotification> findAllByCourse_IdAndAccount_UserId(Long courseId, String userId);
+
+    List<LmsNotification> findAllByCourse_Id(Long courseId);
 }

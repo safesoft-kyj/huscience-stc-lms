@@ -136,7 +136,7 @@
                                             [<span th:text="${border.getCourseMaster().getCourseName()}"></span>]
                                         </h5>
                                         <h4>
-                                            <a th:href="@{/course/view/{id}(id=${border.getId()})}" th:text="${border.getTitle()}"></a>
+                                            <a th:href="@{/info/request/add/{id}(id=${border.getId()})}" th:text="${border.getTitle()}"></a>
                                         </h4>
                                         <p>
                                             <i class="ti-calendar"></i>&nbsp;<span th:text="${'교육일수: '+border.getDay()+'일'}"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

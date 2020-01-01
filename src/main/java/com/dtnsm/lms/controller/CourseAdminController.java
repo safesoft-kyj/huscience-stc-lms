@@ -69,6 +69,9 @@ public class CourseAdminController {
     private CourseFileService fileService;
 
     @Autowired
+    LmsNotificationService lmsNotificationService;
+
+    @Autowired
     private DocumentService documentAccountService;
 
     private PageInfo pageInfo = new PageInfo();
@@ -542,14 +545,25 @@ public class CourseAdminController {
     }
 
     @GetMapping("/{typeId}/delete/{id}")
-    public String noticeDelete(@PathVariable("typeId") String typeId, @PathVariable("id") long id, HttpServletRequest request) {
+    public String noticeDelete(@PathVariable("typeId") String typeId, @PathVariable("id") long courseId, HttpServletRequest request) {
 
-        Course course = courseService.getCourseById(id);
+        Course course = courseService.getCourseById(courseId);
 
         // 과정 신청된 내역이 있으면 삭제 하지 않는다.
         if (course.getCourseAccountList().size() <= 0) {
 
-            courseService.delete(course);
+            try {
+
+                // 과정을 삭제할때는 로그까지 함께 삭제한다.
+                for (LmsNotification lmsNotification : lmsNotificationService.getAllByCourseIdNotification(courseId)) {
+                    lmsNotificationService.delete(lmsNotification);
+                }
+
+                courseService.delete(course);
+
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
         }
 
         // 이전 URL를 리턴한다.
@@ -581,7 +595,7 @@ public class CourseAdminController {
         Resource resource = fileService.loadFileAsResource(courseSection.getSaveName());
 
         // Try to determine file's content type
-        String contentType = mimeTypesMap.getContentType(courseSection.getSaveName());
+        String contentType = courseSection.getMimeType();
         // contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 
 
@@ -595,7 +609,7 @@ public class CourseAdminController {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +  newFileName + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" +  newFileName + "\"")
                 .body(resource);
     }
 

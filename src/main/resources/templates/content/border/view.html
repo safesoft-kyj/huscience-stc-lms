@@ -61,6 +61,10 @@
                                 <th><span th:text="#{label.createby}"></span></th>
                                 <td th:text="${border.getAccount().getName()}" class="text-left"></td>
                             </tr>
+                            <tr th:if="${#strings.equalsIgnoreCase(border.getIsNotice(), '1')}">
+                                <th><span>공지기간</span></th>
+                                <td th:text="${border.getFromDate() + ' ~ ' + border.getToDate()}" class="text-left"></td>
+                            </tr>
                             <tr>
                                 <th><span th:text="#{label.createdate}"></span></th>
                                 <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy-MM-dd HH:mm:ss')} : ${border.getCreatedDate()}" class="text-left"></td>

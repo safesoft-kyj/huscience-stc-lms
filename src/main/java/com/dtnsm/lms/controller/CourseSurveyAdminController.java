@@ -167,7 +167,7 @@ public class CourseSurveyAdminController {
 
         // 과정 신청된 내역이 있으면 삭제 하지 않는다.
         if (courseSurvey.getCourse().getCourseAccountList().size() <= 0) {
-            courseSurveyService.deleteQuiz(courseSurvey);
+            courseSurveyService.deleteSurvey(courseSurvey);
         }
 
         // 이전 URL를 리턴한다.
@@ -185,6 +185,8 @@ public class CourseSurveyAdminController {
         Course course = courseService.getCourseById(courseId);
         pageInfo.setPageTitle(String.format("<a href='/admin/course/%s'>%s</a> > %s", typeId , course.getCourseMaster().getCourseName(), "설문"));
 
+
+
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courseSurvey.getQuestions());
         model.addAttribute("courseId", courseSurvey.getCourse().getId());
@@ -199,6 +201,11 @@ public class CourseSurveyAdminController {
             , @RequestParam("surveyId") long surveyId, Model model) {
 
         CourseSurvey courseSurvey = courseSurveyService.getCourseSurveyById(surveyId);
+
+        boolean isSelf = false;
+        if (courseSurvey.getCourse().getCourseMaster().getId().equals("BC0101")) {
+            isSelf = true;
+        }
 
         List<ReportForm1> borders = reportMapperService.getSurveyReport(courseId);
 
@@ -220,7 +227,8 @@ public class CourseSurveyAdminController {
         model.addAttribute("shoutQuestions", shoutQuestions);
         model.addAttribute("shoutQuestionsAnswer", shoutQuestionsAnswer);
         model.addAttribute("courseId", courseId);
-        model.addAttribute("courseTitle", courseSurvey.getCourse().getTitle());
+        model.addAttribute("courseTitle", courseSurvey.getName().isEmpty() ? courseSurvey.getCourse().getTitle() : courseSurvey.getName());
+        model.addAttribute("isSelf", isSelf);
 
         return "admin/course/survey/report";
     }

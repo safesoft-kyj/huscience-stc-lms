@@ -31,7 +31,7 @@ public class LmsApplication {
 
         SpringApplication.run(LmsApplication.class, args);
 
-        CommonUtilities.applyLicense();
+//        CommonUtilities.applyLicense();
     }
 
     @Bean

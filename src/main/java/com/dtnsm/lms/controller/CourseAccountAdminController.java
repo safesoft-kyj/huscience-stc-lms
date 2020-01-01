@@ -8,6 +8,7 @@ import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
+import com.groupdocs.conversion.internal.c.a.cd.fileformats.cad.cadobjects.CadThumbnailImage;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -44,6 +45,9 @@ public class CourseAccountAdminController {
 
     @Autowired
     BinderLogService binderLogService;
+
+    @Autowired
+    LmsNotificationService lmsNotificationService;
 
     private PageInfo pageInfo = new PageInfo();
 
@@ -137,8 +141,15 @@ public class CourseAccountAdminController {
             , @PathVariable("courseId") Long courseId
             , @PathVariable("id") long docId, HttpServletRequest request) {
 
-        CourseAccount courseAccount = courseAccountService.getById(docId);
-        courseAccountService.delete(courseAccount);
+
+        try {
+
+            CourseAccount courseAccount = courseAccountService.getById(docId);
+            courseAccountService.delete(courseAccount);
+
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
 
         // 이전 URL를 리턴한다.
         String refUrl = request.getHeader("referer");

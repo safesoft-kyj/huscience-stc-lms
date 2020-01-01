@@ -63,16 +63,18 @@
                                 <table id="demo-dt-basic1" class="table" cellspacing="0" width="100%" style="margin-top:0">
                                     <tr>
                                         <td class="text-left" colspan="7">
-                                            <h3 class="title text-info"><span th:text="${courseTitle + ' 설문'}"></span></h3>
+                                            <h3 class="title text-info"><span th:text="${courseTitle}"></span></h3>
                                         </td>
                                     </tr>
                                     <th:block th:each="border, index : ${borders}">
+
                                         <tr>
                                             <td class="text-left" colspan="7">
                                                 <div th:text="${border.getId()}" th:id="${'question-' + index.index}" style="color:white"></div>
-                                                <h4 th:text="${'Q' + index.count + '. ' + border.getTitle()}"></h4>
+                                                <h4 th:utext="${'Q' + index.count + '. ' + #strings.replace(border.getTitle(), '{0}', '<span class=''text-info''>' + courseTitle + '</span>')}"></h4>
                                             </td>
                                         </tr>
+<!--                                        <th:block th:if="${border.getEx3()}">-->
                                         <tr>
                                             <td class="text-center" colspan="7">
                                                 <!-- Bar Chart -->
@@ -88,30 +90,51 @@
                                                 <!---------------------------------->
                                             </td>
                                         </tr>
+<!--                                        </th:block>-->
                                         <tr style="background: #FAFAFA;">
                                             <th class="text-center col-sm-1">구분</th>
-                                            <th class="text-center col-sm-1">매우만족</th>
-                                            <th class="text-center col-sm-1">만족</th>
-                                            <th class="text-center col-sm-1">보통</th>
-                                            <th class="text-center col-sm-1">불만족</th>
-                                            <th class="text-center col-sm-1">매우불만족</th>
+                                            <th:block th:unless="${isSelf}">
+                                                <th class="text-center col-sm-1">매우만족</th>
+                                                <th class="text-center col-sm-1">만족</th>
+                                                <th class="text-center col-sm-1">보통</th>
+                                                <th class="text-center col-sm-1">불만족</th>
+                                                <th class="text-center col-sm-1">매우불만족</th>
+                                            </th:block>
+                                            <th:block th:if="${isSelf}">
+                                                <th class="text-center col-sm-1">예</th>
+                                                <th class="text-center col-sm-1">아니오</th>
+                                            </th:block>
                                             <th class="text-center col-sm-1">총계</th>
                                         </tr>
                                         <tr>
-                                            <td rowspan="2" style="vertical-align: middle">만족도</td>
-                                            <td th:text="${border.getEx1() + '%'}"></td>
-                                            <td th:text="${border.getEx2() + '%'}"></td>
-                                            <td th:text="${border.getEx3() + '%'}"></td>
-                                            <td th:text="${border.getEx4() + '%'}"></td>
-                                            <td th:text="${border.getEx5() + '%'}"></td>
+
+                                            <th:block th:unless="${isSelf}">
+                                                <td rowspan="2" style="vertical-align: middle">만족도</td>
+                                                <td th:text="${border.getEx1() + '%'}"></td>
+                                                <td th:text="${border.getEx2() + '%'}"></td>
+                                                <td th:text="${border.getEx3() + '%'}"></td>
+                                                <td th:text="${border.getEx4() + '%'}"></td>
+                                                <td th:text="${border.getEx5() + '%'}"></td>
+                                            </th:block>
+                                            <th:block th:if="${isSelf}">
+                                                <td rowspan="2" style="vertical-align: middle">이해도</td>
+                                                <td th:text="${border.getEx1() + '%'}"></td>
+                                                <td th:text="${border.getEx5() + '%'}"></td>
+                                            </th:block>
                                             <td th:text="${border.getTotal()}" rowspan="2" style="vertical-align: middle"></td>
                                         </tr>
                                         <tr>
-                                            <td th:text="${border.getEx6()}"></td>
-                                            <td th:text="${border.getEx7()}"></td>
-                                            <td th:text="${border.getEx8()}"></td>
-                                            <td th:text="${border.getEx9()}"></td>
-                                            <td th:text="${border.getEx10()}"></td>
+                                            <th:block th:unless="${isSelf}">
+                                                <td th:text="${border.getEx6()}"></td>
+                                                <td th:text="${border.getEx7()}"></td>
+                                                <td th:text="${border.getEx8()}"></td>
+                                                <td th:text="${border.getEx9()}"></td>
+                                                <td th:text="${border.getEx10()}"></td>
+                                            </th:block>
+                                            <th:block th:if="${isSelf}">
+                                                <td th:text="${border.getEx6()}"></td>
+                                                <td th:text="${border.getEx10()}"></td>
+                                            </th:block>
                                         </tr>
                                     </th:block>
                                     <th:block th:each="shoutQuestion, index : ${shoutQuestions}">
@@ -157,59 +180,128 @@
     <script th:inline="javascript">
         var row_cnt = [[${borders.size()}]];
         var course_id = [[${courseId}]];
+        var isSelf = [[${isSelf}]];
+
 
         $( document ).ready(function() {
 
 
+            if (isSelf) {
 
 
+                for (var i = 0; i < row_cnt; i++) {
 
-            for(var i=0; i<row_cnt; i++ ) {
+
+                    var question_id = $('#question-' + i).text();
 
 
-                var question_id = $('#question-' + i).text();
+                    var json = (function () {
+                        var json2 = null;
 
-                // 거래처별 수주 현황
-                var json = (function () {
-                    var json2 = null;
+                        var allData = {"courseId": course_id, "questionId": question_id};
 
-                    var allData = {"courseId": course_id, "questionId": question_id};
+                        $.ajax({
+                            'async': false,
+                            'global': false,
+                            'type': 'POST',
+                            'url': '/report/surveyChartData',
+                            'data': allData,
+                            'dataType': "json",
+                            'success': function (data) {
+                                json2 = data;
+                            }
+                        });
+                        return json2;
+                    })
+                    ();
 
-                    $.ajax({
-                        'async': false,
-                        'global': false,
-                        'type': 'POST',
-                        'url': '/report/surveyChartData',
-                        'data': allData,
-                        'dataType': "json",
-                        'success': function (data) {
-                            json2 = data;
+
+                    var chartJsonArray = new Array();
+
+                    $.each(json, function(key, value){
+
+                        var chartJsonObject = new Object();
+
+                        // 0:예, 4:아니오
+                        if (key == 0 || key == 4) {
+                            chartJsonObject.title = key == 0 ? "예" : "아니오";
+                            chartJsonObject.ex1 = value.ex1;
+                            chartJsonObject.ex2 = value.ex2;
+                            chartJsonArray.push(chartJsonObject);
                         }
                     });
-                    return json2;
-                })
-                ();
 
-                // MORRIS BAR CHART
-                // =================================================================
-                // Require MorrisJS Chart
-                // -----------------------------------------------------------------
-                // http://morrisjs.github.io/morris.js/
-                // =================================================================
-                Morris.Bar({
-                    element: 'demo-morris-bar' + i,
-                    data: json,
-                    xkey: 'title',
-                    ykeys: ['ex2'],
-                    labels: ['만족도'],
-                    gridEnabled: true,
-                    gridLineColor: 'rgba(0,0,0,.1)',
-                    gridTextColor: '#8f9ea6',
-                    gridTextSize: '11px',
-                    barColors: ['#1abc9c'],
-                    resize: true,
-                    hideHover: 'auto'
-                });
+                    // MORRIS BAR CHART
+                    // =================================================================
+                    // Require MorrisJS Chart
+                    // -----------------------------------------------------------------
+                    // http://morrisjs.github.io/morris.js/
+                    // =================================================================
+                    Morris.Bar({
+                        element: 'demo-morris-bar' + i,
+                        data: chartJsonArray,
+                        xkey: 'title',
+                        ykeys: ['ex2'],
+                        labels: ['이해도'],
+                        gridEnabled: true,
+                        gridLineColor: 'rgba(0,0,0,.1)',
+                        gridTextColor: '#8f9ea6',
+                        gridTextSize: '11px',
+                        barColors: ['#1abc9c'],
+                        resize: true,
+                        hideHover: 'auto'
+                    });
+                }
+
+            } else {
+
+                for (var i = 0; i < row_cnt; i++) {
+
+
+                    var question_id = $('#question-' + i).text();
+
+
+                    var json = (function () {
+                        var json2 = null;
+
+                        var allData = {"courseId": course_id, "questionId": question_id};
+
+                        $.ajax({
+                            'async': false,
+                            'global': false,
+                            'type': 'POST',
+                            'url': '/report/surveyChartData',
+                            'data': allData,
+                            'dataType': "json",
+                            'success': function (data) {
+                                json2 = data;
+                            }
+                        });
+                        return json2;
+                    })
+                    ();
+
+                    // MORRIS BAR CHART
+                    // =================================================================
+                    // Require MorrisJS Chart
+                    // -----------------------------------------------------------------
+                    // http://morrisjs.github.io/morris.js/
+                    // =================================================================
+                    Morris.Bar({
+                        element: 'demo-morris-bar' + i,
+                        data: json,
+                        xkey: 'title',
+                        ykeys: ['ex2'],
+                        labels: ['만족도'],
+                        gridEnabled: true,
+                        gridLineColor: 'rgba(0,0,0,.1)',
+                        gridTextColor: '#8f9ea6',
+                        gridTextSize: '11px',
+                        barColors: ['#1abc9c'],
+                        resize: true,
+                        hideHover: 'auto'
+                    });
+                }
             }
         });
 

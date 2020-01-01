@@ -81,6 +81,8 @@ public class CourseScheduler {
 
         for(Course course : courseList) {
 
+            int status = 0;
+
             // 부서별 교육(BC0103), 외부교육(BC0104) 은 신청기간이 없음으로 처리하지 않는다.
             if(course.getCourseMaster().getId().equals("BC0101") || course.getCourseMaster().getId().equals("BC0102")) {
 
@@ -90,13 +92,10 @@ public class CourseScheduler {
                 Date toDate = DateUtil.getStringToDate(course.getToDate());
                 Date toDay = DateUtil.getToday();
 
-
                 int todayReqFromCompare = toDay.compareTo(requestFromDate);  // 1 : 현재일이 크다, -1 : 요청시작일이 크다
                 int todayReqToCompare = toDay.compareTo(requestToDate);      // 1 : 현재일이 크다ㅣ
                 int todayFromCompare = toDay.compareTo(fromDate);
                 int todayToCompare = toDay.compareTo(toDate);
-
-                int status = 0;
 
                 if (todayReqFromCompare < 0)
                     status = 1; // 신청기간이전 : 신청대기
@@ -121,8 +120,52 @@ public class CourseScheduler {
                     course.setStatus(status);
                     course = courseService.save(course);
                 }
-            }else {
-                // 부서별 교육(BC0103), 외부교육(BC0104) 은 신청기간이 없음
+            } else if(course.getCourseMaster().getId().equals("BC0103")) {  // 부서별 교육(BC0103)
+
+                status = 0; // 상태값이 없음
+                if (course.getStatus() != status) {
+
+                    course.setStatus(status);
+                    course = courseService.save(course);
+                }
+
+            } else if(course.getCourseMaster().getId().equals("BC0104")) {  // 외부교육(BC0104)
+
+                status = 2; //교육신청상태
+                if (course.getStatus() != status) {
+
+                    course.setStatus(status);
+                    course = courseService.save(course);
+                }
+            }
+
+//            }else {
+                // 부서별 교육(BC0103), 외부교육(BC0104) 은 신청기간이 없음으로 상태값을 교육신청 상태로 변경한다.
+
+
+
+//                if (todayFromCompare < 0) {
+//                    status = 3; // 신청이후 교육 대기 : 교육대기
+//                } else if (todayFromCompare >= 0 && todayToCompare <= 0) {
+//                    status = 4; // 교육기간중 : 교육중
+//                } else if (todayToCompare > 0) {
+//                    status = 5; // 교육종료
+//                }
+//
+//                // 요청시작일자 이전이면 신청대기
+//                // 요청일자 사이이면 교육신청
+//                // 요청종료일 이후 이면서 교육시작일자 이전이면 교육대기
+//                // 교육일자 사이이면 교육중
+//                // 교육일자 이후이면 교육종료
+//
+                // 부서별 교육 및 외부교육은 신청 가능 상태로 변경한다
+//                if (course.getStatus() != status) {
+//
+//
+//                    course.setStatus(2);
+//                    course = courseService.save(course);
+//                }
+
 
 
 //                Date fromDate = DateUtil.getStringToDate(course.getFromDate());
@@ -153,7 +196,7 @@ public class CourseScheduler {
 //                    course.setStatus(status);
 //                    course = courseService.save(course);
 //                }
-            }
+//            }
         }
     }
 
@@ -198,7 +241,7 @@ public class CourseScheduler {
         }
     }
 
-    // 매일 2시 30분에 실행
+    // 매일 2시 40분에 실행
     // 외부교육 ToDate 익일 새벽에 외부교육참석보고서 작성 Alarm 발송 대상자 조회
     @Scheduled(cron = "0 40 2 * * *")
     public void sendCourseToDateAlarm() {

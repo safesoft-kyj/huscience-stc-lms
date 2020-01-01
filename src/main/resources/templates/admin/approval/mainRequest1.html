@@ -105,7 +105,7 @@
                                                     <span th:text="${border.getCourse().getCourseMaster().getCourseName()}"></span>&nbsp;
                                                 </td>
                                                 <td>
-                                                    <a th:href="@{/course/approval/{id}(id=${border.getId()})}">
+                                                    <a th:href="@{/admin/approval/{requestName}/approvalCourse/{id}(requestName=${requestName}, status=${status}, id=${border.getId()})}">
                                                         <span th:text="${border.getCourse().getTitle()}"></span>
                                                     </a>
                                                 </td>

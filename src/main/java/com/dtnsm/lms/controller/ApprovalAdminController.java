@@ -4,6 +4,8 @@ import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.domain.Document;
 import com.dtnsm.lms.service.CourseAccountOrderService;
 import com.dtnsm.lms.service.CourseAccountService;
+import com.dtnsm.lms.service.DocumentService;
+import com.dtnsm.lms.util.GlobalUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
 
@@ -27,6 +30,9 @@ public class ApprovalAdminController {
 
     @Autowired
     CourseAccountOrderService courseAccountOrderService;
+
+    @Autowired
+    DocumentService documentService;
 
     private PageInfo pageInfo = new PageInfo();
 
@@ -96,6 +102,7 @@ public class ApprovalAdminController {
 
         model.addAttribute(pageInfo);
         model.addAttribute("status", fStatus);
+        model.addAttribute("requestName", "mainRequest1");
         // 요청중 문서
         model.addAttribute("requestCount1", requestCount1);
         // 진행중 문서
@@ -168,6 +175,7 @@ public class ApprovalAdminController {
         }
         model.addAttribute(pageInfo);
         model.addAttribute("status", fStatus);
+        model.addAttribute("requestName", "mainRequest2");
         // 요청중 문서
         model.addAttribute("requestCount1", requestCount1);
         // 진행중 문서
@@ -180,6 +188,42 @@ public class ApprovalAdminController {
         model.addAttribute("borders2", courseAccountList2);
 
         return "admin/approval/mainRequest2";
+    }
+
+
+    // 교육신청 결재현황
+    @GetMapping("/{requestName}/approvalCourse/{id}")
+    public String approvalCourse(@PathVariable("requestName") String requestName
+            , @RequestParam(value = "status", required = false, defaultValue = "all") String status
+            , @PathVariable("id") long id, Model model) {
+
+        CourseAccount courseAccount = courseAccountService.getById(id);
+
+        pageInfo.setPageTitle(courseAccount.getCourse().getCourseMaster().getCourseName());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("course", courseAccount.getCourse());
+        model.addAttribute("courseAccount", courseAccount);
+
+
+        return "admin/approval/approvalCourse";
+    }
+
+    // 참석보고서 결재현황
+    @GetMapping("/{requestName}/approvalDocument/{id}")
+    public String approvalDocument(@PathVariable("requestName") String requestName
+            , @RequestParam(value = "status", required = false, defaultValue = "all") String status
+            , @PathVariable("id") long docId, Model model) {
+
+        Document document = documentService.getById(docId);
+
+        pageInfo.setPageTitle(document.getTemplate().getTitle());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("document", document);
+//        model.addAttribute("signature", GlobalUtil.getSignature(signatureRepository, SessionUtil.getUserId()));
+
+        return "admin/approval/approvalDocument";
     }
 
     // 진행함

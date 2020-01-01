@@ -100,7 +100,7 @@
                         <div class="panel" th:id="${question.getId()}">
                             <div class="panel-body">
                                 <div class="row">
-                                    <div th:text="${index.count + '. ' + question.getQuestion()}"></div>
+                                    <div th:utext="${index.count + '. ' + #strings.replace(question.getQuestion(), '{0}', '<span class=''text-info''>' + question.getCourseSurvey().getName() + '</span>')}"></div>
                                 </div>
                                 <th:block th:if="${#strings.equalsIgnoreCase(question.getSurveyGubun(), 'S')}">
                                     <div class="row">

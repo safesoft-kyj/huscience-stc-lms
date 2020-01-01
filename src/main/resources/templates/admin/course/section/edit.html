@@ -122,7 +122,7 @@
                                             <tbody>
                                             <tr th:each="uploadFile : ${courseSection.getSectionFiles()}">
                                                 <td>
-                                                    <a th:href="@{/admin/course/section/download-file/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>
+                                                    <a th:href="@{/admin/course/{typeId}/{courseId}/section/download-file/{id}(typeId=${typeId}, courseId=${courseId}, id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>
                                                 </td>
                                                 <td th:text="${uploadFile.getSize()}" class="text-center"></td>
                                                 <td class="text-center col-sm-2">

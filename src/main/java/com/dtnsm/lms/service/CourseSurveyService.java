@@ -39,6 +39,23 @@ public class CourseSurveyService {
         surveyRepository.delete(quiz);
     }
 
+    public void deleteSurvey(CourseSurvey courseSurvey) {
+
+
+        try {
+            surveyRepository.delete(courseSurvey);
+
+            // 문제 삭제
+            for (CourseSurveyQuestion courseSurveyQuestion : courseSurvey.getQuestions()) {
+                questionRepository.delete(courseSurveyQuestion);
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
     public void deleteSurvey(Long id) {
         surveyRepository.delete(getCourseSurveyById(id));
     }
