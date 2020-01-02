@@ -96,7 +96,7 @@
             <div class="panel" th:if="${cvList != null && cvList.size() > 0}">
                 <div class="panel-body">
                     <div class="pad-hor mar-top">
-                        <h2 class="text-thin mar-no"><span th:text="${cvList.size()}"></span> results found</h2>
+                        <h3 class="text-thin mar-no"><span th:text="${cvList.size()}"></span> results found</h3>
 <!--                        <small>Request time  (0.23 seconds)</small>-->
                     </div>
 
@@ -106,7 +106,7 @@
                         <li class="list-group-item list-item-lg" th:each="cv, stat : ${cvList}">
                             <div class="media-heading">
 <!--                                <span class="label label-primary v-middle">New</span>-->
-                                <a class="btn-link text-lg text-semibold v-middle" href="#"><span th:text="${cv.account.engName}"></span> </a>
+                                <a class="btn-link text-lg text-semibold v-middle" href="#"><span th:text="|${cv.account.orgDepart}/${cv.account.engName}|"></span> </a>
                             </div>
 <!--                            <p><a class="btn-link text-success" href="#">http://www.example.com/nifty/admin</a></p>-->
                             <div>

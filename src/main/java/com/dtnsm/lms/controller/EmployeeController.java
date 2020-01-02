@@ -21,6 +21,7 @@ import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 //import com.dtnsm.lms.xdocreport.JobDescriptionReportService;
+import com.dtnsm.lms.xdocreport.JobDescriptionReportService;
 import com.dtnsm.lms.xdocreport.dto.JobDescriptionSign;
 import com.joestelmach.natty.generated.b;
 import com.querydsl.core.BooleanBuilder;
@@ -61,6 +62,7 @@ public class EmployeeController {
     private final TrainingRecordReviewRepository trainingRecordReviewRepository;
     private final TrainingRecordRepository trainingRecordRepository;
     private final CurriculumVitaeRepository curriculumVitaeRepository;
+    private final JobDescriptionReportService jobDescriptionReportService;
     private final FileUploadProperties prop;
     private PageInfo pageInfo = new PageInfo();
 
@@ -254,10 +256,9 @@ public class EmployeeController {
                             .empSign(StringUtils.isEmpty(userJobDescription.getAgreeSign()) ? null : new ByteArrayImageProvider(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(userJobDescription.getAgreeSign()))))
                             .mngSign(StringUtils.isEmpty(userJobDescription.getApprovedSign()) ? null : new ByteArrayImageProvider(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(userJobDescription.getApprovedSign())))).build();
 
-                    String pdfOutput = prop.getBinderJdUploadDir() + "/JD_" + userJobDescription.getId() + ".pdf";
+//                    String pdfOutput = prop.getBinderJdUploadDir() + "/JD_" + userJobDescription.getId() + ".pdf";
 
-                    //TODO 11111111111111
-//                    jobDescriptionReportService.generateReport(jobDescriptionSign, resource.getInputStream(), pdfOutput, id);
+                    jobDescriptionReportService.generateReport(jobDescriptionSign, resource.getInputStream(), id);
                 } catch (Exception e) {
                     System.err.println(e);
                 }

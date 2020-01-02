@@ -479,7 +479,7 @@ public class MyPageCvJdController {
     }
 
     @PostMapping("/cv/{id}/preview")
-    public String publishUpdate(@PathVariable("id") Integer id) throws Exception {
+    public String published(@PathVariable("id") Integer id) throws Exception {
         CurriculumVitae cv = curriculumVitaeRepository.findById(id).get();
         cv.setStatus(CurriculumVitaeStatus.CURRENT);
         CurriculumVitae savedCV = curriculumVitaeRepository.save(cv);
