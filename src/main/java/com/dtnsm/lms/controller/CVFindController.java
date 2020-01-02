@@ -34,8 +34,11 @@ public class CVFindController {
 
     @PostConstruct
     public void init() {
-        pageInfo.setParentId("m-finder");
-        pageInfo.setParentTitle("CV Finder");
+        pageInfo.setParentId("m-emp");
+        pageInfo.setParentTitle("Employees");
+
+        pageInfo.setPageId("m-finder");
+        pageInfo.setPageTitle("CV Finder");
     }
 
     @GetMapping("/finder")

@@ -10,10 +10,14 @@ import com.dtnsm.common.repository.UserJobDescriptionRepository;
 import com.dtnsm.common.utils.Base64Utils;
 import com.dtnsm.lms.data.CVCodeList;
 import com.dtnsm.lms.domain.*;
+import com.dtnsm.lms.domain.constant.BinderAlarmType;
 import com.dtnsm.lms.domain.constant.CurriculumVitaeStatus;
 import com.dtnsm.lms.properties.FileUploadProperties;
 import com.dtnsm.lms.repository.CurriculumVitaeRepository;
+import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.CurriculumVitaeService;
+import com.dtnsm.lms.service.Mail;
+import com.dtnsm.lms.service.MailService;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.DocumentConverter;
 import com.dtnsm.lms.util.PageInfo;
@@ -22,7 +26,6 @@ import com.dtnsm.lms.validator.*;
 import com.dtnsm.lms.xdocreport.CurriculumVitaeReportService;
 import com.dtnsm.lms.xdocreport.dto.*;
 import com.querydsl.core.BooleanBuilder;
-import fr.opensagres.xdocreport.document.images.ByteArrayImageProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -36,17 +39,18 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.util.WebUtils;
 
-
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 //import com.dtnsm.lms.xdocreport.CurriculumVitaeReportService;
 
@@ -70,6 +74,8 @@ public class MyPageCvJdController {
     private final DocumentConverter documentConverter;
     private final CVCodeList cvCodeList;
     private final CurriculumVitaeReportService curriculumVitaeReportService;
+    private final UserRepository userRepository;
+    private final MailService mailService;
 
     private PageInfo pageInfo = new PageInfo();
 
@@ -728,6 +734,17 @@ public class MyPageCvJdController {
             userJobDescriptionRepository.save(userJobDescription);
 
             //TODO Job Description (동의 알림)
+            Account account = userRepository.findByUserId(userJobDescription.getUsername());
+            if(!StringUtils.isEmpty(account.getParentUserId())) {
+                String toEmail = userRepository.findByUserId(account.getParentUserId()).getEmail();
+                log.info("매니저에게 JD 동의 알림 메일 전송 : {}", toEmail);
+                Mail mail = new Mail();
+                mail.setEmail(toEmail);
+                mailService.send(mail, BinderAlarmType.JD_AGREE);
+            } else {
+                log.error("매니지 지정이 되어 있지 않습니다.");
+            }
+
         }
 
         return "redirect:/mypage/jd/approved";

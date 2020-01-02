@@ -28,6 +28,17 @@
             </if>
         ) aa group by id
     </select>
+
+    <select id="findUpdateBinderUsers" parameterType="int" resultType="string">
+        select username from(
+            SELECT
+                username,
+                datediff(day, max(convert(date, case when date_of_review is null then request_date else date_of_review end)), convert(date, getdate())) diff
+            FROM el_training_record_review
+            group by username
+        ) a
+        where diff = #{day}
+    </select>
 <!--    <select id="findCV" parameterType="com.dtnsm.lms.mybatis.dto.CVFindParam" resultType="com.dtnsm.lms.mybatis.dto.CVFindResult">-->
 <!--        select-->
 <!--            cv.id,-->

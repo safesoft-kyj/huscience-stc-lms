@@ -10,6 +10,7 @@ import com.dtnsm.common.repository.UserJobDescriptionRepository;
 import com.dtnsm.common.utils.Base64Utils;
 import com.dtnsm.lms.auth.UserService;
 import com.dtnsm.lms.domain.*;
+import com.dtnsm.lms.domain.constant.BinderAlarmType;
 import com.dtnsm.lms.domain.constant.CurriculumVitaeStatus;
 import com.dtnsm.lms.domain.constant.TrainingRecordReviewStatus;
 import com.dtnsm.lms.properties.FileUploadProperties;
@@ -17,6 +18,8 @@ import com.dtnsm.lms.repository.CurriculumVitaeRepository;
 import com.dtnsm.lms.repository.TrainingRecordReviewRepository;
 import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.JobDescriptionFileService;
+import com.dtnsm.lms.service.Mail;
+import com.dtnsm.lms.service.MailService;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
@@ -27,6 +30,7 @@ import com.joestelmach.natty.generated.b;
 import com.querydsl.core.BooleanBuilder;
 import fr.opensagres.xdocreport.document.images.ByteArrayImageProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -49,9 +53,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class EmployeeController {
     private final UserService userService;
     private final UserRepository userRepository;
@@ -64,6 +70,7 @@ public class EmployeeController {
     private final CurriculumVitaeRepository curriculumVitaeRepository;
     private final JobDescriptionReportService jobDescriptionReportService;
     private final FileUploadProperties prop;
+    private final MailService mailService;
     private PageInfo pageInfo = new PageInfo();
 
 
@@ -73,7 +80,7 @@ public class EmployeeController {
         pageInfo.setParentTitle("Team/Department");
 
         pageInfo.setPageId("m-emp");
-        pageInfo.setPageTitle("Training Record Review");
+        pageInfo.setPageTitle("Digital Binder Review");
         model.addAttribute(pageInfo);
 
         model.addAttribute("status", status);
@@ -98,7 +105,7 @@ public class EmployeeController {
         pageInfo.setParentTitle("Team/Department");
 
         pageInfo.setPageId("m-emp");
-        pageInfo.setPageTitle("Training Record Review");
+        pageInfo.setPageTitle("Digital Binder Review");
         model.addAttribute(pageInfo);
 
         model.addAttribute("trainingRecord", trainingRecordReviewRepository.findById(id).get());
@@ -126,6 +133,7 @@ public class EmployeeController {
         return "content/employee/cv/list";
     }
 
+    @Deprecated
     @PostMapping("employees/cv/approval")
     public String approvalEmployeeCV(@RequestParam("id") Integer id) {
         Optional<CurriculumVitae> optionalCurriculumVitae = curriculumVitaeRepository.findById(id);
@@ -137,7 +145,7 @@ public class EmployeeController {
             cv.setStatus(CurriculumVitaeStatus.CURRENT);
             curriculumVitaeRepository.save(cv);
 
-            //TODO CV (승인 알림)
+            //TODO CV (승인 알림) :: CV 단독 검토 기능 제거
         }
 
         return "redirect:/employees/cv/current";
@@ -205,17 +213,45 @@ public class EmployeeController {
             trainingRecordRepository.save(trainingRecord);
         }
 
+        //TODO Review 완료
+        String toEmail = trainingRecordReview.getAccount().getEmail();
+        log.info("사용자에게 Binder 검토 완료 메일 전송 : {}", toEmail);
+        Mail mail = new Mail();
+        mail.setEmail(toEmail);
+        mailService.send(mail, BinderAlarmType.BINDER_REVIEWED);
         return "redirect:/employees/review";
     }
 
     @PostMapping("/employees/jd")
     public String assignEmployeeJD(UserJobDescription userJobDescription) {
-        userJobDescription.setEmployeeName(userRepository.findByUserId(userJobDescription.getUsername()).getEngName());
+        Account account = userRepository.findByUserId(userJobDescription.getUsername());
+        userJobDescription.setEmployeeName(account.getEngName());
         userJobDescription.setStatus(JobDescriptionStatus.ASSIGNED);
         userJobDescriptionRepository.save(userJobDescription);
 
         //TODO 알림 전송(JD 배정 알림)
+        String toEmail = account.getEmail();
+        log.info("사용자에게 JD 배정 알림 메일 전송 : {}", toEmail);
+        Mail mail = new Mail();
+        mail.setEmail(toEmail);
+        mailService.send(mail, BinderAlarmType.JD_ASSIGNED);
         return "redirect:/employees/jd/approved";
+    }
+
+    private String getManagerJobTitle(String userId) {
+        BooleanBuilder builder = new BooleanBuilder();
+        QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
+        builder.and(qUserJobDescription.username.eq(userId));
+        builder.and(qUserJobDescription.status.eq(JobDescriptionStatus.APPROVED));
+        Iterable<UserJobDescription> userJobDescriptions = userJobDescriptionRepository.findAll(builder);
+        if(ObjectUtils.isEmpty(userJobDescriptions)) {
+            log.error("매니저 Job Description 정보가 없습니다. {}", userId);
+            return "N/A";
+        } else {
+            return StreamSupport.stream(userJobDescriptions.spliterator(), false)
+                    .map(u -> u.getJobDescriptionVersion().getJobDescription().getTitle())
+                    .collect(Collectors.joining(","));
+        }
     }
 
     @PostMapping("employees/jd/approval")
@@ -228,7 +264,7 @@ public class EmployeeController {
             userJobDescription.setStatus(JobDescriptionStatus.APPROVED);
             userJobDescription.setApprovedSign(optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "");
             userJobDescription.setManagerName(SessionUtil.getUserDetail().getUser().getEngName());
-            userJobDescription.setManagerTitle(StringUtils.isEmpty(SessionUtil.getUserDetail().getUser().getComPosition()) ? "N/A" : SessionUtil.getUserDetail().getUser().getComPosition());//TODO Job Title 확인 필요
+            userJobDescription.setManagerTitle(getManagerJobTitle(SessionUtil.getUserId()));
 
             /**
              *  같은 JD의 이전 버전을 Superseded 상태로 변경한다.
@@ -265,6 +301,13 @@ public class EmployeeController {
             }).run();
 
             //TODO Job Description (승인 알림)
+            Account account = userRepository.findByUserId(userJobDescription.getUsername());
+            String toEmail = account.getEmail();
+            log.info("사용자에게 JD 승인 알림 메일 전송 : {}", toEmail);
+            Mail mail = new Mail();
+            mail.setEmail(toEmail);
+            mailService.send(mail, BinderAlarmType.JD_APPROVED);
+
         }
 
         return "redirect:/employees/jd/approved";

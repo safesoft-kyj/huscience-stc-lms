@@ -9,4 +9,6 @@ import java.util.List;
 @Mapper
 public interface CVFinderMapper {
     List<CVFindResult> findCV(CVFindParam param);
+
+    List<String> findUpdateBinderUsers(int day);
 }

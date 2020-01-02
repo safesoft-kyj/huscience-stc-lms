@@ -9,19 +9,25 @@ import com.dtnsm.common.entity.constant.TrainingRecordStatus;
 import com.dtnsm.common.repository.TrainingRecordRepository;
 import com.dtnsm.common.repository.UserJobDescriptionRepository;
 import com.dtnsm.lms.domain.*;
+import com.dtnsm.lms.domain.constant.BinderAlarmType;
 import com.dtnsm.lms.domain.constant.CurriculumVitaeStatus;
 import com.dtnsm.lms.domain.constant.TrainingRecordReviewStatus;
 import com.dtnsm.lms.repository.CurriculumVitaeRepository;
 import com.dtnsm.lms.repository.TrainingRecordReviewJdRepository;
 import com.dtnsm.lms.repository.TrainingRecordReviewRepository;
+import com.dtnsm.lms.repository.UserRepository;
+import com.dtnsm.lms.service.Mail;
+import com.dtnsm.lms.service.MailService;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +43,7 @@ import java.util.stream.StreamSupport;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class DigitalBinderController {
     private PageInfo pageInfo = new PageInfo();
     private final CurriculumVitaeRepository curriculumVitaeRepository;
@@ -44,6 +51,8 @@ public class DigitalBinderController {
     private final TrainingRecordRepository trainingRecordRepository;
     private final TrainingRecordReviewRepository trainingRecordReviewRepository;
     private final TrainingRecordReviewJdRepository trainingRecordReviewJdRepository;
+    private final MailService mailService;
+    private final UserRepository userRepository;
 
     @PostConstruct
     public void init() {
@@ -79,7 +88,8 @@ public class DigitalBinderController {
     public String requestReview(RedirectAttributes attributes) {
         String userId = SessionUtil.getUserId();
         TrainingRecordReview trainingRecordReview = new TrainingRecordReview();
-        trainingRecordReview.setAccount(SessionUtil.getUserDetail().getUser());
+        Account account = SessionUtil.getUserDetail().getUser();
+        trainingRecordReview.setAccount(account);
 
 
         Optional<CurriculumVitae> optionalCV = getCurrentCurriculumVitae(userId);
@@ -117,8 +127,19 @@ public class DigitalBinderController {
                 trainingRecordReviewJdRepository.save(trainingRecordReviewJd);
             }
         }
-        attributes.addFlashAttribute("returnMessage", "검토 요청 했습니다.");
+        attributes.addFlashAttribute("returnMessage", "매니저에게 검토를 요청하였습니다.");
+
         //TODO 알림 전송!!! 매니저에게!!
+
+        if(!StringUtils.isEmpty(account.getParentUserId())) {
+            String toEmail = userRepository.findByUserId(account.getParentUserId()).getEmail();
+            log.info("매니저에게 Binder 검토 요청 : {}", toEmail);
+            Mail mail = new Mail();
+            mail.setEmail(toEmail);
+            mailService.send(mail, BinderAlarmType.BINDER_REVIEW);
+        } else {
+            log.error("매니저 지정이 되어 있지 않습니다.");
+        }
         return "redirect:/binder";
     }
 

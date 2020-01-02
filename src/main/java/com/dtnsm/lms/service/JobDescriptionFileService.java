@@ -78,7 +78,7 @@ public class JobDescriptionFileService {
             /* 사용자에게 Job Description 을 보여주기 위해서 PDF 파일로 변환한다.
             *  해당 PDF파일을 사용자에게는 HTML로 변환하여 출력
             */
-//            new Thread(() -> {
+            new Thread(() -> {
                 try {
                     //TODO JD 변환 추가
                     WordprocessingMLPackage wordMLPackage = Docx4J.load(file.getInputStream());
@@ -99,7 +99,7 @@ public class JobDescriptionFileService {
                     borderFile.setHtmlContent(stream.toString("utf-8"));
 
                 } catch (Exception error) {System.err.println(error);}
-//            }).run();
+            }).run();
 
             borderFileRepository.save(borderFile);
 
