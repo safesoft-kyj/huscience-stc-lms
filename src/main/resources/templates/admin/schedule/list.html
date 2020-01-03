@@ -55,9 +55,9 @@
                                 <tr>
                                     <th class="text-center col-sm-1">번호</th>
                                     <th class="text-center">제목</th>
-                                    <th class="text-center">등록년도</th>
-                                    <th class="text-center col-sm-1">이름</th>
-                                    <th class="text-center col-sm-1">등록일</th>
+                                    <th class="text-center">작성년도</th>
+                                    <th class="text-center col-sm-1" th:text="#{label.createby}">이름</th>
+                                    <th class="text-center col-sm-1" th:text="#{label.createdate}">등록일</th>
                                     <th class="text-center col-sm-1" th:text="#{label.readcount}">조회수</th>
                                     <th>Edit</th>
                                 </tr>
@@ -73,7 +73,7 @@
                                     </td>
                                     <td th:text="${border.getYear()+ '년'}" class="text-center"></td>
                                     <td th:text="${border.getCreatedBy()}" class="text-center"></td>
-                                    <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy/MM/dd')} : ${border.getCreatedDate()}" class="text-center"></td>
+                                    <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy-MM-dd')} : ${border.getCreatedDate()}" class="text-center"></td>
                                     <td class="text-center">
                                         <th:block th:if="${border.getViewCnt() > 0}">
                                             <a href="#" th:onclick="|javascript:displayModel('${border.getId()}');|" id="modal-show"><span class="badge badge-default" th:text="${border.getViewCnt()}"></span></a>

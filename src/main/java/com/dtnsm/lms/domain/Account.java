@@ -34,7 +34,12 @@ public class Account {
     private String comNum;
     // 부서
     @ColumnDefault("''")
+    @Column(length = 30)
     private String orgDepart;
+    // 부서
+    @ColumnDefault("''")
+    @Column(length = 30)
+    private String orgTeam;
     // 업무
     @ColumnDefault("''")
     private String comJob;
@@ -169,6 +174,10 @@ public class Account {
         return orgDepart;
     }
 
+    public String getOrgTeam() {
+        return orgTeam;
+    }
+
     public String getComJob() {
         return comJob;
     }
@@ -183,6 +192,10 @@ public class Account {
 
     public void setOrgDepart(String orgDepart) {
         this.orgDepart = orgDepart;
+    }
+
+    public void setOrgTeam(String orgTeam) {
+        this.orgTeam = orgTeam;
     }
 
     public void setComJob(String comJob) {

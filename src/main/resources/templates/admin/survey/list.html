@@ -69,7 +69,7 @@
                                         <span th:text="${survey.getName()}"></span>
                                     </td>
                                     <td th:text="${survey.getCreatedBy()}"></td>
-                                    <td th:text="${survey.getCreatedDate()} ? ${#dates.format(survey.getCreatedDate(), 'yyyy/MM/dd HH:mm')} : ${survey.getCreatedDate()}"></td>
+                                    <td th:text="${survey.getCreatedDate()} ? ${#dates.format(survey.getCreatedDate(), 'yyyy-MM-dd')} : ${survey.getCreatedDate()}"></td>
                                     <td>
                                         <div class="form-inline">
                                             <th:block th:if="${survey.getIsActive() == 1}">

@@ -17,6 +17,7 @@ public class UserVO {
     private String password;
     private String orgCode;
     private String orgDepart;
+    private String orgTeam;
     private String comPosition;
     private String duty;
     private String comJob;

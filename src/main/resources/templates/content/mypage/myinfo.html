@@ -90,6 +90,10 @@
                                             <td th:text="${account.getOrgDepart()}"></td>
                                         </tr>
                                         <tr>
+                                            <td th:text="#{label.team}" class="text-center" style="background: #FAFAFA;">팀</td>
+                                            <td th:text="${account.getOrgTeam()}"></td>
+                                        </tr>
+                                        <tr>
                                             <td th:text="#{label.job}" class="text-center" style="background: #FAFAFA;">업무</td>
                                             <td th:text="${account.getComJob()}"></td>
                                         </tr>

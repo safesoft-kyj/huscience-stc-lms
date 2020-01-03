@@ -57,7 +57,7 @@
                         </tr>
                         <tr>
                             <th th:text="#{label.createdate}" class="text-center">작성일</th>
-                            <td th:text="${customer.getCreatedDate()} ? ${#dates.format(customer.getCreatedDate(), 'yyyy/MM/dd HH:mm:ss')} : ${customer.getCreatedDate()}"></td>
+                            <td th:text="${customer.getCreatedDate()} ? ${#dates.format(customer.getCreatedDate(), 'yyyy-MM-dd HH:mm:ss')} : ${customer.getCreatedDate()}"></td>
                         </tr>
 <!--                        <tr>-->
 <!--                            <th>읽음</th>-->

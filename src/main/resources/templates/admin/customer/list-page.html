@@ -58,7 +58,7 @@
                                     <td th:text="${customer.getCondate()}"></td>
                                     <td th:text="${customer.getCondate()}"></td>
                                     <td th:text="${customer.getCreatedBy()}"></td>
-                                    <td th:text="${customer.getCreatedDate()} ? ${#dates.format(customer.getCreatedDate(), 'yyyy/MM/dd HH:mm')} : ${customer.getCreatedDate()}"></td>
+                                    <td th:text="${customer.getCreatedDate()} ? ${#dates.format(customer.getCreatedDate(), 'yyyy-MM-dd')} : ${customer.getCreatedDate()}"></td>
                                     <td><a th:href="${customer.homepage}" target="_blank"><span th:text="${customer.homepage}"></span></a></td>
                                     <td>
                                         <div class="form-inline">

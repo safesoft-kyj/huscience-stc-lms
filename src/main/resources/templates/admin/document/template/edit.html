@@ -36,7 +36,7 @@
                     <!--===================================================-->
                     <!--End Horizontal Form-->
                     <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/document/template/edit-post/{id}(id=${border.getId()})}" th:object="${border}" method="post">
-<!--                        <input type="hidden" th:field="*{id}" id="id" name="id">-->
+                        <input type="hidden" th:field="*{id}" id="id" name="id">
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="title">제목</label>
                             <div class="col-sm-10">

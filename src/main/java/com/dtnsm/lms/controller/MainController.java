@@ -77,18 +77,16 @@ public class MainController {
         model.addAttribute("customers", customerService.getCustomerList());
 
         // 공지사항
-        model.addAttribute("borders", borderService.getListTop5ByBorderMasterId("BA0101"));
+        model.addAttribute("borders1", borderService.getListTop5ByBorderMasterId("BA0101"));
+        model.addAttribute("borders1_name", borderMasterService.getById("BA0101").getBorderName());
 
-        model.addAttribute("borders_name", borderMasterService.getById("BA0101").getBorderName());
+        // 법령정보
+        model.addAttribute("borders2", borderService.getListTop5ByBorderMasterId("BA0102"));
+        model.addAttribute("borders2_name", borderMasterService.getById("BA0102").getBorderName());
 
-
-        // 법규/가이드라인
-        model.addAttribute("borders3", borderService.getListTop5ByBorderMasterId("BA0102"));
-        model.addAttribute("borders3_name", borderMasterService.getById("BA0102").getBorderName());
-
-        // What's New
-        model.addAttribute("borders2", borderService.getListTop5ByBorderMasterId("BA0104"));
-        model.addAttribute("borders2_name", borderMasterService.getById("BA0104").getBorderName());
+        // 가이드라인
+        model.addAttribute("borders3", borderService.getListTop5ByBorderMasterId("BA0103"));
+        model.addAttribute("borders3_name", borderMasterService.getById("BA0103").getBorderName());
 
         String userId = SessionUtil.getUserId();
 

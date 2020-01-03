@@ -128,7 +128,7 @@ public class DocumentTemplateController {
                                     , BindingResult result) {
         if(result.hasErrors()) {
             template.setId(id);
-            return "/admin/document/template/list";
+            return "/admin/document/template";
         }
 
         templateService.save(template);

@@ -21,7 +21,7 @@ public class UserController {
 
     PageInfo pageInfo = new PageInfo();
 
-    @GetMapping("/list")
+    @GetMapping("")
     public String list(Model model) {
 
         pageInfo.setPageTitle("사원조회");

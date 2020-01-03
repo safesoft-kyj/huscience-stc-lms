@@ -65,7 +65,7 @@
                                     <td th:text="${customer.getCondition()}"></td>
                                     <td><a th:href="${customer.homepage}" target="_blank"><span th:text="${customer.homepage}"></span></a></td>
                                     <td th:text="${customer.getAccount().getName()}"></td>
-                                    <td th:text="${customer.getCreatedDate()} ? ${#dates.format(customer.getCreatedDate(), 'yyyy/MM/dd HH:mm:ss')} : ${customer.getCreatedDate()}"></td>
+                                    <td th:text="${customer.getCreatedDate()} ? ${#dates.format(customer.getCreatedDate(), 'yyyy-MM-dd')} : ${customer.getCreatedDate()}"></td>
                                 </tr>
                                 </tbody>
                             </table>

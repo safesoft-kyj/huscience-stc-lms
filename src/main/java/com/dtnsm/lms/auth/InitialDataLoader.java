@@ -160,6 +160,7 @@ public class InitialDataLoader implements
             account.setComJob("ComJob");
             account.setComPosition("ComPosition");
             account.setOrgDepart("ComDeprat");
+            account.setOrgTeam("ComTeam");
             account.setIndate("2019-12-01");
             account.setRoles(Arrays.asList(adminRole));
             // 사용자 구분 (U:내부직원, O:외부유저)
@@ -187,6 +188,7 @@ public class InitialDataLoader implements
             account.setComJob("ComJob");
             account.setComPosition("ComPosition");
             account.setOrgDepart("ComDeprat");
+            account.setOrgTeam("ComTeam");
             account.setIndate("2019-12-01");
             account.setRoles(Arrays.asList(adminRole));
             // 사용자 구분 (U:내부직원, O:외부유저)

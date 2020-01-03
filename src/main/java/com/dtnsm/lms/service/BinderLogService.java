@@ -125,11 +125,12 @@ public class BinderLogService {
 
         boolean isSuccess = true;
 
+        // TODO: 2020-01-02 시스테발 발생로그 부분은 테스트가 완료되는데로 1건이라도 있으면 업로드 되지 않게 주석을 제거해야 한다.
         // 발생구분별 로그(isUpload : 0=>시스템발생로고, 1=>업로드 로그)
-        int rowCount = courseTrainingLogRepository.findAllByAccount_UserIdAndIsUpload(userId, "0").size();
+        //int rowCount = courseTrainingLogRepository.findAllByAccount_UserIdAndIsUpload(userId, "0").size();
 
         // 시스템 발생로그가 있으면 업로드 하지 못한다.
-        if (rowCount > 0) return false;
+        //if (rowCount > 0) return false;
 
         // 업로드전 모든 기존 업로드 자료를 삭제한다.
         if(isUploadDataDelete) {

@@ -31,8 +31,8 @@ public class DocumentTemplate extends AuditorCreateEntity<String> {
     private String isCourseMangerApproval = "N" ;
 
 
-    @OneToMany(mappedBy = "template", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Document> documents = new ArrayList<>();
+//    @OneToMany(mappedBy = "template", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Document> documents = new ArrayList<>();
 
     public DocumentTemplate(){}
 
@@ -41,10 +41,10 @@ public class DocumentTemplate extends AuditorCreateEntity<String> {
         this.content = content;
     }
 
-    public boolean addDocument(Document document) {
-        if(documents == null)
-            documents = new ArrayList<>();
-
-        return documents.add(document);
-    }
+//    public boolean addDocument(Document document) {
+//        if(documents == null)
+//            documents = new ArrayList<>();
+//
+//        return documents.add(document);
+//    }
 }

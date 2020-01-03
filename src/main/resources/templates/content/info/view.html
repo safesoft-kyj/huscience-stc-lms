@@ -105,16 +105,16 @@
                                 <th><span th:text="#{label.course.issurvey}">설문 진행 여부</span></th>
                                 <td th:text="${course.getIsSurvey().equals('Y') ? 'Yes' : 'No'}"></td>
                             </tr>
-                            <th:block th:if="${course.getCourseFiles().size()>0}">
-                            <tr>
-                                <th><span th:text="#{label.file}">첨부파일</span></th>
-                                <td colspan="3">
-                                    <div th:each="sections : ${course.getCourseFiles()}">
-                                        <a th:href="@{/admin/course/download-file/{id}(id=${sections.getId()})}" th:text="${sections.getFileName()}"></a>
-                                    </div>
-                                </td>
-                            </tr>
-                            </th:block>
+<!--                            <th:block th:if="${course.getCourseFiles().size()>0}">-->
+<!--                            <tr>-->
+<!--                                <th><span th:text="#{label.file}">첨부파일</span></th>-->
+<!--                                <td colspan="3">-->
+<!--                                    <div th:each="sections : ${course.getCourseFiles()}">-->
+<!--                                        <a target="_blank" th:href="@{/admin/course/{typeId}/download-file/{id}(typeId=${typeId}, id=${sections.getId()})}" th:text="${sections.getFileName()}"></a>-->
+<!--                                    </div>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                            </th:block>-->
                             </tbody>
                         </table>
                     </div>

@@ -222,6 +222,7 @@ public class UserServiceImpl implements UserService {
                 account.setComJob(userVO.getComJob());
                 account.setComPosition(userVO.getComPosition());
                 account.setOrgDepart(userVO.getOrgDepart());
+                account.setOrgTeam(userVO.getOrgTeam() == null ? "" : userVO.getOrgTeam());
                 account.setIndate(userVO.getIndate());
                 account.setRoles(Arrays.asList(userRole));
                 // 사용자 구분 (U:내부직원, O:외부유저)
@@ -239,6 +240,7 @@ public class UserServiceImpl implements UserService {
                 account.setComJob(userVO.getComJob());
                 account.setComPosition(userVO.getComPosition());
                 account.setOrgDepart(userVO.getOrgDepart());
+                account.setOrgTeam(userVO.getOrgTeam() == null ? "" : userVO.getOrgTeam());
                 account.setIndate(userVO.getIndate());
 //                account.setRoles(Arrays.asList(userRole));
                 // 사용자 구분 (U:내부직원, O:외부유저)

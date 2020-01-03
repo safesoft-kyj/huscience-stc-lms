@@ -79,17 +79,17 @@
                             <div class="col-sm-6 col-lg-6 eq-box-lg">
                                 <div class="panel height-fix-pannel">
                                     <div class="panel-body">
-                                        <h5 class="col-md-6" th:text="${borders_name}" style="padding-bottom: 10px">공지사항</h5>
+                                        <h5 class="col-md-6" th:text="${borders1_name}" style="padding-bottom: 10px">공지사항</h5>
                                         <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="/border/BA0101">more ></a></small>
                                         <div class="row">
-                                            <div class="col-md-12" th:switch="${borders}">
-                                                <h2 th:case="null">No customer yet!</h2>
+                                            <div class="col-md-12" th:switch="${borders1}">
+                                                <h2 th:case="null"></h2>
                                                 <div th:case="*">
                                                     <table id="customer-list-page" class="" cellspacing="0" width="100%">
                                                         <tbody>
-                                                        <tr th:each="border, index : ${borders}">
+                                                        <tr th:each="border, index : ${borders1}">
                                                             <td>
-                                                                <a th:href="@{/border/BA0101/view/{id}(id=${border.getId()})}">
+                                                                <a th:href="@{/border/BA0101/view/{id}(id=${border.getId()})}" th:class="${border.getIsNotice().equals('1')} ? 'text-success' : 'text-info'">
                                                                     <th:block th:if="${#strings.length(border.getTitle()) > 30}">
                                                                         <span th:text="${#strings.substring(border.getTitle(), 0, 30) + '...'}"></span>
                                                                     </th:block>
@@ -148,7 +148,7 @@
                             <div class="col-sm-6 col-lg-6 eq-box-lg">
                                 <div class="panel height-fix-pannel">
                                     <div class="panel-body">
-                                        <h5 class="col-md-6" th:text="${borders3_name}" style="padding-bottom: 10px">가이드라인</h5>
+                                        <h5 class="col-md-6" th:text="${borders2_name}" style="padding-bottom: 10px">법령정보</h5>
                                         <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="/border/BA0102">more ></a></small>
 
                                         <div th:switch="${borders2}">
@@ -156,9 +156,9 @@
                                             <div th:case="*">
                                                 <table id="customer-list-page14" class="" cellspacing="0" width="100%">
                                                     <tbody>
-                                                    <tr th:each="border, index : ${borders3}">
+                                                    <tr th:each="border, index : ${borders2}">
                                                         <td>
-                                                            <a th:href="@{/border/BA0102/view/{id}(id=${border.getId()})}">
+                                                            <a th:href="@{/border/BA0102/view/{id}(id=${border.getId()})}" th:class="${border.getIsNotice().equals('1')} ? 'text-success' : 'text-info'">
                                                                 <th:block th:if="${#strings.length(border.getTitle()) > 30}">
                                                                     <span th:text="${#strings.substring(border.getTitle(), 0, 30) + '...'}"></span>
                                                                 </th:block>
@@ -295,17 +295,17 @@
                             <div class="col-sm-6 col-lg-6 eq-box-lg">
                                 <div class="panel height-fix-pannel">
                                     <div class="panel-body">
-                                        <h5 class="col-md-6" th:text="${borders2_name}" style="padding-bottom: 10px">법령정보</h5>
-                                        <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="/border/BA0104">more ></a></small>
+                                        <h5 class="col-md-6" th:text="${borders3_name}" style="padding-bottom: 10px">가이드라인</h5>
+                                        <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="/border/BA0103">more ></a></small>
 
-                                        <div th:switch="${borders2}">
+                                        <div th:switch="${borders3}">
                                             <h2 th:case="null"></h2>
                                             <div th:case="*">
                                                 <table id="customer-list-page2" class="" cellspacing="0" width="100%">
                                                     <tbody>
-                                                    <tr th:each="border, index : ${borders2}">
+                                                    <tr th:each="border, index : ${borders3}">
                                                         <td>
-                                                            <a th:href="@{/border/BA0104/view/{id}(id=${border.getId()})}">
+                                                            <a th:href="@{/border/BA0103/view/{id}(id=${border.getId()})}" th:class="${border.getIsNotice().equals('1')} ? 'text-success' : 'text-info'">
                                                                 <th:block th:if="${#strings.length(border.getTitle()) > 30}">
                                                                     <span th:text="${#strings.substring(border.getTitle(), 0, 30) + '...'}"></span>
                                                                 </th:block>

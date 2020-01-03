@@ -207,6 +207,7 @@ public class RegistrationController {
         }
 
         account.setRoles(oldAccount.getRoles());
+        account.setParentUserId(oldAccount.getParentUserId());
 
         Account saveAccount = userRepository.save(account);
 

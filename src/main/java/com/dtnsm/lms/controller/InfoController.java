@@ -188,6 +188,7 @@ public class InfoController {
         Account account = userService.getAccountByUserId(SessionUtil.getUserId());
 
         model.addAttribute(pageInfo);
+        model.addAttribute("typeId", course.getCourseMaster().getId());
         model.addAttribute("course", course);
         model.addAttribute("account", account);
 
