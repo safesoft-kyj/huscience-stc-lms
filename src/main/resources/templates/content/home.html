@@ -401,15 +401,18 @@
                                 </div>
                             </div>
                             <div class="media-body">
+                                <th:block th:if="${schedule != null}">
                                 <a href="#" id="popupBtn"
                                    th:onclick="|javascript:popupPdfView('${schedule.getId()}');return false;|" target="_blank" style="color:white">
                                 <p class="text-2x mar-no text-semibold">
-                                    <th:block th:if="${schedule != null}">
                                     View
-                                    </th:block>
                                 </p>
                                 <p class="mar-no">Employee training matrix</p>
                                 </a>
+                                </th:block>
+                                <th:block th:if="${schedule == null}">
+                                    <p class="mar-no">Employee training matrix</p>
+                                </th:block>
                             </div>
                         </div>
                     </div>
