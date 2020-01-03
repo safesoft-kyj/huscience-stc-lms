@@ -5,6 +5,7 @@ import com.dtnsm.lms.domain.constant.CurriculumVitaeStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -54,6 +55,10 @@ public class CurriculumVitae extends AuditorEntity<String> implements Serializab
 
     @Column(name = "page_count")
     private Integer pageCount;
+
+    @Column(name = "reviewed")
+    @ColumnDefault(value = "'false'")
+    private boolean reviewed;
 
     @Transient
     private int pos;

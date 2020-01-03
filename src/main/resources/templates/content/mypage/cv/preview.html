@@ -33,8 +33,11 @@
                 <div class="panel-heading">
                     <h5 class="panel-title">
                         <div class="pull-right">
-                            <a class="btn btn-info" th:href="@{/mypage/cv/edit(id=${id})}">Edit</a>
-                            <button type="button" id="publishBtn" class="btn btn-primary" name="publish">Publish</button>
+                            <form name="f" method="post" id="publishForm">
+                                <a class="btn btn-info" th:href="@{/mypage/cv/edit(id=${id})}">Edit</a>
+                                <input type="hidden" name="id" th:value="${id}"/>
+                            <button type="submit" id="publishBtn" class="btn btn-primary" name="finish">Publish</button>
+                            </form>
                         </div>
                     </h5>
                 </div>
@@ -59,6 +62,13 @@
             $('#preview_cv').html(html);
         },
         error: function (e) {
+        }
+    });
+
+    $("#publishForm").submit(function(e) {
+        if(!confirm('바인더에 반영 하시겠습니까?')) {
+            e.preventDefault();
+            return false;
         }
     });
 </script>

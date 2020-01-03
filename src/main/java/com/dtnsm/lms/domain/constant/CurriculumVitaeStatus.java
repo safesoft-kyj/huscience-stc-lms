@@ -1,5 +1,5 @@
 package com.dtnsm.lms.domain.constant;
 
 public enum CurriculumVitaeStatus {
-    TEMP, REVIEW, CURRENT, SUPERSEDED, NEW, PUBLISH
+    TEMP, CURRENT, SUPERSEDED, NEW, PUBLISH
 }

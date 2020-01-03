@@ -23,7 +23,7 @@
         /*.pdf_content svg {*/
         /*    background-color:#fff;*/
         /*    border:1px solid #333;*/
-        /*    box-shadow: 3px 3px 5px;*/
+        /*    box-shadow: 5px 5px 5px;*/
         /*}*/
     </style>
 </th:block>
@@ -50,50 +50,40 @@
 
                 <!--Tabs Content-->
                 <div class="tab-content">
-                    <div id="cv" class="tab-pane fade active in">
-                        <div th:switch="${cvList}">
-                            <div th:case="null">CV 작성을 먼저 해주세요.</div>
-                            <div th:case="*">
-                                <div class="panel-group accordion" id="cvlist">
-                                    <div class="panel" th:each="cv, stat : ${cvList}">
-                                        <!--Accordion title-->
-                                        <div class="panel-heading" style="border-bottom: 1px solid #eee;">
-                                            <h4 class="panel-title">
-                                                <a data-parent="#cvlist" th:attr="data-id=${cv.id}" data-toggle="collapse" th:href="@{#cv{id}(id=${stat.index})}">
-                                                    <span th:text="|Curriculum Vitae - ${#dates.format(cv.createdDate, 'dd/MMM/yyyy')}|"></span> <span class="label label-info" th:if="${cv.status.name() eq 'CURRENT'}">CURRENT</span>
-                                                </a>
-
-                                            </h4>
-                                        </div>
-                                        <div class="panel-collapse collapse" th:classappend="${stat.index == 0 ? 'in' : ''}" th:id="|cv${stat.index}|">
-                                            <div class="panel-body pdf_content">
-                                                <div class="text-center">
-                                                    <div th:utext="${cv.htmlContent}"></div>
-                                                </div>
-                                            </div>
+                    <div id="cover" class="tab-pane fade active in">
+                        <div class="panel">
+                            <div class="panel-body">
+                                <div th:switch="${trainingRecord}">
+                                    <div th:case="null">Training Log가 존재 하지 않습니다.</div>
+                                    <div th:case="*">
+                                        <div th:each="tr, stat : ${trainingRecord}">
+                                            <th:block th:if="${stat.index < 2}">
+                                                <div th:if="${type == 'sop'}" th:utext="${tr.sopHtmlContent}"></div>
+                                                <div th:if="${type == 'tm'}" th:utext="${tr.tmHtmlContent}"></div>
+                                            </th:block>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
+                                </div><!--switch End -->
+                            </div><!--panel-body End -->
+                        </div><!-- panel End -->
                     </div>
                 </div>
 
                 <!--Nav Tabs-->
                 <ul class="nav nav-tabs">
                     <li>
-                        <a href="/binder">Training Record Review History</a>
+                        <a>Training Record Review History</a>
                     </li>
-                    <li class="active">
-                        <a data-toggle="tab" href="#cv">Curriculum Vitae</a>
+                    <li>
+                        <a href="/binder/cv">Curriculum Vitae</a>
                     </li>
                     <li>
                         <a href="/binder/jd">Job Description</a>
                     </li>
-                    <li>
+                    <li th:classappend="${type == 'sop' ? 'active' : ''}">
                         <a href="/binder/sop/trainingLog">Training Log(SOP)</a>
                     </li>
-                    <li>
+                    <li th:classappend="${type == 'tm' ? 'active' : ''}">
                         <a href="/binder/tm/trainingLog">Training Log(TM)</a>
                     </li>
                     <li>
@@ -112,4 +102,7 @@
 
 </html>
 
+
+
+<!--===================================================-->
 

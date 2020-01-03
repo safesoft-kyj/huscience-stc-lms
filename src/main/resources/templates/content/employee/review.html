@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <!--Select2 [ OPTIONAL ]-->
+    <link th:href="@{/default/plugins/select2/css/select2.min.css}" rel="stylesheet">
+
+    <style>
+        .table-head {
+            background: #3A444E;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+            <div class="panel">
+                <div class="panel-body">
+
+
+            <!--===================================================-->
+            <div class="panel" th:if="${trainingRecord.curriculumVitae != null}">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Curriculum Vitae</h3>
+                </div>
+                <div class="panel-body">
+                    <div th:utext="${trainingRecord.curriculumVitae.htmlContent}"></div>
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+            <th:block th:if="${trainingRecord.trainingRecordReviewJdList != null && trainingRecord.trainingRecordReviewJdList.size() > 0}">
+            <div class="panel" th:each="jd, stat : ${trainingRecord.trainingRecordReviewJdList}">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Job Description(<span th:text="${jd.userJobDescription.jobDescriptionVersion.jobDescription.title}"></span>)</h3>
+                </div>
+                <div class="panel-body">
+                    <div th:utext="${jd.userJobDescription.htmlContent}"></div>
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+            </th:block>
+                </div>
+                <div class="panel-footer text-right">
+                    <form name="f" id="reviewForm" method="post">
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Complete </button>
+                    </form>
+                </div>
+            </div>
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+    <script>
+        $("#reviewForm").submit(function(e) {
+           if(!confirm('검토 완료 처리 하시겠습니까?')) {
+               e.preventDefault();
+               return false;
+           }
+        });
+    </script>
+</th:block>
+
+</html>
+
+

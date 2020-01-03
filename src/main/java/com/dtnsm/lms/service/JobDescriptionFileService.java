@@ -6,8 +6,11 @@ import com.dtnsm.lms.exception.FileDownloadException;
 import com.dtnsm.lms.exception.FileUploadException;
 import com.dtnsm.lms.properties.FileUploadProperties;
 import com.dtnsm.lms.repository.JobDescriptionFileRepository;
+import com.dtnsm.lms.util.DocumentConverter;
 import com.dtnsm.lms.util.FileUtil;
 import org.apache.commons.io.FilenameUtils;
+import org.docx4j.Docx4J;
+import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -16,6 +19,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -28,6 +33,10 @@ public class JobDescriptionFileService {
 
     @Autowired
     JobDescriptionFileRepository borderFileRepository;
+
+    @Autowired
+    private DocumentConverter documentConverter;
+
 
     private final Path fileLocation;
 
@@ -69,26 +78,28 @@ public class JobDescriptionFileService {
             /* 사용자에게 Job Description 을 보여주기 위해서 PDF 파일로 변환한다.
             *  해당 PDF파일을 사용자에게는 HTML로 변환하여 출력
             */
-//            new Thread(() -> {
+            new Thread(() -> {
                 try {
                     //TODO JD 변환 추가
-//                    WordprocessingMLPackage wordMLPackage = Docx4J.load(file.getInputStream());
+                    WordprocessingMLPackage wordMLPackage = Docx4J.load(file.getInputStream());
 //                    String outputPDF = fileLocation + "/" + file.getOriginalFilename().substring(0, saveName.lastIndexOf(".")) + ".pdf";
 //                    OutputStream os = new FileOutputStream(outputPDF);
-//                    ByteArrayOutputStream os = new ByteArrayOutputStream();
-//                    Docx4J.toPDF(wordMLPackage, os);
-
+                    ByteArrayOutputStream os = new ByteArrayOutputStream();
+                    Docx4J.save(wordMLPackage, os);
+//                    os.flush();
 //                    PdfDocument pdf = new PdfDocument();
 //                    pdf.loadFromBytes(os.toByteArray());
 //                    borderFile.setPageCount(pdf.getPages().getCount());
 //
-//                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
 //                    pdf.saveToStream(stream, FileFormat.HTML);
 
-//                    borderFile.setHtmlContent(DocumentUtils.convertHTML(file.getInputStream()));
+                    documentConverter.toHTML(new ByteArrayInputStream(os.toByteArray()), stream);
+
+                    borderFile.setHtmlContent(stream.toString("utf-8"));
 
                 } catch (Exception error) {System.err.println(error);}
-//            }).run();
+            }).run();
 
             borderFileRepository.save(borderFile);
 

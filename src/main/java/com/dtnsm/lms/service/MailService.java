@@ -1,5 +1,6 @@
 package com.dtnsm.lms.service;
 
+import com.dtnsm.lms.domain.constant.BinderAlarmType;
 import com.dtnsm.lms.domain.constant.LmsAlarmCourseType;
 import com.dtnsm.lms.domain.constant.MailSendType;
 import org.slf4j.Logger;
@@ -69,6 +70,25 @@ public class MailService {
         }
 
         String body = templateEngine.process(templateUri, context);
+
+        //send the html template
+        sendPreparedMail(mail.getEmail(), mail.getObject(), body, true);
+    }
+
+    /**
+     * Binder 관련 알람 처리
+     * @param mail
+     * @param binderAlarmType
+     */
+    public void send(Mail mail, BinderAlarmType binderAlarmType) {
+        //get and fill the template
+        mail.setObject(binderAlarmType.getTitle());
+        mail.setMessage(binderAlarmType.getMessage());
+        final Context context = new Context();
+        context.setVariable("subject", mail.getObject());
+        context.setVariable("message", mail.getMessage());
+
+        String body = templateEngine.process(binderAlarmType.getTemplate(), context);
 
         //send the html template
         sendPreparedMail(mail.getEmail(), mail.getObject(), body, true);

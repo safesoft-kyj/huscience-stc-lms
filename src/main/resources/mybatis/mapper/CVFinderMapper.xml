@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dtnsm.lms.mybatis.mapper.CVFinderMapper">
+    <select id="findCV" parameterType="com.dtnsm.lms.mybatis.dto.CVFindParam" resultType="com.dtnsm.lms.mybatis.dto.CVFindResult">
+        select
+            id,
+            sum(DATEDIFF(DAY, start_date, case when end_date is null then getdate() else end_date end)) days
+        from(
+            select
+                distinct
+                cv.id,
+                ca.start_date,
+                ca.end_date
+            from el_curriculum_vitae cv left join el_cv_career_history ca
+            on cv.id = ca.cv_id
+            left join el_cv_experience ex
+            on cv.id = ex.cv_id
+            where cv.status = 'CURRENT'
+            and ca.clinical_trial_experience = 1
+            <if test="ta != null">
+            and ex.ta = #{ta}
+            </if>
+            <if test="indication != null">
+            and ex.indication = #{indication}
+            </if>
+        ) aa group by id
+    </select>
+
+    <select id="findUpdateBinderUsers" parameterType="int" resultType="string">
+        select username from(
+            SELECT
+                username,
+                datediff(day, max(convert(date, case when date_of_review is null then request_date else date_of_review end)), convert(date, getdate())) diff
+            FROM el_training_record_review
+            group by username
+        ) a
+        where diff = #{day}
+    </select>
+<!--    <select id="findCV" parameterType="com.dtnsm.lms.mybatis.dto.CVFindParam" resultType="com.dtnsm.lms.mybatis.dto.CVFindResult">-->
+<!--        select-->
+<!--            cv.id,-->
+<!--            sum(DATEDIFF(DAY, start_date, case when ca.end_date is null then getdate() else ca.end_date end)) days-->
+<!--        from el_curriculum_vitae cv left join el_cv_career_history ca-->
+<!--        on cv.id = ca.cv_id left join el_cv_experience ex-->
+<!--        on cv.id = ex.cv_id-->
+<!--        where cv.status = 'CURRENT'-->
+<!--        and ca.clinical_trial_experience = 1-->
+<!--        <if test="ta != null">-->
+<!--        and ex.ta = #{ta}-->
+<!--        </if>-->
+<!--        <if test="indication != null">-->
+<!--        and ex.indication = #{indication}-->
+<!--        </if>-->
+<!--        group by cv.id-->
+<!--    </select>-->
+</mapper>

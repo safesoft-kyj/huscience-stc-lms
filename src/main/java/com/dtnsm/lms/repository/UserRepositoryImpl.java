@@ -68,7 +68,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         if(status == CurriculumVitaeStatus.SUPERSEDED) {
             builder.and(qCurriculumVitae.status.eq(status));
         } else {
-            builder.and(qCurriculumVitae.status.in(Arrays.asList(CurriculumVitaeStatus.CURRENT, CurriculumVitaeStatus.REVIEW)));
+            builder.and(qCurriculumVitae.status.in(Arrays.asList(CurriculumVitaeStatus.CURRENT)));
         }
 
         return queryFactory.select(

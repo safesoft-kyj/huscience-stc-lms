@@ -82,7 +82,7 @@ public class JobDescriptionController {
     @GetMapping("/add")
     public String add(Model model) {
         pageInfo.setPageId("m-customer-add");
-        pageInfo.setPageTitle(pageTitle + " Insert");
+        pageInfo.setPageTitle(pageTitle + " Upload");
         model.addAttribute(pageInfo);
         return "admin/jd/add";
     }
@@ -91,7 +91,7 @@ public class JobDescriptionController {
     @Transactional
     public String uploadJobDescription(@RequestParam("file") MultipartFile file, RedirectAttributes attributes, Model model) throws Exception {
         pageInfo.setPageId("m-customer-add");
-        pageInfo.setPageTitle(pageTitle + " Insert");
+        pageInfo.setPageTitle(pageTitle + " Upload");
         model.addAttribute(pageInfo);
 
         if(!ObjectUtils.isEmpty(file) && file.isEmpty() == false) {
