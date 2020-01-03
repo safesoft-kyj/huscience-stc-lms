@@ -1,9 +1,6 @@
 package com.dtnsm.lms.controller;
 
-import com.dtnsm.common.entity.QTrainingRecord;
-import com.dtnsm.common.entity.QUserJobDescription;
-import com.dtnsm.common.entity.TrainingRecord;
-import com.dtnsm.common.entity.UserJobDescription;
+import com.dtnsm.common.entity.*;
 import com.dtnsm.common.entity.constant.JobDescriptionStatus;
 import com.dtnsm.common.entity.constant.TrainingRecordStatus;
 import com.dtnsm.common.repository.TrainingRecordRepository;
@@ -18,6 +15,7 @@ import com.dtnsm.lms.repository.TrainingRecordReviewRepository;
 import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.Mail;
 import com.dtnsm.lms.service.MailService;
+import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 import com.querydsl.core.BooleanBuilder;
@@ -67,7 +65,9 @@ public class DigitalBinderController {
         String userId = SessionUtil.getUserId();
         Optional<CurriculumVitae> optionalCurriculumVitae = getCurrentCurriculumVitae(userId);
         model.addAttribute("cv", optionalCurriculumVitae.isPresent() ? optionalCurriculumVitae.get() : null);
-        model.addAttribute("jdList", getJobDescriptionList(userId, Arrays.asList(JobDescriptionStatus.APPROVED)));
+        Iterable<UserJobDescription> userJobDescriptions = getJobDescriptionList(userId, Arrays.asList(JobDescriptionStatus.APPROVED));
+        model.addAttribute("jdList", userJobDescriptions);
+
         Optional<TrainingRecord> optionalTrainingRecord = getTrainingRecord(userId);
         model.addAttribute("trainingRecord", optionalTrainingRecord.isPresent() ? optionalTrainingRecord.get() : null);
 
@@ -80,6 +80,20 @@ public class DigitalBinderController {
         Iterable<TrainingRecordReview> trainingRecordReviewList = trainingRecordReviewRepository.findAll(builder, qTrainingRecordReview.id.desc());
         model.addAttribute("trainingRecordReviewList", trainingRecordReviewList);
 //      model.addAttribute("oldJdList", getJobDescriptionList(userId, Arrays.asList(JobDescriptionStatus.SUPERSEDED, JobDescriptionStatus.REVOKED)));
+
+        Account account = SessionUtil.getUserDetail().getUser();
+        model.addAttribute("inDate", StringUtils.isEmpty(account.getIndate()) ? "" : DateUtil.getDateToString(DateUtil.getStringToDate(account.getIndate(), "yyyy-MM-dd"), "dd-MMM-yyyy").toUpperCase());
+        model.addAttribute("deptTeam", (StringUtils.isEmpty(account.getOrgDepart()) ? "" : account.getOrgDepart()) +
+                (StringUtils.isEmpty(account.getOrgDepart()) ? "" : (StringUtils.isEmpty(account.getOrgDepart()) ? "" : "/") + account.getOrgTeam()));
+
+        model.addAttribute("empNo", account.getComNum());
+
+        if(!ObjectUtils.isEmpty(userJobDescriptions)) {
+            model.addAttribute("jobTitle", StreamSupport.stream(userJobDescriptions.spliterator(), false)
+                    .map(u -> u.getJobDescriptionVersion().getJobDescription().getTitle()).collect(Collectors.joining(",")));
+        } else {
+            model.addAttribute("jobTitle", "N/A");
+        }
         return "content/binder/digitalBinder";
     }
 
@@ -218,6 +232,8 @@ public class DigitalBinderController {
 
     @GetMapping("/binder/{type}/trainingLog")
     public String getSopTrainingLog(@PathVariable("type") String type, Model model) {
+        pageInfo.setPageId("t-log");
+        pageInfo.setPageTitle("Training Log("+type.toUpperCase()+")");
         model.addAttribute(pageInfo);
 
         QTrainingRecord qTrainingRecord = QTrainingRecord.trainingRecord;

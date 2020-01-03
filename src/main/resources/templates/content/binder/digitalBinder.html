@@ -55,10 +55,10 @@
                         <!--                            <strong>알림!</strong> CV, JD, Training Log 정보가 존재합니다. 매니저에게 <span class="label label-purple">검토</span> 요청을 진행해 주세요.-->
                         <!--                        </div>-->
                         <div class="alert alert-info" th:if="${(trainingRecordReviewList == null || trainingRecordReviewList.size() == 0) && (trainingRecord == null || trainingRecord.sopFileName == null)}">
-                            <strong>알림!</strong> Training Log(SOP) 정보가 존재 하지 않습니다. e-SOP 트레이닝 완료 후 Publish를 진행 해 주세요.
+                            <strong>알림!</strong> Training Log(SOP) 정보가 존재 하지 않습니다. e-SOP Training Log 배포 후 진행 해 주세요.<a class="btn-link" target="_blank" href="http://sop.dtnsm.com"><i class="fa fa-external-link"></i> e-SOP</a>
                     </div>
                     <div class="alert alert-info" th:if="${(trainingRecordReviewList == null || trainingRecordReviewList.size() == 0) && (trainingRecord == null || trainingRecord.tmFileName == null)}">
-                        <strong>알림!</strong> Training Log(TM) 정보가 존재 하지 않습니다. Publish 진행 해 주세요.
+                        <strong>알림!</strong> Training Log(TM) 정보가 존재 하지 않습니다. 배포 후 진행 해 주세요.
                     </div>
                     <div class="alert alert-danger" th:if="${(trainingRecordReviewList == null || trainingRecordReviewList.size() == 0) && cv == null}">
                         <strong>알림!</strong> Curriculum Vitae 를 작성해 주세요.
@@ -75,12 +75,12 @@
                         <table class="table table-bordered">
                             <tbody>
                             <tr>
-                                <th class="col-xs-2 bg-gray-light">Job Title</th><td class="col-xs-4">Clinical Research Associate(CRA)</td>
-                                <th class="col-xs-2 bg-gray-light">Date Started:</th><td class="col-xs-4"></td>
+                                <th class="col-xs-2 bg-gray-light">Job Title</th><td class="col-xs-4" th:text="${jobTitle}">Clinical Research Associate(CRA)</td>
+                                <th class="col-xs-2 bg-gray-light">Date Started:</th><td class="col-xs-4" th:text="${inDate}"></td>
                             </tr>
                             <tr>
-                                <th class="bg-gray-light">Department/Team</th><td></td>
-                                <th class="bg-gray-light">Employee No.:</th><td></td>
+                                <th class="bg-gray-light">Department/Team</th><td th:text="${deptTeam}"></td>
+                                <th class="bg-gray-light">Employee No.:</th><td th:text="${empNo}"></td>
                             </tr>
                             </tbody>
                         </table>
@@ -99,7 +99,7 @@
                             </thead>
                             <tbody>
                             <tr th:if="${trainingRecordReviewList == null || trainingRecordReviewList.size() == 0}">
-                                <td colspan="5">Training Record 정보가 없습니다.</td>
+                                <td colspan="5" class="text-center text-info"><i class="fa fa-exclamation-circle"></i> Training Record 검토를 요청 하세요!</td>
                             </tr>
                             <tr th:each="tr, stat : ${trainingRecordReviewList}">
                                 <td th:text="${#dates.format(tr.requestDate, 'dd-MMM-yyyy')}"></td>
