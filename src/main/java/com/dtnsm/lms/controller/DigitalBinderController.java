@@ -82,6 +82,7 @@ public class DigitalBinderController {
 //      model.addAttribute("oldJdList", getJobDescriptionList(userId, Arrays.asList(JobDescriptionStatus.SUPERSEDED, JobDescriptionStatus.REVOKED)));
 
         Account account = SessionUtil.getUserDetail().getUser();
+        model.addAttribute("engName", account.getEngName());
         model.addAttribute("inDate", StringUtils.isEmpty(account.getIndate()) ? "" : DateUtil.getDateToString(DateUtil.getStringToDate(account.getIndate(), "yyyy-MM-dd"), "dd-MMM-yyyy").toUpperCase());
         model.addAttribute("deptTeam", (StringUtils.isEmpty(account.getOrgDepart()) ? "" : account.getOrgDepart()) +
                 (StringUtils.isEmpty(account.getOrgDepart()) ? "" : (StringUtils.isEmpty(account.getOrgDepart()) ? "" : "/") + account.getOrgTeam()));
