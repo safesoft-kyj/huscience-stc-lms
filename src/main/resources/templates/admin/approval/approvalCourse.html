@@ -274,7 +274,7 @@
                                     <tr th:each="quiz, index : ${course.getQuizzes()}">
                                         <td class="text-center" th:text="${index.count}"></td>
                                         <td class="text-center" th:text="#{label.title.quiz}"></td>
-                                        <td class="text-center">
+                                        <td class="text-left">
                                             <a th:href="@{/admin/course/quiz/edit/{id}(id=${quiz.getId()})}">
                                                 <span th:text="${quiz.getName()}"></span>
                                             </a>
@@ -290,7 +290,7 @@
                                     <tr th:each="survey, index : ${course.getSurveys()}">
                                         <td class="text-center" th:text="${index.count}"></td>
                                         <td class="text-center" th:text="#{label.title.survey}"></td>
-                                        <td class="text-center">
+                                        <td class="text-left">
                                             <a th:href="@{/admin/course/survey/edit/{id}(id=${survey.getId()})}">
                                                 <span th:text="${survey.getName()}"></span>
                                             </a>

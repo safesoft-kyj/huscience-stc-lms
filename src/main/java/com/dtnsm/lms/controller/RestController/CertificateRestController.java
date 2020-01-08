@@ -20,10 +20,21 @@ public class CertificateRestController {
     @Autowired
     private CertificateFileService fileService;
 
-    @PostMapping("/save")
-    public boolean signSave(@RequestParam("pdf") MultipartFile file, @RequestParam("filename") String fileName){
+//    @PostMapping("/save")
+//    public boolean certificateSave(@RequestParam("pdf") MultipartFile file, @RequestParam("filename") String fileName){
+//
+//        CertificateFile uploadFile = fileService.storeFile(file, fileName);
+//
+//        if (uploadFile == null) return false;
+//        else return true;
+//    }
 
-        CertificateFile uploadFile = fileService.storeFile(file, fileName);
+    @PostMapping("/save")
+    public boolean certificateSave2(@RequestParam("pdf") MultipartFile file
+            , @RequestParam("filename") String fileName
+            , @RequestParam(value = "docId", required = false, defaultValue = "0") long docId){
+
+        CertificateFile uploadFile = fileService.storeFile(file, fileName, docId);
 
         if (uploadFile == null) return false;
         else return true;

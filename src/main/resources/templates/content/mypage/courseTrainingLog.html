@@ -12,45 +12,17 @@
 <th:block layout:fragment="custom_css">
 
     <style>
-        .body-wrap {
-            background-color: #ecf0f5;
-            width: 100%;
-        }
-
-        .container {
-            display: block !important;
-            max-width: 600px !important;
-            margin: 0 auto !important;
-            /* makes it centered */
-            clear: both !important;
-        }
-
-        .content {
-            max-width: 600px;
-            margin: 0 auto;
-            display: block;
-            padding: 20px;
-
-        }
-
-        th{
-            color: white;
-        }
-
-        th, td {
-            text-align: center;
-        }
+        .body-wrap {background-color: #ecf0f5;width: 100%;}
+        .container { display: block !important; max-width: 600px !important; margin: 0 auto !important; clear: both !important;}
+        .content {max-width: 600px; margin: 0 auto; display: block; padding: 20px; }
+        th{color: white;}
+        th, td {text-align: center;}
     </style>
-
-<!--    <link href="/default/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />-->
-
 
 </th:block>
 
 <th:block layout:fragment="content_body">
-    <!--
-    <div th:replace="fragments/common/loading"></div>
-    -->
+
     <!--CONTENT CONTAINER-->
     <!--===================================================-->
     <div id="content-container">
@@ -66,6 +38,11 @@
             <!--===================================================-->
             <div class="panel">
                 <div class="panel-body">
+                    <div class="row" style="margin-bottom: 0px;" >
+                        <div class="col-sm-12 text-right">
+                            <a class="btn btn-info" href="#" onclick="createEmployeeLog();return false;"><i class="fa fa-download"></i> 배포</a>
+                        </div>
+                    </div>
                     <div th:switch="${borders}">
                         <div class="table-responsive">
                             `<table id="customer-list-page" class="table table-bordered" cellspacing="0" width="100%">
@@ -149,18 +126,27 @@
 
 <th:block layout:fragment="custom_js">
 
-
-    <!--Bootstrap Timepicker [ OPTIONAL ]-->
-    <script th:src="@{/default/plugins/bootstrap-timepicker/bootstrap-timepicker.min.js}"></script>
-
-
-    <!--Bootstrap Datepicker [ OPTIONAL ]-->
-    <script th:src="@{/default/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js}"></script>
-
     <script>
-
+        function createEmployeeLog() {
+            var url = "/api/binder/log/create";
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {},
+                dataType: 'JSON',
+                async: false,
+                success: function (data) {
+                    if (data) {
+                        alert('배포가 정상적으로 처리되었습니다.')
+                    }
+                },
+                error: function (e) {
+                    alert('배포가 정상적으로 처리되지 않았습니다.');
+                    // console.log(e.responseText);
+                }
+            });
+        }
     </script>
-
 
 </th:block>
 

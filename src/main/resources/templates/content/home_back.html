@@ -3,7 +3,7 @@
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/default_layout}">
+      layout:decorate="layout/default_layout">
 
 <th:block layout:fragment="html_head">
     <title>TachyonTech Info</title>
@@ -17,6 +17,7 @@
     <!--Themify Icons [ OPTIONAL ]-->
 <!--    <link th:href="@{/default/plugins/multiple-picker/jquery-ui.multidatespicker.css}" rel="stylesheet">-->
 
+    <link rel="stylesheet" type="text/css" th:href="@{/default/plugins/multiple-picker/mdp.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/default/plugins/multiple-picker/mdp.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/default/plugins/multiple-picker/prettify.css}">
 
@@ -82,7 +83,7 @@
                                         <h5 class="col-md-6" th:text="${borders1_name}" style="padding-bottom: 10px">공지사항</h5>
                                         <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="/border/BA0101">more ></a></small>
                                         <div class="row">
-                                            <div class="col-md-12" th:switch="${borders1}">
+                                            <div class="col-md-12" th:switch="${borders1.}">
                                                 <h2 th:case="null"></h2>
                                                 <div th:case="*">
                                                     <table id="customer-list-page" class="" cellspacing="0" width="100%">

@@ -168,9 +168,7 @@
                             <tbody>
                             <th:block th:each="courseAccount, index : ${courseAccountList}">
                                 <tr>
-                                    <td class="text-center">
-                                        <span th:text="${courseAccountList.getTotalElements() - index.index}"></span>
-                                    </td>
+                                    <td th:text="${(courseAccountList.getTotalElements() - index.index) - (courseAccountList.number * 10)}" class="text-center"></td>
                                     <td class="text-left">
                                         <span th:text="${courseAccount.getCourse().getCourseMaster().getCourseName()}"></span>
                                     </td>
@@ -231,13 +229,18 @@
 
 
                                                 <th:block th:if="${courseAccount.getCourse().getIsCerti().equals('Y')}">
-                                                    <th:block th:if="${courseAccount.getCertificateBindDate() == null}">
-                                                        <a href="#" class="btn btn-info" id="popupBtn"
-                                                           th:onclick="|javascript:popupPdfView('${courseAccount.getId()}', '1');return false;|" target="_blank"><i class="fa fa-print"></i> 발급</a>
-                                                    </th:block>
+<!--                                                    <th:block th:if="${courseAccount.getCertificateBindDate() == null}">-->
+<!--                                                        <a href="#" class="btn btn-info" id="popupBtn10"-->
+<!--                                                           th:onclick="|javascript:createCertificateFile('${courseAccount.getId()}', '1');return false;|" target="_blank"><i class="fa fa-print"></i> 발급</a>-->
+<!--                                                    </th:block>-->
+<!--                                                    <th:block th:if="${courseAccount.getCertificateBindDate() == null}">-->
+<!--                                                        <a href="#" class="btn btn-info" id="popupBtn"-->
+<!--                                                           th:onclick="|javascript:popupPdfView('${courseAccount.getId()}', '1');return false;|" target="_blank"><i class="fa fa-print"></i> 발급</a>-->
+<!--                                                    </th:block>-->
                                                     <th:block th:unless="${courseAccount.getCertificateBindDate() == null}">
-                                                        <a href="#" class="btn btn-mint" id="popupBtn2"
-                                                           th:onclick="|javascript:popupPdfView('${courseAccount.getId()}', '2');return false;|" target="_blank"><i class="fa fa-print"></i> 수료증</a>
+<!--                                                        <a href="#" class="btn btn-mint" id="popupBtn2"-->
+<!--                                                           th:onclick="|javascript:popupPdfView('${courseAccount.getId()}', '2');return false;|" target="_blank"><i class="fa fa-print"></i> 수료증</a>-->
+                                                        <a class="btn btn-mint" th:href="@{/mypage/certificate/file/downloadFile2/{docId}(docId=${courseAccount.getId()})}" target="_blank"><i class="fa fa-print"></i> 수료증</a>
                                                     </th:block>
                                                 </th:block>
                                             </th:block>
@@ -301,6 +304,31 @@
             $('#testForm').submit();
             $('#title').focus();
         }
+
+        // 수료증 발급
+        // function createCertificateFile(docId, flag) {
+        //     if(flag == 1) {
+        //         $.ajax({
+        //             type: 'POST',
+        //             url: '/api/binder/certi/create',
+        //             dataType: 'json',
+        //             data: {
+        //                 'docId': docId
+        //             },
+        //             error: function (xhr, status, error) {
+        //                 alert('Error');
+        //             },
+        //             success: function (data) {
+        //
+        //                 // if(data == false) alert('교육기간이 아닙니다.');
+        //                 // else {
+        //                 //     $('#submit_form2' + formId).submit();
+        //                 // }
+        //             },
+        //         });
+        //     }
+        //     return;
+        // }
 
         // 수료증 팦업창
         function popupPdfView(id, flag) {

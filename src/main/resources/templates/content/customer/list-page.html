@@ -59,7 +59,7 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="customer, index : ${customers}">
-                                    <td th:text="${customers.getTotalElements() - index.index}" class="text-center"></td>
+                                    <td th:text="${(borders.getTotalElements() - index.index) - (borders.number * 10)}" class="text-center"></td>
                                     <td><a th:href="@{/customer/view/{id}(id=${customer.getId()})}" th:text="${customer.getName()}"></a></td>
                                     <td th:text="${customer.getCondate()}"></td>
                                     <td th:text="${customer.getCondition()}"></td>

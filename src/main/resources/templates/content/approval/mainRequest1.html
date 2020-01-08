@@ -101,7 +101,7 @@
                                             </thead>
                                             <tbody>
                                             <tr th:each="border, index : ${borders}">
-                                                <td th:text="${index.count}" class="text-center"></td>
+                                                <td th:text="${(borders.getTotalElements() - index.index) - (borders.number * 10)}" class="text-center"></td>
                                                 <td class="text-center">
                                                     <span th:text="${border.getCourse().getCourseMaster().getCourseName()}"></span>&nbsp;
                                                 </td>

@@ -1,13 +1,16 @@
 package com.dtnsm.lms.service;
 
+import com.dtnsm.common.entity.Signature;
 import com.dtnsm.common.repository.SignatureRepository;
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.TrainingType;
-import com.dtnsm.lms.mybatis.dto.UserVO;
+import com.dtnsm.lms.domain.datasource.CertificateSource;
+import com.dtnsm.lms.domain.datasource.EmployeeTrainingLogSource;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.repository.CourseTrainingLogRepository;
 import com.dtnsm.lms.util.DateUtil;
+import com.dtnsm.lms.util.SessionUtil;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
@@ -17,9 +20,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BinderLogService {
@@ -41,12 +46,68 @@ public class BinderLogService {
     @Autowired
     UserServiceImpl userService;
 
+    // Employee Training Log 데이터 생성
+    public EmployeeTrainingLogSource getEmployeeTrainingLog(String userId, long timestamp) {
+
+        // 라이센스
+//        CommonUtilities.applyLicense();
+
+        // Employee Training Log Data Source 생성
+        EmployeeTrainingLogSource trainingLogSource = new EmployeeTrainingLogSource("EmployeeTrainingLogSource");
+
+        // 사용자별 로그를 가지고 온다.
+        List<CourseTrainingLog> courseTrainingLogs = binderLogService.getAllByUserOrderByCompleteDateAsc(userId);
+
+        // 나의 서명을 가지고 온다.
+        Optional<Signature> optionalSignature = signatureRepository.findById(SessionUtil.getUserId());
+        byte[] imageBytes = null;
+
+        if (optionalSignature.isPresent()) {
+            Signature signature = optionalSignature.get();
+            String data = signature.getBase64signature().split(",")[1];
+            imageBytes = DatatypeConverter.parseBase64Binary(data);
+        }
+
+        Account account = userService.getAccountByUserId(userId);
+        String depart = "";
+        if (account.getOrgDepart() != null && !account.getOrgDepart().isEmpty()) {
+            depart = account.getOrgDepart();
+        }
+
+        if (account.getOrgTeam() != null && !account.getOrgTeam().isEmpty()) {
+            if (depart.equals("")) {
+                depart = account.getOrgTeam();
+            } else {
+                depart += " / " + account.getOrgTeam();
+            }
+        }
+
+        // TODO : Job Title 로 변경
+        trainingLogSource.setJobTitle("Clinical Research Associate (CRA)");
+        trainingLogSource.setDepart(depart);
+        trainingLogSource.setSign(imageBytes);
+        trainingLogSource.setInDate(account.getIndate() != null ? DateUtil.getDateToString(DateUtil.getStringToDate(account.getIndate()), "dd-MMM-yyyy") : "");
+        trainingLogSource.setToDate(DateUtil.getDateToString(DateUtil.getTodayDate(), "dd-MMM-yyyy"));
+        trainingLogSource.setAccount(account);
+        trainingLogSource.setCourseTrainingLogs(courseTrainingLogs);
+
+        return trainingLogSource;
+    }
+
+
+
+
+
     public CourseTrainingLog saveLog(CourseTrainingLog courseTrainingLog) {
         return courseTrainingLogRepository.save(courseTrainingLog);
     }
 
-    public List<CourseTrainingLog> getAllByUser(String userId){
-        return courseTrainingLogRepository.findAllByAccount_UserId(userId);
+    public List<CourseTrainingLog> getAllByUserOrderByCompleteDateAsc(String userId){
+        return courseTrainingLogRepository.findAllByAccount_UserIdOrderByCompleteDateAsc(userId);
+    }
+
+    public List<CourseTrainingLog> getAllByUserOrderByCompleteDateDesc(String userId){
+        return courseTrainingLogRepository.findAllByAccount_UserIdOrderByCompleteDateDesc(userId);
     }
 
     // 사용자별 업로드 자료 삭제

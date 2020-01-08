@@ -148,4 +148,38 @@ public class CertificateFileController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + newFileName + "\"")
                 .body(resource);
     }
+
+
+    //
+    @GetMapping("/downloadFile2/{docId}")
+    @ResponseBody
+    public ResponseEntity<Resource> downloadFile2(@PathVariable long docId, HttpServletRequest request) throws IOException {
+
+        CertificateFile uploadFile = fileService.getByCourseAccount(docId);
+
+        String fileName = uploadFile.getSaveName();
+        // Load file as Resource
+        Resource resource = fileService.loadFileAsResource(fileName);
+
+        // Try to determine file's content type
+        MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
+//        String contentType = mimeTypesMap.getContentType(fileName);
+        String contentType = uploadFile.getMimeType();
+        // contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+
+
+        // Fallback to the default content type if type could not be determined
+        if(contentType.equals("")) {
+            contentType = "application/octet-stream";
+        }
+
+        // 한글파일명 깨짐 현상 해소
+        String newFileName = FileUtil.getNewFileName(request, uploadFile.getFileName());
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + newFileName + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + newFileName + "\"")
+                .body(resource);
+    }
 }

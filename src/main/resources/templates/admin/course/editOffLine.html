@@ -85,9 +85,9 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" for="team" th:text="#{label.course.team}">참석대상 부서/팀</label>
+                            <label class="col-sm-2 control-label" for="team" th:text="#{label.course.organization}">참석대상 부서/팀</label>
                             <div class="col-sm-4">
-                                <input type="text" th:field="*{team}" id="team" placeholder="depart/team" class="form-control" required="required">
+                                <input type="text" th:field="*{team}" id="team" placeholder="Organization" class="form-control" required="required">
                             </div>
                             <span th:if="${#fields.hasErrors('team')}" th:errors="*{team}"></span>
                             <label class="col-sm-2 control-label" for="day" th:text="#{label.course.place}">교육장소</label>

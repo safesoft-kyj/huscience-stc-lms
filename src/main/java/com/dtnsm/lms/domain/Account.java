@@ -167,27 +167,32 @@ public class Account {
     }
 
     public String getComNum() {
-        return comNum;
+        return comNum == null ? "" : comNum;
     }
 
     public String getOrgDepart() {
-        return orgDepart;
+
+        return orgDepart == null ? "" : orgDepart;
     }
 
     public String getOrgTeam() {
-        return orgTeam;
+
+        return orgTeam == null ? "" : orgTeam;
     }
 
     public String getComJob() {
-        return comJob;
+
+        return comJob == null ? "" : comJob;
     }
 
     public String getComPosition() {
-        return comPosition;
+
+        return comPosition == null ? "" : comPosition;
     }
 
     public String getIndate() {
-        return indate;
+
+        return indate == null ? "" : indate;
     }
 
     public void setOrgDepart(String orgDepart) {
@@ -195,6 +200,7 @@ public class Account {
     }
 
     public void setOrgTeam(String orgTeam) {
+
         this.orgTeam = orgTeam;
     }
 

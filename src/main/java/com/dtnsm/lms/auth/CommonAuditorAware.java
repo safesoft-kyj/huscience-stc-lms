@@ -23,8 +23,9 @@ public class CommonAuditorAware implements AuditorAware<String> {
             return Optional.empty();
         }
 
-        String userId = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
+//        String userId = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         //String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication()).getUsername();
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         return Optional.of(userId);
     }

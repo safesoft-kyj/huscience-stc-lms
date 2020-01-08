@@ -57,7 +57,7 @@ public class CalendarRestController {
             String color, url;
             for(CourseCalendarVO course : courses) {
 
-                url = "/course/view/" + course.getId();
+                url = "/info/request/add/" + course.getId();
                 switch (course.getTypeId()) {
                     case "BC0101":  // self training
                         color = "#FFA726";
@@ -94,7 +94,7 @@ public class CalendarRestController {
 
             for(CourseCalendarVO course : courses2) {
 
-                url = "/course/view/" + course.getId();
+                url = "/info/request/add/" + course.getId();
                 switch (course.getTypeId()) {
                     case "BC0101":  // self training
                         color = "#FFA726";
@@ -153,7 +153,7 @@ public class CalendarRestController {
             String color, url;
             for(CourseCalendarVO course : courses) {
 
-                url = "/course/view/" + course.getId();
+                url = "/info/request/add/" + course.getId();
                 switch (course.getTypeId()) {
                     case "BC0101":  // self training
                         color = "#FFA726";
@@ -190,7 +190,7 @@ public class CalendarRestController {
 
             for(CourseCalendarVO course : courses2) {
 
-                url = "/course/view/" + course.getId();
+                url = "/info/request/add/" + course.getId();
                 switch (course.getTypeId()) {
                     case "BC0101":  // self training
                         color = "#00BCD4";

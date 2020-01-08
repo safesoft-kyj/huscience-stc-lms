@@ -94,8 +94,9 @@ public class InfoController {
     @GetMapping("/monthUser")
     public String monthUser(Model model) {
 
+        pageInfo.setParentTitle("마이페이지");
         pageInfo.setPageId("m-info-month");
-        pageInfo.setPageTitle("나의월간일정(교육일)");
+        pageInfo.setPageTitle("나의월간일정");
         model.addAttribute(pageInfo);
 
         return "content/info/monthUser";

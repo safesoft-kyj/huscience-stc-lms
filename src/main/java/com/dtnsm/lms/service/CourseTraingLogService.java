@@ -10,8 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class CourseTraingLogService {
 
@@ -25,7 +23,7 @@ public class CourseTraingLogService {
 
         pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
-        Page<CourseTrainingLog> courseTrainingLogs = courseTrainingLogRepository.findAllByAccount_UserId(userId, pageable);
+        Page<CourseTrainingLog> courseTrainingLogs = courseTrainingLogRepository.findAllByAccount_UserIdOrderByCompleteDateDesc(userId, pageable);
 
         return courseTrainingLogs;
     }

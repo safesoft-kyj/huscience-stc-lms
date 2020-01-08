@@ -133,7 +133,7 @@ public class MyPageController {
     public String myInfo(Model model) {
 
         pageInfo.setPageId("m-mypage-main");
-        pageInfo.setPageTitle("메인");
+        pageInfo.setPageTitle("사용자정보");
 
         Account account = userService.getAccountByUserId(SessionUtil.getUserId());
         List<CourseAccount> courseAccountList = courseAccountService.getCourseAccountByUserId(SessionUtil.getUserId());
@@ -168,7 +168,7 @@ public class MyPageController {
     public String lmsTraingLog(Model model, Pageable pageable) {
 
         pageInfo.setPageId("m-training-log");
-        pageInfo.setPageTitle("Training Log");
+        pageInfo.setPageTitle("Employee Training Log");
 
         Page<CourseTrainingLog> courseTrainingLogs = courseTraingLogService.getAllByAccount_UserId(SessionUtil.getUserId(), pageable);
 

@@ -36,6 +36,10 @@ public class CertificateFile extends AuditorCreateEntity<String> {
     @JoinColumn(name = "user_id")
     private Account account;
 
+    @ManyToOne
+    @JoinColumn(name = "doc_id")
+    private CourseAccount courseAccount;
+
     public CertificateFile() {
     }
 
@@ -52,6 +56,15 @@ public class CertificateFile extends AuditorCreateEntity<String> {
         this.size = size;
         this.mimeType = mimeType;
         this.account = account;
+    }
+
+    public CertificateFile(String fileName, String saveName, long size, String mimeType, Account account, CourseAccount courseAccount) {
+        this.fileName = fileName;
+        this.saveName = saveName;
+        this.size = size;
+        this.mimeType = mimeType;
+        this.account = account;
+        this.courseAccount = courseAccount;
     }
 
 

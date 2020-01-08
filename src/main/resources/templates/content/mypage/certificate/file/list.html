@@ -73,7 +73,9 @@
                                     <td th:text="${uploadFile.getCreatedDate()} ? ${#dates.format(uploadFile.getCreatedDate(), 'yyyy-MM-dd')} : ${uploadFile.getCreatedDate()}" class="text-center"></td>
                                     <td th:text="${uploadFile.getAccount().getName()}"></td>
 <!--                                    <td th:text="${uploadFile.getSize()}"></td>-->
-                                    <td class="text-center"><a th:href="@{/mypage/certificate/file/delete/{id}(id=${uploadFile.getId()})}">Delete</a></td>
+                                    <td class="text-center">
+                                        <a th:if="${uploadFile.getCourseAccount() == null}" th:href="@{/mypage/certificate/file/delete/{id}(id=${uploadFile.getId()})}">Delete</a>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>

@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface CertificateFileRepository extends JpaRepository<CertificateFile, Integer> {
 
-    List<CertificateFile> findAllByAccount_UserId(String userId);
+    CertificateFile findByCourseAccount_Id(long docId);
+    List<CertificateFile> findAllByAccount_UserIdOrderByCreatedDateDesc(String userId);
     Page<CertificateFile> findAllByAccount_UserId(String userId, Pageable pageable);
 }

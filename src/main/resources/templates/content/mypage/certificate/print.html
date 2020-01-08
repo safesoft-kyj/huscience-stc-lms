@@ -116,6 +116,7 @@
         html2canvas(document.body).then(function(canvas) {
 
             var name = [[${courseAccount.getCourse().getTitle()}]] + '수료증.pdf';
+            var docId = [[${courseAccount.getId()}]];
             // alert('test');
             // var imgData = canvas.toDataURL('image/png');
             // var imgWidth = 293; //210
@@ -172,6 +173,7 @@
             var formData = new FormData();
             formData.append('pdf', blob);
             formData.append('filename', name);
+            formData.append('docId', docId);
 
             $.ajax('/api/certificate/save',
                 {

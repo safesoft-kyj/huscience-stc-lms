@@ -13,16 +13,16 @@ import com.groupdocs.assembly.License;
 //ExStart:CommonUtilities
 public class CommonUtilities {
 	//ExStart:commonPaths
-	public static final String licensePath = "D:/GroupDocs.Total.Java.lic";
+	public static final String licensePath = "C:/dev/license/GroupDocs.Total.Java.lic";
 	public static final Path dataPath = getProjectBaseDir().resolve("Data/");
 	public static final Path storagePath = getProjectBaseDir().resolve("Data/Storage/");
 	public static final Path outputPath = getProjectBaseDir().resolve("Data/Output/");
-	public static final Path image = getProjectBaseDir().resolve("Data/Images/");
-	public static final Path outerDoc = getProjectBaseDir().resolve("Data/OuterDocument/");
-	public static final Path wordDataFile = getProjectBaseDir().resolve("Data/Data Sources/Word DataSource/");
-	public static final Path XMLDataFile = getProjectBaseDir().resolve("Data/Data Sources/XML DataSource/");
-	public static final Path excelDataFile = getProjectBaseDir().resolve("Data/Data Sources/Excel DataSource/");
-	public static final Path presentationDataFile = getProjectBaseDir().resolve("Data/Data Sources/Presentation DataSource/");
+//	public static final Path image = getProjectBaseDir().resolve("Data/Images/");
+//	public static final Path outerDoc = getProjectBaseDir().resolve("Data/OuterDocument/");
+//	public static final Path wordDataFile = getProjectBaseDir().resolve("Data/Data Sources/Word DataSource/");
+//	public static final Path XMLDataFile = getProjectBaseDir().resolve("Data/Data Sources/XML DataSource/");
+//	public static final Path excelDataFile = getProjectBaseDir().resolve("Data/Data Sources/Excel DataSource/");
+//	public static final Path presentationDataFile = getProjectBaseDir().resolve("Data/Data Sources/Presentation DataSource/");
 	 public static String publicKey = "[Your Dynabic.Metered public key]";
 	 public static String privateKey = "[Your Dynabic.Metered private key]";
 	//ExEnd:commonPaths

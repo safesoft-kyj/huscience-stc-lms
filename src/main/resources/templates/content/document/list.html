@@ -59,7 +59,7 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="border, index : ${borders}">
-                                    <td th:text="${index.count}" class="text-center"></td>
+                                    <td th:text="${(borders.getTotalElements() - index.index) - (borders.number * 10)}" class="text-center"></td>
                                     <td><a th:href="@{/document/view/{id}(id=${border.getId()})}" th:text="${border.getTitle()}">Edit</a></td>
                                     <td class="text-center">
                                         <a th:text="#{label.edit}" th:href="@{/document/edit/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>

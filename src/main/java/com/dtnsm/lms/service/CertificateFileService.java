@@ -1,15 +1,20 @@
 package com.dtnsm.lms.service;
 
+import com.dtnsm.common.entity.Signature;
 import com.dtnsm.lms.auth.UserServiceImpl;
-import com.dtnsm.lms.domain.Account;
-import com.dtnsm.lms.domain.Border;
-import com.dtnsm.lms.domain.CertificateFile;
+import com.dtnsm.lms.domain.*;
+import com.dtnsm.lms.domain.DTO.CommonUtilities;
+import com.dtnsm.lms.domain.datasource.CertificateSource;
+import com.dtnsm.lms.domain.datasource.EmployeeTrainingLogSource;
 import com.dtnsm.lms.exception.FileDownloadException;
 import com.dtnsm.lms.exception.FileUploadException;
 import com.dtnsm.lms.properties.FileUploadProperties;
 import com.dtnsm.lms.repository.CertificateFileRepository;
+import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.SessionUtil;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.pdfbox.io.MemoryUsageSetting;
+import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -22,6 +27,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import javax.xml.bind.DatatypeConverter;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -29,6 +37,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -40,10 +49,16 @@ public class CertificateFileService {
     @Autowired
     UserServiceImpl userService;
 
+    @Autowired
+    CourseAccountService courseAccountService;
+
+    public FileUploadProperties prop;
+
     private final Path fileLocation;
 
     @Autowired
     public CertificateFileService(FileUploadProperties prop) {
+        this.prop = prop;
         this.fileLocation = Paths.get(prop.getCertificateUploadDir())
                 .toAbsolutePath().normalize();
 
@@ -55,8 +70,38 @@ public class CertificateFileService {
     }
 
 
+    // 수료증 병합
+    public void createCertificateFileMerge(String userId, long timestamp, String outputFilePath) {
+
+        PDFMergerUtility mergerUtility = new PDFMergerUtility();
+
+        // 수료증 생성 경로
+        String sourceFilePath = "";
+
+        // 출력파일(패스포함)
+        mergerUtility.setDestinationFileName(outputFilePath);
+
+        for(CertificateFile certificateFile : getAllByUserId(SessionUtil.getUserId())) {
+
+            sourceFilePath = prop.getCertificateUploadDir() + certificateFile.getSaveName();
+
+            File file = new File(sourceFilePath);
+            try {
+                mergerUtility.addSource(file);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        MemoryUsageSetting setupMainMemoryOnly = MemoryUsageSetting.setupMainMemoryOnly();
+        try {
+            mergerUtility.mergeDocuments(setupMainMemoryOnly);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public List<CertificateFile> getAllByUserId(String userId) {
-        return fileRepository.findAllByAccount_UserId(userId);
+        return fileRepository.findAllByAccount_UserIdOrderByCreatedDateDesc(userId);
     }
 
     public Page<CertificateFile> getAllByUserId(String userId, Pageable pageable) {
@@ -106,6 +151,10 @@ public class CertificateFileService {
 
     // 수료증 생성
     public CertificateFile storeFile(MultipartFile file, String fileName) {
+        return storeFile(file, fileName, 0);
+    }
+
+    public CertificateFile storeFile(MultipartFile file, String fileName, long docId) {
         String originName = FilenameUtils.getBaseName(fileName);
         String extension = FilenameUtils.getExtension(fileName);
         String contentType = file.getContentType();
@@ -129,8 +178,17 @@ public class CertificateFileService {
 
             // 사용자 등록
             Account account =  userService.getAccountByUserId(SessionUtil.getUserId());
-
-            CertificateFile uploadFile = new CertificateFile(originName, saveName, file.getSize(), file.getContentType(), account);
+            CertificateFile uploadFile = null;
+            if (docId == 0) {
+                uploadFile = new CertificateFile(originName, saveName, file.getSize(), file.getContentType(), account);
+            } else {
+                CourseAccount courseAccount = courseAccountService.getById(docId);
+                if(courseAccount != null) {
+                    uploadFile = new CertificateFile(originName, saveName, file.getSize(), file.getContentType(), account, courseAccount);
+                } else {
+                    uploadFile = new CertificateFile(originName, saveName, file.getSize(), file.getContentType(), account);
+                }
+            }
 
             fileRepository.save(uploadFile);
 
@@ -172,6 +230,15 @@ public class CertificateFileService {
 
         if(null == uploadFile) {
             throw new FileDownloadException("해당 아이디["+id+"]로 업로드 된 파일이 존재하지 않습니다.");
+        }
+        return uploadFile;
+    }
+
+    public CertificateFile getByCourseAccount(long docId) {
+        CertificateFile uploadFile = fileRepository.findByCourseAccount_Id(docId);
+
+        if(null == uploadFile) {
+            throw new FileDownloadException("해당 아이디["+docId+"]로 업로드 된 파일이 존재하지 않습니다.");
         }
         return uploadFile;
     }

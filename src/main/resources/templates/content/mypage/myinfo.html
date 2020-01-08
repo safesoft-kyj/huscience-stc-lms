@@ -86,12 +86,12 @@
                                             <td th:text="${account.getEmail()}"></td>
                                         </tr>
                                         <tr>
-                                            <td th:text="#{label.depart}" class="text-center" style="background: #FAFAFA;">부서</td>
-                                            <td th:text="${account.getOrgDepart()}"></td>
-                                        </tr>
-                                        <tr>
-                                            <td th:text="#{label.team}" class="text-center" style="background: #FAFAFA;">팀</td>
-                                            <td th:text="${account.getOrgTeam()}"></td>
+                                            <td th:text="#{label.departTeam}" class="text-center" style="background: #FAFAFA;">부서/팀</td>
+                                            <td>
+                                                <span th:text="${account.getOrgDepart()}"></span>
+                                                <span th:unless="${#strings.isEmpty(account.getOrgTeam())}" th:text="${' / '}"></span>
+                                                <span th:unless="${#strings.isEmpty(account.getOrgTeam())}" th:text="${account.getOrgTeam()}"></span>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td th:text="#{label.job}" class="text-center" style="background: #FAFAFA;">업무</td>

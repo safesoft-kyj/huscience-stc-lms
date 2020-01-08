@@ -657,7 +657,7 @@ public class ApprovalCourseProcessService {
             }
 
 
-//            courseAccount = courseAccountService.save(courseAccount);
+            //courseAccount = courseAccountService.save(courseAccount);
             // 교육 과정 생성
             createUserCourse(courseAccountService.save(courseAccount));
 
@@ -669,6 +669,8 @@ public class ApprovalCourseProcessService {
 
             if (saveCourseAccount == null) {
                 saveCourseAccount = courseAccountProcess(account, course, requestType);
+                // 교육 과정 생성
+                createUserCourse(saveCourseAccount);
             }
             else {  // 상시교육은 신청 시점에 교육일을 생성한다.
                 // 상시

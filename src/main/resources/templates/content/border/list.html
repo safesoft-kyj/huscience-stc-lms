@@ -92,7 +92,7 @@
                                     </thead>
                                     <tbody>
                                     <tr th:each="border, index : ${borders}" th:class="${border.getIsNotice().equals('1')} ? 'text-success' : 'text-info'">
-                                        <td th:text="${borders.getTotalElements() - index.index}" class="text-center"></td>
+                                        <td th:text="${(borders.getTotalElements() - index.index) - (borders.number * 10)}" class="text-center"></td>
                                         <td><a th:href="@{/border/{typeId}/view/{id}(typeId=${typeId}, id=${border.getId()})}" th:text="${border.getTitle()}" th:class="${border.getIsNotice().equals('1')} ? 'text-success' : 'text-info'"></a></td>
                                         <td  class="text-center">
                                             <span th:if="${#strings.equalsIgnoreCase(border.getIsNotice(), '1')}">!</span>

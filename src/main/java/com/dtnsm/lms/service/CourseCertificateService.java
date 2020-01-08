@@ -2,16 +2,26 @@ package com.dtnsm.lms.service;
 
 import com.dtnsm.common.entity.Signature;
 import com.dtnsm.common.repository.SignatureRepository;
-import com.dtnsm.lms.domain.CourseAccount;
-import com.dtnsm.lms.domain.CourseCertificateInfo;
-import com.dtnsm.lms.domain.CourseCertificateLog;
-import com.dtnsm.lms.domain.CourseCertificateNumber;
+import com.dtnsm.lms.domain.*;
+import com.dtnsm.lms.domain.DTO.CommonUtilities;
+import com.dtnsm.lms.domain.datasource.CertificateSource;
+import com.dtnsm.lms.properties.FileUploadProperties;
+import com.dtnsm.lms.repository.CertificateFileRepository;
 import com.dtnsm.lms.repository.CourseCertificateInfoRepository;
 import com.dtnsm.lms.repository.CourseCertificateLogRepository;
 import com.dtnsm.lms.repository.CourseCertificateNumberRepository;
 import com.dtnsm.lms.util.DateUtil;
+import com.dtnsm.lms.util.SessionUtil;
+import com.groupdocs.assembly.DataSourceInfo;
+import com.groupdocs.assembly.DocumentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.xml.bind.DatatypeConverter;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Service
 public class CourseCertificateService {
@@ -26,6 +36,12 @@ public class CourseCertificateService {
     CourseCertificateLogRepository courseCertificateLogRepository;
 
     @Autowired
+    CertificateFileService certificateFileService;
+
+    @Autowired
+    CertificateFileRepository certificateFileRepository;
+
+    @Autowired
     private SignatureRepository signatureRepository;
 
     @Autowired
@@ -34,6 +50,11 @@ public class CourseCertificateService {
     @Autowired
     CourseAccountService courseAccountService;
 
+    public FileUploadProperties prop;
+
+    public CourseCertificateService(FileUploadProperties prop) {
+        this.prop = prop;
+    }
 
     // 새로운 수료증 번호 받기
     public CourseCertificateNumber newCertificateNumber(String cerText, String cerYear, CourseAccount courseAccount) {
@@ -97,8 +118,12 @@ public class CourseCertificateService {
         CourseCertificateLog courseCertificateLog1 = courseCertificateLogRepository.save(courseCertificateLog);
 
         // 과정 사용자 정보에 수료증 정보를 업데이트 한다.
+        courseAccount.setCertificateBindDate(DateUtil.getTodayDate());
         courseAccount.setCourseCertificateLog(courseCertificateLog1);
-        courseAccountService.save(courseAccount);
+        CourseAccount courseAccount1 = courseAccountService.save(courseAccount);
+
+        // 수료증 파일을 생성한다.
+        createCertificationFile(courseAccount1);
 
         return courseCertificateLog1;
     }
@@ -108,5 +133,126 @@ public class CourseCertificateService {
     public CourseCertificateLog getCourseCertificateLog(Long docId) {
 
         return courseCertificateLogRepository.findByCourseAccount_Id(docId);
+    }
+
+
+    public boolean createCertificationFile(CourseAccount courseAccount) {
+
+        // GroupDoc 라이센스
+        CommonUtilities.applyLicense();
+
+        // 파일 기본 경로
+        String sourceRootFoloer = prop.getXdocUploadDir() + "Data//Storage//";
+        String outputRootFoloer = prop.getCertificateUploadDir();
+
+        String userId = SessionUtil.getUserId();
+        long timestamp = System.currentTimeMillis();
+
+        // Employee Training Log Template 파일 및 출력 파일 지정
+        String srcCertificationTemplateFileName = "etl_certi.docx";
+        String outputCertificationFileName = String.format("%s_%s_certi.pdf", timestamp, userId);
+
+        // 수료증 Full Path
+        String srcCertificationFilePath = sourceRootFoloer + srcCertificationTemplateFileName;
+        String outputCertificationFilePath = outputRootFoloer + outputCertificationFileName;
+
+        try {
+            // Employee Training Log Data
+            CertificateSource certificateSource = this.getCertificateSource(userId, timestamp, courseAccount.getId());
+
+            // Employee Training Log Data를 source에 추가한다.
+            DataSourceInfo dataSourceInfo = new DataSourceInfo(certificateSource, null);
+
+            DocumentAssembler assembler = new DocumentAssembler();
+//            assembler.getKnownTypes().add(EmployeeTrainingLogSource.class);
+//            assembler.getKnownTypes().add(CourseTrainingLog.class);
+//            assembler.getKnownTypes().add(Account.class);
+
+//            assembler.setOptions(DocumentAssemblyOptions.UPDATE_FIELDS_AND_FORMULAS);
+//            assembler.assembleDocument(in, out, new DataSourceInfo( accountList, "accountList"));
+
+            // 1. Employee Training Log File 생성
+            assembler.assembleDocument(srcCertificationFilePath, outputCertificationFilePath , dataSourceInfo);
+
+            // 수료증 파일 생성후 File 정보를 기록한다.
+            File file = new File(outputCertificationFilePath);
+            if(file.exists()) {
+                if (courseAccount != null) {
+                    Path source = Paths.get(outputCertificationFilePath);
+                    String mimeType = Files.probeContentType(source);
+                    String fileName = courseAccount.getCourse().getTitle() + " 수료증.pdf";
+
+                    CertificateFile uploadFile = new CertificateFile(fileName, outputCertificationFileName, file.length(), mimeType, courseAccount.getAccount(), courseAccount);
+                    certificateFileRepository.save(uploadFile);
+                }
+            }
+
+        } catch (Exception exp) {
+            System.out.println("Exception: " + exp.getMessage());
+        }
+
+        return true;
+    }
+
+
+    // 수료증 PDF 파일 생성에 필요한 기본 정보 가져오기
+    public CertificateSource getCertificateSource(String userId, long timestamp, long docId) {
+
+        // 라이센스
+//        CommonUtilities.applyLicense();
+
+        // 사용자별 과정 정보
+        CourseAccount courseAccount = courseAccountService.getById(docId);
+
+        // 사용자별 수료증 로그
+        CourseCertificateLog certificateLog = courseCertificateLogRepository.findByCourseAccount_Id(docId);
+
+        // 관리자1 정보
+        Account man1 = certificateLog.getCerManager1();
+        // 관리자2 정보
+        Account man2 = certificateLog.getCerManager2();
+
+        // Employee Training Log Data Source 생성
+        CertificateSource trainingLogSource = new CertificateSource("CertificateSource");
+
+        // 관리자1 사인정보
+        byte[] imageBytes1 = null;
+        // 관리자2 사인정보
+        byte[] imageBytes2 = null;
+
+        if (!certificateLog.getCerManagerSign1().isEmpty()) {
+            String data = certificateLog.getCerManagerSign1().split(",")[1];
+            imageBytes1 = DatatypeConverter.parseBase64Binary(data);
+        }
+
+        if (!certificateLog.getCerManagerSign2().isEmpty()) {
+            String data = certificateLog.getCerManagerSign1().split(",")[1];
+            imageBytes2 = DatatypeConverter.parseBase64Binary(data);
+        }
+
+        // 교육기간 지정
+        String prior = "";
+        // 과정 시작일과 종료일이 같은 경우
+        if (courseAccount.getFromDate().equals(courseAccount.getToDate())) {
+            prior = String.format("On %s", courseAccount.getFromDate());
+        } else {
+            prior = String.format("From %s to %s"
+                    , DateUtil.getDateToString(DateUtil.getStringToDate(courseAccount.getFromDate()), "dd MMM yyyy")
+                    , DateUtil.getDateToString(DateUtil.getStringToDate(courseAccount.getToDate()), "dd MMM yyyy"));
+        }
+
+        // TODO : Job Title 로 변경
+        trainingLogSource.setNo(certificateLog.getCerNo());
+        trainingLogSource.setName(courseAccount.getAccount().getEngName());
+        trainingLogSource.setCourseTitle(courseAccount.getCourse().getTitle());
+        trainingLogSource.setDepart1(man1.getOrgDepart().isEmpty() ? certificateLog.getCerManagerText1() : man1.getOrgDepart() );
+        trainingLogSource.setDepart2(man2.getOrgDepart().isEmpty() ? certificateLog.getCerManagerText2() : man2.getOrgDepart() );
+        trainingLogSource.setManName1(man1.getEngName().isEmpty() ? man1.getName() : man1.getEngName());
+        trainingLogSource.setManName2(man2.getEngName().isEmpty() ? man2.getName() : man2.getEngName());
+        trainingLogSource.setSign1(imageBytes1);
+        trainingLogSource.setSign2(imageBytes2);
+        trainingLogSource.setPrior(prior);
+
+        return trainingLogSource;
     }
 }
