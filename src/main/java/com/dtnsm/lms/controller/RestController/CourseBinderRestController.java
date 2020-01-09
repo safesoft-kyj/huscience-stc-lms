@@ -14,10 +14,14 @@ import com.dtnsm.lms.service.CourseCertificateService;
 import com.dtnsm.lms.util.SessionUtil;
 import com.groupdocs.assembly.DataSourceInfo;
 import com.groupdocs.assembly.DocumentAssembler;
+import com.groupdocs.assembly.DocumentAssemblyOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 @RestController
@@ -50,11 +54,14 @@ public class CourseBinderRestController {
     public boolean createBindLog() {
 
         // GroupDoc 라이센스
+        // TODO : groupdoc License 호출
         CommonUtilities.applyLicense();
 
         // 파일 기본 경로
         String sourceRootFoloer = prop.getXdocUploadDir() + "Data//Storage//";
         String outputRootFoloer = prop.getXdocUploadDir() + "Data//Output//";
+
+
 
         String userId = SessionUtil.getUserId();
         long timestamp = System.currentTimeMillis();
@@ -67,6 +74,9 @@ public class CourseBinderRestController {
         // Employee Training Log Full Path
         String srcEmployeeLogFilePath = sourceRootFoloer + srcEmployeeLogTemplateFileName;
         String outputEmployeeLogFilePath = outputRootFoloer + outputEmployeeLogFileName;
+
+        Path sourcePath = Paths.get(sourceRootFoloer, srcEmployeeLogTemplateFileName);
+        Path outputPath = Paths.get(outputRootFoloer, outputEmployeeLogFileName);
 
         // 수료증 Full Path
         String outputCertificationFilePath = outputRootFoloer + outputCertificationFileName;
@@ -86,11 +96,19 @@ public class CourseBinderRestController {
 //            assembler.setOptions(DocumentAssemblyOptions.UPDATE_FIELDS_AND_FORMULAS);
 //            assembler.assembleDocument(in, out, new DataSourceInfo( accountList, "accountList"));
 
-            // 1. Employee Training Log File 생성
-            assembler.assembleDocument(srcEmployeeLogFilePath, outputEmployeeLogFilePath , dataSourceInfo);
-
             // 2. 수료증 파일 병합(파일생성)
             certificateFileService.createCertificateFileMerge(userId, timestamp, outputCertificationFilePath);
+
+            // 1. Employee Training Log File 생성
+            System.out.println("sourcePath : " + sourcePath.toString());
+            System.out.println("outputPath : " + outputPath.toString());
+
+            assembler.setOptions(DocumentAssemblyOptions.INLINE_ERROR_MESSAGES);
+
+            assembler.assembleDocument(sourcePath.toString(), outputPath.toString() , dataSourceInfo);
+//            assembler.assembleDocument(srcEmployeeLogFilePath, outputEmployeeLogFilePath , dataSourceInfo);
+//            assembler.assembleDocument(CommonUtilities.getDataPath(srcEmployeeLogTemplateFileName)
+//                    , CommonUtilities.getOutPath(outputEmployeeLogFileName) , dataSourceInfo);
 
         } catch (Exception exp) {
             System.out.println("Exception: " + exp.getMessage());
@@ -104,6 +122,7 @@ public class CourseBinderRestController {
     public boolean createBindCertification(@RequestParam("docId") long docId) {
 
         // GroupDoc 라이센스
+        // TODO : groupdoc License 호출
         CommonUtilities.applyLicense();
 
         // 파일 기본 경로
@@ -133,7 +152,7 @@ public class CourseBinderRestController {
 //            assembler.getKnownTypes().add(CourseTrainingLog.class);
 //            assembler.getKnownTypes().add(Account.class);
 
-//            assembler.setOptions(DocumentAssemblyOptions.UPDATE_FIELDS_AND_FORMULAS);
+            assembler.setOptions(DocumentAssemblyOptions.INLINE_ERROR_MESSAGES);
 //            assembler.assembleDocument(in, out, new DataSourceInfo( accountList, "accountList"));
 
             // 1. Employee Training Log File 생성

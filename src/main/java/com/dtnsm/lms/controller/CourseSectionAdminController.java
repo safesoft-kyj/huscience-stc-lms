@@ -1,15 +1,15 @@
 package com.dtnsm.lms.controller;
 
-import com.dtnsm.lms.domain.*;
-import com.dtnsm.lms.service.*;
+import com.dtnsm.lms.domain.Course;
+import com.dtnsm.lms.domain.CourseMaster;
+import com.dtnsm.lms.domain.CourseSection;
+import com.dtnsm.lms.domain.CourseSectionFile;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
+import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,6 @@ import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -31,7 +30,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/admin/course")
 public class CourseSectionAdminController {
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseSectionAdminController.class);
+//    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseSectionAdminController.class);
 
     @Autowired
     CodeService codeService;

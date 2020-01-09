@@ -2,7 +2,6 @@ package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.domain.Border;
 import com.dtnsm.lms.domain.BorderFile;
-import com.dtnsm.lms.domain.Course;
 import com.dtnsm.lms.domain.QBorder;
 import com.dtnsm.lms.repository.BorderRepository;
 import com.dtnsm.lms.service.BorderFileService;
@@ -13,7 +12,6 @@ import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 import com.querydsl.core.BooleanBuilder;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -35,8 +33,6 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/border")
 public class BorderController {
-
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(BorderController.class);
 
     @Autowired
     BorderMasterService borderMasterService;

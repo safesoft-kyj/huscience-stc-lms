@@ -99,7 +99,7 @@ public class CourseCertificateService {
 
         // 대표자의 서명을 가지고 온다.
         Signature optionalSignature2 = signatureService.getSignature(courseCertificateInfo.getCerManager2().getUserId());
-        String sign2 = optionalSignature != null ? optionalSignature2.getBase64signature() : "";
+        String sign2 = optionalSignature2 != null ? optionalSignature2.getBase64signature() : "";
 
         CourseCertificateLog courseCertificateLog = new CourseCertificateLog();
         courseCertificateLog.setCerNo(courseCertificateNumber.getFullNumber());
@@ -245,8 +245,8 @@ public class CourseCertificateService {
         trainingLogSource.setNo(certificateLog.getCerNo());
         trainingLogSource.setName(courseAccount.getAccount().getEngName());
         trainingLogSource.setCourseTitle(courseAccount.getCourse().getTitle());
-        trainingLogSource.setDepart1(man1.getOrgDepart().isEmpty() ? certificateLog.getCerManagerText1() : man1.getOrgDepart() );
-        trainingLogSource.setDepart2(man2.getOrgDepart().isEmpty() ? certificateLog.getCerManagerText2() : man2.getOrgDepart() );
+        trainingLogSource.setDepart1(certificateLog.getCerManagerText1().isEmpty() ? man1.getOrgDepart() : certificateLog.getCerManagerText1() );
+        trainingLogSource.setDepart2(certificateLog.getCerManagerText2().isEmpty() ? man2.getOrgDepart() : certificateLog.getCerManagerText2() );
         trainingLogSource.setManName1(man1.getEngName().isEmpty() ? man1.getName() : man1.getEngName());
         trainingLogSource.setManName2(man2.getEngName().isEmpty() ? man2.getName() : man2.getEngName());
         trainingLogSource.setSign1(imageBytes1);

@@ -1,17 +1,14 @@
 package com.dtnsm.lms.controller.RestController;
 
 import com.dtnsm.lms.domain.Course;
-import com.dtnsm.lms.domain.CourseAccount;
-import com.dtnsm.lms.domain.constant.CourseStepStatus;
+import com.dtnsm.lms.mybatis.dto.CalendarVO;
 import com.dtnsm.lms.mybatis.dto.CourseCalendarVO;
 import com.dtnsm.lms.mybatis.service.CourseMapperService;
 import com.dtnsm.lms.service.CourseAccountService;
 import com.dtnsm.lms.service.CourseService;
-import com.dtnsm.lms.mybatis.dto.CalendarVO;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.SessionUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,13 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/info/api")
 public class CalendarRestController {
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CalendarRestController.class);
+//    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CalendarRestController.class);
 
     @Autowired
     CourseService courseService;

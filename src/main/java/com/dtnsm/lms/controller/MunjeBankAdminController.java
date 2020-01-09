@@ -22,7 +22,7 @@ import javax.validation.Valid;
 @RequestMapping("/admin/munjeBank")
 public class MunjeBankAdminController {
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(MunjeBankAdminController.class);
+//    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(MunjeBankAdminController.class);
 
     @Autowired
     MunjeBankService munjeBankService;

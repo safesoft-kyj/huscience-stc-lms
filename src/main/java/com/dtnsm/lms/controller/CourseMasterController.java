@@ -1,13 +1,12 @@
 package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.component.CourseScheduler;
+import com.dtnsm.lms.domain.CourseMaster;
 import com.dtnsm.lms.domain.ElMinor;
 import com.dtnsm.lms.service.CodeService;
-import com.dtnsm.lms.domain.CourseMaster;
 import com.dtnsm.lms.service.CourseMasterService;
 import com.dtnsm.lms.service.CourseService;
 import com.dtnsm.lms.util.PageInfo;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -26,7 +25,7 @@ import java.util.List;
 @RequestMapping("/admin/course-master")
 public class CourseMasterController {
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseMasterController.class);
+//    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseMasterController.class);
 
     @Autowired
     CourseMasterService courseMasterService;

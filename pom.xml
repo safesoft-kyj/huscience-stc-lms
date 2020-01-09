@@ -246,28 +246,50 @@
             <version>6.1.2</version>
         </dependency>
 
-    </dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+<!--            <version>1.7.5</version>-->
+        </dependency>
 
+    </dependencies>
     <build>
+        <!-- groupdocs 서버 셋팅 오류를 처리하기 위한 설정 시작 -->
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
                 <configuration>
-                    <nonFilteredFileExtensions>
-                        <!-- fonts -->
-                        <nonFilteredFileExtension>eot</nonFilteredFileExtension>
-                        <nonFilteredFileExtension>svg</nonFilteredFileExtension>
-                        <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
-                        <nonFilteredFileExtension>woff</nonFilteredFileExtension>
-                        <nonFilteredFileExtension>woff2</nonFilteredFileExtension>
-                    </nonFilteredFileExtensions>
+                    <archive>
+                        <manifest>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>com.dtnsm.lms.LmsApplication</mainClass>
+                        </manifest>
+                    </archive>
                 </configuration>
             </plugin>
+            <!-- groupdocs 서버 셋팅 오류를 처리하기 위한 설정 완료 -->
             <plugin>
                 <groupId>com.mysema.maven</groupId>
                 <artifactId>apt-maven-plugin</artifactId>

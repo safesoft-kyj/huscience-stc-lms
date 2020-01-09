@@ -32,7 +32,7 @@ public class BorderFileService {
     @Autowired
     BorderFileRepository borderFileRepository;
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(BorderAdminController.class);
+//    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(BorderAdminController.class);
 
     private final Path fileLocation;
 

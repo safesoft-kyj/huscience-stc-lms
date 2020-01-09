@@ -29,7 +29,7 @@ import java.util.Optional;
 @Service
 public class BinderLogService {
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(BinderLogService.class);
+//    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(BinderLogService.class);
 
     @Autowired
     CourseTrainingLogRepository courseTrainingLogRepository;
@@ -206,7 +206,7 @@ public class BinderLogService {
             XWPFDocument doc = new XWPFDocument(multipartFile.getInputStream());
             boolean hasError = false;
             List<XWPFTable> tables = doc.getTables();
-            logger.trace("Table Size : " + tables.size());
+//            logger.trace("Table Size : " + tables.size());
             if (tables.size() == 3) {
                 XWPFTable headerTable = tables.get(0);
                 boolean isHeader = headerTable.getNumberOfRows() == 2 && headerTable.getRow(0).getTableCells().size() == 4;
@@ -215,10 +215,10 @@ public class BinderLogService {
                 boolean isLogTable = logTable.getNumberOfRows() > 1 && logTable.getRow(0).getTableCells().size() == 4;
                 if (isHeader && isLogTable) {
                     String empNo = headerTable.getRow(1).getCell(3).getText();
-                    logger.debug("@Employee No : {}", empNo);
+//                    logger.debug("@Employee No : {}", empNo);
 
                     if (!empNo.toUpperCase().equals(user.getComNum().toUpperCase())) {
-                        logger.warn("로그인한 사용자의 트레이닝 로그 파일 Emp No가 다름.");
+//                        logger.warn("로그인한 사용자의 트레이닝 로그 파일 Emp No가 다름.");
 
 //                     attributes.addFlashAttribute("message", "Training Log 파일의 사번과 로그인한 사용자의 사번이 다릅니다.");
                         return false;

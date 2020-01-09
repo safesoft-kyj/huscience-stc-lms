@@ -8,7 +8,6 @@ import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.GlobalUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -36,7 +35,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/document")
 public class DocumentController {
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseController.class);
+//    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseController.class);
 
     @Autowired
     MailService mailService;
@@ -271,11 +270,8 @@ public class DocumentController {
 
         DocumentTemplate template = templateService.getById(document.getTemplate().getId());
 
-
         //  교육과정 미선택시(교육참석보고시에만 선택됨)
         if (document.getCourseAccount() != null) {
-            logger.info("===================================================" + document.getCourseAccount());
-
             if (document.getCourseAccount().getId() >= 0) {
 
                 Optional<CourseAccount> courseAccount = courseAccountService.getId(document.getCourseAccount().getId());
@@ -285,8 +281,6 @@ public class DocumentController {
                 }
             }
         }
-
-
         document.setAccount(userService.getAccountByUserId(SessionUtil.getUserId()));
         document.setTemplate(template);
         Document document1 = documentService.save(document);

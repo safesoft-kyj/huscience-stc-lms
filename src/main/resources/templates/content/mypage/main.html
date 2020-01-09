@@ -173,7 +173,7 @@
                                         <span th:text="${courseAccount.getCourse().getCourseMaster().getCourseName()}"></span>
                                     </td>
                                     <td class="text-left">
-                                        <a th:href="@{/course/view/{id}(id=${courseAccount.getCourse().getId()})}">
+                                        <a th:href="@{/info/request/add/{id}(id=${courseAccount.getCourse().getId()})}">
                                             <span th:text="${courseAccount.getCourse().getTitle()}"}></span>
                                         </a>
                                     </td>

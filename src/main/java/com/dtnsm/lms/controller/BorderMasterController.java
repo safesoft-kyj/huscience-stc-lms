@@ -3,7 +3,6 @@ package com.dtnsm.lms.controller;
 import com.dtnsm.lms.domain.BorderMaster;
 import com.dtnsm.lms.service.BorderMasterService;
 import com.dtnsm.lms.util.PageInfo;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +22,7 @@ import javax.validation.Valid;
 @RequestMapping("/admin/border-master")
 public class BorderMasterController {
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(BorderMasterController.class);
+//    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(BorderMasterController.class);
 
     @Autowired
     BorderMasterService borderMasterService;

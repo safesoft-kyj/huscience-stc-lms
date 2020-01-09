@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 import com.groupdocs.assembly.License;
@@ -13,7 +14,7 @@ import com.groupdocs.assembly.License;
 //ExStart:CommonUtilities
 public class CommonUtilities {
 	//ExStart:commonPaths
-	public static final String licensePath = "C:/dev/license/GroupDocs.Total.Java.lic";
+	public static final String licensePath = "C:/Servers/deploy/GroupDocs.Total.Java.lic";
 	public static final Path dataPath = getProjectBaseDir().resolve("Data/");
 	public static final Path storagePath = getProjectBaseDir().resolve("Data/Storage/");
 	public static final Path outputPath = getProjectBaseDir().resolve("Data/Output/");
@@ -32,9 +33,11 @@ public class CommonUtilities {
 		try {
 			// Setup license
 			License lic = new License();
-			lic.setLicense(licensePath);
+			lic.setLicense(Paths.get(licensePath).toString());
+			System.out.println("licensePath: " + Paths.get(licensePath).toString());
+
 		} catch (Exception exp) {
-			System.out.println("Exception: " + exp.getMessage());
+			System.out.println("License Exception: " + exp.getMessage());
 			exp.printStackTrace();
 		}
 		//ExEnd:applyLicense

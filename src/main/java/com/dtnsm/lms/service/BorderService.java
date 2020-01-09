@@ -31,7 +31,7 @@ public class BorderService {
     @Autowired
     UserServiceImpl userService;
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(BorderController.class);
+//    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(BorderController.class);
 
     @Autowired
     BorderFileService borderFileService;
@@ -63,7 +63,7 @@ public class BorderService {
 
     public Page<Border> getPageList(String typeId, Pageable pageable) {
 
-        logger.info("수정 공지사항 갯수 : {}", updateNotice());
+//        logger.info("수정 공지사항 갯수 : {}", updateNotice());
 
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 

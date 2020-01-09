@@ -6,7 +6,6 @@ import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -21,14 +20,13 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 
 @Controller
 @RequestMapping("/course")
 public class CourseController {
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseController.class);
+//    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseController.class);
 
     @Autowired
     CourseMasterService courseMasterService;

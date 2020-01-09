@@ -22,7 +22,7 @@ import static com.dtnsm.lms.domain.constant.LmsAlarmCourseType.Request;
 @Component
 public class MailService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MailService.class);
+//    private static final Logger LOGGER = LoggerFactory.getLogger(MailService.class);
 
     @Autowired
     private TemplateEngine templateEngine;
@@ -95,7 +95,7 @@ public class MailService {
     }
 
     private void sendPreparedMail(String to, String subject, String text, Boolean isHtml) {
-        LOGGER.error("Problem with sending email to: {}, error message: {}", to, subject);
+//        LOGGER.error("Problem with sending email to: {}, error message: {}", to, subject);
 
         new Thread(() -> {
             try {
@@ -106,7 +106,8 @@ public class MailService {
                 helper.setText(text, isHtml);
                 javaMailSender.send(mail);
             } catch (Exception e) {
-                LOGGER.error("Problem with sending email to: {}, error message: {}", to, e.getMessage());
+//                LOGGER.error("Problem with sending email to: {}, error message: {}", to, e.getMessage());
+                e.printStackTrace();
             }
         }).start();
     }

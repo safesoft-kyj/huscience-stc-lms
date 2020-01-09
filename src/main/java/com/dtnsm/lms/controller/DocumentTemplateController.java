@@ -7,7 +7,6 @@ import com.dtnsm.lms.service.DocumentService;
 import com.dtnsm.lms.service.DocumentTemplateService;
 import com.dtnsm.lms.service.MailService;
 import com.dtnsm.lms.util.PageInfo;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +25,7 @@ import java.util.List;
 @RequestMapping("/admin/document/template")
 public class DocumentTemplateController {
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(DocumentTemplateController.class);
+//    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(DocumentTemplateController.class);
 
     @Autowired
     MailService mailService;

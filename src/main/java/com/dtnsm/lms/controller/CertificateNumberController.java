@@ -1,12 +1,9 @@
 package com.dtnsm.lms.controller;
 
-import com.dtnsm.lms.domain.CourseCertificateInfo;
 import com.dtnsm.lms.domain.CourseCertificateNumber;
-import com.dtnsm.lms.repository.CourseCertificateInfoRepository;
 import com.dtnsm.lms.repository.CourseCertificateNumberRepository;
 import com.dtnsm.lms.service.CourseCertificateService;
 import com.dtnsm.lms.util.PageInfo;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +19,7 @@ import javax.validation.Valid;
 @RequestMapping("/admin/certificate/number")
 public class CertificateNumberController {
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CertificateNumberController.class);
+//    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CertificateNumberController.class);
 
     @Autowired
     CourseCertificateService courseCertificateService;

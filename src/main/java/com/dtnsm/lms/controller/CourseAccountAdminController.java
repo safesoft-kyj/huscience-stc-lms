@@ -1,24 +1,21 @@
 package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.auth.UserServiceImpl;
-import com.dtnsm.lms.domain.*;
+import com.dtnsm.lms.domain.Account;
+import com.dtnsm.lms.domain.Course;
+import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.domain.constant.CourseStepStatus;
-import com.dtnsm.lms.domain.constant.TrainingType;
 import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
-import com.groupdocs.conversion.internal.c.a.cd.fileformats.cad.cadobjects.CadThumbnailImage;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -26,7 +23,7 @@ import java.util.List;
 @RequestMapping("/admin/course")
 public class CourseAccountAdminController {
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseAccountAdminController.class);
+//    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseAccountAdminController.class);
 
     @Autowired
     private UserServiceImpl userService;

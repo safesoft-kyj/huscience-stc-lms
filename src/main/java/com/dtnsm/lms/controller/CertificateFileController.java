@@ -8,8 +8,6 @@ import com.dtnsm.lms.service.MunjeBankService;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -40,7 +38,7 @@ public class CertificateFileController {
     @Autowired
     MunjeBankService munjeBankService;
 
-    private static final Logger logger = LoggerFactory.getLogger(CertificateFileController.class);
+//    private static final Logger logger = LoggerFactory.getLogger(CertificateFileController.class);
 
     @Autowired
     private CertificateFileService fileService;

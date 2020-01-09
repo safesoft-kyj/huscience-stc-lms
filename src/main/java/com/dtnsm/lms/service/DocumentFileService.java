@@ -1,6 +1,5 @@
 package com.dtnsm.lms.service;
 
-import com.dtnsm.lms.controller.DocumentTemplateController;
 import com.dtnsm.lms.domain.Document;
 import com.dtnsm.lms.domain.DocumentFile;
 import com.dtnsm.lms.exception.FileDownloadException;
@@ -9,7 +8,6 @@ import com.dtnsm.lms.properties.FileUploadProperties;
 import com.dtnsm.lms.repository.DocumentFileRepository;
 import com.dtnsm.lms.util.FileUtil;
 import org.apache.commons.io.FilenameUtils;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -25,12 +22,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.UUID;
 
 @Service
 public class DocumentFileService {
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(DocumentTemplateController.class);
+//    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(DocumentTemplateController.class);
 
     @Autowired
     DocumentFileRepository fileRepository;

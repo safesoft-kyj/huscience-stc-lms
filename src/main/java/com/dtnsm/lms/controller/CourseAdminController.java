@@ -6,7 +6,6 @@ import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -33,7 +32,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/admin/course")
 public class CourseAdminController {
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseAdminController.class);
+//    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseAdminController.class);
 
     @Autowired
     UserServiceImpl userService;
@@ -148,11 +147,11 @@ public class CourseAdminController {
         Page<Document> documentComplteList = documentAccountService.getAllByDocument_Template_IdAndIsCommit(id, "1", pageable);
 
         for(Document document : documentComplteList) {
-            logger.info(document.getTitle());
+//            logger.info(document.getTitle());
         }
 
         for(Document document : documentPorcessList) {
-            logger.info(document.getTitle());
+//            logger.info(document.getTitle());
         }
 
         model.addAttribute(pageInfo);
