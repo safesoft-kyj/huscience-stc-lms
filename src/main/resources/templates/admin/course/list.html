@@ -76,7 +76,8 @@
                                         <th class="text-center col-sm-1" th:text="#{label.title.section}">강의</th>
                                         <th class="text-center col-sm-1" th:text="#{label.title.quiz}">시험</th>
                                         <th class="text-center col-sm-1" th:text="#{label.title.survey}">설문</th>
-                                        <th class="text-center col-sm-1" th:text="#{label.course.accountlist}">교육대상자</th>
+                                        <th class="text-center col-sm-1" th:text="#{label.course.accountlist}">수강생</th>
+                                        <th class="text-center col-sm-1" th:text="#{label.course.iscerti}">수료증발급</th>
                                         <th class="text-center col-sm-3" th:text="#{label.actions}">Edit</th>
                                     </tr>
                                     </thead>
@@ -141,12 +142,17 @@
 <!--                                            <a class="label label-purple" th:if="${border.getIsQuiz().equals('Y')}" th:href="@{/admin/course/quiz/add/{id}(id=${border.getId()})}" th:text="#{label.course.add}">시험등록</a>-->
                                         </td>
                                         <td class="text-center">
-                                            <a th:if="${border.getIsSurvey().equals('Y')}" th:href="@{/admin/course/{typeId}/{courseId}/survey(typeId=${typeId}, courseId=${border.getId()})}"><span class="badge badge-warning" th:text="${border.getSurveys().size()}"></span></a>
+                                            <a th:if="${border.getIsSurvey().equals('Y')}" th:href="@{/admin/course/{typeId}/{courseId}/survey(typeId=${typeId}, courseId=${border.getId()})}"><span class="badge badge-purple" th:text="${border.getSurveys().size()}"></span></a>
 <!--                                            <a class="label label-mint" th:if="${border.getIsSurvey().equals('Y')}" th:href="@{/admin/course/survey/add/{id}(id=${border.getId()})}" th:text="#{label.course.add}">설문등록</a>-->
                                         </td>
                                         <td class="text-center">
                                             <a th:href="@{/admin/course/{typeId}/{courseId}/account(typeId=${typeId}, courseId=${border.getId()})}"><span class="badge badge-warning" th:text="${border.getCourseAccountList().size()}"></span></a>
                                             <!--                                            <a class="label label-mint" th:if="${border.getIsSurvey().equals('Y')}" th:href="@{/admin/course/survey/add/{id}(id=${border.getId()})}" th:text="#{label.course.add}">설문등록</a>-->
+                                        </td>
+                                        <!-- 수료증 발급 -->
+                                        <td class="text-center">
+                                            <span th:if="${#strings.equalsIgnoreCase(border.getIsCerti(), 'Y')}" class="badge badge-success" th:text="${border.getIsCerti()}"></span>
+                                            <span th:if="${#strings.equalsIgnoreCase(border.getIsCerti(), 'N')}" class="badge badge-pink" th:text="${border.getIsCerti()}"></span>
                                         </td>
                                         <td class="text-center">
                                             <th:block th:if="${border.getActive() == 1}">

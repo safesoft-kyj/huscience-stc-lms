@@ -149,7 +149,7 @@
                             </div>
                             <span th:if="${#fields.hasErrors('isSurvey')}" th:errors="*{isSurvey}"></span>
                         </div>
-                        <div class="form-group" style="display: none" id="certi-detail">
+                        <div class="form-group" id="certi-detail">
                             <label class="col-sm-2 control-label text-info" th:text="#{label.course.certiHeadText}">발급번호(HeadText)</label>
                             <div class="col-sm-10">
                                 <input type="text" th:field="*{certiHead}" id="certiHead" placeholder="수료증 발급번호" class="form-control" onKeyUp="this.value=this.value.toUpperCase();">
@@ -164,12 +164,13 @@
                             </div>
                             <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" th:text="#{label.file}">첨부파일</label>
-                            <div class="col-sm-10">
-                                <div th:switch="${course.getCourseFiles().isEmpty()}">
-                                    <div th:case="true"></div>
-                                    <div th:case="*">
+                        <div th:switch="${course.getCourseFiles().isEmpty()}">
+                            <div th:case="true"></div>
+                            <div th:case="*">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" th:text="#{label.file}">첨부파일</label>
+                                    <div class="col-sm-10">
+
                                         <table id="customer-list-page" class="table table-striped table-courseed" cellspacing="0" width="100%">
                                             <thead>
                                             <tr>
@@ -194,7 +195,6 @@
                                 </div>
                             </div>
                         </div>
-
 
                         <div class="form-group" th:each="num: ${#numbers.sequence(1,1)}">
                             <label class="col-sm-2 control-label" for="editor" th:text="#{label.file} + ${num}">첨부파일</label>
@@ -353,15 +353,16 @@
 
                 //id가 smarteditor인 textarea에 에디터에서 대입
                 obj.getById["editor"].exec("UPDATE_CONTENTS_FIELD", []);
-
-                //id가 smarteditor인 textarea에 에디터에서 대입
-                // obj2.getById["agenda"].exec("UPDATE_CONTENTS_FIELD", []);
-                //폼 submit
-                // $("#boardFrm").submit();
             });
+
+            // 수료증
+            // self 교육등록시에는 상시를 활성화시키고 기간을 숨긴다.
+            // if($("#isCerti").is(":checked")){
+            //     $('#certi-detail').hide();
+            // }else{
+            //     $('#certi-detail').show();
+            // }
         });
-
-
 
         $('#demo-dp-range .input-daterange').datepicker({
             // format: "MM dd, yyyy",
@@ -381,42 +382,16 @@
 
 
         // 수료증
-        $('#isCerti').change(function() {
-            if($('#isCerti option:selected').val() == "Y") {
-                $('#certi-detail').show();
-            } else {
-                $('#certi-detail').hide();
-            }
-        });
-
-        // $('#mailList, #mailList2').chosen({width:'100%'});
-        //
-        // $("#btnOrg").on("click", function() {
-        //     var url = "/admin/depart/treeView";
-        //     // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
-        //     var popupX = (window.screen.width / 2) - (800 / 2);
-        //     // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
-        //     var popupY= (window.screen.height / 2) - (550 / 2);
-        //
-        //     var name = "조직도";
-        //     var option = "width = 800, height = 550, top = 100, left = 200, menubar=no,directories=no, location = no, scrollbars=no, resizable=no"
-        //     option += ", left=" + popupX + ", top=" + popupY;
-        //     window.open(url, name, option);
+        // $('#isCerti').change(function() {
+        //     if($('#isCerti option:selected').val() == "Y") {
+        //         $('#certi-detail').show();
+        //     } else {
+        //         $('#certi-detail').hide();
+        //     }
         // });
-        //
-        // // 조직도에서 사용자 ID를 받아 온다(배열로 받아옴)
-        // function selectMailList(selectOptionArray) {
-        //
-        //     // 싱글값 변경
-        //     // $('#select-id').val("22").trigger('chosen:updated');
-        //     // 여러값 변경시는 배열로 전달
-        //     $('#mailList').val(selectOptionArray).trigger('chosen:updated');
-        // }
 
     </script>
 
-    <!--Form File Upload [ SAMPLE ]-->
-<!--    <script th:src="@{/default/js/demo/form-file-upload.js}"></script>-->
 </th:block>
 
 </html>
