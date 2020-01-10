@@ -161,11 +161,11 @@
                                                                 <th:block th:if="${#strings.equalsIgnoreCase(section.getCourse().getCourseMaster().getId(), 'BC0102')}">
                                                                     <div th:text="${section.getCourse().getTitle()}"></div>
                                                                     <div th:text="${section.getName()}"></div>
-                                                                    <div th:text="${section.getDescription()}"></div>
+                                                                    <div th:utext="${section.getDescription().replaceAll('\r\n', '<br>')}"></div>
                                                                 </th:block>
                                                                 <!-- class 교육외에는 강의명 -->
                                                                 <th:block th:unless="${#strings.equalsIgnoreCase(section.getCourse().getCourseMaster().getId(), 'BC0102')}">
-                                                                    <div th:text="#{label.title.section}"></div>
+                                                                    <div th:text="${section.getName()}"></div>
                                                                 </th:block>
                                                             </td>
                                                             <td th:text="${section.getStudyDate()}" class="text-center"></td>

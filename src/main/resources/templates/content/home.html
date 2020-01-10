@@ -89,7 +89,7 @@
                                                         <tbody>
                                                         <tr th:each="border, index : ${borders1}">
                                                             <td>
-                                                                <a th:href="@{/border/BA0101/view/{id}(id=${border.getId()})}" th:class="${border.getIsNotice().equals('1')} ? 'text-success' : 'text-info'">
+                                                                <a th:href="@{/border/BA0101/view/{id}(id=${border.getId()})}" th:class="${border.getIsNotice().equals('1')} ? 'text-success' : ''">
                                                                     <th:block th:if="${#strings.length(border.getTitle()) > 30}">
                                                                         <span th:text="${#strings.substring(border.getTitle(), 0, 30) + '...'}"></span>
                                                                     </th:block>
@@ -158,7 +158,7 @@
                                                     <tbody>
                                                     <tr th:each="border, index : ${borders2}">
                                                         <td>
-                                                            <a th:href="@{/border/BA0102/view/{id}(id=${border.getId()})}" th:class="${border.getIsNotice().equals('1')} ? 'text-success' : 'text-info'">
+                                                            <a th:href="@{/border/BA0102/view/{id}(id=${border.getId()})}" th:class="${border.getIsNotice().equals('1')} ? 'text-success' : ''">
                                                                 <th:block th:if="${#strings.length(border.getTitle()) > 30}">
                                                                     <span th:text="${#strings.substring(border.getTitle(), 0, 30) + '...'}"></span>
                                                                 </th:block>
@@ -305,7 +305,7 @@
                                                     <tbody>
                                                     <tr th:each="border, index : ${borders3}">
                                                         <td>
-                                                            <a th:href="@{/border/BA0103/view/{id}(id=${border.getId()})}" th:class="${border.getIsNotice().equals('1')} ? 'text-success' : 'text-info'">
+                                                            <a th:href="@{/border/BA0103/view/{id}(id=${border.getId()})}" th:class="${border.getIsNotice().equals('1')} ? 'text-success' : ''">
                                                                 <th:block th:if="${#strings.length(border.getTitle()) > 30}">
                                                                     <span th:text="${#strings.substring(border.getTitle(), 0, 30) + '...'}"></span>
                                                                 </th:block>

@@ -248,14 +248,14 @@ public class CourseScheduler {
 
         // 교육일이 종료되고 교육완료보고서를 작성해야하는 사용자에게 알림 발송(외부교육만)
         for (CourseAccount courseAccount : courseAccountMapperService.getCourseReportAlarm("BC0104", -1)) {
-//            MessageUtil.sendNotificationMessage(LmsAlarmCourseType.CourseReportApproach, courseAccount.getAccount(), courseAccount.getCourse());
-            MessageUtil.sendNotification(LmsAlarmCourseType.CourseReportApproach, courseAccount.getAccount(), courseAccount.getCourse());
+            MessageUtil.sendNotificationMessage(LmsAlarmCourseType.CourseReportApproach, courseAccount.getAccount(), courseAccount.getCourse());
+//            MessageUtil.sendNotification(LmsAlarmCourseType.CourseReportApproach, courseAccount.getAccount(), courseAccount.getCourse());
         }
 
         // 교육일이 7일로 임박한 사용자에게 알림 발송(Self 교육만)
         for (CourseAccount courseAccount : courseAccountMapperService.getCourseToDateAlarm("BC0101", -7)) {
-//            MessageUtil.sendNotificationMessage(LmsAlarmCourseType.CourseToDateApproach, courseAccount.getAccount(), courseAccount.getCourse());
-            MessageUtil.sendNotification(LmsAlarmCourseType.CourseToDateApproach, courseAccount.getAccount(), courseAccount.getCourse());
+            MessageUtil.sendNotificationMessage(LmsAlarmCourseType.CourseToDateApproach, courseAccount.getAccount(), courseAccount.getCourse());
+            //MessageUtil.sendNotification(LmsAlarmCourseType.CourseToDateApproach, courseAccount.getAccount(), courseAccount.getCourse());
         }
     }
 }

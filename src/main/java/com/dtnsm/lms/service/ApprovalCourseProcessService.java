@@ -662,7 +662,7 @@ public class ApprovalCourseProcessService {
             createUserCourse(courseAccountService.save(courseAccount));
 
             // 알람 및 메세지 전송
-            MessageUtil.sendNotificationMessage(LmsAlarmCourseType.CourseAccountAssign, account, course, "<a href='/mypage/main'>교육현황 바로가기</a>");
+            MessageUtil.sendNotificationMessage(LmsAlarmCourseType.CourseAccountAssign, account, course, "<a href='http://lms.dtnsm.com/mypage/main'>교육현황 바로가기</a>");
 
         } else {
             CourseAccount saveCourseAccount = courseAccountService.getByCourseIdAndUserId(course.getId(), account.getUserId());

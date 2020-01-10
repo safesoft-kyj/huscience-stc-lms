@@ -122,7 +122,7 @@ public class CourseAccountService {
 
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.ASC, "isCommit", "toDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "fromDate", "isCommit"));
 
         return courseAccountRepository.findByAccount_UserIdAndCourse_CourseMaster_idLikeAndCourse_TitleLikeAndCourseStatusLike(userId, typeId, title, courseStepStatus, pageable);
     }
@@ -132,7 +132,7 @@ public class CourseAccountService {
 
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
-        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.ASC, "isCommit", "toDate"));
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "fromDate", "isCommit"));
 
         return courseAccountRepository.findByAccount_UserIdAndCourse_CourseMaster_idLikeAndCourse_TitleLike(userId, typeId, title, pageable);
     }

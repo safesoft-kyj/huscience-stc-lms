@@ -57,12 +57,12 @@ public class LmsNotificationService {
 
         if (lmsAlarmType == LmsAlarmType.ParentUser) {
             lmsNotification.setAlarmGubun(LmsAlarmGubun.WARNING);
-            lmsNotification.setTitle("<a class='text-info' href='/mypage/myInfo'>상위결재권자 미설정</a>");
+            lmsNotification.setTitle("<a class='text-info' href='http://lms.dtnsm.com/mypage/myInfo'>상위결재권자 미설정</a>");
             lmsNotification.setContent("상위결재권자는 교육신청이나 전자결재 전 필히 지정하셔야 합니다.");
 
         } else if (lmsAlarmType == LmsAlarmType.Sign) {
             lmsNotification.setAlarmGubun(LmsAlarmGubun.INFO);
-            lmsNotification.setTitle("<a class='text-info' href='/mypage/myInfo'>사인 미등록<a>");
+            lmsNotification.setTitle("<a class='text-info' href='http://lms.dtnsm.com/mypage/myInfo'>사인 미등록<a>");
             lmsNotification.setContent("사인이 미등록 되었습니다.");
 
         } else if (lmsAlarmType == LmsAlarmType.Manager) {

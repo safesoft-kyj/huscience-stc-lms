@@ -76,7 +76,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="teacher" th:text="#{label.teacher}">강사명</label>
                             <div class="col-sm-10">
-                                <input type="text" th:field="*{teacher}" id="teacher" placeholder="" class="form-control" required="required">
+                                <input type="text" th:field="*{teacher}" id="teacher" placeholder="" class="form-control">
                             </div>
                             <span th:if="${#fields.hasErrors('teacher')}" th:errors="*{teacher}"></span>
                         </div>
