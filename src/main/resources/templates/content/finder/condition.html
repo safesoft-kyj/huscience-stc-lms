@@ -37,6 +37,9 @@
         <!--Page content-->
         <!--===================================================-->
         <div id="page-content">
+            <form name="f" id="blindcvForm" method="post" action="/finder/blindcv">
+                <input name="username" id="username">
+            </form>
             <div class="panel">
                 <div class="panel-heading">
                     <h6 class="panel-title">
@@ -105,8 +108,11 @@
                     <ul class="list-group bord-no">
                         <li class="list-group-item list-item-lg" th:each="cv, stat : ${cvList}">
                             <div class="media-heading">
+                                <div class="pull-right">
+                                    <button class="btn btn-info" name="blind_btn" th:attr="data-username=${cv.account.userId}"><i class="fa fa-file-text-o"></i> Blind CV</button>
+                                </div>
 <!--                                <span class="label label-primary v-middle">New</span>-->
-                                <a class="btn-link text-lg text-semibold v-middle" href="#"><span th:text="|${cv.account.orgDepart}/${cv.account.engName}|"></span> </a>
+                                <a class="btn-link text-lg text-semibold v-middle" href="#"><span th:text="|${cv.account.engName}|"></span> </a>
                             </div>
 <!--                            <p><a class="btn-link text-success" href="#">http://www.example.com/nifty/admin</a></p>-->
                             <div>
@@ -157,6 +163,11 @@
 
             // console.log($sel.find("option").eq(0));//.addClass('bg-gray').trigger("change");
         }).trigger("change");
+
+        $("button[name='blind_btn']").click(function() {
+           $('#username').val($(this).data('username'));
+           $("#blindcvForm").submit();
+        });
     </script>
 </th:block>
 

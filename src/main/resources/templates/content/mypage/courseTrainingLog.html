@@ -135,9 +135,9 @@
                 data: {},
                 dataType: 'JSON',
                 async: false,
-                success: function (data) {
-                    if (data) {
-                        alert('배포가 정상적으로 처리되었습니다.')
+                success: function (res) {
+                    if (res) {
+                        alert(res.message)
                     }
                 },
                 error: function (e) {

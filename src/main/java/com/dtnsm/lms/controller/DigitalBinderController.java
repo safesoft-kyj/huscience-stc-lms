@@ -109,7 +109,10 @@ public class DigitalBinderController {
 
         Optional<CurriculumVitae> optionalCV = getCurrentCurriculumVitae(userId);
         if(optionalCV.isPresent()) {
-            trainingRecordReview.setCurriculumVitae(optionalCV.get());
+            CurriculumVitae cv = optionalCV.get();
+            if(!cv.isReviewed()) {
+                trainingRecordReview.setCurriculumVitae(cv);
+            }
         }
 
         BooleanBuilder builder = new BooleanBuilder();
@@ -135,11 +138,16 @@ public class DigitalBinderController {
             List<UserJobDescription> jobDescriptionList = StreamSupport.stream(jobDescriptions.spliterator(), false)
                     .collect(Collectors.toList());
             for(UserJobDescription userJobDescription : jobDescriptionList) {
-                TrainingRecordReviewJd trainingRecordReviewJd = new TrainingRecordReviewJd();
-                trainingRecordReviewJd.setTrainingRecordReview(savedTrainingRecordReview);
-                trainingRecordReviewJd.setUserJobDescription(userJobDescription);
+                QTrainingRecordReviewJd qTrainingRecordReviewJd = QTrainingRecordReviewJd.trainingRecordReviewJd;
+                BooleanBuilder jdBuilder = new BooleanBuilder();
+                jdBuilder.and(qTrainingRecordReviewJd.userJobDescription.id.eq(userJobDescription.getId()));
+                if(trainingRecordReviewJdRepository.findOne(jdBuilder).isPresent() == false) {
+                    TrainingRecordReviewJd trainingRecordReviewJd = new TrainingRecordReviewJd();
+                    trainingRecordReviewJd.setTrainingRecordReview(savedTrainingRecordReview);
+                    trainingRecordReviewJd.setUserJobDescription(userJobDescription);
 
-                trainingRecordReviewJdRepository.save(trainingRecordReviewJd);
+                    trainingRecordReviewJdRepository.save(trainingRecordReviewJd);
+                }
             }
         }
         attributes.addFlashAttribute("returnMessage", "매니저에게 검토를 요청하였습니다.");
@@ -187,7 +195,7 @@ public class DigitalBinderController {
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qCurriculumVitae.status.eq(CurriculumVitaeStatus.CURRENT));
         builder.and(qCurriculumVitae.account.userId.eq(userId));
-        builder.and(qCurriculumVitae.reviewed.eq(false));
+//        builder.and(qCurriculumVitae.reviewed.eq(false));
         return curriculumVitaeRepository.findOne(builder);
     }
 
@@ -218,7 +226,7 @@ public class DigitalBinderController {
             builder.and(qUserJobDescription.status.in(statusList));
         }
         builder.and(qUserJobDescription.username.eq(userId));
-        builder.and(qUserJobDescription.reviewed.eq(false));
+//        builder.and(qUserJobDescription.reviewed.eq(false));
 
         return userJobDescriptionRepository.findAll(builder, qUserJobDescription.id.desc());
     }
@@ -257,5 +265,26 @@ public class DigitalBinderController {
         }
 
         return "content/binder/trainingLog";
+    }
+
+    @GetMapping("/binder/certification")
+    public String getCertification(Model model) {
+        pageInfo.setPageId("t-cert");
+        pageInfo.setPageTitle("Certification");
+        model.addAttribute(pageInfo);
+
+        QTrainingRecord qTrainingRecord = QTrainingRecord.trainingRecord;
+        BooleanBuilder builder = new BooleanBuilder();
+//        builder.and(qTrainingRecord.status.in(TrainingRecordStatus.REVIEW, TrainingRecordStatus.REVIEWED, TrainingRecordStatus.PUBLISHED));
+        builder.and(qTrainingRecord.tmCertHtmlContent.isNotEmpty());
+        builder.and(qTrainingRecord.username.eq(SessionUtil.getUserId()));
+        Iterable<TrainingRecord> trainingRecords = trainingRecordRepository.findAll(builder, qTrainingRecord.id.desc());
+        if(ObjectUtils.isEmpty(trainingRecords)) {
+            model.addAttribute("", null);
+        } else {
+            model.addAttribute("trainingRecord", trainingRecords);
+        }
+
+        return "content/binder/certification";
     }
 }

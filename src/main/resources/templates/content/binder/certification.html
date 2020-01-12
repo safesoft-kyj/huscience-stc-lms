@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <style>
+        #page-content > div > ul > li {
+            width:250px;
+        }
+
+        /*.pdf_content {*/
+        /*    padding:20px 0 20px 0;*/
+        /*    background-color:#fafafa;*/
+        /*}*/
+
+        /*.pdf_content svg {*/
+        /*    background-color:#fff;*/
+        /*    border:1px solid #333;*/
+        /*    box-shadow: 5px 5px 5px;*/
+        /*}*/
+    </style>
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!--Stacked Tabs Right-->
+            <!--===================================================-->
+            <div class="tab-base tab-stacked-right">
+
+                <!--Tabs Content-->
+                <div class="tab-content">
+                    <div id="cover" class="tab-pane fade active in">
+                        <div class="panel">
+                            <div class="panel-body">
+                                <div th:switch="${trainingRecord}">
+                                    <div th:case="null">Certification 이 존재 하지 않습니다.</div>
+                                    <div th:case="*">
+                                        <!--                                        <div th:each="tr, stat : ${trainingRecord}">-->
+                                        <!--                                            <th:block th:if="${stat.index < 2}">-->
+                                        <!--                                                <div th:if="${type == 'sop'}" th:utext="${tr.sopHtmlContent}"></div>-->
+                                        <!--                                                <div th:if="${type == 'tm'}" th:utext="${tr.tmHtmlContent}"></div>-->
+                                        <!--                                            </th:block>-->
+                                        <!--                                        </div>-->
+                                        <div class="panel" th:each="tr, stat : ${trainingRecord}" th:if="${stat.index < 1}">
+                                            <!--Accordion title-->
+                                            <div class="panel-heading" style="border-bottom: 1px solid #eee;">
+                                                <h4 class="panel-title">
+                                                    <a data-parent="#trainingLog" data-toggle="collapse" th:href="@{#log{id}(id=${stat.index})}">
+                                                        <!--                                                        <span th:text="|Job Description - ${jd.jobDescriptionVersion.jobDescription.title}(${jd.jobDescriptionVersion.jobDescription.shortName}) v${jd.jobDescriptionVersion.version_no}|">"</span> -->
+                                                        Certification
+                                                    </a>
+
+                                                </h4>
+                                            </div>
+                                            <div class="panel-collapse collapse" th:classappend="${stat.index == 0 ? 'in' : ''}" th:id="|log${stat.index}|">
+                                                <div class="panel-body">
+                                                    <div class="text-center">
+                                                        <div th:if="tr.tmCertHtmlContent != null" th:utext="${tr.tmCertHtmlContent}"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><!--switch End -->
+                            </div><!--panel-body End -->
+                        </div><!-- panel End -->
+                    </div>
+                </div>
+
+                <!--Nav Tabs-->
+                <ul class="nav nav-tabs">
+                    <li>
+                        <a href="/binder">Training Record Review History</a>
+                    </li>
+                    <li>
+                        <a href="/binder/cv">Curriculum Vitae</a>
+                    </li>
+                    <li>
+                        <a href="/binder/jd">Job Description</a>
+                    </li>
+                    <li th:classappend="${type == 'sop' ? 'active' : ''}">
+                        <a href="/binder/sop/trainingLog">Training Log(SOP)</a>
+                    </li>
+                    <li th:classappend="${type == 'tm' ? 'active' : ''}">
+                        <a href="/binder/tm/trainingLog">Training Log(TM)</a>
+                    </li>
+                    <li>
+                        <a href="#">Certification</a>
+                    </li>
+                </ul>
+            </div>
+            <!--===================================================-->
+            <!--End Stacked Tabs Right-->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+</th:block>
+
+</html>
+
+
+
+<!--===================================================-->
+

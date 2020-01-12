@@ -60,6 +60,23 @@
                 </div><!--panel-body End -->
             </div><!-- panel End -->
             </th:block>
+
+                    <div class="panel" th:if="${trainingRecord.trainingRecord.sopHtmlContent != null}">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Training Log(SOP)</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div th:utext="${trainingRecord.trainingRecord.sopHtmlContent}"></div>
+                        </div><!--panel-body End -->
+                    </div><!-- panel End -->
+                    <div class="panel" th:if="${trainingRecord.trainingRecord.tmHtmlContent != null}">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Training Log(TM)</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div th:utext="${trainingRecord.trainingRecord.tmHtmlContent}"></div>
+                        </div><!--panel-body End -->
+                    </div><!-- panel End -->
                 </div>
                 <div class="panel-footer text-right">
                     <form name="f" id="reviewForm" method="post">
