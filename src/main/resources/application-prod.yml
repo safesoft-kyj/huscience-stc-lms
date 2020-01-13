@@ -16,7 +16,7 @@ spring:
     servlet:
       content-type: text/html
   datasource:
-    url: jdbc:sqlserver://localhost:20170;DatabaseName=test_lms_local
+    url: jdbc:sqlserver://localhost:20170;DatabaseName=dtnsm_dev_20200113
     username: sa
     password: safe123!@#
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
@@ -24,10 +24,10 @@ spring:
     #      url: jdbc:sqlserver://localhost:1433;DatabaseName=elearning
     #      user: sa
     #      password: Dtncro@123##
-    locations: classpath:/db/migration/lms
-    baseline-on-migrate: false
+    locations: classpath:/db/migration/prod
+    baseline-on-migrate: true
     encoding: UTF-8
-    enabled: false
+    enabled: true
   jpa:
     hibernate:
       ddl-auto: update
