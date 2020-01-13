@@ -252,6 +252,8 @@ public class CourseCertificateService {
         trainingLogSource.setSign1(imageBytes1);
         trainingLogSource.setSign2(imageBytes2);
         trainingLogSource.setPrior(prior);
+        trainingLogSource.setSopName(certificateLog.getSopName());
+        trainingLogSource.setSopEffDate(DateUtil.getDateToString(DateUtil.getStringToDate(certificateLog.getSopEffectiveDate()), "dd-MMM-yyyy"));
 
         return trainingLogSource;
     }

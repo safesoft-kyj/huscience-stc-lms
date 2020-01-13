@@ -14,6 +14,10 @@ public class CertificateSource {
 
     private String title;
 
+    private String sopName;
+
+    private String sopEffDate;
+
     // 코스명
     private String courseTitle;
 
