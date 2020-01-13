@@ -47,8 +47,8 @@ INSERT [dbo].[el_course_master] ([id], [insert_user_id], [insert_dt], [course_na
 -- 게시판 등록
 INSERT [dbo].[el_border_master] ([id], [insert_user_id], [insert_dt], [border_name], [is_mail], [minor_cd]) VALUES (N'BA0101', N'admin', CAST(N'2019-10-11T10:38:55.4760000' AS DateTime2), N'공지사항', N'N', N'BA0101')
 INSERT [dbo].[el_border_master] ([id], [insert_user_id], [insert_dt], [border_name], [is_mail], [minor_cd]) VALUES (N'BA0102', N'admin', CAST(N'2019-10-11T10:39:16.6510000' AS DateTime2), N'법령정보', N'N', N'BA0102')
-INSERT [dbo].[el_border_master] ([id], [insert_user_id], [insert_dt], [border_name], [is_mail], [minor_cd]) VALUES (N'BA0103', N'admin', CAST(N'2019-10-11T10:39:33.8600000' AS DateTime2), N'가이드라인', N'N', N'BA0103')
-INSERT [dbo].[el_border_master] ([id], [insert_user_id], [insert_dt], [border_name], [is_mail], [minor_cd]) VALUES (N'BA0104', N'admin', CAST(N'2019-10-16T15:54:13.4920000' AS DateTime2), N'자료실', N'N', N'BA0102')
+INSERT [dbo].[el_border_master] ([id], [insert_user_id], [insert_dt], [border_name], [is_mail], [minor_cd]) VALUES (N'BA0103', N'admin', CAST(N'2019-10-11T10:39:33.8600000' AS DateTime2), N'가이드라인', N'N', N'BA0102')
+INSERT [dbo].[el_border_master] ([id], [insert_user_id], [insert_dt], [border_name], [is_mail], [minor_cd]) VALUES (N'BA0104', N'admin', CAST(N'2019-10-16T15:54:13.4920000' AS DateTime2), N'자료실', N'N', N'BA0103')
 
 -- 전자결재 교육참석보고서 등록
 INSERT [dbo].[el_document_template] ([insert_user_id], [insert_dt], [content], [is_course_manger_approval], [is_team_manger_approval], [title]) VALUES (N'admin', CAST(N'2019-11-19T13:43:50.7860000' AS DateTime2), N'<p><span style="font-family: 맑은 고딕; font-size: 10pt;"><strong><span style="font-size: 12pt;">1. 교육개요</span></strong></span></p>
@@ -83,5 +83,4 @@ INSERT [dbo].[el_document_template] ([insert_user_id], [insert_dt], [content], [
 <tr style="height: 449.9pt; mso-yfti-irow: 0; mso-yfti-firstrow: yes; mso-yfti-lastrow: yes;">
 <td width="565" valign="top" style="padding: 0cm 5.4pt; border: 1.5pt solid black; border-image: none; width: 463.5pt; height: 449.9pt;">
 <p class="a"><b style="line-height: 12pt; font-family: &quot;바탕&quot;,serif; font-size: 10pt; font-style: normal; font-weight: 700; mso-bidi-font-weight: normal;"><span lang="EN-US" style="line-height: 12pt; font-family: 나눔고딕; font-size: 10pt; font-style: normal; font-weight: 700;"><o:p><span style="font-family: 맑은 고딕; font-size: 10pt;">&nbsp;</span></o:p></span></b></p></td></tr></tbody></table>
-<p class="a"><span><span style="font-size: 10pt;">*외부 교육 완료 후</span><span lang="EN-US" style="font-family: 맑은 고딕; font-size: 10pt;"> 3</span><span style="font-size: 10pt;">일 이내 교육참석보고서를 작성하며,&nbsp;</span><span style="font-size: 10pt;">해당 교육은 ‘</span><span lang="EN-US" style="font-family: 맑은 고딕; font-size: 10pt;">Employee Training Log (SOP-TM0001_RD04)</span><span style="font-size: 10pt;">에 기록합니다. </span></span></p><!--EndFragment-->
 <p><span style="font-family: 맑은 고딕; font-size: 8pt;">&nbsp;&nbsp;&nbsp; </span>&nbsp;</p>', N'N', N'Y', N'교육참석보고서')
