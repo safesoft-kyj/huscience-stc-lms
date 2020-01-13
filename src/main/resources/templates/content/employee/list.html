@@ -66,10 +66,13 @@
                                             <th th:if="${status.name() == 'REQUEST'}" class="text-center">Date of Request</th>
                                             <th th:if="${status.name() == 'REVIEWED'}" class="text-center">Date of Review</th>
                                             <th class="text-center">Review Details</th>
-                                            <th class="text-center">Actions</th>
+                                            <th class="text-center">#Actions</th>
                                         </tr>
                                         </thead>
                                         <tbody>
+                                        <tr th:if="${trainingRecord.size() == 0}">
+                                            <td class="text-center" colspan="6">검토 요청이 없습니다.</td>
+                                        </tr>
                                         <tr th:each="tr, index : ${trainingRecord}">
                                             <td th:text="${index.count}" class="text-center"></td>
                                             <td th:text="${tr.account.engName}" class="text-center"></td>

@@ -11,6 +11,7 @@ import com.dtnsm.lms.exception.FileUploadException;
 import com.dtnsm.lms.properties.FileUploadProperties;
 import com.dtnsm.lms.repository.CertificateFileRepository;
 import com.dtnsm.lms.util.DateUtil;
+import com.dtnsm.lms.util.DocumentConverter;
 import com.dtnsm.lms.util.SessionUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.pdfbox.io.MemoryUsageSetting;
@@ -52,6 +53,9 @@ public class CertificateFileService {
     @Autowired
     CourseAccountService courseAccountService;
 
+    @Autowired
+    private DocumentConverter converter;
+
     public FileUploadProperties prop;
 
     private final Path fileLocation;
@@ -71,7 +75,7 @@ public class CertificateFileService {
 
 
     // 수료증 병합
-    public void createCertificateFileMerge(String userId, long timestamp, String outputFilePath) {
+    public String createCertificateFileMerge(String userId, long timestamp, String outputFilePath) {
 
         PDFMergerUtility mergerUtility = new PDFMergerUtility();
 
@@ -97,6 +101,13 @@ public class CertificateFileService {
             mergerUtility.mergeDocuments(setupMainMemoryOnly);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        File file = new File(outputFilePath);
+        if(file.exists()) {
+            return converter.toHTMLString(outputFilePath);
+        } else {
+            return "";
         }
     }
 

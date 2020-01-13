@@ -54,32 +54,29 @@
                         <div class="panel">
                             <div class="panel-body">
                                 <div th:switch="${trainingRecord}">
-                                    <div th:case="null">Training Log가 존재 하지 않습니다.</div>
+                                    <div th:case="null">Certification 이 존재 하지 않습니다.</div>
                                     <div th:case="*">
-<!--                                        <div th:each="tr, stat : ${trainingRecord}">-->
-<!--                                            <th:block th:if="${stat.index < 2}">-->
-<!--                                                <div th:if="${type == 'sop'}" th:utext="${tr.sopHtmlContent}"></div>-->
-<!--                                                <div th:if="${type == 'tm'}" th:utext="${tr.tmHtmlContent}"></div>-->
-<!--                                            </th:block>-->
-<!--                                        </div>-->
-                                        <div class="panel-group accordion" id="trainingLog">
-                                            <div class="panel" th:each="tr, stat : ${trainingRecord}" th:if="${stat.index < 2}">
-                                                <!--Accordion title-->
-                                                <div class="panel-heading" style="border-bottom: 1px solid #eee;">
-                                                    <h4 class="panel-title">
-                                                        <a data-parent="#trainingLog" data-toggle="collapse" th:href="@{#log{id}(id=${stat.index})}">
-    <!--                                                        <span th:text="|Job Description - ${jd.jobDescriptionVersion.jobDescription.title}(${jd.jobDescriptionVersion.jobDescription.shortName}) v${jd.jobDescriptionVersion.version_no}|">"</span> -->
-                                                            <span th:text="|Training Log(${type.toUpperCase()})|"></span> <span class="label" th:classappend="${tr.status.name() == 'REVIEWED' ? 'label-success' : 'label-warning'}" th:text="${tr.status.name() == 'REVIEWED' ? 'Reviewed' : 'Unreviewed'}"></span>
-                                                        </a>
+                                        <!--                                        <div th:each="tr, stat : ${trainingRecord}">-->
+                                        <!--                                            <th:block th:if="${stat.index < 2}">-->
+                                        <!--                                                <div th:if="${type == 'sop'}" th:utext="${tr.sopHtmlContent}"></div>-->
+                                        <!--                                                <div th:if="${type == 'tm'}" th:utext="${tr.tmHtmlContent}"></div>-->
+                                        <!--                                            </th:block>-->
+                                        <!--                                        </div>-->
+                                        <div class="panel" th:each="tr, stat : ${trainingRecord}" th:if="${stat.index < 1}">
+                                            <!--Accordion title-->
+                                            <div class="panel-heading" style="border-bottom: 1px solid #eee;">
+                                                <h4 class="panel-title">
+                                                    <a data-parent="#trainingLog" data-toggle="collapse" th:href="@{#log{id}(id=${stat.index})}">
+                                                        <!--                                                        <span th:text="|Job Description - ${jd.jobDescriptionVersion.jobDescription.title}(${jd.jobDescriptionVersion.jobDescription.shortName}) v${jd.jobDescriptionVersion.version_no}|">"</span> -->
+                                                        Certification
+                                                    </a>
 
-                                                    </h4>
-                                                </div>
-                                                <div class="panel-collapse collapse" th:classappend="${stat.index == 0 ? 'in' : ''}" th:id="|log${stat.index}|">
-                                                    <div class="panel-body">
-                                                        <div class="text-center">
-                                                            <div th:if="${type == 'sop'}" th:utext="${tr.sopHtmlContent}"></div>
-                                                            <div th:if="${type == 'tm'}" th:utext="${tr.tmHtmlContent}"></div>
-                                                        </div>
+                                                </h4>
+                                            </div>
+                                            <div class="panel-collapse collapse" th:classappend="${stat.index == 0 ? 'in' : ''}" th:id="|log${stat.index}|">
+                                                <div class="panel-body">
+                                                    <div class="text-center">
+                                                        <div th:if="tr.tmCertHtmlContent != null" th:utext="${tr.tmCertHtmlContent}"></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -102,13 +99,13 @@
                     <li>
                         <a href="/binder/jd">Job Description</a>
                     </li>
-                    <li th:classappend="${type == 'sop' ? 'active' : ''}">
+                    <li>
                         <a href="/binder/sop/trainingLog">Training Log(SOP)</a>
                     </li>
-                    <li th:classappend="${type == 'tm' ? 'active' : ''}">
+                    <li>
                         <a href="/binder/tm/trainingLog">Training Log(TM)</a>
                     </li>
-                    <li>
+                    <li class="active">
                         <a href="/binder/certification">Certification</a>
                     </li>
                 </ul>

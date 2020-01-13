@@ -13,10 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 @Component
 @Slf4j
@@ -33,10 +30,11 @@ public class DocumentConverter {
             com.groupdocs.conversion.License lic = new com.groupdocs.conversion.License();
             lic.setLicense(new FileInputStream(new File(license)));
             log.info("@License Loaded.");
-            conversionHandler = new ConversionHandler(config);
         } catch (Exception error) {
             log.error("Error : {}", error.toString());
         }
+
+        conversionHandler = new ConversionHandler(config);
     }
 
     public void toHTML(InputStream is, OutputStream os) {
@@ -60,6 +58,21 @@ public class DocumentConverter {
                     is.close();
                 } catch (Exception e){}
             }
+        }
+    }
+    public String toHTMLString(String source) {
+        try(ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+            SaveOptions saveOption = new MarkupSaveOptions();
+            ConvertedDocument convertedDocumentPath = conversionHandler.convert(source, saveOption);
+            System.out.print("Converted file path is: " + convertedDocumentPath.getFileType());
+            GroupDocsOutputStream outputStream = new GroupDocsOutputStream(os);
+            convertedDocumentPath.save(outputStream);
+
+            return os.toString("utf-8");
+
+        } catch (Exception error) {
+            log.error("error : {}", error);
+            return "";
         }
     }
 
