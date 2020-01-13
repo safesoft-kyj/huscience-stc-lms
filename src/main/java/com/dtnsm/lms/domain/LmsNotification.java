@@ -31,7 +31,7 @@ public class LmsNotification extends AuditorCreateEntity<String> {
     @Column(length = 255, nullable = false)
     private String title;
 
-    @Column(length = 255, nullable = false)
+    @Column(length = 1000, nullable = false)
     private String content;
 
     @ManyToOne

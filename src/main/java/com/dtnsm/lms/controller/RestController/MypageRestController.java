@@ -58,7 +58,8 @@ public class MypageRestController {
     public boolean treeViewGet(@RequestParam("sectionActionId") long sectionActionId
             , @RequestParam("useSecond") int useSecond
             , @RequestParam("startDate") Date startDate
-            , @RequestParam("endDate") Date endDate){
+            , @RequestParam("endDate") Date endDate
+            , @RequestParam("endFlag") int endFlag){
 
         Account account = userService.getAccountByUserId(SessionUtil.getUserId());
 
@@ -77,8 +78,10 @@ public class MypageRestController {
 
         courseSectionAction.setRunCount(courseSectionAction.getRunCount() + 1);
 
-        // 교육수강을 완료하면 완료 처리한다.
-        if (totalSecond > (courseSectionAction.getCourseSection().getSecond()) || courseSectionAction.getRunCount() >= 1) {
+
+//        if (totalSecond > (courseSectionAction.getCourseSection().getSecond()) || courseSectionAction.getRunCount() >= 1) {
+        // 교육수강을 완료하면 완료 처리한다.(endFlag => 1 계속학습, 2 학습 종료)
+        if (endFlag == 2) {
             //totalSecond = courseSectionAction.getCourseSection().getSecond();
 
             courseSectionAction.setStatus(SectionStatusType.COMPLETE);

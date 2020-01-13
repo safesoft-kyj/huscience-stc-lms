@@ -101,8 +101,9 @@
 
                                                     <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE')}">
                                                         <th:block th:inline="text" th:each="sectionFile : ${sectionAction.getCourseSection().getSectionFiles()}">
-                                                            <a href="#" class="label label-table label-success" id="popupBtn1"
-                                                               th:onclick="|javascript:popupPdfView('${sectionFile.getId()}', '${sectionAction.getId()}');return false;|" target="_blank" th:text="#{label.course.section.request}">학습하기</a>
+<!--                                                            <a href="#" class="label label-table label-success" id="popupBtn1"-->
+<!--                                                               th:onclick="|javascript:popupPdfView('${sectionFile.getId()}', '${sectionAction.getId()}');return false;|" target="_blank" th:text="#{label.course.section.request}">학습하기</a>-->
+                                                            <span class="label label-table label-success" th:text="${'학습종료'}"></span>
                                                         </th:block>
                                                     </th:block>
 

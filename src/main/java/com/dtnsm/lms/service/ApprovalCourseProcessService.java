@@ -4,6 +4,7 @@ import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.controller.CourseAdminController;
 import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.*;
+import com.dtnsm.lms.domain.datasource.MessageSource;
 import com.dtnsm.lms.repository.CourseAccountRepository;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.MessageUtil;
@@ -662,7 +663,20 @@ public class ApprovalCourseProcessService {
             createUserCourse(courseAccountService.save(courseAccount));
 
             // 알람 및 메세지 전송
-            MessageUtil.sendNotificationMessage(LmsAlarmCourseType.CourseAccountAssign, account, course, "<a href='http://lms.dtnsm.com/mypage/main'>교육현황 바로가기</a>");
+//            MessageUtil.sendNotificationMessage(LmsAlarmCourseType.CourseAccountAssign, account, course, "<a href='http://lms.dtnsm.com/mypage/main'>교육현황 바로가기</a>");
+
+            MessageSource messageSource = MessageSource.builder()
+                    .alarmGubun(LmsAlarmGubun.INFO)
+                    .lmsAlarmCourseType(LmsAlarmCourseType.CourseAccountAssign)
+                    .sender(courseManagerService.getCourseManager().getAccount())
+                    .receive(account)
+                    .course(course)
+                    .title("교육을 신청하세요")
+                    .subject(String.format("%s 과정 교육 수강생으로 지정되셨습니다.", course.getTitle()))
+                    .content("교육을 신청해 주세요.(<a href='http://lms.dtnsm.com/mypage/main'>교육현황 바로가기</a>)")
+                    .build();
+            MessageUtil.sendNotificationMessage(messageSource, true);
+
 
         } else {
             CourseAccount saveCourseAccount = courseAccountService.getByCourseIdAndUserId(course.getId(), account.getUserId());
@@ -750,7 +764,22 @@ public class ApprovalCourseProcessService {
                     //courseAccount.addCourseAccountOrder(courseAccountOrderService.save(courseAccountOrder1));
 
                     // 알람 및 메세지 전송
-                    MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Request, apprAccount2, course);
+
+                    MessageSource messageSource = MessageSource.builder()
+                            .alarmGubun(LmsAlarmGubun.INFO)
+                            .lmsAlarmCourseType(LmsAlarmCourseType.Request)
+                            .sender(account)
+                            .receive(apprAccount2)
+                            .course(course)
+                            .title("교육결재 요청")
+                            .subject(String.format("%s가 교육신청 결재를 요청하였습니다.", account.getName()))
+                            .content("교육신청 결재 요청 (<a href='http://lms.dtnsm.com/approval/mainApproval?status=request'>결재함 바로가기</a>)")
+                            .build();
+
+                    MessageUtil.sendNotificationMessage(messageSource, true);
+
+//                    MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Request, apprAccount2, course
+//                            , String.format("%s로 부터 교육신청 결재가 요청되었습니다." ,account.getName()));
                 }
 
                 if (isAppr2.equals("Y")) {
@@ -917,10 +946,37 @@ public class ApprovalCourseProcessService {
             courseAccount.setFnStatus("1");
             courseAccount.setCourseStatus(CourseStepStatus.process);
 
-            courseAccountService.save(courseAccount);
+            CourseAccount courseAccount1 = courseAccountService.save(courseAccount);
 
             // 최종 승인이면 기안자에게 메일 전송
-            MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Approval, courseAccount.getAccount(), courseAccount.getCourse());
+//            MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Approval, courseAccount1.getAccount(), courseAccount1.getCourse());
+
+            MessageSource messageSource = MessageSource.builder()
+                    .alarmGubun(LmsAlarmGubun.INFO)
+                    .lmsAlarmCourseType(LmsAlarmCourseType.Approval)
+                    .sender(courseAccountOrder.getFnUser()) // 승인자
+                    .receive(courseAccount1.getAccount())
+                    .course(courseAccount1.getCourse())
+                    .title("교육결재 요청")
+                    .subject(String.format("%s님의 %s 과정 교육신청이 최종승인 되었습니다.", courseAccount1.getAccount().getName(), courseAccount1.getCourse().getTitle()))
+                    .content(String.format("교육신청 결재 완료 (<a href='http://lms.dtnsm.com/approval/mainRequest%s?status=complete'>결재완료 바로가기</a>)"
+                            , courseAccount1.getCourse().getCourseMaster().getId().equals("BC0104") ? "2" : "1"))
+                    .build();
+
+            MessageUtil.sendNotificationMessage(messageSource, true);
+
+            messageSource = MessageSource.builder()
+                    .alarmGubun(LmsAlarmGubun.INFO)
+                    .lmsAlarmCourseType(LmsAlarmCourseType.Approval)
+                    .sender(courseAccountOrder.getFnUser()) // 승인자
+                    .receive(courseManagerService.getCourseManager().getAccount())
+                    .course(courseAccount1.getCourse())
+                    .title("교육결재 요청")
+                    .subject(String.format("%s님의 %s 과정 교육신청이 최종승인 되었습니다.", courseAccount1.getAccount().getName(), courseAccount1.getCourse().getTitle()))
+                    .content("교육신청 결재 완료")
+                    .build();
+
+            MessageUtil.sendNotificationMessage(messageSource, true);
 
         } else {
             CourseAccountOrder nextOrder = courseAccountOrderService.getByFnoAndSeq(courseAccountOrder.getCourseAccount().getId(), courseAccountOrder.getFnSeq()+1);
@@ -934,7 +990,20 @@ public class ApprovalCourseProcessService {
                 courseAccountService.save(courseAccount);
 
                 // 알람 및 메세지 전송
-                MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Approval, nextOrder.getFnUser(), courseAccount.getCourse());
+//                MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Approval, nextOrder.getFnUser(), courseAccount.getCourse());
+
+                MessageSource messageSource = MessageSource.builder()
+                        .alarmGubun(LmsAlarmGubun.INFO)
+                        .lmsAlarmCourseType(LmsAlarmCourseType.Approval)
+                        .sender(courseAccountOrder.getFnUser()) // 승인자
+                        .receive(nextOrder.getFnUser())
+                        .course(courseAccount.getCourse())
+                        .title("교육결재 요청")
+                        .subject(String.format("%s님의 %s 과정 교육신청결재 문서가 있습니다.", courseAccount.getAccount().getName(), courseAccount.getCourse().getTitle()))
+                        .content("교육신청 결재 요청 (<a href='http://lms.dtnsm.com/approval/mainApproval?status=request'>결재함 바로가기</a>)")
+                        .build();
+
+                MessageUtil.sendNotificationMessage(messageSource, true);
             }
         }
     }
@@ -960,7 +1029,36 @@ public class ApprovalCourseProcessService {
         courseAccountService.save(courseAccount);
 
         // 알람 및 메세지 전송
-        MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Reject, courseAccount.getAccount(), courseAccount.getCourse());
+//        MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Reject, courseAccount.getAccount(), courseAccount.getCourse());
+
+        // 기안자 발송
+        MessageSource messageSource = MessageSource.builder()
+                .alarmGubun(LmsAlarmGubun.INFO)
+                .lmsAlarmCourseType(LmsAlarmCourseType.Reject)
+                .sender(courseAccountOrder.getFnUser()) // 기각자
+                .receive(courseAccount.getAccount())
+                .course(courseAccount.getCourse())
+                .title("교육결재 요청")
+                .subject(String.format("%s님의 %s 과정 교육신청이 반려 처리 되었습니다.", courseAccount.getAccount().getName(), courseAccount.getCourse().getTitle()))
+                .content(String.format("교육신청 결재 반려 (<a href='http://lms.dtnsm.com/approval/mainRequest%s?status=reject'>반려함 바로가기</a>)"
+                        , courseAccount.getCourse().getCourseMaster().getId().equals("BC0104") ? "2" : "1"))
+                .build();
+
+        MessageUtil.sendNotificationMessage(messageSource, true);
+
+        // 관리자 발송
+        messageSource = MessageSource.builder()
+                .alarmGubun(LmsAlarmGubun.INFO)
+                .lmsAlarmCourseType(LmsAlarmCourseType.Reject)
+                .sender(courseAccountOrder.getFnUser()) // 기각자
+                .receive(courseManagerService.getCourseManager().getAccount())
+                .course(courseAccount.getCourse())
+                .title("교육신청 결재 반려")
+                .subject(String.format("%s님의 %s 과정 교육신청이 반려 처리 되었습니다.", courseAccount.getAccount().getName(), courseAccount.getCourse().getTitle()))
+                .content(String.format("교육신청 결재 반려"))
+                .build();
+
+        MessageUtil.sendNotificationMessage(messageSource, true);
 
 //        if(finalCount == 1) {   // 종결처리
 //            //  승인: 1, 기각 : 2
@@ -1003,6 +1101,34 @@ public class ApprovalCourseProcessService {
             // 최종 승인이면 기안자에게 메일 전송
             MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Approval, courseAccount.getAccount(), courseAccount.getCourse());
 
+            // 기안자 발송
+            MessageSource messageSource = MessageSource.builder()
+                    .alarmGubun(LmsAlarmGubun.INFO)
+                    .lmsAlarmCourseType(LmsAlarmCourseType.Approval)
+                    .sender(courseAccountOrder.getFnUser()) // 승인자
+                    .receive(courseAccount.getAccount())
+                    .course(courseAccount.getCourse())
+                    .title("교육결재 요청")
+                    .subject(String.format("%s님의 %s 과정 교육신청이 최종승인 되었습니다.", courseAccount.getAccount().getName(), courseAccount.getCourse().getTitle()))
+                    .content(String.format("교육신청 결재 완료 (<a href='http://lms.dtnsm.com/approval/mainRequest%s?status=complete'>결재완료 바로가기</a>)"
+                            , courseAccount.getCourse().getCourseMaster().getId().equals("BC0104") ? "2" : "1"))
+                    .build();
+
+            MessageUtil.sendNotificationMessage(messageSource, true);
+
+            messageSource = MessageSource.builder()
+                    .alarmGubun(LmsAlarmGubun.INFO)
+                    .lmsAlarmCourseType(LmsAlarmCourseType.Approval)
+                    .sender(courseAccountOrder.getFnUser()) // 승인자
+                    .receive(courseManagerService.getCourseManager().getAccount())
+                    .course(courseAccount.getCourse())
+                    .title("교육결재 요청")
+                    .subject(String.format("%s님의 %s 과정 교육신청이 최종승인 되었습니다.", courseAccount.getAccount().getName(), courseAccount.getCourse().getTitle()))
+                    .content("교육신청 결재 완료")
+                    .build();
+
+            MessageUtil.sendNotificationMessage(messageSource, true);
+
         } else {
 
             CourseAccountOrder nextOrder = courseAccountOrderService.getByFnoAndSeq(courseAccountOrder.getCourseAccount().getId(), courseAccountOrder.getFnSeq()+1);
@@ -1015,7 +1141,20 @@ public class ApprovalCourseProcessService {
                 courseAccountService.save(courseAccount);
 
                 // 알람 및 메세지 전송
-                MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Approval, nextOrder.getFnUser(), courseAccount.getCourse());
+//                MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Approval, nextOrder.getFnUser(), courseAccount.getCourse());
+
+                MessageSource messageSource = MessageSource.builder()
+                        .alarmGubun(LmsAlarmGubun.INFO)
+                        .lmsAlarmCourseType(LmsAlarmCourseType.Approval)
+                        .sender(courseAccountOrder.getFnUser()) // 승인자
+                        .receive(nextOrder.getFnUser())
+                        .course(courseAccount.getCourse())
+                        .title("교육결재 요청")
+                        .subject(String.format("%s님의 %s 과정 교육신청결재 문서가 있습니다.", courseAccount.getAccount().getName(), courseAccount.getCourse().getTitle()))
+                        .content("교육신청 결재 요청 (<a href='http://lms.dtnsm.com/approval/mainApproval?status=request'>결재함 바로가기</a>)")
+                        .build();
+
+                MessageUtil.sendNotificationMessage(messageSource, true);
             }
         }
     }
@@ -1041,7 +1180,36 @@ public class ApprovalCourseProcessService {
         courseAccountService.save(courseAccount);
 
         // 기안자에게 알람 및 메세지 전송
-        MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Reject, courseAccount.getAccount(), courseAccount.getCourse());
+//        MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Reject, courseAccount.getAccount(), courseAccount.getCourse());
+
+        // 기안자 발송
+        MessageSource messageSource = MessageSource.builder()
+                .alarmGubun(LmsAlarmGubun.INFO)
+                .lmsAlarmCourseType(LmsAlarmCourseType.Reject)
+                .sender(courseAccountOrder.getFnUser()) // 기각자
+                .receive(courseAccount.getAccount())
+                .course(courseAccount.getCourse())
+                .title("교육신청 결재 반려")
+                .subject(String.format("%s님의 %s 과정 교육신청이 반려 처리 되었습니다.", courseAccount.getAccount().getName(), courseAccount.getCourse().getTitle()))
+                .content(String.format("교육신청 결재 반려 (<a href='http://lms.dtnsm.com/approval/mainRequest%s?status=reject'>반려함 바로가기</a>)"
+                        , courseAccount.getCourse().getCourseMaster().getId().equals("BC0104") ? "2" : "1"))
+                .build();
+
+        MessageUtil.sendNotificationMessage(messageSource, true);
+
+        // 관리자 발송
+        messageSource = MessageSource.builder()
+                .alarmGubun(LmsAlarmGubun.INFO)
+                .lmsAlarmCourseType(LmsAlarmCourseType.Reject)
+                .sender(courseAccountOrder.getFnUser()) // 기각자
+                .receive(courseManagerService.getCourseManager().getAccount())
+                .course(courseAccount.getCourse())
+                .title("교육신청 결재 반려")
+                .subject(String.format("%s님의 %s 과정 교육신청이 반려 처리 되었습니다.", courseAccount.getAccount().getName(), courseAccount.getCourse().getTitle()))
+                .content(String.format("교육신청 결재 반려"))
+                .build();
+
+        MessageUtil.sendNotificationMessage(messageSource, true);
 
 
 //        if(finalCount == 2) {   // 종결처리

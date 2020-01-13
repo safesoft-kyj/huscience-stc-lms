@@ -5,6 +5,7 @@ import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.LmsAlarmCourseType;
 import com.dtnsm.lms.domain.constant.LmsAlarmGubun;
 import com.dtnsm.lms.domain.constant.LmsAlarmType;
+import com.dtnsm.lms.domain.datasource.MessageSource;
 import com.dtnsm.lms.repository.LmsNotificationRepository;
 import com.dtnsm.lms.repository.RoleRepository;
 import com.dtnsm.lms.util.DateUtil;
@@ -77,6 +78,18 @@ public class LmsNotificationService {
         lmsNotificationRepository.save(lmsNotification);
     }
 
+    public void sendMessage(MessageSource messageSource) {
+
+        LmsNotification lmsNotification = new LmsNotification();
+        lmsNotification.setAlarmGubun(messageSource.getAlarmGubun());
+        lmsNotification.setTitle(messageSource.getTitle());
+        lmsNotification.setContent(messageSource.getContent());
+        lmsNotification.setAccount(messageSource.getReceive());
+        lmsNotification.setCourse(messageSource.getCourse());
+        lmsNotification.setGubun(messageSource.getCourse() != null ? "C" : "D");
+        lmsNotificationRepository.save(lmsNotification);
+    }
+
     // 교육 프로세스 관련 메세지
     public void sendMessage(LmsAlarmCourseType lmsAlarmCourseType, Account account, Course course, String message) {
 
@@ -99,7 +112,7 @@ public class LmsNotificationService {
                 lmsNotification.setContent(message);
             case Request:
                 lmsNotification.setAlarmGubun(LmsAlarmGubun.INFO);
-                lmsNotification.setTitle(course.getTitle() +  "과정 교육 신청 처리 되었습니다..");
+                lmsNotification.setTitle(course.getTitle() +  "과정 교육결재 요청 되었습니다..");
                 lmsNotification.setContent(message);
                 break;
 
@@ -120,6 +133,11 @@ public class LmsNotificationService {
         lmsNotification.setGubun("C");
         lmsNotificationRepository.save(lmsNotification);
     }
+
+
+
+
+
 
     // 교육 프로세스 관련 메세지
     public void sendMessage(LmsAlarmCourseType lmsAlarmCourseType, Account account, Document document, String message) {

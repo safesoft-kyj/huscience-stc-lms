@@ -3,6 +3,7 @@ package com.dtnsm.lms.service;
 import com.dtnsm.lms.domain.constant.BinderAlarmType;
 import com.dtnsm.lms.domain.constant.LmsAlarmCourseType;
 import com.dtnsm.lms.domain.constant.MailSendType;
+import com.dtnsm.lms.domain.datasource.MessageSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,17 @@ public class MailService {
     public ResponseEntity<?> sendMail(Mail mail){
         send(mail);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    public void send(MessageSource messageSource) {
+        String templateUri = "email/email-common";
+        final Context context = new Context();
+        context.setVariable("messageSource", messageSource);
+
+        String body = templateEngine.process(templateUri, context);
+
+        //send the html template
+        sendPreparedMail(messageSource.getReceive().getEmail(), "[LMS] " + messageSource.getSubject(), body, true);
     }
 
     public void send(Mail mail) {
@@ -72,7 +84,42 @@ public class MailService {
         String body = templateEngine.process(templateUri, context);
 
         //send the html template
-        sendPreparedMail(mail.getEmail(), mail.getObject(), body, true);
+        sendPreparedMail(mail.getEmail(), "[LMS] " + mail.getObject(), body, true);
+    }
+
+    public void send(Mail mail, LmsAlarmCourseType lmsAlarmCourseType, String message) {
+        //get and fill the template
+        final Context context = new Context();
+        context.setVariable("subject", mail.getObject());
+        context.setVariable("message", mail.getMessage());
+        String templateUri = "email/email-template";
+
+        switch (lmsAlarmCourseType) {
+            case CourseAccountAssign:
+                templateUri = "email/course-account-assign";
+                break;
+            case CourseToDateApproach:
+                templateUri = "email/course-todate-approach";
+                break;
+            case CourseReportApproach:
+                templateUri = "email/course-report-approach";
+                break;
+            case Request:
+                templateUri = "email/course-request";
+                break;
+            case Approval:
+                templateUri = "email/course-appr1";
+                break;
+            case Reject:
+                templateUri = "email/course-reject";
+                // 메일 전송
+                break;
+        }
+
+        String body = templateEngine.process(templateUri, context);
+
+        //send the html template
+        sendPreparedMail(mail.getEmail(), "[LMS] " + mail.getObject(), body, true);
     }
 
     /**
