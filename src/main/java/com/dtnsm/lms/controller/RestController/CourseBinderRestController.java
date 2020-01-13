@@ -147,7 +147,8 @@ public class CourseBinderRestController {
 
         // Employee Training Log Full Path
 //        InputStream is = CurriculumVitaeReportService.class.getResourceAsStream(srcEmployeeLogTemplateFileName);
-        String srcEmployeeLogFilePath = sourceRootFoloer + srcEmployeeLogTemplateFileName;
+//        String srcEmployeeLogFilePath = sourceRootFoloer + srcEmployeeLogTemplateFileName;
+        InputStream logSource = CurriculumVitaeReportService.class.getResourceAsStream(srcEmployeeLogTemplateFileName);
         String outputEmployeeLogFilePath = outputRootFoloer + outputEmployeeLogPdfFileName;
         String outputEmployeeLogDocxFilePath = outputRootFoloer + outputEmployeeLogDocxFileName;
 
@@ -187,7 +188,7 @@ public class CourseBinderRestController {
             log.info("==> Word 데이터 바인딩");
             log.info("outputEmployeeLogFilePath : {}", outputEmployeeLogFilePath);
 
-            boolean result = assembler.assembleDocument(srcEmployeeLogFilePath, outputEmployeeLogDocxFilePath, dataSourceInfo);
+            boolean result = assembler.assembleDocument(logSource, new FileOutputStream(outputEmployeeLogDocxFilePath), dataSourceInfo);
             log.info("<== 바인딩된 Word 파일 생성[{}] : {}", outputEmployeeLogDocxFilePath, result);
 
 
@@ -196,7 +197,7 @@ public class CourseBinderRestController {
                 String html = documentConverter.toHTMLString(outputEmployeeLogDocxFilePath);
                 log.debug("Word to HTML : {}", html);
 
-                saveTrainingRecord(trainingRecordId, userId, outputCertificationFileName, html, certHtmlContent);
+                saveTrainingRecord(trainingRecordId, userId, outputCertificationFileName, html, outputCertificationFileName, certHtmlContent);
 
                 //word to pdf
                 assembler.assembleDocument(outputEmployeeLogDocxFilePath, outputEmployeeLogFilePath , dataSourceInfo);
@@ -210,7 +211,7 @@ public class CourseBinderRestController {
 
     }
 
-    public void saveTrainingRecord(Integer trainingRecordId, String userId, String outputFilename, String tmHtml, String certHtml) {
+    public void saveTrainingRecord(Integer trainingRecordId, String userId, String outputFilename, String tmHtml, String certFileName, String certHtml) {
         TrainingRecord trainingRecord;
         if(ObjectUtils.isEmpty(trainingRecordId)) {
             trainingRecord = new TrainingRecord();
@@ -221,8 +222,9 @@ public class CourseBinderRestController {
             trainingRecord = trainingRecordRepository.findById(trainingRecordId).get();
         }
         trainingRecord.setTmFileName(outputFilename);
-
         trainingRecord.setTmHtmlContent(tmHtml);
+
+        trainingRecord.setTmCertFileName(certFileName);
         trainingRecord.setTmCertHtmlContent(certHtml);
 
         trainingRecordRepository.save(trainingRecord);
