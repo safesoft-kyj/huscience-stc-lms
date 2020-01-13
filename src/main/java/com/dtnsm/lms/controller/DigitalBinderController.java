@@ -212,7 +212,6 @@ public class DigitalBinderController {
     }
 
     /**
-     * 리뷰를 진행하지 않은 JD 정보
      * @param userId
      * @param statusList
      * @return
