@@ -85,8 +85,16 @@ public class LmsNotificationService {
         lmsNotification.setTitle(messageSource.getTitle());
         lmsNotification.setContent(messageSource.getContent());
         lmsNotification.setAccount(messageSource.getReceive());
-        lmsNotification.setCourse(messageSource.getCourse());
-        lmsNotification.setGubun(messageSource.getCourse() != null ? "C" : "D");
+
+        if (messageSource.getCourse() != null) {
+            lmsNotification.setCourse(messageSource.getCourse());
+            lmsNotification.setGubun("C");
+        }
+        if (messageSource.getDocument() != null) {
+            lmsNotification.setDocument(messageSource.getDocument());
+            lmsNotification.setGubun("D");
+        }
+
         lmsNotificationRepository.save(lmsNotification);
     }
 
