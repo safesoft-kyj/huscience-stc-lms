@@ -12,6 +12,7 @@ import com.dtnsm.lms.repository.CourseCertificateLogRepository;
 import com.dtnsm.lms.repository.CourseCertificateNumberRepository;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.SessionUtil;
+import com.dtnsm.lms.xdocreport.CurriculumVitaeReportService;
 import com.groupdocs.assembly.DataSourceInfo;
 import com.groupdocs.assembly.DocumentAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -141,20 +144,27 @@ public class CourseCertificateService {
         // GroupDoc 라이센스
         CommonUtilities.applyLicense();
 
+        String userId = SessionUtil.getUserId();
+        long timestamp = System.currentTimeMillis();
+
+
+
+
+        // Employee Training Log Template 파일 및 출력 파일 지정
+        String srcCertificationTemplateFileName = "etl_certi.docx";
+
+        String outputCertificationFileName = String.format("%s_%s_certi.pdf", timestamp, userId);
+
         // 파일 기본 경로
         String sourceRootFoloer = prop.getXdocUploadDir() + "Data//Storage//";
         String outputRootFoloer = prop.getCertificateUploadDir();
 
-        String userId = SessionUtil.getUserId();
-        long timestamp = System.currentTimeMillis();
-
-        // Employee Training Log Template 파일 및 출력 파일 지정
-        String srcCertificationTemplateFileName = "etl_certi.docx";
-        String outputCertificationFileName = String.format("%s_%s_certi.pdf", timestamp, userId);
-
         // 수료증 Full Path
-        String srcCertificationFilePath = sourceRootFoloer + srcCertificationTemplateFileName;
+//        String srcCertificationFilePath = sourceRootFoloer + srcCertificationTemplateFileName;
+        String srcCertificationFilePath = CurriculumVitaeReportService.class.getResource(srcCertificationTemplateFileName).getPath().toString();
         String outputCertificationFilePath = outputRootFoloer + outputCertificationFileName;
+
+        System.out.println(srcCertificationFilePath);
 
         try {
             // Employee Training Log Data
@@ -172,6 +182,7 @@ public class CourseCertificateService {
 //            assembler.assembleDocument(in, out, new DataSourceInfo( accountList, "accountList"));
 
             // 1. Employee Training Log File 생성
+            //assembler.assembleDocument(srcCertificationFilePath, outputCertificationFilePath , dataSourceInfo);
             assembler.assembleDocument(srcCertificationFilePath, outputCertificationFilePath , dataSourceInfo);
 
             // 수료증 파일 생성후 File 정보를 기록한다.
@@ -252,6 +263,8 @@ public class CourseCertificateService {
         trainingLogSource.setSign1(imageBytes1);
         trainingLogSource.setSign2(imageBytes2);
         trainingLogSource.setPrior(prior);
+        trainingLogSource.setSopName(certificateLog.getSopName());
+        trainingLogSource.setSopEffDate(DateUtil.getDateToString(DateUtil.getStringToDate(certificateLog.getSopEffectiveDate()), "dd-MMM-yyyy"));
 
         return trainingLogSource;
     }

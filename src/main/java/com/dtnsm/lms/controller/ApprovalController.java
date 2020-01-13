@@ -213,7 +213,7 @@ public class ApprovalController {
 //            documentList = documentService.getAllByAccount_UserIdAndFnStatusLike(userId, "1", pageable);
         } else if (status.equals("reject")) {
             courseAccountList = courseAccountService.getAllByAccount_UserIdAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(
-                    userId, "BC0104","1","2", "%", "1", "2", pageable);
+                    userId, "BC0104","1","2", "%", "1", "%", pageable);
 
 //            documentList = documentService.getAllByAccount_UserIdAndFnStatusLike(userId, "2", pageable);
         } else if (status.equals("report")) {
