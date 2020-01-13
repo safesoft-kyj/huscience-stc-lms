@@ -55,7 +55,7 @@
                         <!--                            <strong>알림!</strong> CV, JD, Training Log 정보가 존재합니다. 매니저에게 <span class="label label-purple">검토</span> 요청을 진행해 주세요.-->
                         <!--                        </div>-->
                         <div class="alert alert-info" th:if="${(trainingRecordReviewList == null || trainingRecordReviewList.size() == 0) && (trainingRecord == null || trainingRecord.sopFileName == null)}">
-                            <strong>알림!</strong> Training Log(SOP) 정보가 존재 하지 않습니다. e-SOP Training Log 배포 후 진행 해 주세요.<a class="btn-link" target="_blank" href="http://sop.dtnsm.com"><i class="fa fa-external-link"></i> e-SOP</a>
+                            <strong>알림!</strong> Training Log(SOP) 정보가 존재 하지 않습니다. e-SOP Training Log 배포 후 진행 해 주세요.<a class="btn-link" target="_blank" href="http://esop.dtnsm.com"><i class="fa fa-external-link"></i> e-SOP</a>
                     </div>
                     <div class="alert alert-info" th:if="${(trainingRecordReviewList == null || trainingRecordReviewList.size() == 0) && (trainingRecord == null || trainingRecord.tmFileName == null)}">
                         <strong>알림!</strong> Training Log(TM) 정보가 존재 하지 않습니다. 배포 후 진행 해 주세요.
@@ -66,7 +66,7 @@
                     <div class="alert alert-danger" th:if="${(trainingRecordReviewList == null || trainingRecordReviewList.size() == 0) && jdList == null}">
                         <strong>알림!</strong> Job Description 정보가 존재하지 않습니다.
                     </div>
-                    <form method="post" th:action="@{/binder/review}" th:if="${((trainingRecordReviewList == null || trainingRecordReviewList.size() == 0) && (jdList != null and cv != null && trainingRecord != null)) || (trainingRecordReviewList != null && trainingRecordReviewList.size() > 0 && trainingRecord != null)}">
+                    <form method="post" th:action="@{/binder/review}" th:if="${((trainingRecordReviewList == null || trainingRecordReviewList.size() == 0) && (jdList != null and jdList.size() > 0 and cv != null and trainingRecord != null and trainingRecord.tmFileName != null and trainingRecord.sopFileName != null)) || (trainingRecordReviewList != null && trainingRecordReviewList.size() > 0 && trainingRecord != null)}">
                         <button class="btn btn-primary" ><i class="fa fa-send-o"></i> 검토 요청</button>
                         </form>
                         <hr/>
@@ -145,7 +145,7 @@
                         <a href="/binder/tm/trainingLog">Training Log(TM)</a>
                     </li>
                     <li>
-                        <a href="#">Certification</a>
+                        <a href="/binder/certification">Certification</a>
                     </li>
                 </ul>
             </div>

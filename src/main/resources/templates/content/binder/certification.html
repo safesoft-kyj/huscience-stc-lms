@@ -99,14 +99,14 @@
                     <li>
                         <a href="/binder/jd">Job Description</a>
                     </li>
-                    <li th:classappend="${type == 'sop' ? 'active' : ''}">
+                    <li>
                         <a href="/binder/sop/trainingLog">Training Log(SOP)</a>
                     </li>
-                    <li th:classappend="${type == 'tm' ? 'active' : ''}">
+                    <li>
                         <a href="/binder/tm/trainingLog">Training Log(TM)</a>
                     </li>
-                    <li>
-                        <a href="#">Certification</a>
+                    <li class="active">
+                        <a href="/binder/certification">Certification</a>
                     </li>
                 </ul>
             </div>

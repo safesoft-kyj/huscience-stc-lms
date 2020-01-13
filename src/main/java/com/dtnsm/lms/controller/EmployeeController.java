@@ -80,7 +80,7 @@ public class EmployeeController {
         pageInfo.setParentTitle("Team/Department");
 
         pageInfo.setPageId("m-emp");
-        pageInfo.setPageTitle("Digital Binder Review");
+        pageInfo.setPageTitle("바인더 검토");
         model.addAttribute(pageInfo);
 
         model.addAttribute("status", status);
@@ -105,7 +105,7 @@ public class EmployeeController {
         pageInfo.setParentTitle("Team/Department");
 
         pageInfo.setPageId("m-emp");
-        pageInfo.setPageTitle("Digital Binder Review");
+        pageInfo.setPageTitle("바인더 검토");
         model.addAttribute(pageInfo);
 
         model.addAttribute("trainingRecord", trainingRecordReviewRepository.findById(id).get());

@@ -279,9 +279,9 @@ public class DigitalBinderController {
         builder.and(qTrainingRecord.tmCertHtmlContent.isNotEmpty());
         builder.and(qTrainingRecord.username.eq(SessionUtil.getUserId()));
         Iterable<TrainingRecord> trainingRecords = trainingRecordRepository.findAll(builder, qTrainingRecord.id.desc());
-        if(ObjectUtils.isEmpty(trainingRecords)) {
-            model.addAttribute("", null);
-        } else {
+        if(!ObjectUtils.isEmpty(trainingRecords)) {
+//            model.addAttribute("", null);
+//        } else {
             model.addAttribute("trainingRecord", trainingRecords);
         }
 
