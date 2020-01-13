@@ -1,7 +1,11 @@
 package com.dtnsm.lms.service;
 
+import com.dtnsm.common.entity.QUserJobDescription;
 import com.dtnsm.common.entity.Signature;
+import com.dtnsm.common.entity.UserJobDescription;
+import com.dtnsm.common.entity.constant.JobDescriptionStatus;
 import com.dtnsm.common.repository.SignatureRepository;
+import com.dtnsm.common.repository.UserJobDescriptionRepository;
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.TrainingType;
@@ -11,20 +15,25 @@ import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.repository.CourseTrainingLogRepository;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.SessionUtil;
+import com.querydsl.core.BooleanBuilder;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class BinderLogService {
@@ -45,6 +54,9 @@ public class BinderLogService {
 
     @Autowired
     UserServiceImpl userService;
+
+    @Autowired
+    private UserJobDescriptionRepository userJobDescriptionRepository;
 
     // Employee Training Log 데이터 생성
     public EmployeeTrainingLogSource getEmployeeTrainingLog(String userId, long timestamp) {
@@ -82,8 +94,13 @@ public class BinderLogService {
             }
         }
 
-        // TODO : Job Title 로 변경
-        trainingLogSource.setJobTitle("Clinical Research Associate (CRA)");
+        Iterable<UserJobDescription> userJobDescriptions = getJobDescriptionList(userId, Arrays.asList(JobDescriptionStatus.APPROVED));
+        if(ObjectUtils.isEmpty(userJobDescriptions)) {
+            trainingLogSource.setJobTitle("");
+        } else {
+            trainingLogSource.setJobTitle(StreamSupport.stream(userJobDescriptions.spliterator(), false)
+                    .map(u -> u.getJobDescriptionVersion().getJobDescription().getTitle()).collect(Collectors.joining(",")));
+        }
         trainingLogSource.setDepart(depart);
         trainingLogSource.setSign(imageBytes);
         trainingLogSource.setInDate(account.getIndate() != null ? DateUtil.getDateToString(DateUtil.getStringToDate(account.getIndate()), "dd-MMM-yyyy") : "");
@@ -95,7 +112,19 @@ public class BinderLogService {
     }
 
 
+    private Iterable<UserJobDescription> getJobDescriptionList(String userId, List<JobDescriptionStatus> statusList) {
+        QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
+        BooleanBuilder builder = new BooleanBuilder();
+        if(statusList.size() == 1) {
+            builder.and(qUserJobDescription.status.eq(statusList.get(0)));
+        } else {
+            builder.and(qUserJobDescription.status.in(statusList));
+        }
+        builder.and(qUserJobDescription.username.eq(userId));
+//        builder.and(qUserJobDescription.reviewed.eq(false));
 
+        return userJobDescriptionRepository.findAll(builder, qUserJobDescription.id.desc());
+    }
 
 
     public CourseTrainingLog saveLog(CourseTrainingLog courseTrainingLog) {
