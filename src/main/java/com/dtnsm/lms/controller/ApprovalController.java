@@ -64,6 +64,9 @@ public class ApprovalController {
     CourseSectionService courseSectionService;
 
     @Autowired
+    LmsNotificationService lmsNotificationService;
+
+    @Autowired
     UserServiceImpl userService;
 
     @Autowired
@@ -547,6 +550,12 @@ public class ApprovalController {
                 CourseAccount courseAccount = document.getCourseAccount();
                 courseAccount.setReportStatus("9");
                 courseAccountService.save(courseAccount);
+
+                // 발생로그를 삭제한다.
+                List<LmsNotification> lmsNotifications = lmsNotificationService.getAllByDocumentIdNotification(id);
+                for(LmsNotification lmsNotification : lmsNotifications) {
+                    lmsNotificationService.delete(lmsNotification);
+                }
 
                 documentService.delete(document);
             }

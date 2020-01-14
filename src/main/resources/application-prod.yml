@@ -16,7 +16,7 @@ spring:
     servlet:
       content-type: text/html
   datasource:
-    url: jdbc:sqlserver://localhost:20170;DatabaseName=test_lms_local
+    url: jdbc:sqlserver://localhost:20170;DatabaseName=dtnsm_dev_20200113
     username: sa
     password: safe123!@#
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver

@@ -37,6 +37,10 @@ public class LmsNotificationService {
         return lmsNotificationRepository.findAllByCourse_Id(courseId);
     }
 
+    public List<LmsNotification> getAllByDocumentIdNotification(Long docId) {
+        return lmsNotificationRepository.findAllByDocument_Id(docId);
+    }
+
     public List<LmsNotification> getTop5ByUserNotification(String userId) {
         return lmsNotificationRepository.findTop5ByAccount_UserIdOrderByCreatedDateDesc(userId);
     }

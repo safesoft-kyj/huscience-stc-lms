@@ -1,6 +1,7 @@
 package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.auth.UserServiceImpl;
+import com.dtnsm.lms.component.CourseScheduler;
 import com.dtnsm.lms.domain.Account;
 import com.dtnsm.lms.domain.Course;
 import com.dtnsm.lms.domain.CourseAccount;
@@ -38,6 +39,9 @@ public class CourseAccountAdminController {
     ApprovalCourseProcessService approvalCourseProcessService;
 
     @Autowired
+    CourseScheduler courseScheduler;
+
+    @Autowired
     CourseService courseService;
 
     @Autowired
@@ -53,6 +57,18 @@ public class CourseAccountAdminController {
         pageInfo.setParentTitle("교육과정");
 
         //courseMaster = courseMasterService.getById("A01");
+    }
+
+    // 외부교육참석보고서 메일 발송
+    @GetMapping("/{typeId}/{courseId}/account/sendmail")
+    public String courseAccountSendMail(@PathVariable("typeId") String typeId, @PathVariable("courseId") Long courseId, Model model) {
+
+        // 외부교육 참석보고서 메일 발송
+        courseScheduler.sendCourseToDateAlarm();
+
+        return String.format("redirect:/admin/course/%s/%s/account"
+            , typeId
+            , courseId);
     }
 
     @GetMapping("/{typeId}/{courseId}/account")
@@ -189,6 +205,9 @@ public class CourseAccountAdminController {
 
                     // 강의별로 로그를 생성시킨다.
                     binderLogService.createTrainingLog(courseAccount);
+                } else {
+                    // 시험 설문이 있으면 교육중 상태로 변경한다.
+                    courseAccount.setCourseStatus(CourseStepStatus.process);
                 }
             }
         }
