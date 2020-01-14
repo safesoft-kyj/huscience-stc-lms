@@ -34,9 +34,14 @@ public class DocumentConverter {
     @PostConstruct
     public void init() {
         try {
-            com.groupdocs.conversion.License lic = new com.groupdocs.conversion.License();
-            lic.setLicense(new FileInputStream(new File(license)));
+            FileInputStream licenseFileInputStream = new FileInputStream(new File(license));
             log.info("@License Loaded.");
+            com.groupdocs.conversion.License conversionLicense = new com.groupdocs.conversion.License();
+            conversionLicense.setLicense(licenseFileInputStream);
+            log.info("@Apply Conversion License.");
+            com.groupdocs.assembly.License assemblyLicense = new com.groupdocs.assembly.License();
+            assemblyLicense.setLicense(licenseFileInputStream);
+            log.info("@Apply Assembly License.");
 
             wordsLoadOptions = new WordsLoadOptions();
             wordsLoadOptions.setHideComments(true);
