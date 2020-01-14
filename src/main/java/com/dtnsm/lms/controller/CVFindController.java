@@ -114,7 +114,7 @@ public class CVFindController {
             if(result) {
                 log.info("BlindCV -> Word to PDF...");
 //                File outputPdf = new File(prop.getCvUploadDir() + outputFileName);
-                documentConverter.toPDF(new ByteArrayInputStream(os.toByteArray()), httpServletResponse.getOutputStream());
+                documentConverter.word2pdf(new ByteArrayInputStream(os.toByteArray()), httpServletResponse.getOutputStream());
                 log.info("Blind CV -> Word to PDF...Done.");
             }
         }

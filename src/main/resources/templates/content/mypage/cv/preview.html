@@ -60,6 +60,10 @@
         },
         success: function (html) {
             $('#preview_cv').html(html);
+
+            setTimeout(function() {
+                $(".trial").hide();
+            }, 500);
         },
         error: function (e) {
         }

@@ -128,7 +128,7 @@ public class CourseBinderRestController {
     private boolean create(Integer trainingRecordId) {
         // GroupDoc 라이센스
         // TODO : groupdoc License 호출
-        CommonUtilities.applyLicense();
+//        CommonUtilities.applyLicense();
 
         // 파일 기본 경로
         String sourceRootFoloer = prop.getXdocUploadDir() + "Data//Storage//";
@@ -194,7 +194,7 @@ public class CourseBinderRestController {
 
 //            output.flush();
             if(result) {
-                String html = documentConverter.toHTMLString(outputEmployeeLogDocxFilePath);
+                String html = documentConverter.word2html(outputEmployeeLogDocxFilePath);
                 log.debug("Word to HTML : {}", html);
 
                 saveTrainingRecord(trainingRecordId, userId, outputCertificationFileName, html, outputCertificationFileName, certHtmlContent);

@@ -499,7 +499,7 @@ public class MyPageCvJdController {
         if(result) {
             log.info("Word to PDF...");
             File outputPdf = new File(prop.getCvUploadDir() + outputFileName);
-            documentConverter.toPDF(new ByteArrayInputStream(os.toByteArray()), new FileOutputStream(outputPdf));
+            documentConverter.word2pdf(new ByteArrayInputStream(os.toByteArray()), new FileOutputStream(outputPdf));
             log.info("Word to PDF...Done.");
         }
         return "redirect:/mypage/cv";
