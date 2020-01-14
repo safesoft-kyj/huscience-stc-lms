@@ -27,20 +27,20 @@ public class DocumentConverter {
     private ConversionHandler conversionHandler;
 
     @Value("${groupdocs.license}")
-    private String license;
+    private String licensePath;
 
     private WordsLoadOptions wordsLoadOptions;
 
     @PostConstruct
     public void init() {
         try {
-            FileInputStream licenseFileInputStream = new FileInputStream(new File(license));
-            log.info("@License Loaded.");
+//            FileInputStream licenseFileInputStream = new FileInputStream(new File(license));
+            log.info("@License Loaded. {}", licensePath);
             com.groupdocs.conversion.License conversionLicense = new com.groupdocs.conversion.License();
-            conversionLicense.setLicense(licenseFileInputStream);
+            conversionLicense.setLicense(licensePath);
             log.info("@Apply Conversion License.");
             com.groupdocs.assembly.License assemblyLicense = new com.groupdocs.assembly.License();
-            assemblyLicense.setLicense(licenseFileInputStream);
+            assemblyLicense.setLicense(licensePath);
             log.info("@Apply Assembly License.");
 
             wordsLoadOptions = new WordsLoadOptions();
