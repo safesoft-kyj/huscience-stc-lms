@@ -48,6 +48,9 @@
 <!--                                    <span th:text="#{label.list.title(${borders.getTotalElements()})}"></span>-->
 <!--                                </div>-->
                                 <div class="col-sm-12 text-right">
+<!--                                    <th:block th:if="${#strings.equalsIgnoreCase(typeId, 'BC0104')}">-->
+<!--                                        <a class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/account/sendmail(typeId=${typeId}, courseId=${courseId})}"><i class="demo-pli-mail-send"></i> 참석보고서 미작성자 메일 발송</a>-->
+<!--                                    </th:block>-->
                                     <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/account/add(typeId=${typeId}, courseId=${courseId})}"><i class="demo-pli-add"></i> Add</a>
                                     <a class="btn btn-primary" th:href="@{/admin/course/{typeId}(typeId=${typeId})}"><i class="demo-pli-back"></i> Back</a>
                                 </div>
@@ -90,7 +93,7 @@
                                             <div th:switch="${border.getCourseStatus()}">
                                                 <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).none}" class="label label-info" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).none.getLabel()}"></span>
                                                 <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).request}" class="label label-info" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).request.getLabel()}"></span>
-                                                <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).process}" class="text-warning" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).process.getLabel()}"></span>
+                                                <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).process}" class="label label-warning" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).process.getLabel()}"></span>
                                                 <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).wait}" class="label label-warning" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).wait.getLabel()}"></span>
                                                 <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).complete}" class="label label-success" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).complete.getLabel()}"></span>
                                                 <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).reject}" class="label label-danger" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).reject.getLabel()}"></span>

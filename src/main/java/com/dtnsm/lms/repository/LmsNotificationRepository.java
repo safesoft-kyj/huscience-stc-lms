@@ -16,4 +16,6 @@ public interface LmsNotificationRepository extends JpaRepository<LmsNotification
     List<LmsNotification> findAllByCourse_IdAndAccount_UserId(Long courseId, String userId);
 
     List<LmsNotification> findAllByCourse_Id(Long courseId);
+
+    List<LmsNotification> findAllByDocument_Id(Long docId);
 }

@@ -944,7 +944,13 @@ public class ApprovalCourseProcessService {
         if(finalCount == courseAccountOrder.getFnSeq()) {   // 종결처리
             //  승인: 1, 기각 : 2
             courseAccount.setFnStatus("1");
-            courseAccount.setCourseStatus(CourseStepStatus.process);
+
+            // Class 교육(BC0102) 인 경우는 교육참석등록 상태로 변경
+            if(courseAccount.getCourse().getCourseMaster().getId().equals("BC0102")) {
+                courseAccount.setCourseStatus(CourseStepStatus.wait);
+            } else {
+                courseAccount.setCourseStatus(CourseStepStatus.process);
+            }
 
             CourseAccount courseAccount1 = courseAccountService.save(courseAccount);
 
@@ -1093,7 +1099,13 @@ public class ApprovalCourseProcessService {
         if(finalCount == courseAccountOrder.getFnSeq()) {   // 종결처리
             //  승인: 1, 기각 : 2
             courseAccount.setFnStatus("1");
-            courseAccount.setCourseStatus(CourseStepStatus.process);
+
+            // Class 교육(BC0102) 인 경우는 교육참석등록 상태로 변경
+            if(courseAccount.getCourse().getCourseMaster().getId().equals("BC0102")) {
+                courseAccount.setCourseStatus(CourseStepStatus.wait);
+            } else {
+                courseAccount.setCourseStatus(CourseStepStatus.process);
+            }
 
             courseAccount = courseAccountService.save(courseAccount);
 

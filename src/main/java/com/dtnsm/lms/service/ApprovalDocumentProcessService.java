@@ -116,7 +116,7 @@ public class ApprovalDocumentProcessService {
                     .lmsAlarmCourseType(LmsAlarmCourseType.Request)
                     .sender(account)
                     .receive(apprAccount2)
-                    .course(null)
+                    .document(saveDocument)
                     .title("교육참석보고서 결재 요청")
                     .subject(String.format("%s가 교육참석보고서 결재를 요청하였습니다.", account.getName()))
                     .content("교육참석보고서 결재 요청 (<a href='http://lms.dtnsm.com/approval/mainApproval?status=request'>결재함 바로가기</a>)")

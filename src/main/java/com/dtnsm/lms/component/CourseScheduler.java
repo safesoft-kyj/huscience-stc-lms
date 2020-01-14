@@ -11,6 +11,7 @@ import com.dtnsm.lms.mybatis.service.CourseAccountMapperService;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.repository.RoleRepository;
 import com.dtnsm.lms.repository.UserRepository;
+import com.dtnsm.lms.service.CourseAccountService;
 import com.dtnsm.lms.service.CourseService;
 import com.dtnsm.lms.service.LmsNotificationService;
 import com.dtnsm.lms.service.SignatureService;
@@ -60,6 +61,9 @@ public class CourseScheduler {
 
     @Autowired
     private SignatureService signatureService;
+
+    @Autowired
+    private CourseAccountService courseAccountService;
 
 //    @Scheduled(cron = "10 * * * * *")
 //    public void run() {
@@ -246,14 +250,24 @@ public class CourseScheduler {
     @Scheduled(cron = "0 40 2 * * *")
     public void sendCourseToDateAlarm() {
 
+        List<CourseAccount> courseAccounts = courseAccountMapperService.getCourseReportAlarm("BC0104", "-1");
+
         // 교육일이 종료되고 교육완료보고서를 작성해야하는 사용자에게 알림 발송(외부교육만)
-        for (CourseAccount courseAccount : courseAccountMapperService.getCourseReportAlarm("BC0104", -1)) {
-            MessageUtil.sendNotificationMessage(LmsAlarmCourseType.CourseReportApproach, courseAccount.getAccount(), courseAccount.getCourse());
+        for (CourseAccount courseAccountVO : courseAccounts) {
+
+             CourseAccount courseAccount = courseAccountService.getById(courseAccountVO.getId());
+
+            // 교육보고서 미진행된 건에 대해 알람을 발송한다.
+            if (courseAccount.getReportStatus().equals("9")) {
+
+                MessageUtil.sendNotificationMessage(LmsAlarmCourseType.CourseReportApproach, courseAccount.getAccount(), courseAccount.getCourse());
+            }
 //            MessageUtil.sendNotification(LmsAlarmCourseType.CourseReportApproach, courseAccount.getAccount(), courseAccount.getCourse());
         }
 
         // 교육일이 7일로 임박한 사용자에게 알림 발송(Self 교육만)
-        for (CourseAccount courseAccount : courseAccountMapperService.getCourseToDateAlarm("BC0101", -7)) {
+        for (CourseAccount courseAccountVO : courseAccountMapperService.getCourseToDateAlarm("BC0101", "-7")) {
+            CourseAccount courseAccount = courseAccountService.getById(courseAccountVO.getId());
             MessageUtil.sendNotificationMessage(LmsAlarmCourseType.CourseToDateApproach, courseAccount.getAccount(), courseAccount.getCourse());
             //MessageUtil.sendNotification(LmsAlarmCourseType.CourseToDateApproach, courseAccount.getAccount(), courseAccount.getCourse());
         }

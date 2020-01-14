@@ -137,7 +137,6 @@
 
                                                     <!-- 사용자 수정 삭제 -->
                                                     <th:block th:if="${(#strings.equalsIgnoreCase(status, 'request') or #strings.equalsIgnoreCase(status, 'process')) and border.getFnCurrSeq() <= 1}">
-                                                        <a th:text="#{label.edit}" th:href="@{/admin/course/{typeId}/{courseId}/section/edit(typeId=${typeId}, courseId=${courseId}, id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
                                                         <a th:text="#{label.delete}" th:href="@{/approval/deleteCourseAccount/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
                                                     </th:block>
                                                 </td>

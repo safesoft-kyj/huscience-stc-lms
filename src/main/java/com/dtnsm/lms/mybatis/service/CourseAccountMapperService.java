@@ -13,13 +13,12 @@ public class CourseAccountMapperService {
     @Autowired
     private CourseAccountMapper courseAccountMapper;
 
-    public List<CourseAccount> getCourseReportAlarm(String typeId, int day) {
-        return courseAccountMapper.selectBeforeCourseReportAlarm(typeId, day);    }
-
-
+    public List<CourseAccount> getCourseReportAlarm(String typeId, String day) {
+        return courseAccountMapper.selectBeforeCourseReportAlarm(typeId, day);
+    }
 
     // self 교육일때 종료 7일전 알람 발송
-    public List<CourseAccount> getCourseToDateAlarm(String typeId, int day) {
+    public List<CourseAccount> getCourseToDateAlarm(String typeId, String day) {
         return courseAccountMapper.selectBeforeCourseToDateAlarm(typeId, day);
     }
 }
