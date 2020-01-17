@@ -1,6 +1,7 @@
 package com.dtnsm.lms.domain;
 
 import com.dtnsm.lms.auth.AuditorEntity;
+import com.dtnsm.lms.domain.constant.DegreeType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -48,32 +49,18 @@ public class CVEducation extends AuditorEntity<String> implements Serializable {
     @Column(name = "city_country_other")
     private String cityCountryOther;
 
-    @Column(name = "bachelors_degree")
-    private String bachelorsDegree;
+    @Column(name = "degree_type")
+    @Enumerated(EnumType.STRING)
+    private DegreeType degreeType;
 
-    @Column(name = "bachelors_degree_other")
-    private String bachelorsDegreeOther;
+    @Column(name = "degree")
+    private String degree;
 
-    @Column(name = "masters_degree")
-    private String mastersDegree;
+    @Column(name = "thesis_title")
+    private String thesisTitle;
 
-    @Column(name = "masters_degree_other")
-    private String mastersDegreeOther;
-
-    @Column(name = "masters_thesis_title")
-    private String mastersThesisTitle;
-
-    @Column(name = "masters_name")
-    private String mastersName;
-
-    @Column(name = "phd_degree")
-    private String phdDegree;
-
-    @Column(name = "phd_thesis_title")
-    private String phdThesisTitle;
-
-    @Column(name = "phd_name")
-    private String phdName;
+    @Column(name = "name_of_supervisor")
+    private String nameOfSupervisor;
 
     @Column(name = "readonly")
     private boolean readOnly;

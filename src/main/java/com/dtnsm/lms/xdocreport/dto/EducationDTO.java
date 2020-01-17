@@ -1,5 +1,6 @@
 package com.dtnsm.lms.xdocreport.dto;
 
+import com.dtnsm.lms.domain.constant.DegreeType;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,41 +10,30 @@ public class EducationDTO {
     private String endDate;
     private String nameOfUniversity;
     private String cityCountry;
-    private String bachelorsDegree;
-    private String mastersDegree;
-    private String phdDegree;
+    private DegreeType degreeType;
+    private String degree;
 
-    private String mastersThesisTitle;
-    private String phdThesisTitle;
+    private String thesisTitle;
 
-    private String mastersName;
-    private String phdName;
+    private String nameOfSupervisor;
+
+    public boolean isThesisTitle() {
+        return degreeType != DegreeType.BACHELORS;
+    }
 
     @Builder
     public EducationDTO(String startDate, String endDate, String nameOfUniversity, String cityCountry,
-                        String bachelorsDegree, String mastersDegree, String phdDegree, String mastersThesisTitle, String phdThesisTitle,
-                        String mastersName, String phdName) {
+                        DegreeType degreeType,
+                        String degree, String thesisTitle,
+                        String nameOfSupervisor) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.nameOfUniversity = nameOfUniversity;
         this.cityCountry = cityCountry;
 
-        this.bachelorsDegree = bachelorsDegree;
-        this.mastersDegree = mastersDegree;
-        this.phdDegree = phdDegree;
-
-        this.mastersThesisTitle = mastersThesisTitle;
-        this.phdThesisTitle = phdThesisTitle;
-
-        this.mastersName = mastersName;
-        this.phdName = phdName;
-    }
-
-    public boolean isMasters() {
-        return mastersDegree != null && !"".equals(mastersDegree);
-    }
-
-    public boolean isPhd() {
-        return phdDegree != null && !"".equals(phdDegree);
+        this.degreeType = degreeType;
+        this.degree = degree;
+        this.thesisTitle = thesisTitle;
+        this.nameOfSupervisor = nameOfSupervisor;
     }
 }

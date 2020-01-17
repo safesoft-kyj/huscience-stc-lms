@@ -2,6 +2,7 @@ package com.dtnsm.lms.validator;
 
 import com.dtnsm.lms.domain.CVEducation;
 import com.dtnsm.lms.domain.CurriculumVitae;
+import com.dtnsm.lms.domain.constant.DegreeType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -48,52 +49,17 @@ public class EducationValidator implements Validator {
                     errors.rejectValue("educations[" + eduIndex + "].cityCountryOther", "message.required", "required field.");
                 }
             }
-            if(StringUtils.isEmpty(edu.getBachelorsDegree())) {
-                errors.rejectValue("educations[" + eduIndex + "].bachelorsDegree", "message.required", "required field.");
+            if(StringUtils.isEmpty(edu.getDegree())) {
+                errors.rejectValue("educations[" + eduIndex + "].degree", "message.required", "required field.");
             }
-
-            if(!StringUtils.isEmpty(edu.getMastersThesisTitle()) || !StringUtils.isEmpty(edu.getMastersName())) {
-                if(StringUtils.isEmpty(edu.getMastersDegree())) {
-                    errors.rejectValue("educations[" + eduIndex + "].mastersDegree", "message.required", "required field.");
+            if(edu.getDegreeType() != DegreeType.BACHELORS) {
+                if(StringUtils.isEmpty(edu.getThesisTitle())) {
+                    errors.rejectValue("educations[" + eduIndex + "].thesisTitle", "message.required", "required field.");
                 }
-            }
-
-            if(!StringUtils.isEmpty(edu.getMastersDegree())) {
-//                errors.rejectValue("educations[" + eduIndex + "].mastersDegree", "message.required", "required field.");
-
-                if(StringUtils.isEmpty(edu.getMastersThesisTitle())) {
-                    errors.rejectValue("educations[" + eduIndex + "].mastersThesisTitle", "message.required", "required field.");
-                }
-                if(StringUtils.isEmpty(edu.getMastersName())) {
-                    errors.rejectValue("educations[" + eduIndex + "].mastersName", "message.required", "required field.");
-                }
-            } else {
-                if(!StringUtils.isEmpty(edu.getMastersThesisTitle()) || !StringUtils.isEmpty(edu.getMastersName())) {
-                    errors.rejectValue("educations[" + eduIndex + "].mastersDegree", "message.required", "required field.");
+                if(StringUtils.isEmpty(edu.getNameOfSupervisor())) {
+                    errors.rejectValue("educations[" + eduIndex + "].nameOfSupervisor", "message.required", "required field.");
                 }
             }
-
-
-
-            if(!StringUtils.isEmpty(edu.getPhdDegree())) {
-                if(StringUtils.isEmpty(edu.getMastersDegree())) {
-                    errors.rejectValue("educations[" + eduIndex + "].mastersDegree", "message.required", "required field.");
-                }
-//                errors.rejectValue("educations[" + eduIndex + "].phdDegree", "message.required", "required field.");
-                if(StringUtils.isEmpty(edu.getPhdThesisTitle())) {
-                    errors.rejectValue("educations[" + eduIndex + "].phdThesisTitle", "message.required", "required field.");
-                }
-                if(StringUtils.isEmpty(edu.getPhdName())) {
-                    errors.rejectValue("educations[" + eduIndex + "].phdName", "message.required", "required field.");
-                }
-            } else {
-                if(!StringUtils.isEmpty(edu.getPhdThesisTitle()) || !StringUtils.isEmpty(edu.getPhdName())) {
-                    errors.rejectValue("educations[" + eduIndex + "].phdDegree", "message.required", "required field.");
-                }
-            }
-
-
-
 
             eduIndex ++;
         }

@@ -128,6 +128,18 @@
     <!--Bootstrap Wizard [ OPTIONAL ]-->
 <!--    <script th:src="@{/default/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js}"></script>-->
     <script>
+        $("select.degreeType").change(function() {
+           var t = $(this).val();
+            var thesisTitleId = "#educations"+$(this).data("index")+"\\.thesisTitle";
+            var nameOfSupervisorId = "#educations"+$(this).data("index")+"\\.nameOfSupervisor";
+           if(t == 'BACHELORS') {
+                $(thesisTitleId).val("").attr("disabled", "disabled");
+                $(nameOfSupervisorId).val("").attr("disabled", "disabled");
+           } else {
+               $(thesisTitleId).removeAttr("disabled");
+               $(nameOfSupervisorId).removeAttr("disabled");
+           }
+        }).trigger("change");
         // $(document).ready(function() {
             $("select.name-of-university").change(function(e) {
                var _val = $(this).val();

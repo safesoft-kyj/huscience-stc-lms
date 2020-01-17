@@ -191,13 +191,10 @@ public class CurriculumVitaeService {
                         .endDate(e.isPresent() ? "Present" : DateUtil.getDateToString(e.getEndDate(), "MMM yyyy"))
                         .nameOfUniversity("Others".equals(e.getNameOfUniversity()) ? e.getNameOfUniversityOther() : e.getNameOfUniversity())
                         .cityCountry("Others".equals(e.getCityCountry()) ? e.getCityCountryOther() : e.getCityCountry())
-                        .bachelorsDegree(StringUtils.isEmpty(e.getBachelorsDegreeOther()) ? e.getBachelorsDegree() : e.getBachelorsDegreeOther())
-                        .mastersDegree(StringUtils.isEmpty(e.getMastersDegreeOther()) ? e.getMastersDegree() : e.getMastersDegreeOther())
-                        .mastersThesisTitle(e.getMastersThesisTitle())
-                        .mastersName(e.getMastersName())
-                        .phdDegree(e.getPhdDegree())
-                        .phdThesisTitle(e.getPhdThesisTitle())
-                        .phdName(e.getPhdName())
+                        .degreeType(e.getDegreeType())
+                        .degree(e.getDegree())
+                        .thesisTitle(e.getThesisTitle())
+                        .nameOfSupervisor(e.getNameOfSupervisor())
                         .build())
                 .collect(Collectors.toList()));
 
@@ -260,7 +257,7 @@ public class CurriculumVitaeService {
                 ExperienceDTO.builder()
                         .ta("Others".equals(i.getTa()) ? i.getTaOther() : i.getTa())
                         .indication("Others".equals(i.getIndication()) ? i.getIndicationOther() : i.getIndication())
-                        .phase("Others".equals(i.getPhase()) ? i.getPhaseOther() : i.getPhase())
+                        .phase("Others".equals(i.getPhase()) ? i.getPhaseOther() : appendPhase(i.getPhase()))
                         .roles(Stream.of(i.getRole()).map(r -> r.equals("Others") ? i.getRoleOther() : r).collect(Collectors.toList()))
                         .globalOrLocal(i.getGlobalOrLocal().getLabel())
                         .workingDetails(i.getWorkingDetails())
@@ -270,4 +267,12 @@ public class CurriculumVitaeService {
         return dto;
     }
 
+    private String appendPhase(String phase) {
+        String first = phase.substring(0, 1);
+        if("0".equals(first) || "1".equals(first) || "2".equals(first) || "3".equals(first) || "4".equals(first)) {
+            return "Phase " + phase;
+        } else {
+            return phase;
+        }
+    }
 }

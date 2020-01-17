@@ -43,6 +43,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
@@ -115,7 +116,7 @@ public class EmployeeController {
     @GetMapping("/employees/cv/{status}")
     public String getEmployeeCV(@PathVariable("status") String stringStatus, @RequestParam(value = "id", required = false, defaultValue = "") String userId, Model model) {
         pageInfo.setParentId("m-employee");
-        pageInfo.setParentTitle("Team/Dept Employees");
+        pageInfo.setParentTitle("Team/Department");
 
         pageInfo.setPageId("m-jd");
         pageInfo.setPageTitle("Curriculum Vitae");
@@ -154,10 +155,10 @@ public class EmployeeController {
     @GetMapping("/employees/jd/{status}")
     public String getEmployeeJD(@PathVariable("status") String stringStatus, @RequestParam(value = "id", required = false, defaultValue = "") String userId, Model model) {
         pageInfo.setParentId("m-employee");
-        pageInfo.setParentTitle("Team/Dept Employees");
+        pageInfo.setParentTitle("Team/Department");
 
         pageInfo.setPageId("m-jd");
-        pageInfo.setPageTitle("Job Description");
+        pageInfo.setPageTitle("직무 관리");
         model.addAttribute(pageInfo);
 
         JobDescriptionStatus status = JobDescriptionStatus.valueOf(stringStatus.toUpperCase());
@@ -175,6 +176,30 @@ public class EmployeeController {
             model.addAttribute("userJobDescriptions", userRepository.getUserJobDescriptionByParentUserId(SessionUtil.getUserId(), status));
         }
         return "content/employee/jd/list";
+    }
+
+    @PostMapping("/employees/jd/revoke")
+    public String revokeJd(@RequestParam(value = "id") Integer id, RedirectAttributes attributes) {
+
+        Optional<UserJobDescription> optionalUserJobDescription = userJobDescriptionRepository.findById(id);
+        if(optionalUserJobDescription.isPresent()) {
+            UserJobDescription userJobDescription = optionalUserJobDescription.get();
+            userJobDescription.setStatus(JobDescriptionStatus.SUPERSEDED);
+            log.info("@UserJobDescription Id : {}, Superseded 상태로 변경(직무 배정 해제)", id);
+            userJobDescriptionRepository.save(userJobDescription);
+            attributes.addFlashAttribute("message", "직무 배정 해제 처리가 정상적으로 처리 되었습니다.");
+        } else {
+            attributes.addFlashAttribute("message", "데이터 조회에 실패 하였습니다.(사용자의 JD 정보 찾지 못함.)");
+
+        }
+        return "redirect:/employees/jd/approved";
+    }
+    @PostMapping("/employees/jd/remove")
+    public String removeJd(@RequestParam(value = "id") Integer id, RedirectAttributes attributes) {
+
+        userJobDescriptionRepository.deleteById(id);
+        attributes.addFlashAttribute("message", "선택하신 사용자의 직무가 삭제 되었습니다.");
+        return "redirect:/employees/jd/approved";
     }
 
     @PostMapping("/employees/review/{id}")
