@@ -27,6 +27,14 @@ public class CourseSectionAction extends AuditorCreateEntity<String> {
     @Column(name="exam_date", length = 10)
     private String executeDate;
 
+    @Column(name="image_current")
+    @ColumnDefault("0")
+    private int imageCurrent=0;
+
+    @Column(name="image_size")
+    @ColumnDefault("0")
+    private int imageSize=0;
+
     // 총수강시간(초) => 진도율 계산시 필요
     @Column(name="total_use_second")
     @ColumnDefault("0")

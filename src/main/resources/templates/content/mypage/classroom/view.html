@@ -16,6 +16,17 @@
             margin: 0;
             padding: 0;
         }
+
+        input {
+            border:none;border-right:0px; border-top:0px; boder-left:0px; boder-bottom:0px;
+        }
+
+        .page-label {
+            width:30px;
+            vertical-align: center;
+            font-size: 18px;
+        }
+
     </style>
 
 </th:block>
@@ -45,15 +56,15 @@
                         <hr class="table-head">
                         <div class="table-responsive">
                             <table class="table" cellspacing="0" width="100%">
-                                <colgroup><col width="5%" /><col width="10%" /><col width="40%" /><col width="10%" /><col width="10%" /><col width="15%" /></colgroup>
+                                <colgroup><col width="5%" /><col width="10%" /><col width="30%" /><col width="20%" /><col width="10%" /><col width="15%" /></colgroup>
                                 <thead>
                                 <th class="text-center">No</th>
                                 <th class="text-center">구분</th>
                                 <th class="text-center">과정명</th>
     <!--                            <th class="text-center">기간</th>-->
-                                <th class="text-center">시간</th>
+                                <th class="text-center" th:text="#{label.course.period}">교육기간</th>
                                 <th class="text-center">진도율</th>
-                                <th class="text-center">상태</th>
+                                <th class="text-center" th:text="#{label.status}">상태</th>
                                 <th class="text-center" th:text="#{label.actions}"></th>
                                 </thead>
                                 <tbody>
@@ -66,7 +77,9 @@
                                                 <td class="text-left" th:text="${sectionAction.getCourseSection().getName()}"}></td>
                 <!--                                <td class="text-center" th:text="${section.getFromDate() + ' ~ ' + section.getToDate()}"></td>-->
                                                 <td class="text-center">
-                                                    <span th:text="${sectionAction.getCourseSection().getMinute()} + '분'"}></td>
+<!--                                                    <span th:text="${sectionAction.getCourseSection().getMinute()} + '분'"}></td>-->
+                                                    <span th:unless="${#strings.equalsIgnoreCase(courseAccount.getFromDate(), courseAccount.getToDate())}" class="text-center" th:text="${courseAccount.getFromDate() + '~' + courseAccount.getToDate()}"></span>
+                                                    <span th:if="${#strings.equalsIgnoreCase(courseAccount.getFromDate(), courseAccount.getToDate())}" class="text-center" th:text="${courseAccount.getFromDate()}"></span>
                 <!--                                <td class="text-center" th:text="${section.getTeacher()}"}></td>-->
                                                 <td class="text-center" >
 
@@ -78,8 +91,8 @@
                                                         </th:block>
                                                         <th:block th:unless="${sectionAction.getTotalUseSecond() > sectionAction.getCourseSection().getSecond() }">
                                                             <div id="time2"  class="progress-bar progress-bar-info"
-                                                                 th:attr="style=${'width:' + T(Math).round((sectionAction.getTotalUseSecond()*1.0) / sectionAction.getCourseSection().getSecond() * 100) + '%'}"
-                                                                 th:text="${T(Math).round((sectionAction.getTotalUseSecond()*1.0) / sectionAction.getCourseSection().getSecond() * 100) + ' %'}">0%</div>
+                                                                 th:attr="style=${'width:' + T(Math).round((sectionAction.getImageCurrent()*1.0) / sectionAction.getImageSize() * 100) + '%'}"
+                                                                 th:text="${T(Math).round((sectionAction.getImageCurrent()*1.0) / sectionAction.getImageSize()* 100) + ' %'}">0%</div>
                                                         </th:block>
                                                     </div>
                                                 </td>
@@ -109,8 +122,16 @@
 
                                                     <th:block th:unless="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE') or #strings.isEmpty(sectionAction.getStatus())}">
                                                         <th:block th:inline="text" th:each="sectionFile : ${sectionAction.getCourseSection().getSectionFiles()}">
-                                                            <a href="#" class="label label-table label-info" id="popupBtn"
-                                                               th:onclick="|javascript:popupPdfView('${sectionFile.getId()}', '${sectionAction.getId()}');return false;|" target="_blank" th:text="#{label.course.section.request}">학습하기</a>
+<!--                                                            <a href="#" class="label label-table label-info" id="popupBtn"-->
+<!--                                                               th:onclick="|javascript:popupPdfView('${sectionFile.getId()}', '${sectionAction.getId()}');return false;|" target="_blank" th:text="#{label.course.section.request}">학습하기</a>-->
+
+                                                            <a href="#" class="label label-table label-info" th:text="#{label.course.section.request}"
+                                                               th:onclick="openModal([[${sectionAction.getTotalUseSecond()}]], [[${sectionAction.getId()}]], [[${sectionFile.getId()}]], [[${sectionAction.getImageCurrent()}]], [[${sectionAction.getImageSize()}]], [[${sectionAction.getCourseSection().getName()}]])">학습</a>
+
+<!--                                                            <a href="#" class="" data-toggle="modal" data-target="#demo-default-modal"-->
+<!--                                                               th:onclick="openModal([[${sectionFile.getId()}]])">학습</a>-->
+<!--                                                            <input type="text" name="fileId" id="fileId">-->
+
                                                         </th:block>
                                                     </th:block>
 
@@ -211,19 +232,240 @@
                             </table>
                         </div>
                     </div>
-
                 </div><!--panel-body End -->
+
+
+
+
             </div><!-- panel End -->
         </div><!-- Page content End -->
     </div><!-- Content container End -->
+
+    <!--강의 Modal-->
+    <!--===================================================-->
+    <div class="modal fade" id="demo-default-modal" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+        <div class="modal-dialog modal-fullsize">
+            <div class="modal-content modal-fullsize" id="modal-content">
+
+                <!--Modal header-->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                    <h4 id="modal-title" class="modal-title" th:text="${courseAccount.getCourse().getTitle()}">학습</h4>
+                </div>
+
+                <!--Modal body-->
+                <div class="modal-body text-center">
+                    <img src="/admin/course/section/image/download-file/56/1" style="width:90%;" id="pdfImage" />
+                </div>
+
+                <!--Modal footer-->
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-lg-4 text-left">
+                            <!-- FileNumber-->
+                            <input class="page-label" type="hidden" name="fileId" id="fileId" value="1" size="3">
+                            <!-- PageCurrent-->
+                            <input class="page-label" type="hidden" name="currentPageNo" id="currentPageNo" value="1" size="3">
+                            <span class="page-label text-primary"><i class="ti-timer"></i> 학습시간 : <span id="timer">0:0:00</span> </span>
+                        </div>
+                        <div class="col-lg-4 text-center">
+                            <span class="page-label text-right">Page</span><input class="page-label text-warning" type="text" name="pageNo" id="pageNo" value="1" size="3" style="text-align: right">&nbsp;<span class="page-label">/</span>&nbsp;
+                            <input class="page-label text-info" type="text" name="totalPage" id="totalPage" value="1" size="3" style="text-align: left">
+                        </div>
+                        <div class="col-lg-4 text-right">
+                            <button class="btn btn-default btn-lg" type="button" id="prev">Prev</button>
+                            <button class="btn btn-default btn-lg" type="button" id="next">Next</button>
+                            <button data-dismiss="modal" class="btn btn-default btn-lg" type="button">Close</button>
+                        </div>
+
+                    </div>
+
+
+
+
+
+                    <!--                            <button class="btn btn-primary">Save changes</button>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
 </th:block>
 
+
+
 <th:block layout:fragment="custom_js">
-    <script>
-        function showMessage() {
-            alert('준비중입니다..');
+    <script th:inline="javascript">
+
+        var gTotalUseSecond = 0;
+
+        var url = "/admin/course/section/image/download-file/";
+
+        var gActionId = 0;
+        // Total Page
+        var gTotalPage = 0;
+        // 사용자가 본 마지막 페이지
+        var updateCurrentNo = 0;
+        // db에 있는 마지막 페이지
+        var gCurrentNo = 0;
+
+        var gTid;
+        var gCurrDate = new Date();
+        var gCurrSecond = 0;
+
+        $(function() {
+
+            $("#demo-default-modal").on('hidden.bs.modal', function() {
+                saveSectionSecond();
+                location.reload();
+            });
+
+
+            $('#prev').click(function(){
+                var prevUrl = url + $('#fileId').val() + '/';
+                var prevSrc = $('#pdfImage').attr( 'src' );
+
+                var prevSplit = prevSrc.split('/');
+                var imageNo = Number(prevSplit[prevSplit.length-1]);
+
+                if (imageNo <= 1) {
+                    alert('첫페이지 입니다.');
+                    imageNo = 1;
+                } else {
+                    imageNo--;
+                }
+
+                $('#pdfImage').attr('src', prevUrl +  imageNo); // 클릭한 버튼의 이미지 보여주기
+                $('#pageNo').val(imageNo);
+                $("#demo-default-modal").scrollTop(0);
+            });
+
+            $('#next').click(function(){
+                var totalPage  = $('#totalPage').val();
+                var nextUrl = url + $('#fileId').val() + '/';
+                var prevSrc = $('#pdfImage').attr( 'src' );
+
+                var prevSplit = prevSrc.split('/');
+                var imageNo = Number(prevSplit[prevSplit.length-1]);
+
+                if (imageNo < totalPage) {
+                    imageNo++;
+
+                    // db에 있는 마지막 페이지 보다 현재 페이지가 큰경우 임시 저장한다.
+                    if (gCurrentNo < imageNo) gCurrentNo = imageNo;
+                    $('#pdfImage').attr('src', nextUrl +  imageNo); // 클릭한 버튼의 이미지 보여주기
+                    $('#pageNo').val(imageNo);
+                    $("#demo-default-modal").scrollTop(0);
+                } else {
+                    imageNo = totalPage;
+                    alert('마지막 페이지 입니다.');
+                    $('#demo-default-modal').modal("hide"); //닫기
+                }
+
+            });
+        });
+
+        function msg_time() {
+
+            var hours = Math.floor((((gCurrSecond+gTotalUseSecond) * 1000) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var miniutes = Math.floor((((gCurrSecond+gTotalUseSecond) * 1000) % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((((gCurrSecond+gTotalUseSecond) * 1000) % (1000 * 60)) / 1000);
+
+            var timeText = hours + ":" + miniutes + ":" + seconds; // 남은 시간 text형태로 변경
+
+            // progress_rate = (curr_second / total_second * 100).toFixed(0) + '%';
+
+            if ((hours + miniutes + seconds) >= 0) {
+
+                $("#timer").html(timeText);   // div 영역에 보여줌
+                // alert(gCurrSecond);
+                // alert(gTotalUseSecond);
+            }
+
+            // console.log(timeText);
+
+            gCurrSecond += 1;
         }
 
+        function openModal(total_use_second, actionId, fileId, currentPageNo, totalPage, modalTitle) {
+            gCurrDate = new Date();
+            gTotalUseSecond = total_use_second;
+            gTid = setInterval('msg_time()', 1000); // 타이머 1초간격으로 수행
+
+            var default_url = url + fileId + '/';
+
+            $('#fileId').val(fileId);
+
+            if (currentPageNo == 0) {
+                currentPageNo = 1;
+            }
+
+            gActionId = actionId;
+            gTotalPage = totalPage;
+            gCurrentNo = currentPageNo;
+
+            $('#currentPageNo').val(currentPageNo);
+            $('#totalPage').val(totalPage);
+            $('#pageNo').val(currentPageNo);
+            $('#pdfImage').attr('src', default_url +  currentPageNo); // 클릭한 버튼의 이미지 보여주기
+            $('#modal-title').val(modalTitle);
+
+            // 바깥을 클릭하거나 ESC 클릭했을경우 창이 닫히지 않게 설정
+            $("#demo-default-modal").modal({backdrop: 'static', keyboard: false});
+        }
+
+        // 강의 학습 정보를 저장한다.
+        function saveSectionSecond() {
+            clearInterval(gTid);   // 타이머 해제
+
+            // endFlag 1:계속학습, 2:학습종료
+            var endFlag = "1";
+            var endDate = new Date();
+
+            // 조직도 정보 restApi
+            var url = "/mypage/api/pdfImageview";
+
+            // 마지막 본 페이지가 Total Page와 같은 경우 완료 처리한다.
+            if (gCurrentNo == gTotalPage) {
+                endFlag = "2";
+            }
+
+            // 학습시간 저장
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {
+                    'sectionActionId': gActionId,
+                    'imageCurrent': gCurrentNo,
+                    'useSecond': gCurrSecond,
+                    'startDate': gCurrDate,
+                    'endDate': endDate,
+                    'endFlag': endFlag
+                },
+                dataType: 'JSON',
+                async: false,
+                success: function (data) {
+
+                },
+                error: function (e) {
+                    // alert('ajax error');
+                    console.log(e.responseText);
+                }
+            });
+        }
+
+
+        // Page Modal
+        // function imagePrev(id, sectionActionId) {
+        //
+        // }
+        //
+        // function imageNext(id, sectionActionId) {
+        //     $('.css_test img').attr('src', src); // 클릭한 버튼의 이미지 보여주기
+        // }
+
+
+        // Popup 창
         function popupPdfView(id, sectionActionId) {
            var width = 1000;
            var height = 720;

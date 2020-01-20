@@ -14,8 +14,8 @@ public class SessionUtil {
 
     public static String getUserId() {
 
-//        return getUserDetail().getUserId();
-        System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+        return getUserDetail().getUserId();
+//        System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());
+//        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }

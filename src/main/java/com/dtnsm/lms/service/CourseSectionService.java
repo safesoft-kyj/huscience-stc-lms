@@ -120,7 +120,9 @@ public class CourseSectionService {
 
         // 문제파일을 업로드 하고 테이블에 insert 한다.
         if (file != null) {
-            sectionFileService.storeFile(file, courseSection1);
+            CourseSectionFile courseSectionFile = sectionFileService.storeFile(file, courseSection1);
+            courseSection1.setImageSize(courseSectionFile.getImageSize());
+            courseSection1 = sectionRepository.save(courseSection1);
         }
     }
 }

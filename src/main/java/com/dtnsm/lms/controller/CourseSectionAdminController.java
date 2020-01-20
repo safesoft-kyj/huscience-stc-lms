@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -111,11 +112,13 @@ public class CourseSectionAdminController {
     public String noticeAddPost(@Valid CourseSection courseSection
             , @PathVariable("typeId") String typeId
             , @PathVariable("courseId") Long courseId
-            , @RequestParam("files") MultipartFile[] files
+            , @RequestParam("files") MultipartFile file
             , BindingResult result) {
         if(result.hasErrors()) {
             return "admin/course/section/add";
         }
+
+
 
         Course course = courseService.getCourseById(courseId);
         courseSection.setCourse(course);
@@ -123,11 +126,18 @@ public class CourseSectionAdminController {
         courseSection.setSecond(Math.round(courseSection.getMinute()*60));
         CourseSection courseSection1 = sectionService.saveSection(courseSection);
 
+        if (file != null) {
+            CourseSectionFile courseSectionFile = fileService.storeFile(file, courseSection1);
+            courseSection1.setImageSize(courseSectionFile.getImageSize());
+            courseSection1 = sectionService.saveSection(courseSection1);
+        }
+
         // Section 저장
-        Arrays.asList(files)
-                .stream()
-                .map(file -> fileService.storeFile(file, courseSection1))
-                .collect(Collectors.toList());
+//        Arrays.asList(files)
+//                .stream()
+//                .map(file -> fileService.storeFile(file, courseSection1))
+//                .collect(Collectors.toList());
+
 
 
         // 강의 시간의 변경시 과정의 시간을 업데이트 한다.
@@ -160,7 +170,7 @@ public class CourseSectionAdminController {
     @PostMapping("/{typeId}/{courseId}/section/edit-post/{id}")
     public String noticeEditPost(@PathVariable("id") long id
             , @PathVariable("typeId") String typeId
-            , @RequestParam("files") MultipartFile[] files
+            , @RequestParam("files") MultipartFile file
             , @Valid CourseSection courseSection
             , BindingResult result) {
         if(result.hasErrors()) {
@@ -180,10 +190,16 @@ public class CourseSectionAdminController {
         // 강의 시간의 변경시 과정의 시간을 업데이트 한다.
         courseService.updateCourseHour(courseSection1.getCourse());
 
-        Arrays.asList(files)
-                .stream()
-                .map(file -> fileService.storeFile(file, courseSection1))
-                .collect(Collectors.toList());
+        if (file != null) {
+            CourseSectionFile courseSectionFile = fileService.storeFile(file, courseSection1);
+            courseSection1.setImageSize(courseSectionFile.getImageSize());
+            courseSection1 = sectionService.saveSection(courseSection1);
+        }
+
+//        Arrays.asList(files)
+//                .stream()
+//                .map(file -> fileService.storeFile(file, courseSection1))
+//                .collect(Collectors.toList());
 
         return String.format("redirect:/admin/course/%s/%s/section"
                 , courseSection1.getCourse().getCourseMaster().getId()
@@ -267,6 +283,26 @@ public class CourseSectionAdminController {
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + newFileName + "\"")
+                .body(resource);
+    }
+
+    @GetMapping("/section/image/download-file/{fileId}/{pageId}")
+    @ResponseBody
+    public ResponseEntity<Resource> downloadImageFile(@PathVariable("fileId") long fileId
+            , @PathVariable("pageId") Integer pageId
+            , HttpServletRequest request){
+
+        CourseSectionFile courseSectionFile =  fileService.getUploadFile(fileId);
+
+        //
+        String fileName = pageId + ".jpg";
+
+        // Load file as Resource
+        Resource resource = fileService.loadFileAsResource(Paths.get(courseSectionFile.getImageFolder(), fileName).toString());
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("image/jpeg"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + fileName + "\"")
                 .body(resource);
     }
 }

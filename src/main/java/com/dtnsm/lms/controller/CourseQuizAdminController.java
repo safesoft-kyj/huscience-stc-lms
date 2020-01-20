@@ -227,9 +227,19 @@ public class CourseQuizAdminController {
         CourseQuiz courseQuiz = quizService.getCourseQuizById(id);
 
         // 과정 신청된 내역이 있으면 삭제 하지 않는다.
-        if (courseQuiz.getCourse().getCourseAccountList().size() <= 0) {
+//        if (courseQuiz.getCourse().getCourseAccountList().size() <= 0) {
+
+            // 문제 삭제
+            for(CourseQuizQuestion courseQuizQuestion : courseQuiz.getQuizQuestions()) {
+                quizService.deleteQuizQuestion(courseQuizQuestion);
+            }
+            // 첨부파일 삭제
+            for(CourseQuizFile courseQuizFile : courseQuiz.getQuizFiles()) {
+                fileService.deleteFile(courseQuizFile);
+            }
+            // 시험 삭제
             quizService.deleteQuiz(courseQuiz);
-        }
+//        }
 
         // 이전 URL를 리턴한다.
         String refUrl = request.getHeader("referer");
@@ -242,6 +252,14 @@ public class CourseQuizAdminController {
             , @PathVariable long quiz_id
             , @PathVariable long file_id
             , HttpServletRequest request){
+
+
+        CourseQuiz courseQuiz = quizService.getCourseQuizById(quiz_id);
+
+        // 문제 삭제
+        for(CourseQuizQuestion courseQuizQuestion : courseQuiz.getQuizQuestions()) {
+            quizService.deleteQuizQuestion(courseQuizQuestion);
+        }
 
         // db및 파일 삭제
         fileService.deleteFile(file_id);
@@ -298,6 +316,8 @@ public class CourseQuizAdminController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + newFileName + "\"")
                 .body(resource);
     }
+
+
 
     // Report
     @GetMapping("/{typeId}/{courseId}/quiz/report")

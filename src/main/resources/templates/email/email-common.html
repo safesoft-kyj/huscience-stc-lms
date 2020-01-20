@@ -8,6 +8,7 @@
 <body>
 
 <!--
+messageSource.getCourseAccount();
 messageSource.getSubject();
 messageSource.getTitle();
 messageSource.getContent();
@@ -15,9 +16,23 @@ messageSource.getSender();
 messageSource.getCourse();
 messageSource.getReceive();
 -->
-
+<h3 th:text="${messageSource.getCourse().getTitle()}"></h3>
+<h3 th:text="${messageSource.getCourseAccount().getCourse().getTitle()}"></h3>
+<h3 th:text="${messageSource.getCourseAccount().getCourse().getCourseMaster().getCourseName()}"></h3>
 <table>
     <tbody>
+    <tr>
+        <td>
+            <table>
+                <tr>
+                    <td th:text="${messageSource.getCourseAccount().getCourse().getCourseMaster().getCourseName()}"></td>
+                    <td th:text="${messageSource.getCourseAccount().getCourse().getTitle()}"></td>
+                    <td th:text="${messageSource.getCourseAccount().getFromDate()}"></td>
+                    <td th:text="${messageSource.getCourseAccount().getToDate()}"></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
     <tr>
         <td><p th:utext="|${messageSource.getContent()}|">content</p></td>
     </tr>

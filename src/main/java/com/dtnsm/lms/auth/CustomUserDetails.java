@@ -1,15 +1,25 @@
 package com.dtnsm.lms.auth;
 
 
+import com.dtnsm.common.entity.QUserJobDescription;
+import com.dtnsm.common.entity.UserJobDescription;
+import com.dtnsm.common.entity.constant.JobDescriptionStatus;
+import com.dtnsm.common.repository.UserJobDescriptionRepository;
 import com.dtnsm.lms.domain.Account;
+import com.dtnsm.lms.util.GlobalUtil;
+import com.querydsl.core.BooleanBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Getter
 @Setter
@@ -34,13 +44,27 @@ public class CustomUserDetails implements UserDetails {
         return user.getUserId();
     }
 
+    public String getJobTitle() {
+
+//        Iterable<UserJobDescription> userJobDescriptions = getJobDescriptionList(user.getUserId(), Arrays.asList(JobDescriptionStatus.APPROVED));
+//
+
+        return GlobalUtil.getJobDescriptionString(user.getUserId());
+//        return "jobTitle";
+    }
+
+    public String getOrgDept() {
+        return user.getOrgDepart();
+    }
+
+    public String getEngName() {
+        return user.getEngName();
+    }
+
     @Override
         public String getUsername() {
-        return user.getUserId();
+        return user.getName();
     }
-//    public String getUsername() {
-//        return user.getName();
-//    }
 
     public String getEmail() {
         return user.getEmail();
@@ -73,4 +97,7 @@ public class CustomUserDetails implements UserDetails {
     public void setManager(boolean manager) {
         this.manager = manager;
     }
+
+
+
 }
