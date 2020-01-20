@@ -142,7 +142,7 @@ public class CourseCertificateService {
     public boolean createCertificationFile(CourseAccount courseAccount) {
 
         // GroupDoc 라이센스
-        CommonUtilities.applyLicense();
+//        CommonUtilities.applyLicense();
 
         String userId = SessionUtil.getUserId();
         long timestamp = System.currentTimeMillis();

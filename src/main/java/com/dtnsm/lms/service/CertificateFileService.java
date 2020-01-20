@@ -1,16 +1,13 @@
 package com.dtnsm.lms.service;
 
-import com.dtnsm.common.entity.Signature;
 import com.dtnsm.lms.auth.UserServiceImpl;
-import com.dtnsm.lms.domain.*;
-import com.dtnsm.lms.domain.DTO.CommonUtilities;
-import com.dtnsm.lms.domain.datasource.CertificateSource;
-import com.dtnsm.lms.domain.datasource.EmployeeTrainingLogSource;
+import com.dtnsm.lms.domain.Account;
+import com.dtnsm.lms.domain.CertificateFile;
+import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.exception.FileDownloadException;
 import com.dtnsm.lms.exception.FileUploadException;
 import com.dtnsm.lms.properties.FileUploadProperties;
 import com.dtnsm.lms.repository.CertificateFileRepository;
-import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.DocumentConverter;
 import com.dtnsm.lms.util.SessionUtil;
 import org.apache.commons.io.FilenameUtils;
@@ -28,7 +25,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import javax.xml.bind.DatatypeConverter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -38,7 +34,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -105,7 +100,7 @@ public class CertificateFileService {
 
         File file = new File(outputFilePath);
         if(file.exists()) {
-            return converter.toHTMLString(outputFilePath);
+            return converter.word2html(outputFilePath);
         } else {
             return "";
         }

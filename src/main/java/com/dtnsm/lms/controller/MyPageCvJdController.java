@@ -7,11 +7,11 @@ import com.dtnsm.common.entity.UserJobDescription;
 import com.dtnsm.common.entity.constant.JobDescriptionStatus;
 import com.dtnsm.common.repository.SignatureRepository;
 import com.dtnsm.common.repository.UserJobDescriptionRepository;
-import com.dtnsm.common.utils.Base64Utils;
 import com.dtnsm.lms.data.CVCodeList;
 import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.BinderAlarmType;
 import com.dtnsm.lms.domain.constant.CurriculumVitaeStatus;
+import com.dtnsm.lms.domain.constant.DegreeType;
 import com.dtnsm.lms.properties.FileUploadProperties;
 import com.dtnsm.lms.repository.CurriculumVitaeRepository;
 import com.dtnsm.lms.repository.UserRepository;
@@ -24,7 +24,7 @@ import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 import com.dtnsm.lms.validator.*;
 import com.dtnsm.lms.xdocreport.CurriculumVitaeReportService;
-import com.dtnsm.lms.xdocreport.dto.*;
+import com.dtnsm.lms.xdocreport.dto.CV;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,14 +49,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-//import com.dtnsm.lms.xdocreport.CurriculumVitaeReportService;
 
 @Controller
 @RequestMapping("/mypage")
-@SessionAttributes({"pageInfo", "cv", "phaseList", "taList", "roleList", "indicationMap", "universityList", "cityCountryList", "countryList", "skillLanguageList", "skillCertificationList"})
+@SessionAttributes({"pageInfo", "cv", "phaseList", "taList", "roleList", "indicationMap", "universityList", "cityCountryList", "countryList", "skillLanguageList", "skillCertificationList", "degreeType"})
 @RequiredArgsConstructor
 @Slf4j
 public class MyPageCvJdController {
@@ -131,7 +127,7 @@ public class MyPageCvJdController {
         Account account = SessionUtil.getUserDetail().getUser();
 
         model.addAttribute(pageInfo);
-
+        model.addAttribute("degreeType", DegreeType.getDegreeTypes());
         model.addAttribute("taList", cvCodeList.getTaList());
         model.addAttribute("indicationMap", cvCodeList.getIndicationMap());
         model.addAttribute("roleList", cvCodeList.getRoleList());
@@ -499,7 +495,7 @@ public class MyPageCvJdController {
         if(result) {
             log.info("Word to PDF...");
             File outputPdf = new File(prop.getCvUploadDir() + outputFileName);
-            documentConverter.toPDF(new ByteArrayInputStream(os.toByteArray()), new FileOutputStream(outputPdf));
+            documentConverter.word2pdf(new ByteArrayInputStream(os.toByteArray()), new FileOutputStream(outputPdf));
             log.info("Word to PDF...Done.");
         }
         return "redirect:/mypage/cv";

@@ -81,46 +81,25 @@
             </td>
         </tr>
         <tr>
-            <td class="text-bold bg-gray-light col-xs-2" rowspan="5">Degree</td>
-            <td class="text-bold bg-gray-light col-xs-2">Bachelor's Degree</td>
-            <td colspan="2" class="form-group" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].bachelorsDegree')} ? 'has-error' : ''">
-                <input type="text" placeholder="Degree description" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].bachelorsDegree}">
+            <td class="text-bold bg-gray-light col-xs-2" rowspan="2">Degree</td>
+            <td class="text-bold bg-gray-light col-xs-2">
+                <select class="form-control degreeType" th:field="*{educations[__${stat.index}__].degreeType}" th:attr="data-index=${stat.index}">
+                    <option th:each="u, v : ${degreeType}" th:value="${u.name()}" th:text="${u.getLabel()}"></option>
+                </select>
+            </td>
+            <td colspan="2" class="form-group" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].degree')} ? 'has-error' : ''">
+                <input type="text" placeholder="Degree description" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].degree}">
             </td>
         </tr>
         <tr>
-            <td class="text-bold bg-gray-light">Masters's Degree</td>
-            <td colspan="2" class="form-group" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].mastersDegree')} ? 'has-error' : ''">
-                <input type="text" placeholder="Degree description" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].mastersDegree}">
-            </td>
-        </tr>
-        <tr>
-            <td class="text-bold bg-gray-light text-right">Thesis Title</td>
-            <td colspan="2">
+            <td class="text-bold bg-gray-light">Thesis Title</td>
+            <td colspan="2" class="form-group">
                 <div class="row form-group">
-                    <div class="col-xs-6" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].mastersThesisTitle')} ? 'has-error' : ''">
-                        <input type="text" placeholder="Thesis Title" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].mastersThesisTitle}">
+                    <div class="col-xs-6" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].thesisTitle')} ? 'has-error' : ''">
+                        <input type="text" placeholder="Thesis Title" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].thesisTitle}">
                     </div>
-                    <div class="col-xs-6" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].mastersName')} ? 'has-error' : ''">
-                        <input type="text" placeholder="Name of Supervisor" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].mastersName}">
-                    </div>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-bold bg-gray-light">Phd</td>
-            <td colspan="2" class="form-group" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].phdDegree')} ? 'has-error' : ''">
-                <input type="text" placeholder="Degree description" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].phdDegree}">
-            </td>
-        </tr>
-        <tr>
-            <td class="text-bold bg-gray-light text-right">Thesis Title</td>
-            <td colspan="2">
-                <div class="row form-group">
-                    <div class="col-xs-6" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].phdThesisTitle')} ? 'has-error' : ''">
-                        <input type="text" placeholder="Thesis Title" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].phdThesisTitle}">
-                    </div>
-                    <div class="col-xs-6" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].phdName')} ? 'has-error' : ''">
-                        <input type="text" placeholder="Name of Supervisor" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].phdName}">
+                    <div class="col-xs-6" th:classappend="${#fields.hasErrors('educations[__${stat.index}__].nameOfSupervisor')} ? 'has-error' : ''">
+                        <input type="text" placeholder="Name of Supervisor" class="form-control col-sm-10" th:field="*{educations[__${stat.index}__].nameOfSupervisor}">
                     </div>
                 </div>
             </td>
