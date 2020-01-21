@@ -114,7 +114,7 @@
                                 <td class="text-center" th:text="${tr.reviewerName}"></td>
                                 <td class="text-center"><img th:src="${tr.signature}" height="25"/> </td>
                                 <td class="text-center">
-                                    <button class="btn btn-xs" type="button"><i class="fa fa-file-pdf-o"></i></button>
+                                    <a th:href="@{/binder/{id}/download(id=${tr.id})}" th:if="${tr.binderPdf != null}" class="btn btn-xs" type="button"><i class="fa fa-file-pdf-o"></i></a>
                                 </td>
                             </tr>
                             </tbody>
