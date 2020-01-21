@@ -33,7 +33,7 @@ public class CourseSectionAction extends AuditorCreateEntity<String> {
 
     @Column(name="image_size")
     @ColumnDefault("0")
-    private int imageSize=0;
+    private int imageSize;
 
     // 총수강시간(초) => 진도율 계산시 필요
     @Column(name="total_use_second")

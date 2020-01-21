@@ -53,6 +53,9 @@ public class CurriculumVitae extends AuditorEntity<String> implements Serializab
     @Column(name = "html_content", columnDefinition = "nvarchar(max)")
     private String htmlContent;
 
+    @Column(name = "cv_file_name")
+    private String cvFileName;
+
     @Column(name = "page_count")
     private Integer pageCount;
 

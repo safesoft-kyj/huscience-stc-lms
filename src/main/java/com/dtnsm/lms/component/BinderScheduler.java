@@ -1,5 +1,6 @@
 package com.dtnsm.lms.component;
 
+import com.dtnsm.lms.domain.Account;
 import com.dtnsm.lms.domain.QTrainingRecordReview;
 import com.dtnsm.lms.domain.constant.BinderAlarmType;
 import com.dtnsm.lms.mybatis.mapper.CVFinderMapper;
@@ -36,10 +37,10 @@ public class BinderScheduler {
             log.info("Binder Update 알림 대상자가 존재함. 대상자 수 : {}", users.size());
             Mail mail = new Mail();
             for(String username : users) {
-                String toEmail = userRepository.findByUserId(username).getEmail();
-                mail.setEmail(toEmail);
+                Account account = userRepository.findByUserId(username);
+                mail.setEmail(account.getEmail());
 
-                mailService.send(mail, BinderAlarmType.BINDER_UPDATE);
+                mailService.send(mail, account.getName(), BinderAlarmType.BINDER_UPDATE);
             }
         } else {
             log.info("Binder Update 알림 대상자가 없습니다.");

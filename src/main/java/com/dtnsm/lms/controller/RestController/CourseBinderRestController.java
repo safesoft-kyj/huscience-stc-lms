@@ -7,10 +7,6 @@ import com.dtnsm.common.repository.TrainingRecordRepository;
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.Account;
 import com.dtnsm.lms.domain.CourseTrainingLog;
-import com.dtnsm.lms.domain.DTO.CommonUtilities;
-import com.dtnsm.lms.domain.TrainingRecordReview;
-import com.dtnsm.lms.domain.constant.TrainingRecordReviewStatus;
-import com.dtnsm.lms.domain.datasource.CertificateSource;
 import com.dtnsm.lms.domain.datasource.EmployeeTrainingLogSource;
 import com.dtnsm.lms.properties.FileUploadProperties;
 import com.dtnsm.lms.repository.TrainingRecordReviewRepository;
@@ -23,18 +19,15 @@ import com.dtnsm.lms.xdocreport.CurriculumVitaeReportService;
 import com.groupdocs.assembly.DataSourceInfo;
 import com.groupdocs.assembly.DocumentAssembler;
 import com.groupdocs.assembly.DocumentAssemblyOptions;
-import com.groupdocs.conversion.handler.ConvertedDocument;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -131,8 +124,8 @@ public class CourseBinderRestController {
 //        CommonUtilities.applyLicense();
 
         // 파일 기본 경로
-        String sourceRootFoloer = prop.getXdocUploadDir() + "Data//Storage//";
-        String outputRootFoloer = prop.getXdocUploadDir() + "Data//Output//";
+//        String sourceRootFoloer = prop.getXdocUploadDir() + "Data//Storage//";
+        String outputPath = prop.getBinderDir();
 
 
 
@@ -149,14 +142,14 @@ public class CourseBinderRestController {
 //        InputStream is = CurriculumVitaeReportService.class.getResourceAsStream(srcEmployeeLogTemplateFileName);
 //        String srcEmployeeLogFilePath = sourceRootFoloer + srcEmployeeLogTemplateFileName;
         InputStream logSource = CurriculumVitaeReportService.class.getResourceAsStream(srcEmployeeLogTemplateFileName);
-        String outputEmployeeLogFilePath = outputRootFoloer + outputEmployeeLogPdfFileName;
-        String outputEmployeeLogDocxFilePath = outputRootFoloer + outputEmployeeLogDocxFileName;
+        String outputEmployeeLogFilePath = outputPath + outputEmployeeLogPdfFileName;
+        String outputEmployeeLogDocxFilePath = outputPath + outputEmployeeLogDocxFileName;
 
 //        Path sourcePath = Paths.get(sourceRootFoloer, srcEmployeeLogTemplateFileName);
 //        Path outputPath = Paths.get(outputRootFoloer, outputEmployeeLogFileName);
 
         // 수료증 Full Path
-        String outputCertificationFilePath = outputRootFoloer + outputCertificationFileName;
+        String outputCertificationFilePath = outputPath + outputCertificationFileName;
 //        String outputLogFilePath = outputRootFoloer + outputEmployeeLogFileName;
 
         try {
@@ -197,7 +190,7 @@ public class CourseBinderRestController {
                 String html = documentConverter.word2html(outputEmployeeLogDocxFilePath);
                 log.debug("Word to HTML : {}", html);
 
-                saveTrainingRecord(trainingRecordId, userId, outputCertificationFileName, html, outputCertificationFileName, certHtmlContent);
+                saveTrainingRecord(trainingRecordId, userId, outputEmployeeLogPdfFileName, html, StringUtils.isEmpty(certHtmlContent) ? "" : outputCertificationFileName, certHtmlContent);
 
                 //word to pdf
                 assembler.assembleDocument(outputEmployeeLogDocxFilePath, outputEmployeeLogFilePath , dataSourceInfo);

@@ -87,6 +87,9 @@
                                             </tr>
                                             </thead>
                                             <tbody>
+                                            <tr th:if="${userJobDescriptions == null || userJobDescriptions.size() == 0}">
+                                                <td colspan="9" class="text-center text-info text-bold"><i class="fa fa-exclamation-circle"></i> 직무 배정을 진행해 주세요!</td>
+                                            </tr>
                                             <tr th:each="user, index : ${userJobDescriptions}">
                                                 <td th:text="${index.count}" class="text-center"></td>
                                                 <td th:text="${user.account.userId}" class="text-center"></td>

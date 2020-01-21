@@ -97,8 +97,9 @@ file:
   binder-jd-upload-dir: D://elearning//upload//binder//jd//
   xdoc-upload-dir: D://elearning//upload//xdoc//
   certificate-upload-dir: D://elearning//upload//certificate//
-  cv-upload-dir: D://elearning//CV//
+#  cv-upload-dir: D://elearning//CV//
   training-log-upload-dir: D://elearning//trainingLog//
+  binder-dir: D://elearning//binder//
 
 
 image-file:

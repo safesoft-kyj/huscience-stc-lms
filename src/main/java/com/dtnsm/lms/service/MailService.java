@@ -4,6 +4,7 @@ import com.dtnsm.lms.domain.constant.BinderAlarmType;
 import com.dtnsm.lms.domain.constant.LmsAlarmCourseType;
 import com.dtnsm.lms.domain.constant.MailSendType;
 import com.dtnsm.lms.domain.datasource.MessageSource;
+import com.groupdocs.conversion.internal.c.a.i.StringFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,9 +128,9 @@ public class MailService {
      * @param mail
      * @param binderAlarmType
      */
-    public void send(Mail mail, BinderAlarmType binderAlarmType) {
+    public void send(Mail mail, String korName, BinderAlarmType binderAlarmType) {
         //get and fill the template
-        mail.setObject(binderAlarmType.getTitle());
+        mail.setObject(String.format(binderAlarmType.getTitle(), korName));
         mail.setMessage(binderAlarmType.getMessage());
         final Context context = new Context();
         context.setVariable("subject", mail.getObject());

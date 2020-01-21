@@ -32,7 +32,7 @@ public class FileUploadProperties {
     // Digital Binder JD 업로드 경로
     private String binderJdUploadDir;
 
-    private String cvUploadDir;
+    private String binderDir;
 
 
     // Xdoc 관련 폴더
@@ -40,12 +40,12 @@ public class FileUploadProperties {
     // 수료증 파일 업로드 경로
     private String certificateUploadDir;
 
-    public String getCvUploadDir() {
-        return cvUploadDir;
+    public String getBinderDir() {
+        return binderDir;
     }
 
-    public void setCvUploadDir(String cvUploadDir) {
-        this.cvUploadDir = cvUploadDir;
+    public void setBinderDir(String binderDir) {
+        this.binderDir = binderDir;
     }
 
     public String getCertificateUploadDir() {

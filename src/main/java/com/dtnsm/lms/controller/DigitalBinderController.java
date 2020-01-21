@@ -85,7 +85,7 @@ public class DigitalBinderController {
         model.addAttribute("engName", account.getEngName());
         model.addAttribute("inDate", StringUtils.isEmpty(account.getIndate()) ? "" : DateUtil.getDateToString(DateUtil.getStringToDate(account.getIndate(), "yyyy-MM-dd"), "dd-MMM-yyyy").toUpperCase());
         model.addAttribute("deptTeam", (StringUtils.isEmpty(account.getOrgDepart()) ? "" : account.getOrgDepart()) +
-                (StringUtils.isEmpty(account.getOrgDepart()) ? "" : (StringUtils.isEmpty(account.getOrgDepart()) ? "" : "/") + account.getOrgTeam()));
+                (!StringUtils.isEmpty(account.getOrgDepart()) && !StringUtils.isEmpty(account.getOrgTeam()) ? "/" : "") + (StringUtils.isEmpty(account.getOrgTeam()) ? "" : account.getOrgTeam()));
 
         model.addAttribute("empNo", account.getComNum());
 
@@ -159,7 +159,7 @@ public class DigitalBinderController {
             log.info("매니저에게 Binder 검토 요청 : {}", toEmail);
             Mail mail = new Mail();
             mail.setEmail(toEmail);
-            mailService.send(mail, BinderAlarmType.BINDER_REVIEW);
+            mailService.send(mail, account.getName(), BinderAlarmType.BINDER_REVIEW);
         } else {
             log.error("매니저 지정이 되어 있지 않습니다.");
         }

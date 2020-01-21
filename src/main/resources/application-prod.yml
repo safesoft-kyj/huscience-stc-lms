@@ -84,6 +84,7 @@ file:
   xdoc-upload-dir: C://UploadFiles//lms//upload//xdoc//
   certificate-upload-dir: C://UploadFiles/lms//upload//certificate//
   training-log-upload-dir: C:\UploadFiles\trainingLog
+  binder-dir: C://elearning//binder//
 
 
 image-file:

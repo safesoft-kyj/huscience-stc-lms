@@ -3,7 +3,7 @@ spring:
     basename: messages
   devtools:
     livereload:
-      enabled: false
+      enabled: true
   thymeleaf:
     cache: true
     check-template: true
@@ -27,7 +27,7 @@ spring:
     locations: classpath:/db/migration/local
     baseline-on-migrate: true
     encoding: UTF-8
-    enabled: true
+    enabled: false
   jpa:
     hibernate:
       ddl-auto: update
@@ -84,6 +84,7 @@ file:
   certificate-upload-dir: D://elearning//upload//certificate//
   cv-upload-dir: D://elearning//CV//
   training-log-upload-dir: D://elearning//trainingLog//
+  binder-dir: D://elearning//binder//
 
 
 image-file:

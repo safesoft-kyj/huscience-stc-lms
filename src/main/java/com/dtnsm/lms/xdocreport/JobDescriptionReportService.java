@@ -33,21 +33,23 @@ public class JobDescriptionReportService {
     private final UserJobDescriptionRepository userJobDescriptionRepository;
     private final DocumentConverter documentConverter;
 
-    @Value("${file.xdoc-upload-dir}")
-    private String tempDir;
+    @Value("${file.binder-dir}")
+    private String binderDir;
 
 
     @PostConstruct
     public void init() throws Exception {
         //디렉토리가 존재하지 않는 경우 생성
-        Files.createDirectories(Paths.get(tempDir).toAbsolutePath().normalize());
+        Files.createDirectories(Paths.get(binderDir).toAbsolutePath().normalize());
 
     }
 
     public void generateReport(JobDescriptionSign jobDescriptionSign, InputStream jdInputStream, Integer userJobDescriptionId) {
 
-        String docxFileName = tempDir + "\\tmp_jd_sign_" + System.currentTimeMillis() + ".docx";
-        String outputDocx = tempDir + "\\JD_"+userJobDescriptionId+".docx";
+        String docxFileName = binderDir + "\\tmp_jd_sign_" + System.currentTimeMillis() + ".docx";
+        String outputFileName = "JD_"+userJobDescriptionId;
+        String outputDocx = binderDir + "\\" + outputFileName + ".docx";
+        String outputPdf = binderDir + "\\" + outputFileName + ".pdf";
 
 
         try {
@@ -86,6 +88,8 @@ public class JobDescriptionReportService {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             documentConverter.toHTML(new FileInputStream(new File(outputDocx)), stream);
 
+            documentConverter.word2pdf(new FileInputStream(new File(outputDocx)), new FileOutputStream(outputPdf));
+
 //            PdfDocument pdf = new PdfDocument();
 //            pdf.loadFromStream(new FileInputStream(new File(pdfOutput)));
 //            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -95,6 +99,7 @@ public class JobDescriptionReportService {
 
             UserJobDescription userJobDescription = userJobDescriptionRepository.findById(userJobDescriptionId).get();
             userJobDescription.setHtmlContent(stream.toString("utf-8"));
+            userJobDescription.setJdFileName(outputPdf);
 //            userJobDescription.setPageCount(pdf.getPages().getCount());
             userJobDescriptionRepository.save(userJobDescription);
         } catch (IOException e) {

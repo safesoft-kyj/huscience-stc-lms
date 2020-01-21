@@ -483,20 +483,24 @@ public class MyPageCvJdController {
     @PostMapping("/cv/{id}/preview")
     public String published(@PathVariable("id") Integer id) throws Exception {
         CurriculumVitae cv = curriculumVitaeRepository.findById(id).get();
-        cv.setStatus(CurriculumVitaeStatus.CURRENT);
-        CurriculumVitae savedCV = curriculumVitaeRepository.save(cv);
 
-        CV dto = curriculumVitaeService.toCV(savedCV, false, false);
+
+
+        CV dto = curriculumVitaeService.toCV(cv, false, false);
             String outputFileName = SessionUtil.getUserId() + "_CV_"+id+ ".pdf";
-            Files.createDirectories(Paths.get(prop.getCvUploadDir()).toAbsolutePath().normalize());
+            Files.createDirectories(Paths.get(prop.getBinderDir()).toAbsolutePath().normalize());
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         boolean result = curriculumVitaeReportService.assembleDocument(dto, os);
         log.info("Generate Result : {}", result);
         if(result) {
             log.info("Word to PDF...");
-            File outputPdf = new File(prop.getCvUploadDir() + outputFileName);
+            File outputPdf = new File(prop.getBinderDir() + outputFileName);
             documentConverter.word2pdf(new ByteArrayInputStream(os.toByteArray()), new FileOutputStream(outputPdf));
             log.info("Word to PDF...Done.");
+
+            cv.setStatus(CurriculumVitaeStatus.CURRENT);
+            cv.setCvFileName(outputFileName);
+            CurriculumVitae savedCV = curriculumVitaeRepository.save(cv);
         }
         return "redirect:/mypage/cv";
     }
@@ -610,19 +614,19 @@ public class MyPageCvJdController {
         return "content/mypage/jd/list";
     }
 
-    @GetMapping("/jd/{id}/view")
-    public void jdView(@PathVariable(value = "id") Integer id, HttpServletResponse res) throws Exception {
-
-        UserJobDescription userJobDescription = userJobDescriptionRepository.findById(id).get();
-        JobDescriptionVersionFile file = userJobDescription.getJobDescriptionVersion().getJobDescriptionVersionFile();
-
-        res.setContentType("text/html;charset=utf-8");
-        InputStream is = new FileInputStream(new File(prop.getBinderJdUploadDir() + "/" + file.getFileName()+".html"));
-        OutputStream os = res.getOutputStream();
-        os.write(is.readAllBytes());
-        os.flush();
-        os.close();
-    }
+//    @GetMapping("/jd/{id}/view")
+//    public void jdView(@PathVariable(value = "id") Integer id, HttpServletResponse res) throws Exception {
+//
+//        UserJobDescription userJobDescription = userJobDescriptionRepository.findById(id).get();
+//        JobDescriptionVersionFile file = userJobDescription.getJobDescriptionVersion().getJobDescriptionVersionFile();
+//
+//        res.setContentType("text/html;charset=utf-8");
+//        InputStream is = new FileInputStream(new File(prop.getBinderJdUploadDir() + "/" + file.getFileName()+".html"));
+//        OutputStream os = res.getOutputStream();
+//        os.write(is.readAllBytes());
+//        os.flush();
+//        os.close();
+//    }
 
     @PostMapping("/jd")
     public String agreeJd(@RequestParam("id") Integer id) {
@@ -643,7 +647,7 @@ public class MyPageCvJdController {
                 log.info("매니저에게 JD 동의 알림 메일 전송 : {}", toEmail);
                 Mail mail = new Mail();
                 mail.setEmail(toEmail);
-                mailService.send(mail, BinderAlarmType.JD_AGREE);
+                mailService.send(mail, account.getName(), BinderAlarmType.JD_AGREE);
             } else {
                 log.error("매니지 지정이 되어 있지 않습니다.");
             }

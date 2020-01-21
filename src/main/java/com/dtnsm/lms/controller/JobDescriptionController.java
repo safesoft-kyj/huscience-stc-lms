@@ -185,14 +185,14 @@ public class JobDescriptionController {
     }
 
 
-    @GetMapping("/images/{imageName}")
-    public void getJdImage(@PathVariable("imageName") String imageName, HttpServletResponse res) throws Exception {
-        InputStream is = new FileInputStream(new File(prop.getBinderJdUploadDir() + "/_images/" + imageName));
-        OutputStream os = res.getOutputStream();
-        os.write(is.readAllBytes());
-        os.flush();
-        os.close();
-    }
+//    @GetMapping("/images/{imageName}")
+//    public void getJdImage(@PathVariable("imageName") String imageName, HttpServletResponse res) throws Exception {
+//        InputStream is = new FileInputStream(new File(prop.getBinderJdUploadDir() + "/_images/" + imageName));
+//        OutputStream os = res.getOutputStream();
+//        os.write(is.readAllBytes());
+//        os.flush();
+//        os.close();
+//    }
 //
 //    @PostMapping("/edit-post/{id}")
 //    public String updateCustomer(@PathVariable("id") Integer id, @Valid JobDescription jobDescription, BindingResult result) {
