@@ -238,6 +238,11 @@
             <artifactId>groupdocs-assembly</artifactId>
             <version>19.11</version>
         </dependency>
+        <dependency>
+            <groupId>com.groupdocs</groupId>
+            <artifactId>groupdocs-merger</artifactId>
+            <version>19.12</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.docx4j/docx4j -->
         <dependency>

@@ -134,9 +134,9 @@ public class CourseBinderRestController {
 
         // Employee Training Log Template 파일 및 출력 파일 지정
         String srcEmployeeLogTemplateFileName = "etl_tm.docx";
-        String outputCertificationFileName = String.format("%s_%s_certi.pdf", timestamp, userId);
-        String outputEmployeeLogPdfFileName = String.format("%s_%s_tm.pdf", timestamp, userId);
-        String outputEmployeeLogDocxFileName = String.format("%s_%s_tm.docx", timestamp, userId);
+        String outputCertificationFileName = String.format("%s_%s_certi.pdf", userId, timestamp);
+        String outputEmployeeLogPdfFileName = String.format("%s_%s_tm.pdf", userId, timestamp);
+        String outputEmployeeLogDocxFileName = String.format("%s_%s_tm.docx", userId, timestamp);
 
         // Employee Training Log Full Path
 //        InputStream is = CurriculumVitaeReportService.class.getResourceAsStream(srcEmployeeLogTemplateFileName);

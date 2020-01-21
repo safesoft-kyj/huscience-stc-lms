@@ -84,7 +84,7 @@ file:
   certificate-upload-dir: D://elearning//upload//certificate//
   cv-upload-dir: D://elearning//CV//
   training-log-upload-dir: D://elearning//trainingLog//
-  binder-dir: D://elearning//binder//
+  binder-dir: C:\\UploadFiles\\binder\\
 
 
 image-file:

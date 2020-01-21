@@ -21,7 +21,7 @@
             where cv.status = 'CURRENT'
             and ca.clinical_trial_experience = 1
             <if test="usernameList != null">
-                <foreach collection="usernameList" item="username" open="and cv.account_user_id in(" close=")">
+                <foreach collection="usernameList" item="username" open="and cv.account_user_id in(" close=")" separator=",">
                     #{username}
                 </foreach>
             </if>

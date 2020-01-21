@@ -29,6 +29,12 @@ import com.dtnsm.lms.xdocreport.CurriculumVitaeReportService;
 import com.dtnsm.lms.xdocreport.JobDescriptionReportService;
 import com.dtnsm.lms.xdocreport.dto.JobDescriptionSign;
 import com.groupdocs.assembly.DataSourceInfo;
+import com.groupdocs.conversion.internal.c.a.c.Encoding;
+import com.groupdocs.merger.Merger;
+import com.groupdocs.merger.MergerSettings;
+import com.groupdocs.merger.domain.FileType;
+import com.groupdocs.merger.domain.options.JoinOptions;
+import com.groupdocs.merger.domain.options.LoadOptions;
 import com.joestelmach.natty.generated.b;
 import com.querydsl.core.BooleanBuilder;
 import fr.opensagres.xdocreport.document.images.ByteArrayImageProvider;
@@ -52,6 +58,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -244,10 +251,8 @@ public class EmployeeController {
             trainingRecordRepository.save(trainingRecord);
         }
 
-        log.info("@@@ Digital Binder 생성 시작.");
+
         Account user = savedTrainingRecordReview.getAccount();
-        Runnable r = () -> createBinderPDF(user, savedTrainingRecordReview);
-        new Thread(r).start();
 
 
         //TODO Review 완료
@@ -256,94 +261,125 @@ public class EmployeeController {
         Mail mail = new Mail();
         mail.setEmail(user.getEmail());
         mailService.send(mail, user.getName(), BinderAlarmType.BINDER_REVIEWED);
+
+        new Thread(() -> {
+            log.info("@@@ Digital Binder 생성 시작.");
+            createBinderPDF(user, savedTrainingRecordReview);
+        }).start();
         return "redirect:/employees/review";
+    }
+
+    private Merger createOrJoin(Merger merger, InputStream is) throws Exception {
+        if(merger == null) {
+            LoadOptions loadOptions = new LoadOptions(FileType.PDF);
+            loadOptions.setEncoding(Charset.forName("UTF-8"));
+            merger = new Merger(is, loadOptions);
+        } else {
+            merger.join(is);
+        }
+
+        return merger;
     }
 
     private void createBinderPDF(Account account, TrainingRecordReview trainingRecordReview) {
         try {
             String binderPath = prop.getBinderDir();
-            String binderPdf = account.getUserId() + "_"+trainingRecordReview.getId()+".pdf";
-            String coverPdf = account.getUserId() + "_cover.pdf";
+            String binderPdf = account.getUserId() + "_db_"+trainingRecordReview.getId()+".pdf";
+            String coverDocx = account.getUserId() + "_cover_"+trainingRecordReview.getId()+".docx";
+            String coverPdf = account.getUserId() + "_cover_"+trainingRecordReview.getId()+".pdf";
 
-            PDFMergerUtility mergerUtility = new PDFMergerUtility();
-            // 출력파일(패스포함)
-            mergerUtility.setDestinationFileName(binderPath + "/" + binderPdf);
+            Merger merger = null;
+
+            LoadOptions loadOptions = new LoadOptions(FileType.PDF);
+            loadOptions.setEncoding(Charset.forName("UTF-8"));
+
             //cover
             InputStream is = CurriculumVitaeReportService.class.getResourceAsStream("cover.docx");
             DataSourceInfo dataSourceInfo = new DataSourceInfo(account, "");
-            FileOutputStream os = new FileOutputStream(new File(binderPath + "/" + coverPdf));
+            FileOutputStream os = new FileOutputStream(new File(binderPath + coverDocx));
             boolean created = documentConverter.assembleDocument(is, os, dataSourceInfo);
-            log.debug("@Cover created : {}", created);
+            log.info("@Cover created : {}", created);
             if(created) {
-                mergerUtility.addSource(binderPath + "/" + coverPdf);
+                documentConverter.word2pdf(new FileInputStream(binderPath + coverDocx), new FileOutputStream(binderPath + coverPdf));
+                log.info("@cover docx2pdf 변환");
+                 merger = new Merger(new FileInputStream(binderPath + coverPdf), loadOptions);
+                 log.info("@merger 객체 생성 {}{}", binderPath, coverPdf);
             }
 
             //cv
             Optional<CurriculumVitae> optionalCurriculumVitae = curriculumVitaeRepository.findTop1ByAccountAndStatusOrderByIdDesc(account, CurriculumVitaeStatus.CURRENT);
             if(optionalCurriculumVitae.isPresent()) {
                 CurriculumVitae cv = optionalCurriculumVitae.get();
-                String cvPath = binderPath + "/" + cv.getCvFileName();
+                String cvPath = binderPath + cv.getCvFileName();
                 log.info("@cvPath : {}", cvPath);
                 File file = new File(cvPath);
                 if(file.exists()) {
-                    mergerUtility.addSource(file);
+                    merger = createOrJoin(merger, new FileInputStream(file));
+//                    merger.join(new FileInputStream(file));
                 }
             }
             //jd
+            log.info("@JD 확인");
             Iterable<UserJobDescription> currentJdList = getJobDescriptionList(account.getUserId(), JobDescriptionStatus.APPROVED);
-            currentJdList.forEach(jd -> {
-                File f = new File(binderPath + "/" + jd.getJdFileName());
+            for(UserJobDescription jd : currentJdList) {
+                log.info("@add current Jd {}", jd.getJdFileName());
+                File f = new File(binderPath + jd.getJdFileName());
                 if(f.exists()) {
-                    try {
-                        mergerUtility.addSource(f);
-                    } catch (Exception e){}
+                    merger = createOrJoin(merger, new FileInputStream(f));
                 }
-            });
+            }
             Iterable<UserJobDescription> supersededJdList = getJobDescriptionList(account.getUserId(), JobDescriptionStatus.SUPERSEDED, JobDescriptionStatus.REVOKED);
-            supersededJdList.forEach(jd -> {
-                File f = new File(binderPath + "/" + jd.getJdFileName());
+            for(UserJobDescription jd : supersededJdList) {
+                log.info("@add superseded Jd : {}", jd.getJdFileName());
+                File f = new File(binderPath + jd.getJdFileName());
                 if(f.exists()) {
-                    try {
-                        mergerUtility.addSource(f);
-                    } catch (Exception e){}
+                    merger = createOrJoin(merger, new FileInputStream(f));
                 }
-            });
+            }
             //trainingLog(SOP)
+            log.info("@trainingLog(SOP) 확인");
             Optional<TrainingRecord> optionalTrainingRecordSOP = getTrainingRecord(account.getUserId(), "sop");
             if(optionalTrainingRecordSOP.isPresent()) {
-                String sopPath = binderPath + "/" + optionalTrainingRecordSOP.get().getSopFileName();
+                String sopPath = binderPath + optionalTrainingRecordSOP.get().getSopFileName();
                 log.info("@sopPath : {}", sopPath);
                 File file = new File(sopPath);
                 if(file.exists()) {
-                    mergerUtility.addSource(file);
+                    ByteArrayOutputStream sop = new ByteArrayOutputStream();
+                    documentConverter.word2pdf(new FileInputStream(file), sop);
+                    merger = createOrJoin(merger, new ByteArrayInputStream(sop.toByteArray()));
                 }
             }
             //trainingLog(TM)
+            log.info("@trainingLog(TM) 확인");
             Optional<TrainingRecord> optionalTrainingRecordTM = getTrainingRecord(account.getUserId(), "tm");
             if(optionalTrainingRecordTM.isPresent()) {
-                String tmPath = binderPath + "/" + optionalTrainingRecordTM.get().getTmFileName();
+                String tmPath = binderPath + optionalTrainingRecordTM.get().getTmFileName();
                 log.info("@tmPath : {}", tmPath);
                 File file = new File(tmPath);
                 if(file.exists()) {
-                    mergerUtility.addSource(file);
+                    merger = createOrJoin(merger, new FileInputStream(file));
                 }
             }
-            //certification
+//            //certification
             Optional<TrainingRecord> optionalTrainingRecordCert = getTrainingRecord(account.getUserId(), "cert");
             if(optionalTrainingRecordCert.isPresent()) {
-                String certPath = binderPath + "/" + optionalTrainingRecordCert.get().getTmCertFileName();
+                String certPath = binderPath + optionalTrainingRecordCert.get().getTmCertFileName();
                 log.info("@certPath : {}", certPath);
                 File file = new File(certPath);
                 if(file.exists()) {
-                    mergerUtility.addSource(file);
+                    merger = createOrJoin(merger, new FileInputStream(file));
                 }
             }
 
-            MemoryUsageSetting setupMainMemoryOnly = MemoryUsageSetting.setupMainMemoryOnly();
-            mergerUtility.mergeDocuments(setupMainMemoryOnly);
+            FileOutputStream binder = new FileOutputStream(new File(binderPath + binderPdf));
+            merger.save(binder);
+            binder.flush();
+            binder.close();
+            log.info("@@ Binder PDF Merge save....{}{}", binderPath, binderPdf);
 
             trainingRecordReview.setBinderPdf(binderPdf);
             trainingRecordReviewRepository.save(trainingRecordReview);
+
         } catch (Exception error) {
             log.error("error : {}", error);
         }

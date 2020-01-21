@@ -49,7 +49,8 @@ public class JobDescriptionReportService {
         String docxFileName = binderDir + "\\tmp_jd_sign_" + System.currentTimeMillis() + ".docx";
         String outputFileName = "JD_"+userJobDescriptionId;
         String outputDocx = binderDir + "\\" + outputFileName + ".docx";
-        String outputPdf = binderDir + "\\" + outputFileName + ".pdf";
+        String outputPdfName = outputFileName + ".pdf";
+        String outputPdfPath = binderDir + "\\" + outputPdfName;
 
 
         try {
@@ -88,7 +89,7 @@ public class JobDescriptionReportService {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             documentConverter.toHTML(new FileInputStream(new File(outputDocx)), stream);
 
-            documentConverter.word2pdf(new FileInputStream(new File(outputDocx)), new FileOutputStream(outputPdf));
+            documentConverter.word2pdf(new FileInputStream(new File(outputDocx)), new FileOutputStream(outputPdfPath));
 
 //            PdfDocument pdf = new PdfDocument();
 //            pdf.loadFromStream(new FileInputStream(new File(pdfOutput)));
@@ -99,7 +100,7 @@ public class JobDescriptionReportService {
 
             UserJobDescription userJobDescription = userJobDescriptionRepository.findById(userJobDescriptionId).get();
             userJobDescription.setHtmlContent(stream.toString("utf-8"));
-            userJobDescription.setJdFileName(outputPdf);
+            userJobDescription.setJdFileName(outputPdfName);
 //            userJobDescription.setPageCount(pdf.getPages().getCount());
             userJobDescriptionRepository.save(userJobDescription);
         } catch (IOException e) {
