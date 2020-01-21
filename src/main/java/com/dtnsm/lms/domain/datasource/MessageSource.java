@@ -1,9 +1,6 @@
 package com.dtnsm.lms.domain.datasource;
 
-import com.dtnsm.lms.domain.Account;
-import com.dtnsm.lms.domain.Course;
-import com.dtnsm.lms.domain.Document;
-import com.dtnsm.lms.domain.Privilege;
+import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.LmsAlarmCourseType;
 import com.dtnsm.lms.domain.constant.LmsAlarmGubun;
 import lombok.Builder;
@@ -18,6 +15,8 @@ public class MessageSource {
     private LmsAlarmGubun alarmGubun;
 
     private LmsAlarmCourseType lmsAlarmCourseType;
+
+    private CourseAccount courseAccount;
 
 
     // 제목

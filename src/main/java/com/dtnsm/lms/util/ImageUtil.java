@@ -1,15 +1,11 @@
 package com.dtnsm.lms.util;
 
-import com.dtnsm.lms.properties.ImageUploadProperties;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.tools.imageio.ImageIOUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.awt.image.BufferedImage;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -27,9 +23,13 @@ public class ImageUtil {
             String resultImgPath = uploadDir; //이미지가 저장될 경로
             Files.createDirectories(Paths.get(resultImgPath)); //PDF 2 Img에서는 경로가 없는 경우 이미지 파일이 생성이 안되기 때문에 디렉토리를 만들어준다.
 
+            String fileName = "";
+
             //순회하며 이미지로 변환 처리
             for (int i=0; i<pdfDoc.getPages().getCount(); i++) {
-                String imgFileName = resultImgPath + "/" + i + ".png";
+//                String imgFileName = resultImgPath + "/" + i + ".png";
+                fileName = i + ".jpg".toString();
+                String imgFileName = Paths.get(resultImgPath, fileName).toString();
 
                 //DPI 설정
                 BufferedImage bim = pdfRenderer.renderImageWithDPI(i, 300, ImageType.RGB);
@@ -38,7 +38,7 @@ public class ImageUtil {
                 ImageIOUtil.writeImage(bim, imgFileName , 300);
 
                 //저장 완료된 이미지를 list에 추가한다.
-                savedImgList.add(imgFileName);
+                savedImgList.add(fileName);
             }
             pdfDoc.close(); //모두 사용한 PDF 문서는 닫는다.
         }

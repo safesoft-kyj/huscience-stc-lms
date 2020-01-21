@@ -3,6 +3,7 @@ package com.dtnsm.lms.domain;
 import com.dtnsm.lms.auth.AuditorCreateEntity;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -29,6 +30,14 @@ public class CourseSectionFile extends AuditorCreateEntity<String> {
     @Column(name="mime_type")
     private String mimeType;
 
+    @Column(name="image_folder")
+    @ColumnDefault("''")
+    private String imageFolder;
+
+    @Column(name="image_size")
+    @ColumnDefault("0")
+    private int imageSize;
+
     // Parent 필드 추가
     @ManyToOne
     @JoinColumn(name = "section_id")
@@ -49,6 +58,16 @@ public class CourseSectionFile extends AuditorCreateEntity<String> {
         this.saveName = saveName;
         this.size = size;
         this.mimeType = mimeType;
+        this.courseSection = courseSection;
+    }
+
+    public CourseSectionFile(String fileName, String saveName, long size, String mimeType, String imageFolder, int imageSize, CourseSection courseSection) {
+        this.fileName = fileName;
+        this.saveName = saveName;
+        this.size = size;
+        this.mimeType = mimeType;
+        this.imageFolder = imageFolder.isEmpty() ? "" : imageFolder;
+        this.imageSize = imageSize;
         this.courseSection = courseSection;
     }
 

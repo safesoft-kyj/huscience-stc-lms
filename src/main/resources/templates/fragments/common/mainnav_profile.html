@@ -15,11 +15,13 @@
 <!--                                                <i class="dropdown-caret"></i>-->
 <!--                                            </span>-->
             <p class="mnp-name" sec:authorize="isAuthenticated()">
-                <span sec:authentication="principal.username"></span> /
-                <span sec:authentication="principal.userId" id="sec-user-name"></span>
+                <div sec:authentication="principal.engName"></div>
+                <div sec:authentication="principal.orgDept"></div>
+                <div sec:authentication="principal.jobTitle" class="label label-primary"></div>
             </p>
-            <span sec:authorize="isAuthenticated()" class="mnp-desc" sec:authentication="principal.email"></span>
-
+<!--            <span sec:authorize="isAuthenticated()" class="mnp-desc" sec:authentication="principal.email"></span>-->
+<!--        <span sec:authorize="isAuthenticated()" class="mnp-desc" sec:authentication="principal.jobTitle"></span>-->
+<!--        <span sec:authorize="isAuthenticated()" class="mnp-desc" sec:authentication="principal.orgDept"></span>-->
     </div>
 
 

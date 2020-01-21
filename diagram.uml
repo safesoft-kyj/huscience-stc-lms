@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="52.0" y="82.0">com.dtnsm.lms.domain.Course</node>
+    <node x="0.0" y="159.0">com.dtnsm.lms.domain.CourseAccount</node>
+    <node x="0.0" y="0.0">com.dtnsm.lms.auth.AuditorCreateEntity</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.dtnsm.lms.domain.Course" target="com.dtnsm.lms.auth.AuditorCreateEntity">
+      <point x="0.0" y="-16.0" />
+      <point x="0.0" y="16.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="537.5" y="223.5" />
+  <SelectedNodes>
+    <node>com.dtnsm.lms.auth.AuditorCreateEntity</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

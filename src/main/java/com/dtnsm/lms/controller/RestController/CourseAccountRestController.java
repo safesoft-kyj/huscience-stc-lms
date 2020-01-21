@@ -1,13 +1,16 @@
 package com.dtnsm.lms.controller.RestController;
 
+import com.dtnsm.lms.domain.Course;
 import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import com.dtnsm.lms.service.CourseAccountService;
+import com.dtnsm.lms.service.CourseService;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @RestController
@@ -16,6 +19,9 @@ public class CourseAccountRestController {
 
     @Autowired
     CourseAccountService courseAccountService;
+
+    @Autowired
+    CourseService courseService;
 
     // 교
     @PostMapping("/isVerificationRequestWait")
@@ -45,6 +51,12 @@ public class CourseAccountRestController {
         // 1: 상위결재권자가 지정되지 않음
         // 2: 관리자가 지정되지 않음
         // 9: 과정 신청 가능
+        // 10: 과정신청기간이 아님
+
+        Course course = courseService.getCourseById(courseId);
+
+        // 과정 신청기간인지를 체크한다.
+        if(!DateUtil.isWithinRange(DateUtil.getTodayString(), course.getRequestFromDate(), course.getRequestToDate())) return 10;
 
         CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserIdAndRequestType(courseId, userId, "1");
 
@@ -97,18 +109,13 @@ public class CourseAccountRestController {
     }
 
 
+    // 두기간사이에 포함되는지 여부
     @GetMapping("/isCoursePeriod")
     public boolean isCoursePeriod(@RequestParam("docId") long docId){
 
         CourseAccount courseAccount = courseAccountService.getById(docId);
-
         String today = DateUtil.getTodayString();
 
-        //앞에 변수가 크면 1, 작으면 -1, 같으면 0
-        int s = today.compareTo(courseAccount.getFromDate());
-        int e = today.compareTo(courseAccount.getToDate());
-
-        if (s >= 0 && e <= 0  ) return true; // 오늘기준 교육과정기간안에 포함되었을 경우
-        else return false;  // 오늘기준 교육과정이 종료된 경우
+        return DateUtil.isWithinRange(today, courseAccount.getFromDate(), courseAccount.getToDate());
     }
 }

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--Meta Data-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title th:text="${pageInfo.getPageTitle()}"></title>
+
+    <!--Css lib-->
+    <!--Open Sans Font [ OPTIONAL ]-->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+
+    <!--Bootstrap Stylesheet [ REQUIRED ]-->
+    <link rel="stylesheet" th:href="@{/default/css/bootstrap.min.css}" />
+    <!--Themify Icons [ OPTIONAL ]-->
+    <link th:href="@{/default/plugins/themify-icons/themify-icons.min.css}" rel="stylesheet">
+
+    <!--Ion Icons [ OPTIONAL ]-->
+    <link th:href="@{/default/plugins/ionicons/css/ionicons.min.css}" rel="stylesheet">
+
+    <style>
+        #wrap {
+            padding-top: 130px;
+        }
+
+        .navbar-fixed-top {
+            background: #3A444E;
+            color: white;
+        }
+
+        .pdfobject-container{
+            /*margin-top:50px;*/
+            /*margin-left:50px;*/
+            /*width: 600px;*/
+            height: 570px;
+            padding:0;
+            margin: 0;
+        }
+
+        .pdfobject {
+            border: 1px solid #666;
+        }
+
+    </style>
+
+</head>
+<body oncontextmenu="return false">
+
+<div id="wrap">
+
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm12">
+                        <h3 class="text-light" th:text="${courseSectionFile.getCourseSection().getName()}"> / <span th:text="${courseSectionFile.getCourseSection().getMinute() + '분'}"></span> </h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h3 id="ptimer" class="text-light"><i class="ti-timer"></i> 학습시간 : <span id="timer">0:0:00</span> </h3>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <th:block th:unless="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE')}">
+                            <h3 class="demo-icon btn btn-success" onclick="endSection();">
+                                <i class="timeline-stat"></i> <span th:text="#{label.course.section.commit}">학습종료</span></h3>
+                        </th:block>
+                        <h3 class="demo-icon btn btn-warning" onclick="closeWindow();"><i class="ti-close"></i> <span th:text="#{label.close}">닫기</span></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Begin page content -->
+    <div class="container">
+        <div class="panel">
+            <div class="panel-body">
+                <div id="example1"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!--jQuery [ REQUIRED ]-->
+<script th:src="@{/default/js/jquery.min.js}"></script>
+
+<!--BootstrapJS [ RECOMMENDED ]-->
+<script th:src="@{/default/js/bootstrap.min.js}"></script>
+
+<!-- PDF 라이브러리-->
+<script th:src="@{/default/plugins/pdfjs/build/pdfobject.js}"></script>
+
+<script th:inline="javascript">
+    var section_minute = [[${courseSectionFile.getCourseSection().getMinute()}]];
+    var section_second = [[${courseSectionFile.getCourseSection().getSecond()}]];
+    var total_use_second = [[${sectionAction.getTotalUseSecond()}]];
+    var action_id = [[${sectionAction.getId()}]];
+    var tid;
+
+    // PDF 교육자료 실행
+    /*<![CDATA[*/
+    var id = '[[${courseSectionFile.getId()}]]'
+
+
+    $(document).ready(function () {
+        tid = setInterval('msg_time()', 1000); // 타이머 1초간격으로 수행
+
+        var options = {
+            height: "500px",
+            page: '1',
+            pdfOpenParams: {
+                view: 'FitV',
+                pagemode: 'thumbs',
+                search: 'lorem ipsum'
+            },
+
+            forcePDFJS: true, // 강제로 PDF Viewer를 실행시키는 옵션
+            PDFJS_URL: "/default/plugins/pdfjs/web/viewer.html" //PDF.js의 PDF viewer를 viewer로 지정.
+        };
+
+        //제일 처음 열리는 pdf파일 경로 설정.
+        PDFObject.embed("/mypage/download-file/" + id, "#example1", options);
+    });
+
+    // 학습시간 업데이틀 여부를 관리(0:업데이트 되지 않음, 1:업데이트 됨)
+    var update_flag = '0';
+
+    var total_second = 0;
+    var currDate = new Date();
+
+    var curr_second = 0;
+
+    // var RemainSecond = 0;
+
+    function msg_time() {
+
+        var hours = Math.floor((((curr_second+total_use_second) * 1000) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var miniutes = Math.floor((((curr_second+total_use_second) * 1000) % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((((curr_second+total_use_second) * 1000) % (1000 * 60)) / 1000);
+
+        m = hours + ":" + miniutes + ":" + seconds; // 남은 시간 text형태로 변경
+
+        // progress_rate = (curr_second / total_second * 100).toFixed(0) + '%';
+
+        if ((hours + miniutes + seconds) >= 0) {
+            $('#timer').html(m);   // div 영역에 보여줌
+        }
+
+        curr_second += 1;
+    }
+
+    // 윈도우 종료 이벤트 추가
+    $(window).bind("beforeunload", function (e) {
+
+
+        opener.location.reload();
+
+        return;
+    });
+
+    function saveSectionSecond(endFlag) {
+        // endFlag 1:계속학습, 2:학습종료
+
+        clearInterval(tid);   // 타이머 해제
+
+        // 조직도 정보 restApi
+        var url = "/mypage/api/pdfview";
+
+        var endDate = new Date();
+
+        // 학습시간 저장
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+                'sectionActionId': action_id,
+                'useSecond': curr_second,
+                'startDate': currDate,
+                'endDate': endDate,
+                'endFlag': endFlag
+            },
+            dataType: 'JSON',
+            async: false,
+            success: function (data) {
+
+            },
+            error: function (e) {
+                alert('ajax error');
+                console.log(e.responseText);
+            }
+        });
+    }
+
+
+
+    /*]]>*/
+    function closeWindow() {
+        // 계속 학습(Ongoing)
+        if(update_flag == '0') saveSectionSecond(1);
+        else clearInterval(tid);
+        this.close();
+    }
+
+    // 학습 종료
+    function endSection() {
+        // 학습 종료(Complete)
+        if(update_flag == '0') saveSectionSecond(2);
+        else clearInterval(tid);
+
+        update_flag = 1;
+        this.close();
+    }
+
+    // 새로고침 방지
+    function doNotReload(){
+        //ctrl+N , ctrl+R, function F5
+        if( (event.ctrlKey == true && (event.keyCode == 78 || event.keyCode == 82)) || (event.keyCode == 116))
+        {
+            event.keyCode = 0;
+            event.cancelBubble = true;
+            event.returnValue = false;
+        }
+    }
+    document.onkeydown = doNotReload;
+
+
+</SCRIPT>
+
+<!--    <script>-->
+
+<!--        jQuery(document).ready(function(){-->
+<!--            var wpps_popup_width = 			screen.availWidth; 									// 팝업창 가로 길이-->
+<!--            var wpps_popup_height = 			screen.availHeight; 								// 팝업창 세로 길이-->
+<!--            var wpps_popup_wh_ratio = 		wpps_popup_height / wpps_popup_width; 	// 팝업창 세로/가로 비율-->
+
+<!--            var wpps_rowser_width = 		window.innerWidth; 						// 현재 표시 화면 가로-->
+<!--            var wpps_browser_height = 		window.innerHeight;  					// 현재 표시 화면 세로-->
+
+<!--            var wpps_popup_width_catch = 	jQuery(".pdfobject-container").width(); 				// 현재 팝업 창 가로 값-->
+
+<!--            jQuery(".pdfobject-container").css("max-width", wpps_popup_width );					// 팝업창 최대 크기 제한-->
+
+
+<!--            /*&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+<!--            * 처음 화면이 보일 때:-->
+<!--                              팝업창 가로 크기가 화면보다 클 때 와 작은 경우-->
+<!--            -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;*/-->
+<!--            if (wpps_popup_width > wpps_rowser_width) {   							// 팝업창이 화면보다 클 때-->
+<!--                var wpps_popup_width_catch = jQuery(".pdfobject-container").width();-->
+<!--                jQuery(".pdfobject-container").css("width", "98%" );-->
+<!--                jQuery(".pdfobject-container").css("margin", "10% 1%" );-->
+<!--                jQuery(".pdfobject-container").css("height", wpps_popup_width_catch * wpps_popup_wh_ratio );-->
+<!--            } else {														// 팝업창이 화면에 충분히 들어 갈 때-->
+<!--                jQuery(".pdfobject-container").css("width", wpps_popup_width );-->
+<!--                jQuery(".pdfobject-container").css("height", wpps_popup_height );-->
+<!--                jQuery(".pdfobject-container").css("margin", "0 auto" );-->
+<!--                jQuery(".pdfobject-container").css("margin-top", "10%" );-->
+<!--            }-->
+
+<!--            /*&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+<!--            * 화면 크기가 바뀌고 있는 도중 일때(시작)-->
+<!--            -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;*/-->
+<!--            jQuery( window ).resize(function() {-->
+<!--                var wpps_rowser_width = window.innerWidth;-->
+<!--                jQuery(".pdfobject-container").css("margin", "0 auto");-->
+
+<!--                if (wpps_popup_width > wpps_rowser_width) {  						// 팝업창이 화면보다 클 때-->
+<!--                    var wpps_popup_width_catch = jQuery(".pdfobject-container").width();-->
+<!--                    jQuery(".pdfobject-container").css("width", "98%" );-->
+<!--                    jQuery(".pdfobject-container").css("margin", "10% 1%" );-->
+<!--                    jQuery(".pdfobject-container").css("height", wpps_popup_width_catch * wpps_popup_wh_ratio / .98 );-->
+
+<!--                } else {  													// 팝업창이 화면에 충분히 들어 갈 때-->
+<!--                    jQuery(".pdfobject-container").css("width", wpps_popup_width );-->
+<!--                    jQuery(".pdfobject-container").css("height", wpps_popup_height );-->
+<!--                    jQuery(".pdfobject-container").css("margin", "0 auto" );-->
+<!--                    jQuery(".pdfobject-container").css("margin-top", "10%" );-->
+<!--                }-->
+<!--            });-->
+<!--            /*&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+<!--            * 화면 크기가 바뀌고 있는 도중 일때 (끝)-->
+<!--            -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;*/-->
+
+<!--        });-->
+<!--    </script>-->
+
+</body>
+</html>

@@ -2,6 +2,7 @@ package com.dtnsm.lms.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 public  class DateUtil {
@@ -105,7 +106,7 @@ public  class DateUtil {
     public static String getDateToString(Date date, String format) {
         String stringDate = new SimpleDateFormat(format, Locale.ENGLISH).format(date);
 
-        return stringDate;
+        return stringDate.toUpperCase();
     }
 
     public static Date getToday() {
@@ -155,4 +156,17 @@ public  class DateUtil {
         return yearList;
     }
 
+    // 기간사이에 포함되어있는지 여부
+    public static boolean isWithinRange(String date, String startDate, String endDate) {
+        if(date.length() != 10 || startDate.length() != 10 || endDate.length() != 10){
+            return false;
+        }
+
+        LocalDate localdate = LocalDate.parse(date);
+        LocalDate startLocalDate = LocalDate.parse(startDate);
+        LocalDate endLocalDate = LocalDate.parse(endDate);
+        endLocalDate = endLocalDate.plusDays(1); // endDate는 포함하지 않으므로 +1일을 해줘야함.
+
+        return ( ! localdate.isBefore( startLocalDate ) ) && ( localdate.isBefore( endLocalDate ) );
+    }
 }

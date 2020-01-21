@@ -331,7 +331,7 @@ public class MyPageController {
         }
 
         model.addAttribute(pageInfo);
-        model.addAttribute("course", courseAccount.getCourse());
+        model.addAttribute("courseAccount", courseAccount);
         model.addAttribute("courseSectionActions", courseSectionActions);
         model.addAttribute("quizActions", newCourseQuizActionList.size() > 0 ? newCourseQuizActionList : courseQuizActions);
         model.addAttribute("surveyActions", courseSurveyActions);

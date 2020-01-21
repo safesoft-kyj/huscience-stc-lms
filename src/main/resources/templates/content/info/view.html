@@ -269,6 +269,11 @@
 
                 var val = checkRequest();
 
+                if (val == 10) {
+                    alert('교육신청기간이 아닙니다.');
+                    e.preventDefault();
+                    return  false;
+                }
 
                 if (val == 1) {
                     alert('상위결재권자가 지정되지 않았습니다.');
