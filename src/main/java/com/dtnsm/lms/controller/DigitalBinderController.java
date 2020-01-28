@@ -169,6 +169,7 @@ public class DigitalBinderController {
 //            mail.setEmail(toEmail);
             Context context = new Context();
             context.setVariable("empName", account.getName());
+            context.setVariable("inDate", StringUtils.isEmpty(account.getIndate()) ? "N/A" : DateUtil.getDateToString(DateUtil.getStringToDate(account.getIndate()), "yyyy-MM-dd"));
             mailService.send(toEmail, String.format(BinderAlarmType.BINDER_REVIEW.getTitle(), account.getName()), BinderAlarmType.BINDER_REVIEW, context);
         } else {
             log.error("매니저 지정이 되어 있지 않습니다.");

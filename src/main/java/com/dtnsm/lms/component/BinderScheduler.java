@@ -22,17 +22,26 @@ public class BinderScheduler {
     private final CVFinderMapper cvFinderMapper;
     private final UserRepository userRepository;
     private final MailService mailService;
+    private int[] days = {-21, -14, -7, -3, -1};
+    private String[] strDays = {"3주", "2주", "1주", "3일", "1일"};
     // 매일 오전 0시 10분에 실행
     @Scheduled(cron = "0 10 0 * * *")
     public void binderCheck() {
-        //11개월 330일이 되는 시점에 사용자에게 D.B 업데이트 알림 전송
-        alert11MonthBinderUpdate();
+
+        for(int i = 0; i < days.length; i ++) {
+            binderUpdateAlert(i);
+        }
     }
 
-    private void alert11MonthBinderUpdate() {
-        List<String> users = cvFinderMapper.findUpdateBinderUsers(330);
+
+    /**
+     * 3주,2주,1주,3일,1일
+     */
+    private void binderUpdateAlert(int index) {
+
+        List<String> users = cvFinderMapper.findUpdateBinderUsers(days[index]);
         if(!ObjectUtils.isEmpty(users)) {
-            log.info("Binder Update 알림 대상자가 존재함. 대상자 수 : {}", users.size());
+            log.info("Binder Update[day:{}] 알림 대상자가 존재함. 대상자 수 : {}", strDays[index], users.size());
             Mail mail = new Mail();
             for(String username : users) {
                 Account account = userRepository.findByUserId(username);
@@ -40,10 +49,11 @@ public class BinderScheduler {
 
                 Context context = new Context();
                 context.setVariable("empName", account.getName());
+                context.setVariable("remainDay", strDays[index]);
                 mailService.send(account.getEmail(), String.format(BinderAlarmType.BINDER_UPDATE.getTitle(), account.getName()), BinderAlarmType.BINDER_UPDATE, context);
             }
         } else {
-            log.info("Binder Update 알림 대상자가 없습니다.");
+            log.info("Binder Update[day:{}] 알림 대상자가 없습니다.", strDays[index]);
         }
     }
 }

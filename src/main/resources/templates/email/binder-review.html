@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -27,11 +27,11 @@
                                     <td class="content-block aligncenter">
                                         <table class="invoice">
                                             <tr>
-                                                <td><strong>홍길동</strong>님의 Digital Binder에 대한 팀장/부서장의 검토/승인 기한 (7,3,1)일 전입니다.</td>
+                                                <td><strong th:text="${empName}"></strong>님의 Digital Binder에 검토/승인을 진행해 주십시오.</td>
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    해당 직원의 입사일(2018-01-01) 기준 8주 이내로 검토/승인을 완료해 주십시요.
+                                                    해당 직원의 입사일(<span th:text="${inDate}">입사일(yyyy-MM-dd)</span>) 기준 8주 이내로 검토/승인을 완료해 주십시요.
                                                 </td>
                                             </tr>
                                         </table>
