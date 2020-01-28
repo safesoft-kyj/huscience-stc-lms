@@ -74,9 +74,9 @@ public class CourseQuizQuestion extends AuditorCreateEntity<String> {
     @JoinColumn(name = "quiz_id")
     private CourseQuiz quiz;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "question")
-    @JoinColumn(name = "question_id")
-    private CourseQuizActionAnswer questionAnswer;
+//    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "question")
+//    @JoinColumn(name = "question_id")
+//    private CourseQuizActionAnswer questionAnswer;
 
     public CourseQuizQuestion(){}
 
@@ -172,6 +172,8 @@ public class CourseQuizQuestion extends AuditorCreateEntity<String> {
 
         List<String> cellValues = new ArrayList<>();
         for(int i = 0; i < lastNum; i++) {
+            Cell cell = row.getCell(i);
+            if(row.getCell(i) == null || row.getCell(i).equals("")) break;
             cellValues.add(ExcelUtil.getStringByCellValue(row.getCell(i)));
         }
 

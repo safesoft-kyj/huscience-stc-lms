@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <style>
+        .table-head {
+            background: #3A444E;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+
+                <div class="panel-body">
+                    <br>
+                    <div th:switch="${borders}">
+                        <h2 th:case="null">No customer yet!</h2>
+                        <div th:case="*">
+                            <hr class="table-head">
+                            <table id="customer-list-page" class="table " cellspacing="0" width="100%">
+                                <thead>
+                                <tr style="background: #FAFAFA;">
+
+                                    <th class="text-center">#</th>
+                                    <th class="text-center">제목</th>
+                                    <th class="text-center">알람구분</th>
+<!--                                    <th class="text-center">업무</th>-->
+                                    <th class="text-center">사용자</th>
+                                    <th class="text-center">발생일</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="notification, index : ${borders}">
+                                    <td th:text="${(borders.getTotalElements() - index.index) - (borders.number * 10)}" class="text-center"></td>
+                                    <td><a th:href="@{/notification/view/{id}(id=${notification.getId()})}" th:text="${notification.getTitle()}"></a></td>
+                                    <td class="text-center" th:text="${notification.getAlarmGubun().getLabel()}"></td>
+<!--                                    <td class="text-center">-->
+<!--                                        <span th:if="${#strings.equalsIgnoreCase(notification.getGubun(), 'C')}">교육과정</span>-->
+<!--                                        <span th:if="${#strings.equalsIgnoreCase(notification.getGubun(), 'D')}">교육보고서</span>-->
+<!--                                    </td>-->
+                                    <td class="text-center" th:text="${notification.getCreatedBy()}"></td>
+<!--                                    <td th:text="${notification.getCreatedDate()}"></td>-->
+                                    <td class="text-center" th:text="${notification.getCreatedDate()} ? ${#dates.format(notification.getCreatedDate(), 'yyyy-MM-dd HH:mm:ss')} : ${notification.getCreatedDate()}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <nav style="text-align: center;" th:with="start=${T(Math).floor(borders.number/10)*10 + 1}">
+                                <ul class="pagination" th:with="last=(${start + 9 < borders.totalPages ? start + 9 : (borders.totalPages == 0 ? 1 : borders.totalPages)})">
+                                    <li>
+                                        <a th:href="@{/notification(page=1)}" aria-label="First">
+                                            <span aria-hidden="true">First</span>
+                                        </a>
+                                    </li>
+
+                                    <li th:class="${borders.first} ? 'disabled'">
+                                        <a th:if="${borders.first}" th:href="${'#'}" aria-label="Previous">
+                                            <span aria-hidden="true">&lt;</span>
+                                        </a>
+                                        <a th:unless="${borders.first}" th:href="@{/notification(page=${borders.number})}" aria-label="Previous">
+                                            <span aria-hidden="true">&lt;</span>
+                                        </a>
+                                    </li>
+
+                                    <li th:each="page: ${#numbers.sequence(start, last)}" th:class="${page == borders.number + 1} ? 'active'">
+                                        <a th:text="${page}" th:href="@{/notification(page=${page})}"></a>
+                                    </li>
+
+                                    <li th:class="${borders.last} ? 'disabled'">
+                                        <a th:if="${borders.last}" th:href="${'#'}" aria-label="Next">
+                                            <span aria-hidden="true">&gt;</span>
+                                        </a>
+                                        <a th:unless="${borders.last}" th:href="@{/notification(page=${borders.number + 2})}" aria-label="Next">
+                                            <span aria-hidden="true">&gt;</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a th:href="@{/notification(page=${borders.totalPages})}" aria-label="Last">
+                                            <span aria-hidden="true">Last</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div><!--switch End -->
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+</th:block>
+
+</html>
+
+

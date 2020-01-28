@@ -123,12 +123,14 @@
                             </div>
                             <span th:if="${#fields.hasErrors('hour')}" th:errors="*{hour}"></span>
                         </div>
+                        <th:block th:if="${#strings.equalsIgnoreCase(typeId, 'BC0101')}">
                         <div class="form-group">
                             <label class="col-sm-2 control-label"><i class="fa fa-file-pdf-o text-info"></i> <span th:text="#{label.course.section.file}">강의파일</span></label>
                             <div class="col-sm-10">
                                 <input type="file" name="files" accept=".pdf">
                             </div>
                         </div>
+                        </th:block>
                         <div class="panel-footer text-right">
                             <button class="btn btn-primary" type="submit" id="submit-all" th:text="#{label.save}">
                                 <i class="fa fa-upload-cloud"></i> 저장

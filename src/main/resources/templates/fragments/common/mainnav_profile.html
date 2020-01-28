@@ -15,9 +15,21 @@
 <!--                                                <i class="dropdown-caret"></i>-->
 <!--                                            </span>-->
             <p class="mnp-name" sec:authorize="isAuthenticated()">
-                <div sec:authentication="principal.engName"></div>
-                <div sec:authentication="principal.orgDept"></div>
-                <div sec:authentication="principal.jobTitle" class="label label-primary"></div>
+                <th:block th:unless="${#authentication.getPrincipal().getEngName().isEmpty()}">
+                    <div sec:authentication="principal.engName"></div>
+                </th:block>
+                <th:block th:if="${#authentication.getPrincipal().getEngName().isEmpty()}">
+                    <div sec:authentication="principal.userName"></div>
+                </th:block>
+                <th:block th:unless="${#authentication.getPrincipal().getOrgDept().isEmpty()}">
+                    <span sec:authentication="principal.orgDept"></span>
+                    <th:block th:unless="${#authentication.getPrincipal().getOrgTeam().isEmpty()}">
+                        / <span sec:authentication="principal.orgTeam"></span>
+                    </th:block>
+                </th:block>
+                <th:block th:unless="${#authentication.getPrincipal().getJobTitle().isEmpty()}">
+                    <div sec:authentication="principal.jobTitle" class="label label-primary"></div>
+                </th:block>
             </p>
 <!--            <span sec:authorize="isAuthenticated()" class="mnp-desc" sec:authentication="principal.email"></span>-->
 <!--        <span sec:authorize="isAuthenticated()" class="mnp-desc" sec:authentication="principal.jobTitle"></span>-->

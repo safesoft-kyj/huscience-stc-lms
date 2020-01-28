@@ -293,8 +293,15 @@
                     return false;
                 }
 
+
                 if (val == 4) {
                     alert('이미 신청한 내역이 있습니다.');
+                    e.preventDefault();
+                    return false;
+                }
+
+                if (val == 11) {
+                    alert('교육과정 정원이 초과 됩니다.');
                     e.preventDefault();
                     return false;
                 }

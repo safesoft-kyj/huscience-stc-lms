@@ -50,7 +50,7 @@
                             </div>
                         </div>
                         <div class="panel-footer text-right">
-                            <button class="btn btn-primary" type="submit" id="submit-all" th:text="#{label.save}">
+                            <button class="btn btn-primary" type="button" id="submit-all" th:text="#{label.save}" onclick="btnSubmit();">
                                 <i class="fa fa-upload-cloud"></i> 저장
                             </button>
                             <a class="btn btn-primary" th:href="@{/admin/course/{typeId}/{courseId}/account(typeId=${typeId}, courseId=${courseId})}"><i class="demo-pli-back"></i> Back</a>
@@ -69,6 +69,8 @@
         /*<![CDATA[*/
 
         var courseId = /*[[${courseId}]]*/;
+
+        var saveStatus = true;
 
         $('#mailList').chosen({width:'100%'});
 
@@ -96,6 +98,14 @@
 
         });
 
+        function btnSubmit() {
+            checkRequest('');
+
+            if(saveStatus) {
+                $('#boardFrm').submit();
+            }
+        }
+
         // 조직도에서 사용자 ID를 받아 온다(배열로 받아옴)
         function selectMailList(selectOptionArray) {
             // alert(selectOptionArray.length);
@@ -119,37 +129,50 @@
                 type : 'POST',
                 url : '/api/courseAccount/isVerification',
                 dataType : 'json',
+                    async: false,
                 data : {
                     'userId': userId,
                     'courseId': courseId
                 },
                 error: function(xhr, status, error){
-                    alert(error);
+                    alert('에러');
                 },
                 success : function(data){
 
                     if (data == 1) {
+                        saveStatus = false;
                         alert('상위결재권자가 지정되지 않았습니다.');
                         return false;
                     }
 
                     if (data == 2) {
+                        saveStatus = false;
                         alert('교육과정 관리자가 지정되지 않았습니다.');
                         return false;
                     }
 
                     if (data == 3) {
+                        saveStatus = false;
                         alert('수료증 기준정보가 설정 되지 않았습니다.');
                         return false;
                     }
 
                     if (data == 4) {
+                        saveStatus = false;
                         alert('이미 신청한 내역이 있습니다..');
                         return false;
                     }
 
+                    if (data == 11) {
+                        saveStatus = false;
+                        alert('교육과정 정원이 초과 됩니다.');
+                        return false;
+                    }
+
                     if (data == 9) {
-                        $('#submit_form').submit();
+                        saveStatus = true;
+                        return true;
+                        // $('#submit_form').submit();
                     }
                 },
             });

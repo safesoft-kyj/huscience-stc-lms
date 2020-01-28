@@ -4,6 +4,7 @@ import com.dtnsm.common.entity.Signature;
 import com.dtnsm.common.repository.SignatureRepository;
 import com.dtnsm.lms.auth.CustomUserDetails;
 import com.dtnsm.lms.auth.UserServiceImpl;
+import com.dtnsm.lms.component.CourseScheduler;
 import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import com.dtnsm.lms.domain.constant.QuizStatusType;
@@ -103,14 +104,14 @@ public class MyPageController {
         pageInfo.setPageId("m-mypage-main");
         pageInfo.setPageTitle("교육현황");
 
-        CustomUserDetails userDetails = SessionUtil.getUserDetail();
-        Account account = userService.getAccountByUserId(userDetails.getUserId());
+        //CustomUserDetails userDetails = SessionUtil.getUserDetail();
+        Account account = userService.getAccountByUserId(SessionUtil.getUserId());
 
         Page<CourseAccount> courseAccountList;
         if (courseStepStatusId.equals("%")) {
-            courseAccountList = courseAccountService.getListUserId(userDetails.getUserId(), typeId + "%", "%" + title + "%", pageable);
+            courseAccountList = courseAccountService.getListUserId(SessionUtil.getUserId(), typeId + "%", "%" + title + "%", pageable);
         } else {
-            courseAccountList = courseAccountService.getListUserId(userDetails.getUserId(), typeId + "%", "%" + title + "%", CourseStepStatus.valueOf(courseStepStatusId), pageable);
+            courseAccountList = courseAccountService.getListUserId(SessionUtil.getUserId(), typeId + "%", "%" + title + "%", CourseStepStatus.valueOf(courseStepStatusId), pageable);
         }
 
         Account parentAccount = userService.getAccountByUserId(account.getParentUserId());
@@ -423,7 +424,7 @@ public class MyPageController {
             questionAnswer = new CourseQuizActionAnswer();
             questionAnswer.setAnswer(question.getAnswer());
             questionAnswer.setUserAnswer(userAnswer);
-            questionAnswer.setQuestion(question);
+            questionAnswer.setQuestionId(question.getId());
             questionAnswer.setQuizAction(courseQuizAction);
 
             // 정답일 경우 1, 오답일 경우 0으로 설정(정답갯수는 isAnswer 의 합임)

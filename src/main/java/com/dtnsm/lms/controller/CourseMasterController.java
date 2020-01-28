@@ -78,9 +78,20 @@ public class CourseMasterController {
     @GetMapping("/courseStatusUpdate")
     public String courseStatusUpdate(Model model) {
 
-        pageInfo.setPageTitle("그룹웨어 사용자 업데이트");
+        pageInfo.setPageTitle("교육과정 상태 업데이트");
 
         courseScheduler.updateStatus();
+        model.addAttribute(pageInfo);
+
+        return "redirect:/admin/course-master";
+    }
+
+    @GetMapping("/courseStepStatusUpdate")
+    public String courseStepStatusUpdate(Model model) {
+
+        pageInfo.setPageTitle("사용자별 교육상태(교육중->수강기간종료) 업데이트");
+
+        courseScheduler.updateCourseStepStatus();
         model.addAttribute(pageInfo);
 
         return "redirect:/admin/course-master";

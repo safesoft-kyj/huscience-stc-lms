@@ -1,6 +1,5 @@
 package com.dtnsm.lms.controller;
 
-import com.dtnsm.common.entity.JobDescriptionVersionFile;
 import com.dtnsm.common.entity.QUserJobDescription;
 import com.dtnsm.common.entity.Signature;
 import com.dtnsm.common.entity.UserJobDescription;
@@ -659,6 +658,4 @@ public class MyPageCvJdController {
 
         return "redirect:/mypage/jd/approved";
     }
-
-
 }

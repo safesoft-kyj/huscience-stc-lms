@@ -64,6 +64,11 @@ public class CourseAccountService {
     }
 
 
+    // 교육상태별 조회
+    public List<CourseAccount> getByCourseStatus(CourseStepStatus courseStepStatus) {
+        return courseAccountRepository.findByCourseStatus(courseStepStatus);
+    }
+
     // 사용자별 월간 교육 일정
     public List<CourseAccount> getCourseByUserAndFromDateBetween(String userId, String fromDate, String toDate, CourseStepStatus courseStepStatus) {
         return courseAccountRepository.findByAccount_UserIdAndFromDateBetweenAndCourseStatus(userId, fromDate, toDate, courseStepStatus);
@@ -75,6 +80,7 @@ public class CourseAccountService {
     }
 
 
+
     public CourseAccount getByCourseIdAndUserId(long courseId, String userId) {
         return courseAccountRepository.findByCourse_IdAndAccount_UserId(courseId, userId);
     }
@@ -82,6 +88,8 @@ public class CourseAccountService {
     public CourseAccount getByCourseIdAndUserIdAndRequestType(long courseId, String userId, String requestType) {
         return courseAccountRepository.findByCourse_IdAndAccount_UserIdAndRequestType(courseId, userId, requestType);
     }
+
+
 
     public CourseAccount getByCourseIdAndUserIdAndCourseStatus(long courseId, String userId, CourseStepStatus courseStepStatus) {
         return courseAccountRepository.findByCourse_IdAndAccount_UserIdAndCourseStatus(courseId, userId, courseStepStatus);

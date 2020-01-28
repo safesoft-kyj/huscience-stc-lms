@@ -54,7 +54,13 @@ public class CustomUserDetails implements UserDetails {
     }
 
     public String getOrgDept() {
+
         return user.getOrgDepart();
+    }
+
+    public String getOrgTeam() {
+
+        return user.getOrgTeam();
     }
 
     public String getEngName() {

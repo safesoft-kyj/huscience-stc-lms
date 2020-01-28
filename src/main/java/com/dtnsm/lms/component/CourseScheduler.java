@@ -4,8 +4,11 @@ import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.Account;
 import com.dtnsm.lms.domain.Course;
 import com.dtnsm.lms.domain.CourseAccount;
+import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import com.dtnsm.lms.domain.constant.LmsAlarmCourseType;
+import com.dtnsm.lms.domain.constant.LmsAlarmGubun;
 import com.dtnsm.lms.domain.constant.LmsAlarmType;
+import com.dtnsm.lms.domain.datasource.MessageSource;
 import com.dtnsm.lms.mybatis.dto.UserVO;
 import com.dtnsm.lms.mybatis.service.CourseAccountMapperService;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
@@ -22,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Date;
 import java.util.List;
 
@@ -205,6 +209,44 @@ public class CourseScheduler {
     }
 
 
+    // 개인별 교육과정 교육중인 상태 업데이트
+    @Scheduled(cron = "0 15 2 * * *")
+    public void updateCourseStepStatus() {
+
+        log.info("================================================");
+        log.info("========== Course Step Status Update ===========");
+        log.info("================================================");
+
+        List<CourseAccount> courseAccounts = courseAccountService.getByCourseStatus(CourseStepStatus.process);
+
+        for(CourseAccount courseAccount : courseAccounts) {
+
+            CourseStepStatus courseStepStatus;
+
+            Date fromDate = DateUtil.getStringToDate(courseAccount.getFromDate());
+            Date toDate = DateUtil.getStringToDate(courseAccount.getToDate());
+            Date toDay = DateUtil.getToday();
+
+            int todayFromCompare = toDay.compareTo(fromDate);
+            int todayToCompare = toDay.compareTo(toDate);
+
+            if (todayToCompare > 0) {
+                courseStepStatus = CourseStepStatus.periodEnd; // 교육기간 종료
+                courseAccount.setCourseStatus(courseStepStatus);
+                courseAccountService.save(courseAccount);
+            }
+
+//            if (todayFromCompare < 0) {
+//                courseStepStatus = CourseStepStatus.periodWait; // 신청이후 교육 대기 : 교육대기
+//            } else if (todayFromCompare >= 0 && todayToCompare <= 0) {
+//                courseStepStatus = CourseStepStatus.process; // 교육중
+//            } else if (todayToCompare > 0) {
+//                courseStepStatus = CourseStepStatus.periodEnd; // 교육기간 종료
+//            }
+
+        }
+    }
+
     /*
     0 0 * * * *" = the top of every hour of every day.
     10 * * * * *" = 매 10초마다 실행한다.
@@ -249,20 +291,39 @@ public class CourseScheduler {
     // 외부교육 ToDate 익일 새벽에 외부교육참석보고서 작성 Alarm 발송 대상자 조회
     @Scheduled(cron = "0 40 2 * * *")
     public void sendCourseToDateAlarm() {
+        List<CourseAccount> courseAccounts;
 
-        List<CourseAccount> courseAccounts = courseAccountMapperService.getCourseReportAlarm("BC0104", "-1");
+        for(int i = 1; i <= 3; i++) {
 
-        // 교육일이 종료되고 교육완료보고서를 작성해야하는 사용자에게 알림 발송(외부교육만)
-        for (CourseAccount courseAccountVO : courseAccounts) {
+            courseAccounts = courseAccountMapperService.getCourseReportAlarm("BC0104", String.valueOf(i * -1));
 
-             CourseAccount courseAccount = courseAccountService.getById(courseAccountVO.getId());
+            // 교육일이 종료되고 교육완료보고서를 작성해야하는 사용자에게 알림 발송(외부교육만)
+            for (CourseAccount courseAccountVO : courseAccounts) {
 
-            // 교육보고서 미진행된 건에 대해 알람을 발송한다.
-            if (courseAccount.getReportStatus().equals("9")) {
+                CourseAccount courseAccount = courseAccountService.getById(courseAccountVO.getId());
 
-                MessageUtil.sendNotificationMessage(LmsAlarmCourseType.CourseReportApproach, courseAccount.getAccount(), courseAccount.getCourse());
-            }
+                // 교육보고서 미진행된 건에 대해 알람을 발송한다.
+                if (courseAccount.getReportStatus().equals("9")) {
+
+                    MessageSource messageSource = MessageSource.builder()
+                            .courseAccount(courseAccount)
+                            .alarmGubun(LmsAlarmGubun.INFO)
+                            .lmsAlarmCourseType(LmsAlarmCourseType.CourseReportApproach)
+                            .sender(courseAccount.getAccount()) // 승인자
+                            .receive(courseAccount.getAccount())
+                            .course(courseAccount.getCourse())
+                            .title(String.format("%s에 대한 교육참석보고서 기한 %s일 전입니다.", courseAccount.getCourse().getTitle(), 4+(i*-1)))
+                            .subject(String.format("[LMS/외부교육] 교육참석보고서 %s일 전", i))
+                            .content("")
+                            .build();
+
+                    MessageUtil.sendNotificationMessage(messageSource, true);
+
+
+                    MessageUtil.sendNotificationMessage(LmsAlarmCourseType.CourseReportApproach, courseAccount.getAccount(), courseAccount.getCourse());
+                }
 //            MessageUtil.sendNotification(LmsAlarmCourseType.CourseReportApproach, courseAccount.getAccount(), courseAccount.getCourse());
+            }
         }
 
         // 교육일이 7일로 임박한 사용자에게 알림 발송(Self 교육만)
