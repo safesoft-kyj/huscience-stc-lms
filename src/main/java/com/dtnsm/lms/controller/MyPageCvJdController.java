@@ -37,6 +37,7 @@ import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.util.WebUtils;
+import org.thymeleaf.context.Context;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -644,9 +645,11 @@ public class MyPageCvJdController {
             if(!StringUtils.isEmpty(account.getParentUserId())) {
                 String toEmail = userRepository.findByUserId(account.getParentUserId()).getEmail();
                 log.info("매니저에게 JD 동의 알림 메일 전송 : {}", toEmail);
-                Mail mail = new Mail();
-                mail.setEmail(toEmail);
-                mailService.send(mail, account.getName(), BinderAlarmType.JD_AGREE);
+                String jobTitle = userJobDescription.getJobDescriptionVersion().getJobDescription().getTitle();
+                Context context = new Context();
+                context.setVariable("jobTitle", jobTitle);
+                context.setVariable("empName", account.getName());
+                mailService.send(toEmail, String.format(BinderAlarmType.JD_AGREE.getTitle(), jobTitle, account.getName()), BinderAlarmType.JD_AGREE, context);
             } else {
                 log.error("매니지 지정이 되어 있지 않습니다.");
             }

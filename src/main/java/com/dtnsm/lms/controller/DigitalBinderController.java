@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.thymeleaf.context.Context;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
@@ -164,9 +165,11 @@ public class DigitalBinderController {
         if(!StringUtils.isEmpty(account.getParentUserId())) {
             String toEmail = userRepository.findByUserId(account.getParentUserId()).getEmail();
             log.info("매니저에게 Binder 검토 요청 : {}", toEmail);
-            Mail mail = new Mail();
-            mail.setEmail(toEmail);
-            mailService.send(mail, account.getName(), BinderAlarmType.BINDER_REVIEW);
+//            Mail mail = new Mail();
+//            mail.setEmail(toEmail);
+            Context context = new Context();
+            context.setVariable("empName", account.getName());
+            mailService.send(toEmail, String.format(BinderAlarmType.BINDER_REVIEW.getTitle(), account.getName()), BinderAlarmType.BINDER_REVIEW, context);
         } else {
             log.error("매니저 지정이 되어 있지 않습니다.");
         }
