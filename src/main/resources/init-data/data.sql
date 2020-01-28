@@ -38,6 +38,12 @@ INSERT [dbo].[account] ([user_id], [email], [enabled], [name], [password], [toke
 -- admin role 설정
 INSERT [dbo].[account_roles] ([user_id], [role_id]) VALUES (N'admin', 1)
 
+-- 과정 관리자 설정
+INSERT [dbo].[el_course_manager] ([user_id], [insert_user_id], [insert_dt], [is_active], [register_date]) values('mjlee', 'admin', getdate(), 1, convert(varchar(10), getdate(), 121)
+
+-- 수료증 정보 설정
+INSERT [dbo].[el_course_certificate_info] ([id], [insert_user_id], [insert_dt], [is_active], [sop_effective_date], [sop_name], [cer_manager1], [cer_manager2], [cer_manager_text1], [cer_manager_text2]) VALUES (1366, N'pub147', CAST(N'2019-12-03T10:53:57.8170000' AS DateTime2), 1, N'2019-03-04', N'SOP-TM 0002_RD08 v1.1', N'hjlim', N'khkim', 'QMO', 'Registered Director')
+
 -- 과정 유형 등록
 INSERT [dbo].[el_course_master] ([id], [insert_user_id], [insert_dt], [course_name], [is_course_manger_approval], [is_team_manger_approval], [minor_cd], [day], [hour]) VALUES (N'BC0101', N'admin', CAST(N'2019-10-13T16:29:50.1190000' AS DateTime2), N'Self-training', N'N', N'N', N'BC0101', 30, CAST(1.00 AS Numeric(5, 2)))
 INSERT [dbo].[el_course_master] ([id], [insert_user_id], [insert_dt], [course_name], [is_course_manger_approval], [is_team_manger_approval], [minor_cd], [day], [hour]) VALUES (N'BC0102', N'admin', CAST(N'2019-10-13T16:29:59.2190000' AS DateTime2), N'Class training', N'Y', N'Y', N'BC0102', 0, CAST(0.00 AS Numeric(5, 2)))
