@@ -106,19 +106,15 @@ public class CourseSectionAdminController {
         return "admin/course/section/add";
     }
 
-
-
     @PostMapping("/{typeId}/{courseId}/section/add-post")
     public String noticeAddPost(@Valid CourseSection courseSection
             , @PathVariable("typeId") String typeId
             , @PathVariable("courseId") Long courseId
-            , @RequestParam("files") MultipartFile file
+            , @RequestParam(value = "files", required = false) MultipartFile file
             , BindingResult result) {
         if(result.hasErrors()) {
             return "admin/course/section/add";
         }
-
-
 
         Course course = courseService.getCourseById(courseId);
         courseSection.setCourse(course);
@@ -126,7 +122,7 @@ public class CourseSectionAdminController {
         courseSection.setSecond(Math.round(courseSection.getMinute()*60));
         CourseSection courseSection1 = sectionService.saveSection(courseSection);
 
-        if (file != null) {
+        if (file != null && !file.isEmpty()) {
             CourseSectionFile courseSectionFile = fileService.storeFile(file, courseSection1);
             courseSection1.setImageSize(courseSectionFile.getImageSize());
             courseSection1 = sectionService.saveSection(courseSection1);
@@ -170,7 +166,7 @@ public class CourseSectionAdminController {
     @PostMapping("/{typeId}/{courseId}/section/edit-post/{id}")
     public String noticeEditPost(@PathVariable("id") long id
             , @PathVariable("typeId") String typeId
-            , @RequestParam("files") MultipartFile file
+            , @RequestParam(value = "files", required = false ) MultipartFile file
             , @Valid CourseSection courseSection
             , BindingResult result) {
         if(result.hasErrors()) {
@@ -190,7 +186,7 @@ public class CourseSectionAdminController {
         // 강의 시간의 변경시 과정의 시간을 업데이트 한다.
         courseService.updateCourseHour(courseSection1.getCourse());
 
-        if (file != null) {
+        if (file != null && !file.isEmpty()) {
             CourseSectionFile courseSectionFile = fileService.storeFile(file, courseSection1);
             courseSection1.setImageSize(courseSectionFile.getImageSize());
             courseSection1 = sectionService.saveSection(courseSection1);

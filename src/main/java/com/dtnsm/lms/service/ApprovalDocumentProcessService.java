@@ -113,13 +113,14 @@ public class ApprovalDocumentProcessService {
 
             MessageSource messageSource = MessageSource.builder()
                     .alarmGubun(LmsAlarmGubun.INFO)
-                    .lmsAlarmCourseType(LmsAlarmCourseType.Request)
+                    .lmsAlarmCourseType(LmsAlarmCourseType.DocApproval)
                     .sender(account)
                     .receive(apprAccount2)
+                    .course(saveDocument.getCourseAccount().getCourse())
                     .document(saveDocument)
-                    .title("교육참석보고서 결재 요청")
-                    .subject(String.format("%s가 교육참석보고서 결재를 요청하였습니다.", account.getName()))
-                    .content("교육참석보고서 결재 요청 (<a href='http://lms.dtnsm.com/approval/mainApproval?status=request'>결재함 바로가기</a>)")
+                    .title(String.format("[LMS/교육참석보고서/%s] %s 결재 요청", account.getName(), saveDocument.getCourseAccount().getCourse().getTitle()))
+                    .subject(String.format("[LMS/교육참석보고서/%s] %s 결재 요청", account.getName(), saveDocument.getCourseAccount().getCourse().getTitle()))
+                    .content("")
                     .build();
 
             MessageUtil.sendNotificationMessage(messageSource, true);
@@ -192,22 +193,25 @@ public class ApprovalDocumentProcessService {
                 binderLogService.createTrainingLog(courseAccount);
 
                 //            // 최종 승인이면 기안자에게 메일 전송
-                MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Approval, document.getAccount(), document1);
+//                MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Approval, document.getAccount(), document1);
 //
 //            // 최종 승인이면 관리자에게 메일 전송
 //            MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Approval, courseManagerService.getCourseManager().getAccount(), document1);
 
+                String subject = String.format("[LMS/교육참석보고서/승인] %s", document1.getCourseAccount().getCourse().getTitle());
+
+
                 // 최종 승인이면 기안자에게 메일 전송
                 MessageSource messageSource = MessageSource.builder()
                         .alarmGubun(LmsAlarmGubun.INFO)
-                        .lmsAlarmCourseType(LmsAlarmCourseType.Approval)
+                        .lmsAlarmCourseType(LmsAlarmCourseType.DocApprovalTeam)
                         .sender(documentAccountOrder.getFnUser()) // 승인자
                         .receive(document1.getAccount())
+                        .course(document1.getCourseAccount().getCourse())
                         .document(document1)
-                        .title("교육참석보고서 결재 요청")
-                        .subject(String.format("%s님의 %s 최종승인 되었습니다.", document1.getAccount().getName(), document1.getTitle()))
-                        .content(String.format("교육참석보고서 최종 승인 (<a href='http://lms.dtnsm.com/approval/mainRequest2?status=report'>결재완료 바로가기</a>)"
-                                , courseAccount.getCourse().getCourseMaster().getId().equals("BC0104") ? "2" : "1"))
+                        .title(subject)
+                        .subject(subject)
+                        .content("")
                         .build();
 
                 MessageUtil.sendNotificationMessage(messageSource, true);
@@ -215,13 +219,14 @@ public class ApprovalDocumentProcessService {
                 // 관리자에게 메일 전송
                 messageSource = MessageSource.builder()
                         .alarmGubun(LmsAlarmGubun.INFO)
-                        .lmsAlarmCourseType(LmsAlarmCourseType.Approval)
+                        .lmsAlarmCourseType(LmsAlarmCourseType.DocApprovalTeam)
                         .sender(documentAccountOrder.getFnUser()) // 승인자
                         .receive(courseManagerService.getCourseManager().getAccount())
+                        .course(document1.getCourseAccount().getCourse())
                         .document(document1)
-                        .title("교육참석보고서 결재 요청")
-                        .subject(String.format("%s님의 %s 최종승인 되었습니다.", document1.getAccount().getName(), document1.getTitle()))
-                        .content("교육참석보고서 최종 승인")
+                        .title(subject)
+                        .subject(subject)
+                        .content("")
                         .build();
 
                 MessageUtil.sendNotificationMessage(messageSource, true);
@@ -240,15 +245,18 @@ public class ApprovalDocumentProcessService {
 
 //                MessageUtil.sendMail(LmsAlarmCourseType.Approval, nextOrder.getFnUser(), document);
 
+                String subject = String.format("[LMS/교육참석보고서/승인] %s", document.getCourseAccount().getCourse().getTitle());
+
                 MessageSource messageSource = MessageSource.builder()
                         .alarmGubun(LmsAlarmGubun.INFO)
-                        .lmsAlarmCourseType(LmsAlarmCourseType.Approval)
+                        .lmsAlarmCourseType(LmsAlarmCourseType.DocApprovalTeam)
                         .sender(documentAccountOrder.getFnUser()) // 승인자
                         .receive(nextOrder.getFnUser())
+                        .course(document.getCourseAccount().getCourse())
                         .document(document)
-                        .title("교육참석보고서 결재 요청")
-                        .subject(String.format("%s님의 %s 결재 요청 되었습니다.", document.getAccount().getName(), document.getTitle()))
-                        .content("교육참석보고서 결재 요청 (<a href='http://lms.dtnsm.com/approval/mainApproval?status=report'>결재함 바로가기</a>)")
+                        .title(subject)
+                        .subject(subject)
+                        .content("")
                         .build();
 
                 MessageUtil.sendNotificationMessage(messageSource, true);
@@ -283,30 +291,31 @@ public class ApprovalDocumentProcessService {
         // 기안자에게 메일 전송
         MessageSource messageSource = MessageSource.builder()
                 .alarmGubun(LmsAlarmGubun.INFO)
-                .lmsAlarmCourseType(LmsAlarmCourseType.Reject)
+                .lmsAlarmCourseType(LmsAlarmCourseType.DocReject)
                 .sender(documentAccountOrder.getFnUser()) // 승인자
                 .receive(document.getAccount())
+                .course(document.getCourseAccount().getCourse())
                 .document(document)
-                .title("교육참석보고서 반려")
-                .subject(String.format("%s님의 %s 반려 되었습니다.", document.getAccount().getName(), document.getTitle()))
-                .content(String.format("교육참석보고서 반려 (<a href='http://lms.dtnsm.com/approval/mainRequest2?status=report'>결재완료 바로가기</a>)"))
+                .title(String.format("[LMS/교육참석보고서/반려] %s", document.getCourseAccount().getCourse().getTitle()))
+                .subject(String.format("[LMS/교육참석보고서/반려] %s", document.getCourseAccount().getCourse().getTitle()))
+                .content("")
                 .build();
 
         MessageUtil.sendNotificationMessage(messageSource, true);
 
         // 관리자에게 메일 전송
-        messageSource = MessageSource.builder()
-                .alarmGubun(LmsAlarmGubun.INFO)
-                .lmsAlarmCourseType(LmsAlarmCourseType.Reject)
-                .sender(documentAccountOrder.getFnUser()) // 승인자
-                .receive(courseManagerService.getCourseManager().getAccount())
-                .document(document)
-                .title("교육참석보고서 반려")
-                .subject(String.format("%s님의 %s 반려 되었습니다.", document.getAccount().getName(), document.getTitle()))
-                .content("교육참석보고서 반려")
-                .build();
-
-        MessageUtil.sendNotificationMessage(messageSource, true);
+//        messageSource = MessageSource.builder()
+//                .alarmGubun(LmsAlarmGubun.INFO)
+//                .lmsAlarmCourseType(LmsAlarmCourseType.Reject)
+//                .sender(documentAccountOrder.getFnUser()) // 승인자
+//                .receive(courseManagerService.getCourseManager().getAccount())
+//                .document(document)
+//                .title("교육참석보고서 반려")
+//                .subject(String.format("%s님의 %s 반려 되었습니다.", document.getAccount().getName(), document.getTitle()))
+//                .content("교육참석보고서 반려")
+//                .build();
+//
+//        MessageUtil.sendNotificationMessage(messageSource, true);
     }
 
     // 전자결재 2차 승인 처리
@@ -355,33 +364,36 @@ public class ApprovalDocumentProcessService {
                 // 강의별로 로그를 생성시킨다.
                 binderLogService.createTrainingLog(courseAccount);
 
+                String subject = String.format("[LMS/교육참석보고서/승인] %s", document1.getCourseAccount().getCourse().getTitle());
+
                 // 기안자에게 메일 전송
                 MessageSource messageSource = MessageSource.builder()
                         .alarmGubun(LmsAlarmGubun.INFO)
-                        .lmsAlarmCourseType(LmsAlarmCourseType.Approval)
+                        .lmsAlarmCourseType(LmsAlarmCourseType.DocApprovalManger)
                         .sender(documentAccountOrder.getFnUser()) // 승인자
                         .receive(document1.getAccount())
+                        .course(document1.getCourseAccount().getCourse())
                         .document(document1)
-                        .title("교육참석보고서 결재 요청")
-                        .subject(String.format("%s님의 %s 최종승인 되었습니다.", document1.getAccount().getName(), document1.getTitle()))
-                        .content(String.format("교육참석보고서 최종 승인 (<a href='http://lms.dtnsm.com/approval/mainRequest2?status=report'>결재완료 바로가기</a>)"))
+                        .title(subject)
+                        .subject(subject)
+                        .content("")
                         .build();
 
                 MessageUtil.sendNotificationMessage(messageSource, true);
 
                 // 관리자에게 메일 전송
-                messageSource = MessageSource.builder()
-                        .alarmGubun(LmsAlarmGubun.INFO)
-                        .lmsAlarmCourseType(LmsAlarmCourseType.Approval)
-                        .sender(documentAccountOrder.getFnUser()) // 승인자
-                        .receive(courseManagerService.getCourseManager().getAccount())
-                        .document(document1)
-                        .title("교육참석보고서 결재 요청")
-                        .subject(String.format("%s님의 %s 최종승인 되었습니다.", document1.getAccount().getName(), document1.getTitle()))
-                        .content("교육참석보고서 최종 승인")
-                        .build();
+//                messageSource = MessageSource.builder()
+//                        .alarmGubun(LmsAlarmGubun.INFO)
+//                        .lmsAlarmCourseType(LmsAlarmCourseType.do)
+//                        .sender(documentAccountOrder.getFnUser()) // 승인자
+//                        .receive(courseManagerService.getCourseManager().getAccount())
+//                        .document(document1)
+//                        .title(subject)
+//                        .subject(subject)
+//                        .content("")
+//                        .build();
 
-                MessageUtil.sendNotificationMessage(messageSource, true);
+//                MessageUtil.sendNotificationMessage(messageSource, true);
             }
 
 //            // 최종 승인이면 기안자에게 메일 전송
@@ -404,15 +416,18 @@ public class ApprovalDocumentProcessService {
                 // 알람 및 메일 전송
 //                MessageUtil.sendMail(LmsAlarmCourseType.Approval, nextOrder.getFnUser(), document);
 
+                String subject = String.format("[LMS/교육참석보고서/승인] %s", document.getCourseAccount().getCourse().getTitle());
+
                 MessageSource messageSource = MessageSource.builder()
                         .alarmGubun(LmsAlarmGubun.INFO)
-                        .lmsAlarmCourseType(LmsAlarmCourseType.Approval)
+                        .lmsAlarmCourseType(LmsAlarmCourseType.DocApprovalManger)
                         .sender(documentAccountOrder.getFnUser()) // 승인자
                         .receive(nextOrder.getFnUser())
+                        .course(document.getCourseAccount().getCourse())
                         .document(document)
-                        .title("교육참석보고서 결재 요청")
-                        .subject(String.format("%s님의 %s 결재 요청 되었습니다.", document.getAccount().getName(), document.getTitle()))
-                        .content("교육참석보고서 결재 요청 (<a href='http://lms.dtnsm.com/approval/mainApproval?status=report'>결재함 바로가기</a>)")
+                        .title(subject)
+                        .subject(subject)
+                        .content("")
                         .build();
 
                 MessageUtil.sendNotificationMessage(messageSource, true);
@@ -447,30 +462,31 @@ public class ApprovalDocumentProcessService {
         // 기안자에게 메일 전송
         MessageSource messageSource = MessageSource.builder()
                 .alarmGubun(LmsAlarmGubun.INFO)
-                .lmsAlarmCourseType(LmsAlarmCourseType.Reject)
+                .lmsAlarmCourseType(LmsAlarmCourseType.DocReject)
                 .sender(documentAccountOrder.getFnUser()) // 승인자
                 .receive(document.getAccount())
+                .course(document.getCourseAccount().getCourse())
                 .document(document)
-                .title("교육참석보고서 반려")
-                .subject(String.format("%s님의 %s 반려 되었습니다.", document.getAccount().getName(), document.getTitle()))
-                .content(String.format("교육참석보고서 반려 (<a href='http://lms.dtnsm.com/approval/mainRequest2?status=report'>결재완료 바로가기</a>)"))
+                .title(String.format("[LMS/교육참석보고서/반려] %s", document.getCourseAccount().getCourse().getTitle()))
+                .subject(String.format("[LMS/교육참석보고서/반려] %s", document.getCourseAccount().getCourse().getTitle()))
+                .content("")
                 .build();
 
         MessageUtil.sendNotificationMessage(messageSource, true);
 
         // 관리자에게 메일 전송
-        messageSource = MessageSource.builder()
-                .alarmGubun(LmsAlarmGubun.INFO)
-                .lmsAlarmCourseType(LmsAlarmCourseType.Reject)
-                .sender(documentAccountOrder.getFnUser()) // 승인자
-                .receive(courseManagerService.getCourseManager().getAccount())
-                .document(document)
-                .title("교육참석보고서 반려")
-                .subject(String.format("%s님의 %s 반려 되었습니다.", document.getAccount().getName(), document.getTitle()))
-                .content("교육참석보고서 반려")
-                .build();
-
-        MessageUtil.sendNotificationMessage(messageSource, true);
+//        messageSource = MessageSource.builder()
+//                .alarmGubun(LmsAlarmGubun.INFO)
+//                .lmsAlarmCourseType(LmsAlarmCourseType.Reject)
+//                .sender(documentAccountOrder.getFnUser()) // 승인자
+//                .receive(courseManagerService.getCourseManager().getAccount())
+//                .document(document)
+//                .title("교육참석보고서 반려")
+//                .subject(String.format("%s님의 %s 반려 되었습니다.", document.getAccount().getName(), document.getTitle()))
+//                .content("교육참석보고서 반려")
+//                .build();
+//
+//        MessageUtil.sendNotificationMessage(messageSource, true);
     }
 
 

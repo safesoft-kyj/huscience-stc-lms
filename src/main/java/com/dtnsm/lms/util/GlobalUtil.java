@@ -37,12 +37,12 @@ public class GlobalUtil {
 
         public static String getJobDescriptionString(String userId) {
 
-            if(userId.isEmpty()) return "job";
+            if(userId.isEmpty()) return "JD";
             Iterable<UserJobDescription> userJobDescriptions = GlobalUtil.getJobDescriptionList(userId, Arrays.asList(JobDescriptionStatus.APPROVED));
 
-            if (userJobDescriptions==null) return "job";
+            if (userJobDescriptions==null) return "JD";
             return StreamSupport.stream(userJobDescriptions.spliterator(), false)
-                    .map(u -> u.getJobDescriptionVersion().getJobDescription().getTitle()).collect(Collectors.joining(","));
+                    .map(u -> u.getJobDescriptionVersion().getJobDescription().getShortName()).collect(Collectors.joining(","));
         }
 
         public static Iterable<UserJobDescription> getJobDescriptionList(String userId, List<JobDescriptionStatus> statusList) {

@@ -177,7 +177,14 @@
                                             <span th:text="${courseAccount.getCourse().getTitle()}"}></span>
                                         </a>
                                     </td>
-                                    <td class="text-center" th:text="${courseAccount.getFromDate() + '~' + courseAccount.getToDate()}"></td>
+                                    <td class="text-center">
+                                        <th:block th:if="${#strings.equalsIgnoreCase(courseAccount.getFromDate(), courseAccount.getToDate())}">
+                                            <span th:text="${courseAccount.getFromDate()}"></span>
+                                        </th:block>
+                                        <th:block th:unless="${#strings.equalsIgnoreCase(courseAccount.getFromDate(), courseAccount.getToDate())}">
+                                            <span th:text="${courseAccount.getFromDate() + '~' + courseAccount.getToDate()}"></span>
+                                        </th:block>
+                                    </td>
                                     <td class="text-center">
                                         <span class="badge badge-mint" th:text="${courseAccount.getCourse().getSections().size()}"></span>
                                     </td>
@@ -198,9 +205,10 @@
                                                 <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).none}" class="text-warning" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).none.getLabel()}"></span>
                                                 <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).request}" class="text-mint" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).request.getLabel()}"></span>
                                                 <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).process}" class="text-warning" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).process.getLabel()}"></span>
+                                                <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).periodEnd}" class="text-danger" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).periodEnd.getLabel()}"></span>
                                                 <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).wait}" class="text-mint" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).wait.getLabel()}"></span>
                                                 <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).complete}" class="text-mint" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).complete.getLabel()}"></span>
-                                                <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).reject}" class="text-mint" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).reject.getLabel()}"></span>
+                                                <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).reject}" class="text-danger" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).reject.getLabel()}"></span>
                                             </div>
                                         </form>
                                     </td>
@@ -224,6 +232,14 @@
                                                         <a class="btn btn-info" th:onclick="|javascript:checkCoursePeriod('${courseAccount.getId()}','${index.count}')|"><i class="demo-pli-inbox-into"></i> 입장</a>
                                                     </th:block>
                                                 </form>
+                                            </th:block>
+                                            <!-- TODO: 과정상태가 기간연장이고 Self 트레이닝 이면서 상시 교육인 경우는 기간 연장이 가능함 -->
+                                            <th:block th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).periodEnd}">
+                                                <th:block th:if="${#strings.equalsIgnoreCase(courseAccount.getCourse().getCourseMaster().getId(), 'BC0101')}">
+                                                    <th:block th:if="${#strings.equalsIgnoreCase(courseAccount.getCourse().getIsAlways(), '1')}">
+                                                        <a class="btn btn-info" th:onclick="|javascript:executeCoursePeriodExtend('${courseAccount.getId()}')|"><i class="demo-pli-inbox-into"></i> 연장</a>
+                                                    </th:block>
+                                                </th:block>
                                             </th:block>
                                             <th:block th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).complete}">
 
@@ -253,17 +269,18 @@
                             </th:block>
                             </tbody>
                         </table>
-                        <nav style="text-align: center;">
-                            <ul class="pagination"
-                                th:with="start=${T(Math).floor(courseAccountList.number/10)*10 + 1}, last=(${start + 9 < courseAccountList.totalPages ? start + 9 : courseAccountList.totalPages})">
+                        <nav style="text-align: center;" th:with="start=${T(Math).floor(courseAccountList.number/10)*10 + 1}">
+                            <ul class="pagination" th:with="last=(${start + 9 < courseAccountList.totalPages ? start + 9 : (courseAccountList.totalPages == 0 ? 1 : courseAccountList.totalPages)})">
                                 <li>
                                     <a th:href="@{/mypage/main(page=1)}" aria-label="First">
                                         <span aria-hidden="true">First</span>
                                     </a>
                                 </li>
-
                                 <li th:class="${courseAccountList.first} ? 'disabled'">
-                                    <a th:href="${courseAccountList.first} ? '#' :@{/mypage/main(page=${courseAccountList.number})}" aria-label="Previous">
+                                    <a th:if="${courseAccountList.first}" th:href="${'#'}" aria-label="Previous">
+                                        <span aria-hidden="true">&lt;</span>
+                                    </a>
+                                    <a th:unless="${courseAccountList.first}" th:href="@{/mypage/main(page=${courseAccountList.number})}" aria-label="Previous">
                                         <span aria-hidden="true">&lt;</span>
                                     </a>
                                 </li>
@@ -271,11 +288,13 @@
                                     <a th:text="${page}" th:href="@{/mypage/main(page=${page})}"></a>
                                 </li>
                                 <li th:class="${courseAccountList.last} ? 'disabled'">
-                                    <a th:href="${courseAccountList.last} ? '#' : @{/mypage/main(page=${courseAccountList.number + 2})}" aria-label="Next">
+                                    <a th:if="${courseAccountList.last}" th:href="${'#'}" aria-label="Next">
+                                        <span aria-hidden="true">&gt;</span>
+                                    </a>
+                                    <a th:unless="${courseAccountList.last}" th:href="@{/mypage/main(page=${courseAccountList.number + 2})}" aria-label="Next">
                                         <span aria-hidden="true">&gt;</span>
                                     </a>
                                 </li>
-
                                 <li>
                                     <a th:href="@{/mypage/main(page=${courseAccountList.totalPages})}" aria-label="Last">
                                         <span aria-hidden="true">Last</span>
@@ -351,6 +370,35 @@
             option += ", left=" + popupX + ", top=" + popupY;
 
             window.open(url, title, option);
+        }
+
+        // Self 상시 교육이면서 기간이 만료된 경우 기간 연장
+        function executeCoursePeriodExtend(docId) {
+
+            var con_test = confirm("교육기간을 연장 하시겠습니까?");
+
+            if(con_test == true){
+
+                // 교육기간 연장
+                $.ajax({
+                    type : 'POST',
+                    url : '/api/courseAccount/coursePeriodExtend',
+                    dataType : 'json',
+                    data : {
+                        'docId': docId
+                    },
+                    error: function(xhr, status, error){
+                        alert('교육기간이 연장되지 않았습니다.');
+                    },
+                    success : function(data){
+
+                        if(data == true) {
+                            alert('교육 기간이 연장되었습니다.');
+                            location.reload();
+                        }
+                    },
+                });
+            }
         }
 
         function checkCoursePeriod(docId, formId) {

@@ -37,14 +37,16 @@ public class CourseQuizActionAnswer extends AuditorCreateEntity<String> {
 //    @ColumnDefault("'1'")
 //    private String isActive = "1";
 
+    private long questionId;
+
     // Parent 필드 추가
     @ManyToOne
     @JoinColumn(name = "quiz_action_id")
     private CourseQuizAction quizAction;
 
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private CourseQuizQuestion question;
+//    @OneToOne(fetch = FetchType.LAZY)
+//    private CourseQuizQuestion question;
 
     public CourseQuizActionAnswer(){}
 }

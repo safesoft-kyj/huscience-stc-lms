@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-body">
+                    <table class="table table-bordered" cellspacing="0" width="100%">
+                        <colgroup><col width="15%" /><col width="85%" /></colgroup>
+                        <tr>
+                            <th class="text-center">알람구분</th>
+                            <td th:text="${notification.getAlarmGubun().getLabel()}"></td>
+                        </tr>
+<!--                        <tr>-->
+<!--                            <th class="text-center">업무구분</th>-->
+<!--                            <td>-->
+<!--                                <span th:if="${#strings.equalsIgnoreCase(notification.getGubun(), 'C')}">교육과정</span>-->
+<!--                                <span th:if="${#strings.equalsIgnoreCase(notification.getGubun(), 'D')}">교육보고서</span>-->
+<!--                            </td>-->
+<!--                        </tr>-->
+                        <tr>
+                            <th class="text-center">제목</th>
+                            <td th:text="${notification.getTitle()}"></td>
+                        </tr>
+                        <tr>
+                            <th class="text-center">사용자</th>
+                            <td th:text="${notification.getAccount().getName()}"></td>
+                        </tr>
+                        <tr>
+                            <th class="text-center">발생일</th>
+                            <td th:text="${notification.getCreatedDate()} ? ${#dates.format(notification.getCreatedDate(), 'yyyy-MM-dd HH:mm:ss')} : ${notification.getCreatedDate()}"></td>
+                        </tr>
+                        <tr style="height:400px;">
+                            <td th:utext="${notification.getContent()}" colspan="2" style="height:400px; vertical-align:top; overflow-scrolling: auto"></td>
+                        </tr>
+                    </table>
+<!--                    <hr class="bg-gray"/>-->
+                    <div class="input-group pull-right">
+                        <a th:href="@{/notification}" class="btn btn-primary"><i class="demo-pli-back"></i> 목록</a>
+                    </div>
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+</th:block>
+
+</html>
+
+
+

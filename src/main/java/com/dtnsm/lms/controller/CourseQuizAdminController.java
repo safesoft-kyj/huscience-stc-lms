@@ -254,10 +254,12 @@ public class CourseQuizAdminController {
             , HttpServletRequest request){
 
 
-        CourseQuiz courseQuiz = quizService.getCourseQuizById(quiz_id);
+//        CourseQuiz courseQuiz = quizService.getCourseQuizById(quiz_id);
+
+        List<CourseQuizQuestion> courseQuizQuestions =  quizService.getAllByQuizId(quiz_id);
 
         // 문제 삭제
-        for(CourseQuizQuestion courseQuizQuestion : courseQuiz.getQuizQuestions()) {
+        for(CourseQuizQuestion courseQuizQuestion : courseQuizQuestions) {
             quizService.deleteQuizQuestion(courseQuizQuestion);
         }
 

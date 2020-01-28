@@ -35,6 +35,10 @@ public class CourseAccount extends AuditorEntity<String> {
     @ColumnDefault("'1900-01-01'")
     private String toDate;
 
+    // 기간연장 Count
+    @ColumnDefault("0")
+    private int periodExtendCount = 0;
+
     // 교육 신청자
     @ManyToOne
     @JoinColumn(name = "user_id",columnDefinition="VARCHAR(30)")

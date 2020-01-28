@@ -47,6 +47,7 @@
                     <!--End Horizontal Form-->
                     <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/{typeId}/{courseId}/section/edit-post/{id}(typeId=${typeId}, courseId=${courseId}, id=${courseSection.getId()})}" th:object="${courseSection}" method="post" enctype="multipart/form-data" >
                         <input type="hidden" th:value="${id}" id="id" name="id">
+                        <input type="hidden" th:field="*{imageSize}" id="imageSize">
 <!--                        <input type="hidden" th:field="*{type}" id="type" >-->
 <!--                        <div class="form-group">-->
 <!--                            <label class="col-sm-2 control-label" th:text="#{label.gubun}">구분</label>-->
@@ -105,43 +106,46 @@
                             <span th:if="${#fields.hasErrors('hour')}" th:errors="*{hour}"></span>
                         </div>
 
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" th:text="#{label.file}">첨부파일</label>
-                            <div class="col-sm-10">
-                                <div th:switch="${courseSection.getSectionFiles().isEmpty()}">
-                                    <div th:case="true"></div>
-                                    <div th:case="*">
-                                        <table id="customer-list-page" class="table table-striped table-courseed" cellspacing="0" width="100%">
-                                            <thead>
-                                            <tr>
-                                                <th class="text-center col-sm-8" th:text="#{label.filename}">파일명</th>
-                                                <th class="text-center col-sm-2" th:text="#{label.filesize}">사이즈</th>
-                                                <th class="text-center col-sm-2" th:text="#{label.delete}">삭제</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr th:each="uploadFile : ${courseSection.getSectionFiles()}">
-                                                <td>
-                                                    <a th:href="@{/admin/course/{typeId}/{courseId}/section/download-file/{id}(typeId=${typeId}, courseId=${courseId}, id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>
-                                                </td>
-                                                <td th:text="${uploadFile.getSize()}" class="text-center"></td>
-                                                <td class="text-center col-sm-2">
-                                                    <a class="btn btn-xs btn-danger" th:href="@{/admin/course/{typeId}/{courseId}/section/delete-file/{section_id}/{file_id}(typeId=${typeId}, courseId=${courseId}, section_id=${courseSection.getId()}, file_id=${uploadFile.getId()})}"><i class="demo-psi-trash"></i></a>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                        <th:block th:if="${#strings.equalsIgnoreCase(typeId, 'BC0101')}">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" th:text="#{label.file}">첨부파일</label>
+                                <div class="col-sm-10">
+                                    <div th:switch="${courseSection.getSectionFiles().isEmpty()}">
+                                        <div th:case="true"></div>
+                                        <div th:case="*">
+                                            <table id="customer-list-page" class="table table-striped table-courseed" cellspacing="0" width="100%">
+                                                <thead>
+                                                <tr>
+                                                    <th class="text-center col-sm-8" th:text="#{label.filename}">파일명</th>
+                                                    <th class="text-center col-sm-2" th:text="#{label.filesize}">사이즈</th>
+                                                    <th class="text-center col-sm-2" th:text="#{label.delete}">삭제</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                    <tr th:each="uploadFile : ${courseSection.getSectionFiles()}">
+                                                        <td>
+                                                            <a th:href="@{/admin/course/{typeId}/{courseId}/section/download-file/{id}(typeId=${typeId}, courseId=${courseId}, id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>
+                                                        </td>
+                                                        <td th:text="${uploadFile.getSize()}" class="text-center"></td>
+                                                        <td class="text-center col-sm-2">
+                                                            <a class="btn btn-xs btn-danger" th:href="@{/admin/course/{typeId}/{courseId}/section/delete-file/{section_id}/{file_id}(typeId=${typeId}, courseId=${courseId}, section_id=${courseSection.getId()}, file_id=${uploadFile.getId()})}"><i class="demo-psi-trash"></i></a>
+                                                        </td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label"><i class="fa fa-file-excel-o text-info"></i></i> <span th:text="#{label.course.section.file}">강의파일</span></label>
-                            <div class="col-sm-10">
-                                <input type="file" name="files" accept=".pdf">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"><i class="fa fa-file-excel-o text-info"></i></i> <span th:text="#{label.course.section.file}">강의파일</span></label>
+                                <div class="col-sm-10">
+                                    <input type="file" name="files" accept=".pdf">
+                                </div>
                             </div>
-                        </div>
+                        </th:block>
                         <div class="panel-footer text-right">
                             <button class="btn btn-primary" type="submit" id="submit-all" th:text="#{label.save}">
                                 <i class="fa fa-upload-cloud"></i> 저장

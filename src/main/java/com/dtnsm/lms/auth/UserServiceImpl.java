@@ -104,6 +104,7 @@ public class UserServiceImpl implements UserService {
                 newUser.setUserType("U");
                 newUser.setEnabled(true);
                 newUser.setOrgDepart(userVO.getOrgDepart());
+                newUser.setOrgTeam(userVO.getOrgTeam());
                 newUser.setComPosition(userVO.getComPosition());
                 newUser.setIndate(userVO.getIndate());
                 user = userRepository.save(newUser);

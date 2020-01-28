@@ -59,6 +59,10 @@ public class CourseQuizService {
         Question
      */
 
+    public List<CourseQuizQuestion> getAllByQuizId(Long quizId) {
+        return questionRepository.findAllByQuiz_Id(quizId);
+    }
+
     public CourseQuizQuestion saveQuizQuestion(CourseQuizQuestion question){
         return questionRepository.save(question);
     }

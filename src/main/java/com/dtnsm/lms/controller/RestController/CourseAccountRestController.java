@@ -23,6 +23,35 @@ public class CourseAccountRestController {
     @Autowired
     CourseService courseService;
 
+    // 교육기간 연장
+    @PostMapping("/coursePeriodExtend")
+    public boolean coursePeriodExtend(@RequestParam("docId") long docId) {
+
+        CourseAccount courseAccount = courseAccountService.getById(docId);
+
+        // self 상시교육이고 기간 연장이 1번 미만인 경우는 연장 가능
+        if (courseAccount.getCourse().getCourseMaster().getId().equals("BC0101")
+                && courseAccount.getCourse().getIsAlways().equals("1")
+                && courseAccount.getPeriodExtendCount() < 1) {     // 상시교육일 경우
+//            courseAccount.setFromDate(DateUtil.getTodayString());
+            courseAccount.setToDate(DateUtil.getStringDateAddDay(courseAccount.getToDate(), courseAccount.getCourse().getDay()));
+            courseAccount.setPeriodExtendCount(courseAccount.getPeriodExtendCount() + 1);
+            courseAccount.setCourseStatus(CourseStepStatus.process);
+            courseAccountService.save(courseAccount);
+            return true;
+        }
+
+//        if (courseAccount.getCourse().getCourseMaster().getId().equals("BC0101")) {     // 상시교육일 경우
+//            courseAccount.setFromDate(DateUtil.getTodayString());
+//            courseAccount.setToDate(DateUtil.getStringDateAddDay(DateUtil.getTodayString(), courseAccount.getCourse().getDay()));
+//            courseAccount.setCourseStatus(CourseStepStatus.process);
+//            courseAccountService.save(courseAccount);
+//            return true;
+//        }
+
+        return false;
+    }
+
     // 교
     @PostMapping("/isVerificationRequestWait")
     public int isVerificationRequestWait(@RequestParam("courseId") long courseId
@@ -34,10 +63,15 @@ public class CourseAccountRestController {
         // 2: 관리자가 지정되지 않음
         // 9: 과정 신청 가능
 
+        Course course = courseService.getCourseById(courseId);
+
         CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserIdAndCourseStatus(courseId, userId, CourseStepStatus.none);
 
         // 신청대기중인 과정정보가 없는 경우 리턴한다.
         if (courseAccount == null) return 3;
+
+        // 정원을 초과했는지 체크한다.
+        if (course.getCnt() > 0 && course.getCnt() <= course.getCourseAccountList().size()) return 11;
 
         return courseAccountService.accountVerification(userId);
     }
@@ -52,16 +86,24 @@ public class CourseAccountRestController {
         // 2: 관리자가 지정되지 않음
         // 9: 과정 신청 가능
         // 10: 과정신청기간이 아님
+        // 11: 정원수가 초과됨
 
         Course course = courseService.getCourseById(courseId);
 
         // 과정 신청기간인지를 체크한다.
-        if(!DateUtil.isWithinRange(DateUtil.getTodayString(), course.getRequestFromDate(), course.getRequestToDate())) return 10;
+        // 외부교육인 경우는 신청기간 체크를 하지 않는다.(교육이수후 신청함으로)
+        if (!course.getCourseMaster().getId().equals("BC0104")) {
+            if (!DateUtil.isWithinRange(DateUtil.getTodayString(), course.getRequestFromDate(), course.getRequestToDate()))
+                return 10;
+        }
 
         CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserIdAndRequestType(courseId, userId, "1");
 
         // 이미 신청정보가 있는 경우는 리턴한다.
         if (courseAccount != null) return 4;
+
+        // 정원을 초과했는지 체크한다.
+        if (course.getCnt() > 0 && course.getCnt() <= course.getCourseAccountList().size()) return 11;
 
         return courseAccountService.accountVerification(userId);
     }

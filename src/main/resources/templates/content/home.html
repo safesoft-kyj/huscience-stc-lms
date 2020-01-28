@@ -112,7 +112,7 @@
                                 <div class="panel height-fix-pannel">
                                     <div class="panel-body">
                                         <h5 class="col-md-6" th:text="#{label.title.alarm}" style="padding-bottom: 10px">알림사항</h5>
-                                        <!--                                        <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="#">more ></a></small>-->
+                                        <small class="text-semibold text-main text-right col-md-6" style="margin-bottom: 0px"><br><a href="/notification">more ></a></small>
                                         <div th:switch="${alarmList}">
                                             <h2 th:case="null"></h2>
                                             <div th:case="*">
@@ -125,7 +125,7 @@
                                                         <!--                                                            <span th:utext="${border.getAlarmGubun().getLabel()}"></span>-->
                                                         <!--                                                        </td>-->
                                                         <td class="text-left col-md-9">
-                                                            <span th:utext="${border.getTitle()}"></span>
+                                                            <a th:href="@{/notification/view/{id}(id=${border.getId()})}" th:text="${border.getTitle()}"></a>
                                                         </td>
                                                     </tr>
                                                     </tbody>
@@ -473,7 +473,7 @@
             <!--===================================================-->
             <div class="modal fade" id="demo-default-modal" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
                 <div class="modal-dialog">
-                    <div class="modal-content">
+                    <div class="modal-content modal-lg">
 
                         <!--Modal header-->
                         <div class="modal-header">
