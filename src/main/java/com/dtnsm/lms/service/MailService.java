@@ -19,6 +19,8 @@ import org.thymeleaf.context.Context;
 
 import javax.mail.internet.MimeMessage;
 
+import java.util.Map;
+
 import static com.dtnsm.lms.domain.constant.LmsAlarmCourseType.Request;
 
 @Component
@@ -125,21 +127,12 @@ public class MailService {
 
     /**
      * Binder 관련 알람 처리
-     * @param mail
-     * @param binderAlarmType
      */
-    public void send(Mail mail, String korName, BinderAlarmType binderAlarmType) {
-        //get and fill the template
-        mail.setObject(String.format(binderAlarmType.getTitle(), korName));
-        mail.setMessage(binderAlarmType.getMessage());
-        final Context context = new Context();
-        context.setVariable("subject", mail.getObject());
-        context.setVariable("message", mail.getMessage());
-
+    public void send(String to, String subject, BinderAlarmType binderAlarmType, Context context) {
         String body = templateEngine.process(binderAlarmType.getTemplate(), context);
-
-        //send the html template
-        sendPreparedMail(mail.getEmail(), mail.getObject(), body, true);
+        //TODO 테스트 완료시 제거
+        to = "jhseo@dtnsm.com";
+        sendPreparedMail(to, subject, body, true);
     }
 
     private void sendPreparedMail(String to, String subject, String text, Boolean isHtml) {

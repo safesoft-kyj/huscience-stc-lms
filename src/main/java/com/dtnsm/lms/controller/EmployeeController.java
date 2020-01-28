@@ -55,13 +55,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.thymeleaf.context.Context;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.charset.Charset;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -258,9 +257,11 @@ public class EmployeeController {
         //TODO Review 완료
 
         log.info("사용자에게 Binder 검토 완료 메일 전송 : {}", user.getEmail());
-        Mail mail = new Mail();
-        mail.setEmail(user.getEmail());
-        mailService.send(mail, user.getName(), BinderAlarmType.BINDER_REVIEWED);
+//        Mail mail = new Mail();
+//        mail.setEmail(user.getEmail());
+        Context context = new Context();
+        context.setVariable("empName", user.getName());
+        mailService.send(user.getEmail(), String.format(BinderAlarmType.BINDER_REVIEWED.getTemplate(), user.getName()), BinderAlarmType.BINDER_REVIEWED, context);
 
         new Thread(() -> {
             log.info("@@@ Digital Binder 생성 시작.");
@@ -425,9 +426,10 @@ public class EmployeeController {
         //TODO 알림 전송(JD 배정 알림)
         String toEmail = account.getEmail();
         log.info("사용자에게 JD 배정 알림 메일 전송 : {}", toEmail);
-        Mail mail = new Mail();
-        mail.setEmail(toEmail);
-        mailService.send(mail, account.getName(), BinderAlarmType.JD_ASSIGNED);
+        Context context = new Context();
+        String jobTitle = jobDescriptionVersionRepository.findById(userJobDescription.getJobDescriptionVersion().getId()).get().getJobDescription().getTitle();
+        context.setVariable("jobTitle", jobTitle);
+        mailService.send(toEmail, String.format(BinderAlarmType.JD_ASSIGNED.getTitle(), jobTitle, account.getName()), BinderAlarmType.JD_ASSIGNED, context);
         return "redirect:/employees/jd/approved";
     }
 
@@ -497,9 +499,13 @@ public class EmployeeController {
             Account account = userRepository.findByUserId(userJobDescription.getUsername());
             String toEmail = account.getEmail();
             log.info("사용자에게 JD 승인 알림 메일 전송 : {}", toEmail);
-            Mail mail = new Mail();
-            mail.setEmail(toEmail);
-            mailService.send(mail, account.getName(), BinderAlarmType.JD_APPROVED);
+//            Mail mail = new Mail();
+//            mail.setEmail(toEmail);
+            String jobTitle = userJobDescription.getJobDescriptionVersion().getJobDescription().getTitle();
+            Context context = new Context();
+            context.setVariable("empName", account.getName());
+            context.setVariable("jobTitle", jobTitle);
+            mailService.send(toEmail, String.format(BinderAlarmType.JD_APPROVED.getTitle(), jobTitle, account.getName()), BinderAlarmType.JD_APPROVED, context);
 
         }
 

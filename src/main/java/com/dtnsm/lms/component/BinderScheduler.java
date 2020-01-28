@@ -1,19 +1,17 @@
 package com.dtnsm.lms.component;
 
 import com.dtnsm.lms.domain.Account;
-import com.dtnsm.lms.domain.QTrainingRecordReview;
 import com.dtnsm.lms.domain.constant.BinderAlarmType;
 import com.dtnsm.lms.mybatis.mapper.CVFinderMapper;
-import com.dtnsm.lms.repository.TrainingRecordReviewRepository;
 import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.Mail;
 import com.dtnsm.lms.service.MailService;
-import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
+import org.thymeleaf.context.Context;
 
 import java.util.List;
 
@@ -40,7 +38,9 @@ public class BinderScheduler {
                 Account account = userRepository.findByUserId(username);
                 mail.setEmail(account.getEmail());
 
-                mailService.send(mail, account.getName(), BinderAlarmType.BINDER_UPDATE);
+                Context context = new Context();
+                context.setVariable("empName", account.getName());
+                mailService.send(account.getEmail(), String.format(BinderAlarmType.BINDER_UPDATE.getTitle(), account.getName()), BinderAlarmType.BINDER_UPDATE, context);
             }
         } else {
             log.info("Binder Update 알림 대상자가 없습니다.");

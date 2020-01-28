@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Billing e.g. invoices and receipts</title>
+    <link href="http://esop.dtnsm.com/static/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
+</head>
+
+<body itemscope itemtype="http://schema.org/EmailMessage">
+
+<table class="body-wrap">
+    <tr>
+        <td></td>
+        <td class="container" width="600">
+            <div class="content">
+                <table class="main" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td class="alert alert-good">
+                            <strong>&lt;LMS 안내 메일&gt;</strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="content-wrap aligncenter">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td class="content-block aligncenter">
+                                        <table class="invoice">
+                                            <tr>
+                                                <td><strong th:text="${jobTitle}"></strong> JD에 대한 홍길동님의 승인 요청이 있습니다.</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    해당 직원의 입사일로부터 7일 이내로 승인을 완료해 주십시오.
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="content-block aligncenter">
+                                        <a href="http://lms.dtnsm.com" target="_blank">LMS 바로가기</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="content-block aligncenter">
+
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <div class="footer">
+                    <table width="100%">
+                        <tr>
+                            <td class="aligncenter content-block">
+                                본 이메일의 발신자 주소는 발신전용으로 회신 되지 않습니다.<br/>
+                                COPYRIGHT© Dt&SanoMedics. CO. LTD. ALL RIGHTS RESERVED.</td>
+                        </tr>
+                    </table>
+                </div></div>
+        </td>
+        <td></td>
+    </tr>
+</table>
+
+</body>
+</html>
+

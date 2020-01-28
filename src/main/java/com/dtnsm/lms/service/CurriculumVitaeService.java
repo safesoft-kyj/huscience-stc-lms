@@ -14,6 +14,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.ByteArrayInputStream;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -221,7 +222,7 @@ public class CurriculumVitaeService {
                         .build()
         ).collect(Collectors.toList()));
 
-        dto.setCertifications(savedCV.getCertifications().stream().map(i ->
+        dto.setCertifications(savedCV.getCertifications().stream().sorted(Comparator.comparing(CVCertification::getIssueDate).reversed()).map(i ->
                 CertificationDTO.builder()
                         .nameOfCertification(i.getNameOfCertification())
                         .organizers(i.getOrganizers())
