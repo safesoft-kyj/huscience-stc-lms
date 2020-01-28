@@ -2,18 +2,13 @@ package com.dtnsm.lms.service;
 
 import com.dtnsm.lms.domain.constant.BinderAlarmType;
 import com.dtnsm.lms.domain.constant.LmsAlarmCourseType;
-import com.dtnsm.lms.domain.constant.MailSendType;
 import com.dtnsm.lms.domain.datasource.MessageSource;
-import com.groupdocs.conversion.internal.c.a.i.StringFormat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -125,21 +120,10 @@ public class MailService {
 
     /**
      * Binder 관련 알람 처리
-     * @param mail
-     * @param binderAlarmType
      */
-    public void send(Mail mail, String korName, BinderAlarmType binderAlarmType) {
-        //get and fill the template
-        mail.setObject(String.format(binderAlarmType.getTitle(), korName));
-        mail.setMessage(binderAlarmType.getMessage());
-        final Context context = new Context();
-        context.setVariable("subject", mail.getObject());
-        context.setVariable("message", mail.getMessage());
-
+    public void send(String to, String subject, BinderAlarmType binderAlarmType, Context context) {
         String body = templateEngine.process(binderAlarmType.getTemplate(), context);
-
-        //send the html template
-        sendPreparedMail(mail.getEmail(), mail.getObject(), body, true);
+        sendPreparedMail(to, subject, body, true);
     }
 
     private void sendPreparedMail(String to, String subject, String text, Boolean isHtml) {
