@@ -76,8 +76,8 @@
                                             <thead>
                                             <tr style="background: #FAFAFA;">
                                                 <th class="text-center">번호</th>
-                                                <th class="text-center">아이디</th>
-                                                <th class="text-center">이름</th>
+<!--                                                <th class="text-center">아이디</th>-->
+                                                <th>이름</th>
                                                 <th class="text-center">Job Title</th>
                                                 <th class="text-center">배정일</th>
                                                 <th class="text-center">동의일</th>
@@ -87,10 +87,13 @@
                                             </tr>
                                             </thead>
                                             <tbody>
+                                            <tr th:if="${userJobDescriptions == null || userJobDescriptions.size() == 0}">
+                                                <td colspan="8" class="text-center text-info text-bold"><i class="fa fa-exclamation-circle"></i> 직무 배정을 진행해 주세요!</td>
+                                            </tr>
                                             <tr th:each="user, index : ${userJobDescriptions}">
                                                 <td th:text="${index.count}" class="text-center"></td>
-                                                <td th:text="${user.account.userId}" class="text-center"></td>
-                                                <td th:text="${user.account.engName}" class="text-center"></td>
+<!--                                                <td th:text="${user.account.userId}" class="text-center"></td>-->
+                                                <td th:text="${user.account.engName}"></td>
                                                 <td>
                                                     <span th:if="${user.userJobDescription != null}" th:text="|${user.userJobDescription.jobDescriptionVersion.jobDescription.title} v${user.userJobDescription.jobDescriptionVersion.version_no}|">-</span>
                                                     <th:block th:if="${user.userJobDescription != null && (user.userJobDescription.status.name() eq 'APPROVED' or user.userJobDescription.status.name() eq 'REVOKED' or user.userJobDescription.status.name() eq 'SUPERSEDED')}">

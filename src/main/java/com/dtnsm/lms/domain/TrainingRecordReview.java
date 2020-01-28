@@ -64,4 +64,7 @@ public class TrainingRecordReview extends AuditorEntity<String> implements Seria
     @Column(name = "signature", columnDefinition = "varchar(max)")
     private String signature;
 
+    @Column(name = "binder_pdf")
+    private String binderPdf;
+
 }

@@ -58,8 +58,15 @@ public class CVFindController {
         pageInfo.setPageTitle("CV Finder");
     }
 
-    @GetMapping("/finder")
-    public String finder(Model model) {
+    @GetMapping({"/finder", "/{employees}/finder"})
+    public String finder(@PathVariable(value = "employees", required = false) String employees, Model model) {
+        if(StringUtils.isEmpty(employees)) {
+            pageInfo.setParentId("m-emp");
+            pageInfo.setParentTitle("Employees");
+        } else {
+            pageInfo.setParentId("m-teamDept");
+            pageInfo.setParentTitle("Team/Department");
+        }
         model.addAttribute(pageInfo);
         model.addAttribute("cvFindParam", new CVFindParam());
         model.addAttribute("taList", cvCodeList.getTaList());
@@ -69,8 +76,16 @@ public class CVFindController {
 
 
 
-    @PostMapping("/finder")
-    public String finder(@ModelAttribute("cvFindParam") CVFindParam param, Model model) {
+    @PostMapping({"/finder", "/{employees}/finder"})
+    public String finder(@PathVariable(value = "employees", required = false) String employees,
+                         @ModelAttribute("cvFindParam") CVFindParam param, Model model) {
+        if(StringUtils.isEmpty(employees)) {
+            pageInfo.setParentId("m-emp");
+            pageInfo.setParentTitle("Employees");
+        } else {
+            pageInfo.setParentId("m-teamDept");
+            pageInfo.setParentTitle("Team/Department");
+        }
         model.addAttribute(pageInfo);
 //        QCurriculumVitae qCurriculumVitae = QCurriculumVitae.curriculumVitae;
         BooleanBuilder builder = new BooleanBuilder();
@@ -84,7 +99,18 @@ public class CVFindController {
             param.setIndication(null);
         }
 
+        if(!StringUtils.isEmpty(employees)) {
+            Optional<List<Account>> optionalAccounts = userRepository.findByParentUserId(SessionUtil.getUserId());
+            if (optionalAccounts.isPresent()) {
+                List<Account> accounts = optionalAccounts.get();
+                List<String> usernameList = accounts.stream().map(u -> u.getUserId()).collect(Collectors.toList());
+                param.setUsernameList(usernameList);
+            }
+        }
+
         List<CVFindResult> resultList = cvFinderMapper.findCV(param);
+
+
 
         List<Integer> cvIds = resultList.stream().filter(cv -> (cv.getDays() / 365) >= param.getCareer()).map(CVFindResult::getId)
                 .collect(Collectors.toList());
@@ -97,7 +123,7 @@ public class CVFindController {
         return "content/finder/condition";
     }
 
-    @PostMapping("/finder/blindcv")
+    @PostMapping({"/finder/blindcv", "/employees/finder/blindcv"})
     public void getBlindCV(@RequestParam("username") String username,
                            @RequestParam(value = "initial", defaultValue = "true") boolean name,
                            @RequestParam(value = "company", defaultValue = "true") boolean company,

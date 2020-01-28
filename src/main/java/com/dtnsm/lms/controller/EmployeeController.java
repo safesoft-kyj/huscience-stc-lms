@@ -21,16 +21,27 @@ import com.dtnsm.lms.service.JobDescriptionFileService;
 import com.dtnsm.lms.service.Mail;
 import com.dtnsm.lms.service.MailService;
 import com.dtnsm.lms.util.DateUtil;
+import com.dtnsm.lms.util.DocumentConverter;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 //import com.dtnsm.lms.xdocreport.JobDescriptionReportService;
+import com.dtnsm.lms.xdocreport.CurriculumVitaeReportService;
 import com.dtnsm.lms.xdocreport.JobDescriptionReportService;
 import com.dtnsm.lms.xdocreport.dto.JobDescriptionSign;
+import com.groupdocs.assembly.DataSourceInfo;
+import com.groupdocs.conversion.internal.c.a.c.Encoding;
+import com.groupdocs.merger.Merger;
+import com.groupdocs.merger.MergerSettings;
+import com.groupdocs.merger.domain.FileType;
+import com.groupdocs.merger.domain.options.JoinOptions;
+import com.groupdocs.merger.domain.options.LoadOptions;
 import com.joestelmach.natty.generated.b;
 import com.querydsl.core.BooleanBuilder;
 import fr.opensagres.xdocreport.document.images.ByteArrayImageProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.pdfbox.io.MemoryUsageSetting;
+import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -46,10 +57,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -72,6 +81,7 @@ public class EmployeeController {
     private final JobDescriptionReportService jobDescriptionReportService;
     private final FileUploadProperties prop;
     private final MailService mailService;
+    private final DocumentConverter documentConverter;
     private PageInfo pageInfo = new PageInfo();
 
 
@@ -194,6 +204,9 @@ public class EmployeeController {
         }
         return "redirect:/employees/jd/approved";
     }
+
+
+
     @PostMapping("/employees/jd/remove")
     public String removeJd(@RequestParam(value = "id") Integer id, RedirectAttributes attributes) {
 
@@ -212,7 +225,7 @@ public class EmployeeController {
         trainingRecordReview.setReviewerName(SessionUtil.getUserDetail().getUsername());
         trainingRecordReview.setSignature(optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : null);
 
-        trainingRecordReviewRepository.save(trainingRecordReview);
+        TrainingRecordReview savedTrainingRecordReview = trainingRecordReviewRepository.save(trainingRecordReview);
 
         if(!ObjectUtils.isEmpty(trainingRecordReview.getCurriculumVitae())) {
             CurriculumVitae cv = trainingRecordReview.getCurriculumVitae();
@@ -238,13 +251,168 @@ public class EmployeeController {
             trainingRecordRepository.save(trainingRecord);
         }
 
+
+        Account user = savedTrainingRecordReview.getAccount();
+
+
         //TODO Review 완료
-        String toEmail = trainingRecordReview.getAccount().getEmail();
-        log.info("사용자에게 Binder 검토 완료 메일 전송 : {}", toEmail);
+
+        log.info("사용자에게 Binder 검토 완료 메일 전송 : {}", user.getEmail());
         Mail mail = new Mail();
-        mail.setEmail(toEmail);
-        mailService.send(mail, BinderAlarmType.BINDER_REVIEWED);
+        mail.setEmail(user.getEmail());
+        mailService.send(mail, user.getName(), BinderAlarmType.BINDER_REVIEWED);
+
+        new Thread(() -> {
+            log.info("@@@ Digital Binder 생성 시작.");
+            createBinderPDF(user, savedTrainingRecordReview);
+        }).start();
         return "redirect:/employees/review";
+    }
+
+    private Merger createOrJoin(Merger merger, InputStream is) throws Exception {
+        if(merger == null) {
+            LoadOptions loadOptions = new LoadOptions(FileType.PDF);
+            loadOptions.setEncoding(Charset.forName("UTF-8"));
+            merger = new Merger(is, loadOptions);
+        } else {
+            merger.join(is);
+        }
+
+        return merger;
+    }
+
+    private void createBinderPDF(Account account, TrainingRecordReview trainingRecordReview) {
+        try {
+            String binderPath = prop.getBinderDir();
+            String binderPdf = account.getUserId() + "_db_"+trainingRecordReview.getId()+".pdf";
+            String coverDocx = account.getUserId() + "_cover_"+trainingRecordReview.getId()+".docx";
+            String coverPdf = account.getUserId() + "_cover_"+trainingRecordReview.getId()+".pdf";
+
+            Merger merger = null;
+
+            LoadOptions loadOptions = new LoadOptions(FileType.PDF);
+            loadOptions.setEncoding(Charset.forName("UTF-8"));
+
+            //cover
+            InputStream is = CurriculumVitaeReportService.class.getResourceAsStream("cover.docx");
+            DataSourceInfo dataSourceInfo = new DataSourceInfo(account, "");
+            FileOutputStream os = new FileOutputStream(new File(binderPath + coverDocx));
+            boolean created = documentConverter.assembleDocument(is, os, dataSourceInfo);
+            log.info("@Cover created : {}", created);
+            if(created) {
+                documentConverter.word2pdf(new FileInputStream(binderPath + coverDocx), new FileOutputStream(binderPath + coverPdf));
+                log.info("@cover docx2pdf 변환");
+                 merger = new Merger(new FileInputStream(binderPath + coverPdf), loadOptions);
+                 log.info("@merger 객체 생성 {}{}", binderPath, coverPdf);
+            }
+
+            //cv
+            Optional<CurriculumVitae> optionalCurriculumVitae = curriculumVitaeRepository.findTop1ByAccountAndStatusOrderByIdDesc(account, CurriculumVitaeStatus.CURRENT);
+            if(optionalCurriculumVitae.isPresent()) {
+                CurriculumVitae cv = optionalCurriculumVitae.get();
+                String cvPath = binderPath + cv.getCvFileName();
+                log.info("@cvPath : {}", cvPath);
+                File file = new File(cvPath);
+                if(file.exists()) {
+                    merger = createOrJoin(merger, new FileInputStream(file));
+//                    merger.join(new FileInputStream(file));
+                }
+            }
+            //jd
+            log.info("@JD 확인");
+            Iterable<UserJobDescription> currentJdList = getJobDescriptionList(account.getUserId(), JobDescriptionStatus.APPROVED);
+            for(UserJobDescription jd : currentJdList) {
+                log.info("@add current Jd {}", jd.getJdFileName());
+                File f = new File(binderPath + jd.getJdFileName());
+                if(f.exists()) {
+                    merger = createOrJoin(merger, new FileInputStream(f));
+                }
+            }
+            Iterable<UserJobDescription> supersededJdList = getJobDescriptionList(account.getUserId(), JobDescriptionStatus.SUPERSEDED, JobDescriptionStatus.REVOKED);
+            for(UserJobDescription jd : supersededJdList) {
+                log.info("@add superseded Jd : {}", jd.getJdFileName());
+                File f = new File(binderPath + jd.getJdFileName());
+                if(f.exists()) {
+                    merger = createOrJoin(merger, new FileInputStream(f));
+                }
+            }
+            //trainingLog(SOP)
+            log.info("@trainingLog(SOP) 확인");
+            Optional<TrainingRecord> optionalTrainingRecordSOP = getTrainingRecord(account.getUserId(), "sop");
+            if(optionalTrainingRecordSOP.isPresent()) {
+                String sopPath = binderPath + optionalTrainingRecordSOP.get().getSopFileName();
+                log.info("@sopPath : {}", sopPath);
+                File file = new File(sopPath);
+                if(file.exists()) {
+                    ByteArrayOutputStream sop = new ByteArrayOutputStream();
+                    documentConverter.word2pdf(new FileInputStream(file), sop);
+                    merger = createOrJoin(merger, new ByteArrayInputStream(sop.toByteArray()));
+                }
+            }
+            //trainingLog(TM)
+            log.info("@trainingLog(TM) 확인");
+            Optional<TrainingRecord> optionalTrainingRecordTM = getTrainingRecord(account.getUserId(), "tm");
+            if(optionalTrainingRecordTM.isPresent()) {
+                String tmPath = binderPath + optionalTrainingRecordTM.get().getTmFileName();
+                log.info("@tmPath : {}", tmPath);
+                File file = new File(tmPath);
+                if(file.exists()) {
+                    merger = createOrJoin(merger, new FileInputStream(file));
+                }
+            }
+//            //certification
+            Optional<TrainingRecord> optionalTrainingRecordCert = getTrainingRecord(account.getUserId(), "cert");
+            if(optionalTrainingRecordCert.isPresent()) {
+                String certPath = binderPath + optionalTrainingRecordCert.get().getTmCertFileName();
+                log.info("@certPath : {}", certPath);
+                File file = new File(certPath);
+                if(file.exists()) {
+                    merger = createOrJoin(merger, new FileInputStream(file));
+                }
+            }
+
+            FileOutputStream binder = new FileOutputStream(new File(binderPath + binderPdf));
+            merger.save(binder);
+            binder.flush();
+            binder.close();
+            log.info("@@ Binder PDF Merge save....{}{}", binderPath, binderPdf);
+
+            trainingRecordReview.setBinderPdf(binderPdf);
+            trainingRecordReviewRepository.save(trainingRecordReview);
+
+        } catch (Exception error) {
+            log.error("error : {}", error);
+        }
+    }
+
+    private Optional<TrainingRecord> getTrainingRecord(String userId, String record) {
+        BooleanBuilder builder = new BooleanBuilder();
+        QTrainingRecord qTrainingRecord = QTrainingRecord.trainingRecord;
+        builder.and(qTrainingRecord.username.eq(userId));
+        if("sop".equals(record)) {
+            builder.and(qTrainingRecord.sopFileName.isNotEmpty());
+        } else if("tm".equals(record)) {
+            builder.and(qTrainingRecord.tmFileName.isNotEmpty());
+        } else if("cert".equals(record)) {
+            builder.and(qTrainingRecord.tmCertFileName.isNotEmpty());
+        }
+        builder.and(qTrainingRecord.status.eq(TrainingRecordStatus.REVIEWED));
+        Iterable<TrainingRecord> trainingRecords = trainingRecordRepository.findAll(builder);
+        if(ObjectUtils.isEmpty(trainingRecords)) {
+            return Optional.empty();
+        } else {
+            return Optional.of(trainingRecords.iterator().next());
+        }
+    }
+
+    private Iterable<UserJobDescription> getJobDescriptionList(String userId, JobDescriptionStatus ... statuses) {
+        QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qUserJobDescription.status.in(statuses));
+        builder.and(qUserJobDescription.username.eq(userId));
+//        builder.and(qUserJobDescription.reviewed.eq(false));
+
+        return userJobDescriptionRepository.findAll(builder, qUserJobDescription.id.desc());
     }
 
     @PostMapping("/employees/jd")
@@ -259,7 +427,7 @@ public class EmployeeController {
         log.info("사용자에게 JD 배정 알림 메일 전송 : {}", toEmail);
         Mail mail = new Mail();
         mail.setEmail(toEmail);
-        mailService.send(mail, BinderAlarmType.JD_ASSIGNED);
+        mailService.send(mail, account.getName(), BinderAlarmType.JD_ASSIGNED);
         return "redirect:/employees/jd/approved";
     }
 
@@ -331,7 +499,7 @@ public class EmployeeController {
             log.info("사용자에게 JD 승인 알림 메일 전송 : {}", toEmail);
             Mail mail = new Mail();
             mail.setEmail(toEmail);
-            mailService.send(mail, BinderAlarmType.JD_APPROVED);
+            mailService.send(mail, account.getName(), BinderAlarmType.JD_APPROVED);
 
         }
 

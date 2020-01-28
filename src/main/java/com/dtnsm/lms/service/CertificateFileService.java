@@ -10,6 +10,7 @@ import com.dtnsm.lms.properties.FileUploadProperties;
 import com.dtnsm.lms.repository.CertificateFileRepository;
 import com.dtnsm.lms.util.DocumentConverter;
 import com.dtnsm.lms.util.SessionUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class CertificateFileService {
 
     @Autowired
@@ -86,7 +88,11 @@ public class CertificateFileService {
 
             File file = new File(sourceFilePath);
             try {
-                mergerUtility.addSource(file);
+                if(file.exists()) {
+                    mergerUtility.addSource(file);
+                } else {
+                    log.error("Certification 파일이 존재하지 않음. {}", sourceFilePath);
+                }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }

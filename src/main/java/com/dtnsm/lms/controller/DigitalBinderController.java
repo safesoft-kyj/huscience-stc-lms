@@ -9,6 +9,7 @@ import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.BinderAlarmType;
 import com.dtnsm.lms.domain.constant.CurriculumVitaeStatus;
 import com.dtnsm.lms.domain.constant.TrainingRecordReviewStatus;
+import com.dtnsm.lms.properties.FileUploadProperties;
 import com.dtnsm.lms.repository.CurriculumVitaeRepository;
 import com.dtnsm.lms.repository.TrainingRecordReviewJdRepository;
 import com.dtnsm.lms.repository.TrainingRecordReviewRepository;
@@ -21,6 +22,7 @@ import com.dtnsm.lms.util.SessionUtil;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -32,6 +34,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -51,6 +57,7 @@ public class DigitalBinderController {
     private final TrainingRecordReviewJdRepository trainingRecordReviewJdRepository;
     private final MailService mailService;
     private final UserRepository userRepository;
+    private final FileUploadProperties properties;
 
     @PostConstruct
     public void init() {
@@ -85,7 +92,7 @@ public class DigitalBinderController {
         model.addAttribute("engName", account.getEngName());
         model.addAttribute("inDate", StringUtils.isEmpty(account.getIndate()) ? "" : DateUtil.getDateToString(DateUtil.getStringToDate(account.getIndate(), "yyyy-MM-dd"), "dd-MMM-yyyy").toUpperCase());
         model.addAttribute("deptTeam", (StringUtils.isEmpty(account.getOrgDepart()) ? "" : account.getOrgDepart()) +
-                (StringUtils.isEmpty(account.getOrgDepart()) ? "" : (StringUtils.isEmpty(account.getOrgDepart()) ? "" : "/") + account.getOrgTeam()));
+                (!StringUtils.isEmpty(account.getOrgDepart()) && !StringUtils.isEmpty(account.getOrgTeam()) ? "/" : "") + (StringUtils.isEmpty(account.getOrgTeam()) ? "" : account.getOrgTeam()));
 
         model.addAttribute("empNo", account.getComNum());
 
@@ -159,11 +166,26 @@ public class DigitalBinderController {
             log.info("매니저에게 Binder 검토 요청 : {}", toEmail);
             Mail mail = new Mail();
             mail.setEmail(toEmail);
-            mailService.send(mail, BinderAlarmType.BINDER_REVIEW);
+            mailService.send(mail, account.getName(), BinderAlarmType.BINDER_REVIEW);
         } else {
             log.error("매니저 지정이 되어 있지 않습니다.");
         }
         return "redirect:/binder";
+    }
+
+    @GetMapping("/binder/{id}/download")
+    public void download(@PathVariable("id") Integer id, HttpServletResponse response) throws Exception {
+        TrainingRecordReview trainingRecordReview = trainingRecordReviewRepository.findById(id).get();
+        String path = properties.getBinderDir() + trainingRecordReview.getBinderPdf();
+        log.info("@download path : {}", path);
+        Account account = SessionUtil.getUserDetail().getUser();
+
+        response.setContentType("application/octet-stream");
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=DigitalBinder("+account.getUserId()+").pdf");
+        OutputStream os = response.getOutputStream();
+        os.write(new FileInputStream(new File(path)).readAllBytes());
+        os.flush();
+        os.close();
     }
 
     @GetMapping("/binder/cv")

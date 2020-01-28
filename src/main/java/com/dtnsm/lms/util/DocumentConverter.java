@@ -13,6 +13,7 @@ import com.groupdocs.conversion.options.save.PdfSaveOptions;
 import com.groupdocs.conversion.options.save.SaveOptions;
 import com.groupdocs.conversion.options.save.WatermarkOptions;
 import com.groupdocs.conversion.utils.wrapper.stream.GroupDocsOutputStream;
+import com.groupdocs.merger.Merger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -42,6 +43,9 @@ public class DocumentConverter {
             com.groupdocs.assembly.License assemblyLicense = new com.groupdocs.assembly.License();
             assemblyLicense.setLicense(licensePath);
             log.info("@Apply Assembly License.");
+            com.groupdocs.merger.licensing.License mergerLicense = new com.groupdocs.merger.licensing.License();
+            mergerLicense.setLicense(licensePath);
+            log.info("@Apply Merger License.");
 
             wordsLoadOptions = new WordsLoadOptions();
             wordsLoadOptions.setHideComments(true);

@@ -16,7 +16,6 @@ spring:
     servlet:
       content-type: text/html
   datasource:
-#    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=test_lms
     url: jdbc:sqlserver://220.117.192.209:20170;DatabaseName=test_lms
     username: sa
     password: safe123!@#
@@ -98,8 +97,9 @@ file:
   binder-jd-upload-dir: D://elearning//upload//binder//jd//
   xdoc-upload-dir: D://elearning//upload//xdoc//
   certificate-upload-dir: D://elearning//upload//certificate//
-  cv-upload-dir: D://elearning//CV//
+#  cv-upload-dir: D://elearning//CV//
   training-log-upload-dir: D://elearning//trainingLog//
+  binder-dir: D://elearning//binder//
 
 
 image-file:

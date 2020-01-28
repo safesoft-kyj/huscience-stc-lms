@@ -32,7 +32,7 @@ spring:
     hibernate:
       ddl-auto: update
     generate-ddl: false
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
@@ -84,6 +84,7 @@ file:
   xdoc-upload-dir: C://UploadFiles//lms//upload//xdoc//
   certificate-upload-dir: C://UploadFiles/lms//upload//certificate//
   training-log-upload-dir: C:\UploadFiles\trainingLog
+  binder-dir: C://UploadFiles//binder//
 
 
 image-file:
