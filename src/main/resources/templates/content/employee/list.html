@@ -75,7 +75,7 @@
                                         </thead>
                                         <tbody>
                                         <tr th:if="${trainingRecord.size() == 0}">
-                                            <td class="text-center" th:attr="colspan=${status.name() == 'REJECTED' ? 7 : 6}">검토 요청이 없습니다.</td>
+                                            <td class="text-center" th:attr="colspan=${status.name() == 'REJECTED' ? 7 : 6}">데이터가 존재하지 않습니다.</td>
                                         </tr>
                                         <tr th:each="tr, index : ${trainingRecord}">
                                             <td th:text="${index.count}" class="text-center"></td>
