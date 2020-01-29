@@ -47,6 +47,9 @@
                     <li th:classappend="${status.name() == 'REVIEWED' ? 'active' : ''}">
                         <a href="/employees/review?status=REVIEWED">완료</a>
                     </li>
+                    <li th:classappend="${status.name() == 'REJECTED' ? 'active' : ''}">
+                        <a href="/employees/review?status=REJECTED">반려</a>
+                    </li>
                 </ul>
                 <div class="tab-content">
             <!-- Basic Data Tables -->
@@ -64,25 +67,27 @@
                                             <th class="text-center">No.</th>
                                             <th class="text-center">Name</th>
                                             <th th:if="${status.name() == 'REQUEST'}" class="text-center">Date of Request</th>
-                                            <th th:if="${status.name() == 'REVIEWED'}" class="text-center">Date of Review</th>
+                                            <th th:if="${status.name() != 'REQUEST'}" class="text-center">Date of Review</th>
+                                            <th th:if="${status.name() == 'REJECTED'}" class="text-center">Reason</th>
                                             <th class="text-center">Review Details</th>
                                             <th class="text-center">#Actions</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <tr th:if="${trainingRecord.size() == 0}">
-                                            <td class="text-center" colspan="6">검토 요청이 없습니다.</td>
+                                            <td class="text-center" th:attr="colspan=${status.name() == 'REJECTED' ? 7 : 6}">데이터가 존재하지 않습니다.</td>
                                         </tr>
                                         <tr th:each="tr, index : ${trainingRecord}">
                                             <td th:text="${index.count}" class="text-center"></td>
                                             <td th:text="${tr.account.engName}" class="text-center"></td>
                                             <td th:if="${status.name() == 'REQUEST'}" th:text="${#dates.format(tr.requestDate, 'dd-MMM-yyyy')}" class="text-center"></td>
-                                            <td th:if="${status.name() == 'REVIEWED'}" th:text="${#dates.format(tr.dateOfReview, 'dd-MMM-yyyy')}" class="text-center"></td>
+                                            <td th:if="${status.name() != 'REQUEST'}" th:text="${#dates.format(tr.dateOfReview, 'dd-MMM-yyyy')}" class="text-center"></td>
+                                            <td th:if="${status.name() == 'REJECTED'}" th:text="${tr.reason}" class="text-center"></td>
                                             <td class="text-center">
                                                 <span th:if="${tr.curriculumVitae != null}"><i class="fa fa-check-square-o"></i> CV</span>
                                                 <span th:if="${tr.trainingRecordReviewJdList != null && tr.trainingRecordReviewJdList.size() > 0}"><i class="fa fa-check-square-o"></i> JD</span>
-                                                <span th:if="${tr.trainingRecord != null && tr.trainingRecord.sopFileName != null}"><i class="fa fa-check-square-o"></i> Training Lop(SOP)</span>
-                                                <span th:if="${tr.trainingRecord != null && tr.trainingRecord.tmFileName != null}"><i class="fa fa-check-square-o"></i> Training Lop(TM)</span>
+                                                <span th:if="${tr.trainingRecord != null && tr.trainingRecord.sopFileName != null}"><i class="fa fa-check-square-o"></i> Training Log(SOP)</span>
+                                                <span th:if="${tr.trainingRecord != null && tr.trainingRecord.tmFileName != null}"><i class="fa fa-check-square-o"></i> Training Log(TM)</span>
                                             </td>
                                             <td class="text-center">
                                                 <a class="btn btn-sm btn-info" th:if="${tr.status.name() == 'REQUEST'}" th:href="@{/employees/review/{id}(id=${tr.id})}"><i class="fa fa-eye"></i> Review</a>

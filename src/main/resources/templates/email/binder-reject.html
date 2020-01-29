@@ -1,10 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Billing e.g. invoices and receipts</title>
-    <link href="http://esop.dtnsm.com/static/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="http://lms.dtnsm.com/default/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
 </head>
 
 <body itemscope itemtype="http://schema.org/EmailMessage">
@@ -27,22 +27,10 @@
                                     <td class="content-block aligncenter">
                                         <table class="invoice">
                                             <tr>
-                                                <td><strong>홍길동</strong>님의 Digital Binder에 대한 팀장/부서장의 검토/승인 기한(7,3,1)일 전입니다.<br/>
-                                                <br/>
-                                                빠른 시일 내 Digital Binder를 등록해 주시기 바라며, 입사일 기준 8주 이내로 팀장/부서장의 검토/승인을 받으십시오.</td>
+                                                <td><strong>홍길동</strong>님의 Digital Binder에 대한 팀장/부서장의 검토가 반려 되었습니다.</td>
                                             </tr>
                                             <tr>
-                                                <td style="font-size:12px !important;">
-                                                    <br/>
-                                                    -------------Digital Binder 등록 안내-------------<br/><br/>
-
-                                                    1.	CV: LMS > 마이페이지 > Curriculum Vitae 작성 후 ‘Publish’<br/>
-                                                    2.	JD: LMS > 마이페이지 > Job Description 확인 (JD 최종 승인: 팀장/부서장)<br/>
-                                                    3.	Employee Training Log (SOP): eSOP > My Training (필수교육 완료 후 Employee Training Log (SOP) ‘배포’<br/>
-                                                    4.	Employee Training Log (TM): LMS > 교육현황 (필수교육 신청 및 완료 후 Employee Training Log (TM) ‘배포’<br/>
-                                                    5.	Certification: LMS > 마이페이지 > 수료증 업로드(보유하고 있는 수료증 있을 경우) 후 Employee Training Log (TM) ‘배포’
-
-                                                </td>
+                                                <td>반려 사유 : <span th:text="${reason}"></span></td>
                                             </tr>
                                         </table>
                                     </td>

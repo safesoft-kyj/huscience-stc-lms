@@ -1,10 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Billing e.g. invoices and receipts</title>
-    <link href="http://esop.dtnsm.com/static/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="http://lms.dtnsm.com/default/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
 </head>
 
 <body itemscope itemtype="http://schema.org/EmailMessage">
@@ -29,7 +29,7 @@
                                             <tr>
                                                 <td>Digital Binder는 최소 1년에 한 번 정기적으로 팀장/부서장의 검토를 받아야 하며,<br/>
                                                     <br/>
-                                                    {홍길동}님의 Digital Binder 정기 검토 기한이 {3주,2주,1주,3일,1일} 전입니다.<br/><br/>
+                                                    <span th:text="${empName}">{홍길동}</span>님의 Digital Binder 정기 검토 기한이 <span th:text="${remainDay}">{3주,2주,1주,3일,1일}</span> 전입니다.<br/><br/>
                                                 빠른 시일 내 Digital Binder를 최신 정보로 업데이트 해주시기 바라며, 팀장/부서장의 검토/승인을 받으십시오.</td>
                                             </tr>
                                         </table>

@@ -78,9 +78,24 @@
                         </div><!--panel-body End -->
                     </div><!-- panel End -->
                 </div>
-                <div class="panel-footer text-right">
+                <div class="panel-footer">
                     <form name="f" id="reviewForm" method="post">
-                        <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Complete </button>
+                        <input type="hidden" name="status" id="status"/>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label class="control-label">Reason</label>
+                                    <input type="text" placeholder="반려 사유를 입력해 주세요." class="form-control" name="reason" id="reason"/>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 text-right">
+                                <button type="button" id="rejectBtn" class="btn btn-danger"><i class="fa fa-rotate-left"></i> Reject </button>
+                                <button type="button" id="completeBtn" class="btn btn-primary"><i class="fa fa-check"></i> Complete </button>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -90,10 +105,28 @@
 
 <th:block layout:fragment="custom_js">
     <script>
-        $("#reviewForm").submit(function(e) {
-           if(!confirm('검토 완료 처리 하시겠습니까?')) {
-               e.preventDefault();
-               return false;
+        $("#completeBtn").click(function(e) {
+            // $("#reason").val("").hide();
+
+
+           if(confirm('검토 완료 처리 하시겠습니까?')) {
+               $("#status").val("REVIEWED");
+               $("#reviewForm").submit();
+           }
+        });
+        $("#rejectBtn").click(function(e) {
+            // if(!$("#reason").is(":visible")) {
+            //     $("#reason").val("").show();
+            // }
+
+            if(!$("#reason").val()) {
+                alert('반려 사유를 입력해 주세요.');
+                $("#reason").focus();
+                // e.preventDefault();
+                // return false;
+            } else if(confirm('반려 처리 하시겠습니까?')) {
+               $("#status").val("REJECTED");
+               $("#reviewForm").submit();
            }
         });
     </script>

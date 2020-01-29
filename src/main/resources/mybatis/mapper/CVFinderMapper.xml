@@ -35,14 +35,18 @@
     </select>
 
     <select id="findUpdateBinderUsers" parameterType="int" resultType="string">
-        select username from(
-            SELECT
+      select username, diff from(
+          SELECT
                 username,
-                datediff(day, max(convert(date, case when date_of_review is null then request_date else date_of_review end)), convert(date, getdate())) diff
+                datediff(day,
+				dateadd(year, 1, max(convert(date, case when date_of_review is null then request_date else date_of_review end))),
+				convert(date, getdate())) diff
             FROM el_training_record_review
             group by username
-        ) a
-        where diff = #{day}
+        ) a left join account b
+		on a.username = b.user_id
+        where a.diff = ${days}
+		and b.enabled = 1
     </select>
 <!--    <select id="findCV" parameterType="com.dtnsm.lms.mybatis.dto.CVFindParam" resultType="com.dtnsm.lms.mybatis.dto.CVFindResult">-->
 <!--        select-->

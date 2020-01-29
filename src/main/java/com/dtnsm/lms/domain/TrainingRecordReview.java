@@ -60,6 +60,9 @@ public class TrainingRecordReview extends AuditorEntity<String> implements Seria
 //
     @Column(name = "reviewer_name")
     private String reviewerName;
+
+    @Column(name = "reason", columnDefinition = "varchar(500)")
+    private String reason;
 //
     @Column(name = "signature", columnDefinition = "varchar(max)")
     private String signature;
