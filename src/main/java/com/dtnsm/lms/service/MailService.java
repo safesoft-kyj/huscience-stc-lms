@@ -126,7 +126,7 @@ public class MailService {
     public void send(String to, String subject, BinderAlarmType binderAlarmType, Context context) {
         String body = templateEngine.process(binderAlarmType.getTemplate(), context);
 
-        to = "jhseo@dtnsm.com";
+//        to = "jhseo@dtnsm.com";
         log.info("==> 이메일 전송 요청 : {}, Subject : {}", to, subject);
         sendPreparedMail(to, subject, body, true);
     }
