@@ -104,15 +104,15 @@ public class RegistrationController {
         StringBuilder sb = new StringBuilder();
         sb.append("ID:" + account1.getUserId() + "<br>");
         sb.append("PW:" + originPassword + "<br>");
-        sb.append("사용자 등록이 완료되었습니다.<br>");
-        sb.append("로그인후 패스워드를 변경하세요.<br>");
-        sb.append("<a href='http://lms.dtnsm.com'>LMS</a><br>");
+        sb.append("사용자 등록이 완료되었습니다.");
+//        sb.append("로그인후 패스워드를 변경하세요.<br>");
+//        sb.append("<a href='http://lms.dtnsm.com'>LMS</a><br>");
 
         mail.setEmail(account1.getEmail());
         mail.setMessage(sb.toString());
-        mail.setObject(account1.getName() + "님 사용자 등록 완료!!!");
+        mail.setObject("[LMS/사용자] " + account1.getName() + "님 사용자 등록 완료");
 
-        mailService.send(mail);
+        mailService.sendAccount(mail);
 
         return "redirect:/admin/registration/account";
     }

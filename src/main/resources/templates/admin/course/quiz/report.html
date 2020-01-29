@@ -132,7 +132,7 @@
                                                 <div>
                                                     <th:block th:each="quizAction, index : ${courseAccount.getCourseQuizActions()}">
                                                         <th:block th:each="quizAnswer, index : ${quizAction.getActionAnswers()}">
-                                                            <th:block th:if="${#strings.equalsIgnoreCase(quiz.getQuestionId(), quizAnswer.getQuestion().getId())}">
+                                                            <th:block th:if="${#strings.equalsIgnoreCase(quiz.getQuestionId(), quizAnswer.getQuestionId())}">
                                                                 <span th:text="${quizAnswer.getAnswerCount() == 0 ? 1: 0}" style="width:20px"></span>&nbsp;&nbsp;
                                                             </th:block>
                                                         </th:block>

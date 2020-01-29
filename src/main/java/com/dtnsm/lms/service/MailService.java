@@ -33,6 +33,7 @@ public class MailService {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    // 교육과정 공통 메일
     public void send(MessageSource messageSource) {
         String templateUri = "email/email-common";
         final Context context = new Context();
@@ -48,6 +49,35 @@ public class MailService {
         send(mail, Request);
     }
 
+    // 사용자 생성시 발송 메일
+    public void sendAccount(Mail mail) {
+        //get and fill the template
+        final Context context = new Context();
+        context.setVariable("subject", mail.getObject());
+        context.setVariable("message", mail.getMessage());
+        String templateUri = "email/email-account";
+
+        String body = templateEngine.process(templateUri, context);
+
+        //send the html template
+        sendPreparedMail(mail.getEmail(), mail.getObject(), body, true);
+    }
+
+    // 게시판 데이터 추가시 발송 메일(게시판 기준정보에서 메일 발송 Y를 선택한 경우)
+    public void sendBorder(Mail mail) {
+        //get and fill the template
+        final Context context = new Context();
+        context.setVariable("subject", mail.getObject());
+        context.setVariable("message", mail.getMessage());
+        String templateUri = "email/email-border";
+
+        String body = templateEngine.process(templateUri, context);
+
+        //send the html template
+        sendPreparedMail(mail.getEmail(), mail.getObject(), body, true);
+    }
+
+    // 교육과정 email
     public void send(Mail mail, LmsAlarmCourseType lmsAlarmCourseType) {
         //get and fill the template
         final Context context = new Context();

@@ -202,9 +202,11 @@ public class CourseSurveyAdminController {
 
         CourseSurvey courseSurvey = courseSurveyService.getCourseSurveyById(surveyId);
 
-        boolean isSelf = false;
+        boolean isSelf = true;
         if (courseSurvey.getCourse().getCourseMaster().getId().equals("BC0101")) {
-            isSelf = true;
+            if (courseSurvey.getQuestions().size() > 1) {
+                isSelf = false;
+            }
         }
 
         List<ReportForm1> borders = reportMapperService.getSurveyReport(courseId);

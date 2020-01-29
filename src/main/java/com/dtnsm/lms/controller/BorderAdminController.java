@@ -5,12 +5,7 @@ import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.CurriculumVitaeStatus;
 import com.dtnsm.lms.repository.BorderRepository;
 import com.dtnsm.lms.repository.BorderViewAccountRepository;
-import com.dtnsm.lms.service.BorderFileService;
-import com.dtnsm.lms.service.BorderMasterService;
-import com.dtnsm.lms.service.BorderService;
-import com.dtnsm.lms.service.FileService;
-import com.dtnsm.lms.service.Mail;
-import com.dtnsm.lms.service.MailService;
+import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
@@ -69,6 +64,9 @@ public class BorderAdminController {
 
     @Autowired
     private BorderViewAccountRepository borderViewAccountRepository;
+
+    @Autowired
+    CourseManagerService courseManagerService;
 
     @Autowired
     private FileService fileService;
@@ -209,11 +207,11 @@ public class BorderAdminController {
         if(border1.getBorderMaster().getIsMail().equals("Y")) {
             // 메일보내기
             Mail mail = new Mail();
-            mail.setEmail("ks.hwang@safesoft.co.kr");
+            mail.setEmail(courseManagerService.getCourseManager().getAccount().getEmail());
             mail.setMessage(border1.getContent());
-            mail.setObject(border1.getTitle());
+            mail.setObject(String.format("[LMS/%s/%s] %s", border1.getBorderMaster().getBorderName(), border1.getAccount().getName(), border1.getTitle()));
 
-            mailService.send(mail);
+            mailService.sendBorder(mail);
         }
 
         return "redirect:/admin/border/" + border1.getBorderMaster().getId();

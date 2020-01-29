@@ -29,7 +29,7 @@
     <style>
 
         #wrap {
-            padding-top: 240px;
+            /*padding-top: 300px;*/
         }
 
         .navbar-fixed-top {
@@ -69,15 +69,17 @@
                         <table class="table table-striped table-bordered" cellspacing="0" width="100%">
                             <tbody>
                             <tr>
+                                <th class="text-center bg-dark">문</th>
                                 <th:block th:each="question, index : ${quizAction.getQuiz().getQuizQuestions()}">
                                     <th class="text-center bg-dark">
-                                        <a th:href="${'#' + question.getId()}" th:text="${index.count + '번'}"></a>
+                                        <a th:href="${'#' + question.getId()}" th:text="${index.count}"></a>
                                     </th>
                                 </th:block>
                             <tr>
+                                <th class="text-center text-light">답</th>
                                 <th:block th:each="question, index : ${quizAction.getQuiz().getQuizQuestions()}">
                                     <td class="text-center text-light">
-                                        <span th:id="${'question-' + question.getId()}" th:text="${'미입력'}"></span>
+                                        <span th:id="${'question-' + question.getId()}" th:text="${'&nbsp;'}"></span>
                                     </td>
                                 </th:block>
                             </tr>
@@ -111,6 +113,7 @@
 
     <!-- Begin page content -->
     <div class="container">
+        <div style="height:280px">&nbsp;</div>
         <div class="panel">
             <div class="panel-body">
                 <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/mypage/classroom/quizview-post/{quizActionId}(quizActionId=${quizAction.getId()})}" method="post" >

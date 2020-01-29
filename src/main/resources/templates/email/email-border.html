@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>게시물 등록</title>
+</head>
+<body>
+    <h3>게시물이 정상적으로 등록 되었습니다.</h3>
+    <table width="100%" cellpadding="10" cellspacing="5" border="1" align="center" style="border-collapse:collapse; border:1px gray solid;">
+        <tbody>
+        <tr>
+            <th style="padding: 5px; border:1px gray solid; text-align: center; background: #FAFAFA">제목</th>
+            <td style="padding: 5px; border:1px gray solid; text-align: center">
+                <p th:text="${subject}"></p>
+            </td>
+        </tr>
+        <tr>
+            <th style="padding: 5px; border:1px gray solid; text-align: center; background: #FAFAFA">내용</th>
+            <td style="padding: 5px; border:1px gray solid; text-align: center">
+                <p th:utext="|${message}|"></p>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <br>
+    <div class="footer">
+        <p style="padding: 5px 0px;">*이 메일주소는 <b>발신전용</b> 주소입니다. 회신이 불가능합니다.</p>
+        <p style="padding: 5px 0px;"><a href="http://lms.dtnsm.com">Learning Management System</a></p>
+        <p style="padding: 5px 0px;"><img src="http://lms.dtnsm.com/default/img/logo.jpg" style="width:135px; height:27px" /></p>
+    </div>
+</body>
+</html>

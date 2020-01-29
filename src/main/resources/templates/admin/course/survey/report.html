@@ -60,37 +60,34 @@
                         <div th:case="*">
 <!--                            <div class="table-responsive">-->
 <!--                                <hr class="table-head">-->
-                                <table id="demo-dt-basic1" class="table" cellspacing="0" width="100%" style="margin-top:0">
+                                <table id="demo-dt-basic1" class="table" cellspacing="0" width="50%" style="margin-top:0">
+                                    <thead>
                                     <tr>
-                                        <td class="text-left" colspan="7">
-                                            <h3 class="title text-info"><span th:text="${courseTitle}"></span></h3>
+                                        <td class="text-center" th:colspan="${isSelf} ? 4 : 7">
+                                            <h3 class="title text-info" th:text="${courseTitle}"></h3>
                                         </td>
                                     </tr>
-                                    <th:block th:each="border, index : ${borders}">
+                                    </thead>
+                                    <tbody>
 
+                                    <th:block th:each="border, index : ${borders}">
                                         <tr>
-                                            <td class="text-left" colspan="7">
+                                            <td class="text-left" th:colspan="${isSelf} ? 4 : 7">
                                                 <div th:text="${border.getId()}" th:id="${'question-' + index.index}" style="color:white"></div>
                                                 <h4 th:utext="${'Q' + index.count + '. ' + #strings.replace(border.getTitle(), '{0}', '<span class=''text-info''>' + courseTitle + '</span>')}"></h4>
                                             </td>
                                         </tr>
-<!--                                        <th:block th:if="${border.getEx3()}">-->
                                         <tr>
-                                            <td class="text-center" colspan="7">
-                                                <!-- Bar Chart -->
-                                                <!---------------------------------->
+                                            <td class="text-center" th:colspan="${isSelf} ? 4 : 7">
                                                 <div class="panel">
-<!--                                                    <div class="panel-heading">-->
-<!--                                                        <h3 class="panel-title">Bar Chart</h3>-->
-<!--                                                    </div>-->
                                                     <div class="panel-body">
-                                                        <div th:id="${'demo-morris-bar' + index.index}" style="height: 250px"></div>
+                                                        <div th:id="${'demo-morris-bar' + index.index}" style="height: 250px; width: 100%"></div>
                                                     </div>
                                                 </div>
                                                 <!---------------------------------->
                                             </td>
                                         </tr>
-<!--                                        </th:block>-->
+
                                         <tr style="background: #FAFAFA;">
                                             <th class="text-center col-sm-1">구분</th>
                                             <th:block th:unless="${isSelf}">
@@ -139,19 +136,20 @@
                                     </th:block>
                                     <th:block th:each="shoutQuestion, index : ${shoutQuestions}">
                                         <tr>
-                                            <td class="text-left" colspan="7">
+                                            <td class="text-left" th:colspan="${isSelf} ? 4 : 7">
                                                 <div th:text="${shoutQuestion.getId()}" th:id="${'question-' + index.index}" style="color:white"></div>
                                                 <h4 th:text="${shoutQuestion.getQuestion()}"></h4>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="text-left" colspan="7">
+                                            <td class="text-left" th:colspan="${isSelf} ? 4 : 7">
                                                 <ul th:each="answer, index : ${shoutQuestionsAnswer}">
                                                     <li th:if="${ shoutQuestion.getId() == answer.getQuestionId()}" th:text="${answer.getUserAnswer()}"></li>
                                                 </ul>
                                             </td>
                                         </tr>
                                     </th:block>
+                                    </tbody>
 
                                 </table>
 <!--                            </div>-->
@@ -332,26 +330,46 @@
 
             html2canvas(document.getElementById("demo-dt-basic1")).then(function(canvas) {
 
+
+
                 var name = '설문통계';
                 var imgData = canvas.toDataURL('image/png');
                 var imgWidth = 210;
-                var pageHeight = 295;
+                var pageHeight = imgWidth * 1.414;
                 var imgHeight = canvas.height * imgWidth / canvas.width;
                 var heightLeft = imgHeight;
                 var doc = new jsPDF('p', 'mm');
+                var position = 0;
 
-                var x = 3;
-                var y = 10;
-
-                doc.addImage(imgData, 'PNG', x, y, imgWidth-6, imgHeight-5);   // addImage(imageData, format, x, y, width, height, alias, compression, rotation)
+                // 첫 페이지 출력
+                doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
                 heightLeft -= pageHeight;
 
-                while (heightLeft >= 0) {
-                    y = heightLeft - imgHeight;
+                // 한 페이지 이상일 경우 루프 돌면서 출력
+                while (heightLeft >= 20) {
+                    position = heightLeft - imgHeight;
                     doc.addPage();
-                    doc.addImage(imgData, 'PNG', x, y, imgWidth-6, imgHeight-5);   // addImage(imageData, format, x, y, width, height, alias, compression, rotation)
+                    doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
                     heightLeft -= pageHeight;
                 }
+
+
+
+
+                // var x = 3;
+                // var y = 10;
+                //
+                // doc.addImage(imgData, 'PNG', x, y, imgWidth-6, imgHeight-5);   // addImage(imageData, format, x, y, width, height, alias, compression, rotation)
+                // // doc.addImage(imgData, 'PNG', 10, 10, 210, 95);
+                // heightLeft -= pageHeight;
+                //
+                // while (heightLeft >= 0) {
+                //     y = heightLeft - imgHeight;
+                //     doc.addPage();
+                //     doc.addImage(imgData, 'PNG', x, y, imgWidth-6, imgHeight-5);   // addImage(imageData, format, x, y, width, height, alias, compression, rotation)
+                //     // doc.addImage(imgData, 'PNG', 10, 10, 210, 95);
+                //     heightLeft -= pageHeight;
+                // }
 
                 doc.save(name + '.pdf');
 
