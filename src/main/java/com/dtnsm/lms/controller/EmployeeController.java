@@ -216,12 +216,15 @@ public class EmployeeController {
 
     @PostMapping("/employees/review/{id}")
     @Transactional
-    public String updateTrainingRecordReview(@PathVariable("id") Integer id) {
+    public String updateTrainingRecordReview(@PathVariable("id") Integer id,
+                                             @RequestParam("status") TrainingRecordReviewStatus status,
+                                             @RequestParam(value = "reason", required = false) String reason) {
         Optional<Signature> optionalSignature = signatureRepository.findById(SessionUtil.getUserId());
         TrainingRecordReview trainingRecordReview = trainingRecordReviewRepository.findById(id).get();
-        trainingRecordReview.setStatus(TrainingRecordReviewStatus.REVIEWED);
+        trainingRecordReview.setStatus(status);
         trainingRecordReview.setDateOfReview(new Date());
         trainingRecordReview.setReviewerName(SessionUtil.getUserDetail().getUsername());
+        trainingRecordReview.setReason(reason);
         trainingRecordReview.setSignature(optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : null);
 
         TrainingRecordReview savedTrainingRecordReview = trainingRecordReviewRepository.save(trainingRecordReview);
@@ -256,17 +259,23 @@ public class EmployeeController {
 
         //TODO Review 완료
 
-        log.info("사용자에게 Binder 검토 완료 메일 전송 : {}", user.getEmail());
+        log.info("사용자에게 Binder 검토 : {}, 메일 전송 : {}", status.name(), user.getEmail());
 //        Mail mail = new Mail();
 //        mail.setEmail(user.getEmail());
         Context context = new Context();
         context.setVariable("empName", user.getName());
-        mailService.send(user.getEmail(), String.format(BinderAlarmType.BINDER_REVIEWED.getTemplate(), user.getName()), BinderAlarmType.BINDER_REVIEWED, context);
+        if(status == TrainingRecordReviewStatus.REVIEWED) {
+            mailService.send(user.getEmail(), String.format(BinderAlarmType.BINDER_REVIEWED.getTitle(), user.getName()), BinderAlarmType.BINDER_REVIEWED, context);
 
-        new Thread(() -> {
-            log.info("@@@ Digital Binder 생성 시작.");
-            createBinderPDF(user, savedTrainingRecordReview);
-        }).start();
+            new Thread(() -> {
+                log.info("@@@ Digital Binder 생성 시작.");
+                createBinderPDF(user, savedTrainingRecordReview);
+            }).start();
+        } else {
+            context.setVariable("reason", reason);
+            mailService.send(user.getEmail(), String.format(BinderAlarmType.BINDER_REJECT.getTitle(), user.getName()), BinderAlarmType.BINDER_REJECT, context);
+        }
+
         return "redirect:/employees/review";
     }
 
@@ -417,20 +426,30 @@ public class EmployeeController {
     }
 
     @PostMapping("/employees/jd")
-    public String assignEmployeeJD(UserJobDescription userJobDescription) {
-        Account account = userRepository.findByUserId(userJobDescription.getUsername());
-        userJobDescription.setEmployeeName(account.getEngName());
-        userJobDescription.setStatus(JobDescriptionStatus.ASSIGNED);
-        userJobDescriptionRepository.save(userJobDescription);
+    public String assignEmployeeJD(UserJobDescription userJobDescription, RedirectAttributes attributes) {
+        QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qUserJobDescription.username.eq(userJobDescription.getUsername()));
+        builder.and(qUserJobDescription.jobDescriptionVersion.id.eq(userJobDescription.getJobDescriptionVersion().getId()));
 
-        //TODO 알림 전송(JD 배정 알림)
-        String toEmail = account.getEmail();
-        log.info("사용자에게 JD 배정 알림 메일 전송 : {}", toEmail);
-        Context context = new Context();
-        String jobTitle = jobDescriptionVersionRepository.findById(userJobDescription.getJobDescriptionVersion().getId()).get().getJobDescription().getTitle();
-        context.setVariable("jobTitle", jobTitle);
-        mailService.send(toEmail, String.format(BinderAlarmType.JD_ASSIGNED.getTitle(), jobTitle, account.getName()), BinderAlarmType.JD_ASSIGNED, context);
-        return "redirect:/employees/jd/approved";
+        if(!userJobDescriptionRepository.findOne(builder).isPresent()) {
+            Account account = userRepository.findByUserId(userJobDescription.getUsername());
+            userJobDescription.setEmployeeName(account.getEngName());
+            userJobDescription.setStatus(JobDescriptionStatus.ASSIGNED);
+            userJobDescriptionRepository.save(userJobDescription);
+
+            //TODO 알림 전송(JD 배정 알림)
+            String toEmail = account.getEmail();
+            log.info("사용자에게 JD 배정 알림 메일 전송 : {}", toEmail);
+            Context context = new Context();
+            String jobTitle = jobDescriptionVersionRepository.findById(userJobDescription.getJobDescriptionVersion().getId()).get().getJobDescription().getTitle();
+            context.setVariable("jobTitle", jobTitle);
+            mailService.send(toEmail, String.format(BinderAlarmType.JD_ASSIGNED.getTitle(), jobTitle, account.getName()), BinderAlarmType.JD_ASSIGNED, context);
+            return "redirect:/employees/jd/approved";
+        } else {
+            attributes.addFlashAttribute("message", "이미 배정된 이력이 존재 합니다.");
+            return "redirect:/employees/jd/approved";
+        }
     }
 
     private String getManagerJobTitle(String userId) {

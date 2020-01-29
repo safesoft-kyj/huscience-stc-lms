@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Billing e.g. invoices and receipts</title>
-    <link href="http://esop.dtnsm.com/static/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="http://lms.dtnsm.com/default/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
 </head>
 
 <body itemscope itemtype="http://schema.org/EmailMessage">
@@ -27,7 +27,7 @@
                                     <td class="content-block aligncenter">
                                         <table class="invoice">
                                             <tr>
-                                                <td><strong>홍길동</strong>님의 Digital Binder에 대한 팀장/부서장의 승인이 완료 되었습니다.</td>
+                                                <td><strong th:text="${empName}">홍길동</strong>님의 Digital Binder에 대한 팀장/부서장의 승인이 완료 되었습니다.</td>
                                             </tr>
                                         </table>
                                     </td>

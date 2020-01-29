@@ -3,6 +3,7 @@ package com.dtnsm.lms.service;
 import com.dtnsm.lms.domain.constant.BinderAlarmType;
 import com.dtnsm.lms.domain.constant.LmsAlarmCourseType;
 import com.dtnsm.lms.domain.datasource.MessageSource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import javax.mail.internet.MimeMessage;
 import static com.dtnsm.lms.domain.constant.LmsAlarmCourseType.Request;
 
 @Component
+@Slf4j
 public class MailService {
 
 //    private static final Logger LOGGER = LoggerFactory.getLogger(MailService.class);
@@ -123,6 +125,9 @@ public class MailService {
      */
     public void send(String to, String subject, BinderAlarmType binderAlarmType, Context context) {
         String body = templateEngine.process(binderAlarmType.getTemplate(), context);
+
+        to = "jhseo@dtnsm.com";
+        log.info("==> 이메일 전송 요청 : {}, Subject : {}", to, subject);
         sendPreparedMail(to, subject, body, true);
     }
 
