@@ -61,9 +61,10 @@
             from account
             where enabled = 1
             and dateadd(week, 8, convert(date, indate)) > getdate()
+            and convert(date, indate) >= convert(date, '2020-03-01')
             and user_type = 'U'
             and user_id not in(select distinct username from el_training_record_review)
-            ) a where remain_day in(7, 3, 1)
+            ) a where remainDay in(7, 3, 1)
     </select>
 <!--    <select id="findCV" parameterType="com.dtnsm.lms.mybatis.dto.CVFindParam" resultType="com.dtnsm.lms.mybatis.dto.CVFindResult">-->
 <!--        select-->

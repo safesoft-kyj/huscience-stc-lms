@@ -4,7 +4,6 @@ import com.dtnsm.lms.domain.Account;
 import com.dtnsm.lms.domain.constant.BinderAlarmType;
 import com.dtnsm.lms.mybatis.mapper.CVFinderMapper;
 import com.dtnsm.lms.repository.UserRepository;
-import com.dtnsm.lms.service.Mail;
 import com.dtnsm.lms.service.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +21,6 @@ public class BinderScheduler {
     private final CVFinderMapper cvFinderMapper;
     private final UserRepository userRepository;
     private final MailService mailService;
-//    private int[] days = {-21, -14, -7, -3, -1};
-//    private String[] strDays = {"3주", "2주", "1주", "3일", "1일"};
     // 매일 오전 0시 10분에 실행
     @Scheduled(cron = "0 10 0 * * *")
     public void binderCheck() {
@@ -83,8 +80,7 @@ public class BinderScheduler {
                 Context context = new Context();
                 context.setVariable("empName", user.getName());
                 context.setVariable("remainDay", user.getRemainDay());
-                //TODO 상용 오픈시 발송;
-                //mailService.send(user.getEmail(), String.format(BinderAlarmType.BINDER_REG.getTitle(), user.getName()), BinderAlarmType.BINDER_REG, context);
+                mailService.send(user.getEmail(), String.format(BinderAlarmType.BINDER_REG.getTitle(), user.getName()), BinderAlarmType.BINDER_REG, context);
             }
         }
     }
