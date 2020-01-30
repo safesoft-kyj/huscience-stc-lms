@@ -34,19 +34,36 @@
         ) aa group by id
     </select>
 
-    <select id="findUpdateBinderUsers" parameterType="int" resultType="string">
-      select username, diff from(
-          SELECT
-                username,
-                datediff(day,
-				dateadd(year, 1, max(convert(date, case when date_of_review is null then request_date else date_of_review end))),
-				convert(date, getdate())) diff
-            FROM el_training_record_review
-            group by username
-        ) a left join account b
-		on a.username = b.user_id
-        where a.diff = ${days}
-		and b.enabled = 1
+    <select id="findUpdateBinderUsers" resultType="com.dtnsm.lms.domain.Account">
+      select u.email, u.name, a.remainday from(
+        select
+            username as userid,
+            datediff(day, convert(date, getdate()), dateadd(year, 1, max(convert(date, case when date_of_review is null then request_date else date_of_review end)))) remainday
+        FROM el_training_record_review
+        where status in('REQUEST', 'REVIEWED')
+        group by username
+        ) a left join account u
+        on a.userid = u.user_id
+        where remainday in(21, 14, 7, 3, 1)
+        and u.enabled = 1
+        and u.user_type = 'U'
+    </select>
+
+    <select id="findBinderRegistUsers" resultType="com.dtnsm.lms.domain.Account">
+        select * from (
+            select
+            email,
+            indate,
+            dateadd(week, 8, convert(date, indate)) week8,
+            user_id as userId,
+            name,
+            datediff(day, convert(date, getdate()), dateadd(week, 8, convert(date, indate))) remainDay
+            from account
+            where enabled = 1
+            and dateadd(week, 8, convert(date, indate)) > getdate()
+            and user_type = 'U'
+            and user_id not in(select distinct username from el_training_record_review)
+            ) a where remain_day in(7, 3, 1)
     </select>
 <!--    <select id="findCV" parameterType="com.dtnsm.lms.mybatis.dto.CVFindParam" resultType="com.dtnsm.lms.mybatis.dto.CVFindResult">-->
 <!--        select-->

@@ -1,7 +1,7 @@
 package com.dtnsm.lms.domain.constant;
 
 public enum BinderAlarmType {
-    BINDER_REG("email/binder-reg", "[LMS/%s] Digital Binder 등록 요청", ""),
+    BINDER_REG("email/binder-reg", "[LMS/%s] Digital Binder 등록 요청", "${empName}, ${remainDay}"),
     BINDER_REVIEW("email/binder-review", "[LMS/%s] Digital Binder 검토 요청", "${empName}, ${inDate}"),
     BINDER_REVIEWED("email/binder-reviewed", "[LMS/%s] Digital Binder 승인 알림", "사용자의 Binder 검토가 완료 되었습니다."),
     BINDER_REJECT("email/binder-reject", "[LMS/%s] Digital Binder 반려 알림", ""),
@@ -10,7 +10,7 @@ public enum BinderAlarmType {
 //    BINDER_UPDATE_MANAGER("email/binder-update-manager", "[LMS/%s] Digital Binder 정기 검토_업데이트 요청", "${empName}, ${remainDay}"),
 
     JD_ASSIGNED("email/jd-assign-alert", "[LMS/%s/%s] Job Description 배정 알림", "${jobTitle}"),
-    JD_AGREE("email/jd-agree-alert", "[LMS/%s/%s] Job Description 동의 알림", "${jobTitle}, ${empName}"),
+    JD_AGREE("email/jd-agree-alert", "[LMS/%s/%s] Job Description 승인 요청", "${jobTitle}, ${empName}"),
     JD_APPROVED("email/jd-approved-alert", "[LMS/%s/%s] Job Description 승인 알림", "Job Description이 승인 되었습니다.");
 
     private String template;
