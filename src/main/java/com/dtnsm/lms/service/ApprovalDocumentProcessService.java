@@ -280,7 +280,14 @@ public class ApprovalDocumentProcessService {
 
         document.setFnStatus("2");
 
-        documentService.save(document);
+        document = documentService.save(document);
+
+
+        // 교육과정 참석보고서 작성 가능 상태로 변경
+        CourseAccount courseAccount = document.getCourseAccount();
+        courseAccount.setReportStatus("9");
+        courseAccountService.save(courseAccount);
+
 //
 //        // 기안자에게 메일 전송
 //        MessageUtil.sendNotificationMessage(LmsAlarmCourseType.Reject, document.getAccount(), document);

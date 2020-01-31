@@ -29,7 +29,7 @@
     <style>
 
         #wrap {
-            /*padding-top: 300px;*/
+            padding-top: 280px;
         }
 
         .navbar-fixed-top {
@@ -113,7 +113,7 @@
 
     <!-- Begin page content -->
     <div class="container">
-        <div style="height:280px">&nbsp;</div>
+<!--        <div style="height:280px">&nbsp;</div>-->
         <div class="panel">
             <div class="panel-body">
                 <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/mypage/classroom/quizview-post/{quizActionId}(quizActionId=${quizAction.getId()})}" method="post" >
@@ -130,55 +130,55 @@
                                             <!-- Radio Buttons -->
                                             <th:block th:unless="${#strings.isEmpty(question.getEx1())}">
                                                 <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx1(), '')}">
-                                                    <input th:id="${question.getId() + '-ex-1'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" value="1">
+                                                    <input th:id="${question.getId() + '-ex-1'}" class="magic-radio" type="radio" th:name="${'question-' + question.getId()}" value="1">
                                                     <label th:for="${question.getId() + '-ex-1'}" th:text="${question.getEx1()}"></label>
                                                 </div>
                                             </th:block>
                                             <th:block th:unless="${#strings.isEmpty(question.getEx2())}">
                                                 <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx2(), '')}">
-                                                    <input th:id="${question.getId() + '-ex-2'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" value="2">
+                                                    <input th:id="${question.getId() + '-ex-2'}" class="magic-radio" type="radio" th:name="${'question-' + question.getId()}" value="2">
                                                     <label th:for="${question.getId() + '-ex-2'}" th:text="${question.getEx2()}"></label>
                                                 </div>
                                             </th:block>
                                             <th:block th:unless="${#strings.isEmpty(question.getEx3())}">
                                                 <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx3(), '')}">
-                                                    <input th:id="${question.getId() + '-ex-3'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" value="3">
+                                                    <input th:id="${question.getId() + '-ex-3'}" class="magic-radio" type="radio" th:name="${'question-' + question.getId()}" value="3">
                                                     <label th:for="${question.getId() + '-ex-3'}" th:text="${question.getEx3()}"></label>
                                                 </div>
                                             </th:block>
                                             <th:block th:unless="${#strings.isEmpty(question.getEx4())}">
                                                 <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx4(), '')}">
-                                                    <input th:id="${question.getId() + '-ex-4'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" value="4">
+                                                    <input th:id="${question.getId() + '-ex-4'}" class="magic-radio" type="radio" th:name="${'question-' + question.getId()}" value="4">
                                                     <label th:for="${question.getId() + '-ex-4'}" th:text="${question.getEx4()}"></label>
                                                 </div>
                                             </th:block>
                                             <th:block th:unless="${#strings.isEmpty(question.getEx5())}">
                                                 <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx5(), '')}">
-                                                    <input th:id="${question.getId() + '-ex-5'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" value="5">
+                                                    <input th:id="${question.getId() + '-ex-5'}" class="magic-radio" type="radio" th:name="${'question-' + question.getId()}" value="5">
                                                     <label th:for="${question.getId() + '-ex-5'}" th:text="${question.getEx5()}"></label>
                                                 </div>
                                             </th:block>
                                             <th:block th:unless="${#strings.isEmpty(question.getEx6())}">
                                                 <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx6(), '')}">
-                                                    <input th:id="${question.getId() + '-ex-6'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" value="6">
+                                                    <input th:id="${question.getId() + '-ex-6'}" class="magic-radio" type="radio" th:name="${'question-' + question.getId()}" value="6">
                                                     <label th:for="${question.getId() + '-ex-6'}" th:text="${question.getEx6()}"></label>
                                                 </div>
                                             </th:block>
                                             <th:block th:unless="${#strings.isEmpty(question.getEx7())}">
                                                 <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx7(), '')}">
-                                                    <input th:id="${question.getId() + '-ex-7'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" value="7">
+                                                    <input th:id="${question.getId() + '-ex-7'}" class="magic-radio" type="radio" th:name="${'question-' + question.getId()}" value="7">
                                                     <label th:for="${question.getId() + '-ex-7'}" th:text="${question.getEx7()}"></label>
                                                 </div>
                                             </th:block>
                                             <th:block th:unless="${#strings.isEmpty(question.getEx8())}">
                                                 <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx8(), '')}">
-                                                    <input th:id="${question.getId() + '-ex-8'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" value="8">
+                                                    <input th:id="${question.getId() + '-ex-8'}" class="magic-radio" type="radio" th:name="${'question-' + question.getId()}" value="8">
                                                     <label th:for="${question.getId() + '-ex-8'}" th:text="${question.getEx8()}"></label>
                                                 </div>
                                             </th:block>
                                             <th:block th:unless="${#strings.isEmpty(question.getEx9())}">
                                                 <div class="radio" th:unless="${#strings.equalsIgnoreCase(question.getEx9(), '')}">
-                                                    <input th:id="${question.getId() + '-ex-9'}" class="magic-radio" type="radio" th:name="${'question-'+question.getId()}" value="9">
+                                                    <input th:id="${question.getId() + '-ex-9'}" class="magic-radio" type="radio" th:name="${'question-' + question.getId()}" value="9">
                                                     <label th:for="${question.getId() + '-ex-9'}" th:text="${question.getEx9()}"></label>
                                                 </div>
                                             </th:block>
@@ -216,6 +216,36 @@
     // 학습시간 업데이틀 여부를 관리(0:업데이트 되지 않음, 1:업데이트 됨)
     var update_flag = '0';
 
+
+    $(document).ready(function () {
+
+        $('input[type="radio"]').change(function () {
+            radioEvent($(this).prop('name'), $(this).val());
+        });
+
+        // $("#name_all_save").click(function () {
+        //     var radio_name = [];//array
+        //     var raido_name_val = {};//object
+        //     var radio = $("input[type=radio]"); //라디오 정보를 가져옵니다.
+        //     $.each(radio, function (key, value) { // input radio의 name 값을 가져옵니다.
+        //         radio_name.push($(value).attr('name'));
+        //     });
+        //     console.log(radio_name);
+        //     radio_name = $.unique(radio_name.sort()).sort(); //중복요소 이름을 제거
+        //     console.log(radio_name);
+        //     for (var i = 0; i < radio_name.length; i++) {
+        //         alert($('input[name="' + radio_name[i] + '"]').val());
+        //         raido_name_val[radio_name[i]] = $('input[name="' + radio_name[i] + '"]').val();
+        //     }
+        //     console.log(raido_name_val);//예시 로그 {grade: "1학년", school: "초등학교", sex: "남"}
+        // });
+
+        // }
+
+        tid = setInterval('msg_time()', 1000); // 타이머 1초간격으로 수행z
+
+    });
+
     if ((section_second) > total_use_second) {
 
         var total_second = 0;
@@ -223,40 +253,8 @@
         var tid;
 
 
-        function radioEvent(name, val) {
 
-            $('#' + name).html("<string><span class='text-light answer'>" + val + "</span></string>");
-        }
 
-        $(document).ready(function () {
-
-            $('input[type="radio"]').change(function () {
-
-                radioEvent($(this).prop('name'), $(this).val());
-            });
-
-                // $("#name_all_save").click(function () {
-                //     var radio_name = [];//array
-                //     var raido_name_val = {};//object
-                //     var radio = $("input[type=radio]"); //라디오 정보를 가져옵니다.
-                //     $.each(radio, function (key, value) { // input radio의 name 값을 가져옵니다.
-                //         radio_name.push($(value).attr('name'));
-                //     });
-                //     console.log(radio_name);
-                //     radio_name = $.unique(radio_name.sort()).sort(); //중복요소 이름을 제거
-                //     console.log(radio_name);
-                //     for (var i = 0; i < radio_name.length; i++) {
-                //         alert($('input[name="' + radio_name[i] + '"]').val());
-                //         raido_name_val[radio_name[i]] = $('input[name="' + radio_name[i] + '"]').val();
-                //     }
-                //     console.log(raido_name_val);//예시 로그 {grade: "1학년", school: "초등학교", sex: "남"}
-                // });
-
-            // }
-
-            tid = setInterval('msg_time()', 1000); // 타이머 1초간격으로 수행z
-
-        });
 
 
         var currDate = new Date();
@@ -367,6 +365,10 @@
         // $('.progress-bar').text("100%");
     }
 
+
+    function radioEvent(name, val) {
+        $('#' + name).html("<string><span class='text-light answer'>" + val + "</span></string>");
+    }
 
     function form_submit() {
         $('#boardFrm').submit();

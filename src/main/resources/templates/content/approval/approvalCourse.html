@@ -110,7 +110,9 @@
                                                         <img class="text-success sign" th:src="${border.getSignature()}">
                                                     </th:block>
                                                 </th:block>
-                                                <div th:case="${'2'}" class="text-danger sign"><br><br>반려</div>
+                                                <th:block th:case="${'2'}">
+                                                    <div class="text-danger">반려</div>
+                                                </th:block>
                                             </td>
                                         </th:block>
                                     </th:block>

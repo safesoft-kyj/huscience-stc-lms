@@ -303,8 +303,9 @@ public class CourseScheduler {
                 CourseAccount courseAccount = courseAccountService.getById(courseAccountVO.getId());
 
                 // 교육보고서 미진행된 건에 대해 알람을 발송한다.
-                if (courseAccount.getReportStatus().equals("9")) {
-
+                if (courseAccount.getFnStatus().equals("1")                 // 교육신청 승인된것
+                        && courseAccount.getIsReport().equals("1")          // 교육보고서를 작성해야 할 경우
+                        && courseAccount.getReportStatus().equals("9")) {   // 미작성 상태일때
                     MessageSource messageSource = MessageSource.builder()
                             .courseAccount(courseAccount)
                             .alarmGubun(LmsAlarmGubun.INFO)
@@ -312,25 +313,33 @@ public class CourseScheduler {
                             .sender(courseAccount.getAccount()) // 승인자
                             .receive(courseAccount.getAccount())
                             .course(courseAccount.getCourse())
-                            .title(String.format("%s에 대한 교육참석보고서 기한 %s일 전입니다.", courseAccount.getCourse().getTitle(), 4+(i*-1)))
-                            .subject(String.format("[LMS/외부교육] 교육참석보고서 %s일 전", i))
+                            .title(String.format("%s에 대한 교육참석보고서 기한 %s일 전입니다.", courseAccount.getCourse().getTitle(), 4 + (i * -1)))
+                            .subject(String.format("[LMS/외부교육] 교육참석보고서 %s일 전", 4 + (i * -1)))
                             .content("")
                             .build();
 
                     MessageUtil.sendNotificationMessage(messageSource, true);
-
-
-                    MessageUtil.sendNotificationMessage(LmsAlarmCourseType.CourseReportApproach, courseAccount.getAccount(), courseAccount.getCourse());
                 }
-//            MessageUtil.sendNotification(LmsAlarmCourseType.CourseReportApproach, courseAccount.getAccount(), courseAccount.getCourse());
             }
         }
 
         // 교육일이 7일로 임박한 사용자에게 알림 발송(Self 교육만)
-        for (CourseAccount courseAccountVO : courseAccountMapperService.getCourseToDateAlarm("BC0101", "-7")) {
-            CourseAccount courseAccount = courseAccountService.getById(courseAccountVO.getId());
-            MessageUtil.sendNotificationMessage(LmsAlarmCourseType.CourseToDateApproach, courseAccount.getAccount(), courseAccount.getCourse());
-            //MessageUtil.sendNotification(LmsAlarmCourseType.CourseToDateApproach, courseAccount.getAccount(), courseAccount.getCourse());
-        }
+//        for (CourseAccount courseAccountVO : courseAccountMapperService.getCourseToDateAlarm("BC0101", "-7")) {
+//            CourseAccount courseAccount = courseAccountService.getById(courseAccountVO.getId());
+//
+//            MessageSource messageSource = MessageSource.builder()
+//                    .courseAccount(courseAccount)
+//                    .alarmGubun(LmsAlarmGubun.INFO)
+//                    .lmsAlarmCourseType(LmsAlarmCourseType.CourseToDateApproach)
+//                    .sender(courseAccount.getAccount()) // 승인자
+//                    .receive(courseAccount.getAccount())
+//                    .course(courseAccount.getCourse())
+//                    .title(String.format("%s에 대한 교육 기한 %s일 전입니다.", courseAccount.getCourse().getTitle(), 7))
+//                    .subject(String.format("[LMS/교육] %s 교육 %s일 전", courseAccount.getCourse().getTitle(), 7))
+//                    .content("")
+//                    .build();
+//
+//            MessageUtil.sendNotificationMessage(messageSource, true);
+//        }
     }
 }

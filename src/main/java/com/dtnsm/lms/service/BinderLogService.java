@@ -160,21 +160,20 @@ public class BinderLogService {
             courseTrainingLog.setCompleteDate(DateUtil.getTodayDate());
             courseTrainingLog.setIsUpload("0");
 
-
-            for (CourseSectionAction action : courseSection.getCourseSectionActions()) {
-
-                // 학습시간이 지정시간보다 큰경우는 학습시간으로 아니면 지정시간으로 저장한다.
-                if ( action.getTotalUseSecond() > courseSection.getSecond() ) {
-                    courseTrainingLog.setTrainingTime(action.getTotalUseSecond());
-                } else {
-                    courseTrainingLog.setTrainingTime(courseSection.getSecond());
-                }
-
-                courseTrainingLog.setCourseSectionAction(action);
-            }
-
             // Self training  이면
             if (courseAccount.getCourse().getCourseMaster().getId().equals("BC0101")) {
+                for (CourseSectionAction action : courseSection.getCourseSectionActions()) {
+
+                    // 학습시간이 지정시간보다 큰경우는 학습시간으로 아니면 지정시간으로 저장한다.
+                    if ( action.getTotalUseSecond() > courseSection.getSecond() ) {
+                        courseTrainingLog.setTrainingTime(action.getTotalUseSecond());
+                    } else {
+                        courseTrainingLog.setTrainingTime(courseSection.getSecond());
+                    }
+
+                    courseTrainingLog.setCourseSectionAction(action);
+                }
+
                 courseTrainingLog.setType(TrainingType.SELF);
                 courseTrainingLog.setOrganization(TrainingType.SELF.getLabel());
 
@@ -185,6 +184,8 @@ public class BinderLogService {
                 courseTrainingLog.setTrainingCourse(sb.toString());
 
             } else {
+                courseTrainingLog.setTrainingTime(courseSection.getSecond());
+
                 courseTrainingLog.setType(TrainingType.OTHER);
                 courseTrainingLog.setOrganization(courseAccount.getCourse().getTeam());
 

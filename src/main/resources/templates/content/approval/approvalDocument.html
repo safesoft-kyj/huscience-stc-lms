@@ -43,9 +43,74 @@
             <div class="panel">
                 <div class="panel-body">
                     <div class="panel-heading text-right">
-                        `<a th:href="@{/approval/mainRequest2(status='report')}" class="btn btn-primary">
-                            <i class="demo-pli-back"></i> 목록
-                        </a>`
+                        `
+                        <th:block th:switch="${document.getFnStatus()}">
+                            <span th:case="${'0'}" class="text-info" th:text="${''}"></span>
+                            <span th:case="${'1'}" class="text-success" th:text="${''}"></span>
+                            <th:block th:case="${'2'}">
+                                <a href="#" class="btn btn-danger" data-toggle="modal" th:attr="data-target=${'#modal-course' + document.getId()}">반려 (결재의견)</a>
+                                <!--Default Bootstrap Modal-->
+                                <!--===================================================-->
+                                <div class="modal fade" th:id="${'modal-course' + document.getId()}" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content modal-lg">
+
+                                            <!--Modal header-->
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                                                <h4 class="modal-title">결재 반려</h4>
+                                            </div>
+
+                                            <!--Modal body-->
+                                            <div class="modal-body">
+                                                <hr class="table-head">
+                                                <table id="customer-page" class="table" cellspacing="0" width="100%">
+                                                    <colgroup>
+                                                        <col width="5%">
+                                                        <col width="10%">
+                                                        <col width="10%">
+                                                        <col width="10%">
+                                                        <col width="65%">
+                                                    </colgroup>
+                                                    <thead>
+                                                    <tr style="background: #FAFAFA;">
+                                                        <th class="text-center">#</th>
+                                                        <th class="text-center">결재상태</th>
+                                                        <th class="text-center">결재일</th>
+                                                        <th class="text-center">결재자</th>
+                                                        <th  class="text-center">결재의견</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <th:block  th:each="order, index : ${document.getDocumentAccountOrders()}">
+                                                        <th:block th:if="${#strings.equalsIgnoreCase(order.getFnStatus(), '2')}">
+                                                            <tr>
+                                                                <td class="text-center" th:text="${index.index}"></td>
+                                                                <td class="text-center text-danger" th:text="${'반려'}"></td>
+                                                                <td class="text-center" th:text="${#dates.format(order.getFnDate(), 'yyyy-MM-dd')}"></td>
+                                                                <td class="text-center" th:text="${order.getFnUser().getName()}"></td>
+                                                                <td class="text-left">
+                                                                    <textarea style="width:100%; border:0;overflow-y:hidden;background:clear;" row="3" readonly th:text="${order.getFnComment()}"></textarea>
+                                                                </td>
+                                                            </tr>
+                                                        </th:block>
+                                                    </th:block >
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <!--Modal footer-->
+                                            <div class="modal-footer">
+                                                <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+                                                <!--                            <button class="btn btn-primary">Save changes</button>-->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th:block>
+                            <a th:href="@{/approval/mainRequest2(status='report')}" class="btn btn-primary">
+                                <i class="demo-pli-back"></i> 목록
+                            </a>`
+                        </th:block>
                     </div>
                     <hr style="border:1.2px solid #0a6aa1">
                     <h4><strong class="text-info"><i class="demo-pli-dot-vertical"></i> 결재 정보</strong></h4>
@@ -104,7 +169,9 @@
                                                         <img class="text-success sign" th:src="${border.getSignature()}">
                                                     </th:block>
                                                 </th:block>
-                                                <div th:case="${'2'}" class="text-danger sign" th:text="${'반려'}"></div>
+                                                <th:block th:case="${'2'}">
+                                                    <div class="text-danger" th:text="${'반려'}"></div>
+                                                </th:block>
                                             </td>
                                         </th:block>
                                     </th:block>

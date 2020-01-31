@@ -44,7 +44,7 @@ public class MailService {
         String body = templateEngine.process(templateUri, context);
 
         //send the html template
-        sendPreparedMail(messageSource.getReceive().getEmail(), "[LMS] " + messageSource.getSubject(), body, true);
+        sendPreparedMail(messageSource.getReceive().getEmail(), messageSource.getSubject(), body, true);
     }
 
     public void send(Mail mail) {

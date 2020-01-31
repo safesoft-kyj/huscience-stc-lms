@@ -703,6 +703,26 @@ public class ApprovalController {
         return "redirect:/approval/mainApproval?status=request";
     }
 
+    // 교육신청 반려
+    @PostMapping("/rejectAppr1/{orderId}")
+    public String rejectAppr1(@PathVariable("orderId") Long orderId
+            , @RequestParam(value = "rejectMemo", defaultValue = "") String rejectMemo
+            , Model model) {
+
+        pageInfo.setPageId("m-mypage-approval");
+        pageInfo.setPageTitle("교육신청 반려");
+
+        CourseAccountOrder courseAccountOrder = courseAccountOrderService.getById(orderId);
+        courseAccountOrder.setFnComment(rejectMemo);
+
+        // 1차 기각 처리
+        approvalCourseProcessService.courseReject1Proces(courseAccountOrder);
+
+        model.addAttribute(pageInfo);
+
+        return "redirect:/approval/mainApproval?status=request";
+    }
+
 
     // 교육결재(2차 과정 관리자) 전체함
     @GetMapping("/listAppr2")

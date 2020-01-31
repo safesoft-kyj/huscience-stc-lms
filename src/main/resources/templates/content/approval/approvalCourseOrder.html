@@ -50,7 +50,8 @@
                         <div class="col-sm-12 input-group pull-right">
                             <p class="pull-right">
                                 <a th:href="@{/approval/successAppr1/{orderId}(orderId=${courseAccountOrder.getId()})}" class="btn btn-primary"><i class="demo-pli-check"></i> 승인</a>
-                                <a th:href="@{/approval/rejectAppr1/{orderId}(orderId=${courseAccountOrder.getId()})}" class="btn btn-danger"><i class="demo-pli-back"></i> 반려</a>
+<!--                                <a th:href="@{/approval/rejectAppr1/{orderId}(orderId=${courseAccountOrder.getId()})}" class="btn btn-danger"><i class="demo-pli-back"></i> 반려</a>-->
+                                <button class="btn btn-danger" onclick="rejectAppr();"><i class="demo-pli-back"></i> 반려</button>
                                 <a href="javascript:history.back();" class="btn btn-primary">
                                     <i class="demo-pli-back"></i> Back
                                 </a>
@@ -318,13 +319,50 @@
 
             </div>
 
+            <!--Default Bootstrap Modal-->
+            <!--===================================================-->
+            <div class="modal fade" id="demo-default-modal" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
 
+                <div class="modal-dialog">
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/approval/rejectAppr1/{orderId}(orderId=${courseAccountOrder.getId()})}"  method="post" >
+                    <div class="modal-content modal-md">
+
+                        <!--Modal header-->
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                            <h4 class="modal-title">결재</h4>
+                        </div>
+
+                        <!--Modal body-->
+                        <div class="modal-body">
+                            <h4>반려사유</h4>
+                            <textarea name="rejectMemo" rows="5" style="width: 100%"></textarea>
+
+                        </div>
+
+                        <!--Modal footer-->
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+
+            </div>
 
         </div><!-- Page content End -->
     </div><!-- Content container End -->
 </th:block>
 
 <th:block layout:fragment="custom_js">
+    <script>
+
+        function rejectAppr() {
+            $('#demo-default-modal').modal("show"); // Modal창 열기
+        }
+
+    </script>
 </th:block>
 
 </html>

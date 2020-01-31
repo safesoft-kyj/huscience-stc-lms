@@ -5,6 +5,7 @@ import com.dtnsm.common.repository.SignatureRepository;
 import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.DTO.CommonUtilities;
 import com.dtnsm.lms.domain.datasource.CertificateSource;
+import com.dtnsm.lms.domain.datasource.EmployeeTrainingLogSource;
 import com.dtnsm.lms.properties.FileUploadProperties;
 import com.dtnsm.lms.repository.CertificateFileRepository;
 import com.dtnsm.lms.repository.CourseCertificateInfoRepository;
@@ -15,6 +16,7 @@ import com.dtnsm.lms.util.SessionUtil;
 import com.dtnsm.lms.xdocreport.CurriculumVitaeReportService;
 import com.groupdocs.assembly.DataSourceInfo;
 import com.groupdocs.assembly.DocumentAssembler;
+import org.apache.tomcat.jni.FileInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -148,8 +150,6 @@ public class CourseCertificateService {
         long timestamp = System.currentTimeMillis();
 
 
-
-
         // Employee Training Log Template 파일 및 출력 파일 지정
         String srcCertificationTemplateFileName = "etl_certi.docx";
 
@@ -160,11 +160,13 @@ public class CourseCertificateService {
         String outputRootFoloer = prop.getCertificateUploadDir();
 
         // 수료증 Full Path
-//        String srcCertificationFilePath = sourceRootFoloer + srcCertificationTemplateFileName;
-        String srcCertificationFilePath = CurriculumVitaeReportService.class.getResource(srcCertificationTemplateFileName).getPath().toString();
+        String srcCertificationFilePath = sourceRootFoloer + srcCertificationTemplateFileName;
+//        String srcCertificationFilePath = CurriculumVitaeReportService.class.getResource(srcCertificationTemplateFileName).getPath();
+//        InputStream is = CurriculumVitaeReportService.class.getResourceAsStream(srcCertificationTemplateFileName);
+
         String outputCertificationFilePath = outputRootFoloer + outputCertificationFileName;
 
-        System.out.println(srcCertificationFilePath);
+//        System.out.println(srcCertificationFilePath);
 
         try {
             // Employee Training Log Data
@@ -182,8 +184,13 @@ public class CourseCertificateService {
 //            assembler.assembleDocument(in, out, new DataSourceInfo( accountList, "accountList"));
 
             // 1. Employee Training Log File 생성
-            //assembler.assembleDocument(srcCertificationFilePath, outputCertificationFilePath , dataSourceInfo);
             assembler.assembleDocument(srcCertificationFilePath, outputCertificationFilePath , dataSourceInfo);
+//            File file = new File(outputCertificationFilePath);
+//            FileOutputStream os = new FileOutputStream(file);
+//
+//            assembler.assembleDocument(is, os, dataSourceInfo);
+//            out.flush();
+//            out.close();
 
             // 수료증 파일 생성후 File 정보를 기록한다.
             File file = new File(outputCertificationFilePath);
@@ -237,7 +244,7 @@ public class CourseCertificateService {
         }
 
         if (!certificateLog.getCerManagerSign2().isEmpty()) {
-            String data = certificateLog.getCerManagerSign1().split(",")[1];
+            String data = certificateLog.getCerManagerSign2().split(",")[1];
             imageBytes2 = DatatypeConverter.parseBase64Binary(data);
         }
 

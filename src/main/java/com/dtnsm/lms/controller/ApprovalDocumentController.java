@@ -1,6 +1,7 @@
 package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.auth.UserServiceImpl;
+import com.dtnsm.lms.domain.CourseAccountOrder;
 import com.dtnsm.lms.domain.DocumentAccountOrder;
 import com.dtnsm.lms.service.ApprovalDocumentProcessService;
 import com.dtnsm.lms.service.DocumentAccountOrderService;
@@ -12,9 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/approval/document")
@@ -138,14 +137,35 @@ public class ApprovalDocumentController {
         return "redirect:/approval/mainApproval?status=request";
     }
 
-    // 교육신청 반려
+    // 교육보고서 반려
     @GetMapping("/rejectAppr1/{orderId}")
     public String rejectAppr1(@PathVariable("orderId") Long orderId, Model model) {
 
         pageInfo.setPageId("m-mypage-approval");
-        pageInfo.setPageTitle("교육신청 반려");
+        pageInfo.setPageTitle("교육보고서 반려");
 
         DocumentAccountOrder  documentAccountOrder = documentAccountOrderService.getById(orderId);
+
+        // 1차 기각 처리
+        approvalDocumentProcessService.documentReject1Proces(documentAccountOrder);
+
+        model.addAttribute(pageInfo);
+
+//        return "redirect:/approval/document/listApprProcess";
+        return "redirect:/approval/mainApproval?status=request";
+    }
+
+    // 교육보고서 반려
+    @PostMapping("/rejectAppr1/{orderId}")
+    public String rejectAppr1(@PathVariable("orderId") Long orderId
+            , @RequestParam(value = "rejectMemo", defaultValue = "") String rejectMemo
+            , Model model) {
+
+        pageInfo.setPageId("m-mypage-approval");
+        pageInfo.setPageTitle("교육보고서 반려");
+
+        DocumentAccountOrder  documentAccountOrder = documentAccountOrderService.getById(orderId);
+        documentAccountOrder.setFnComment(rejectMemo);
 
         // 1차 기각 처리
         approvalDocumentProcessService.documentReject1Proces(documentAccountOrder);

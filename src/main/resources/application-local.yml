@@ -16,6 +16,7 @@ spring:
     servlet:
       content-type: text/html
   datasource:
+#    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=test_lms
     url: jdbc:sqlserver://220.117.192.209:20170;DatabaseName=test_lms
     username: sa
     password: safe123!@#

@@ -547,7 +547,7 @@
 
         function popupPdfView(id) {
             var width = 1500;
-            var height = 900;
+            var height = 1200;
 
             var title = "Employee training matrix";
             var url = "/info/matrix/pdfview/" + id;
@@ -556,7 +556,7 @@
             // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
             var popupY= (window.screen.height / 2) - (height / 2);
 
-            var option = "width =" + width + ", height =" + height + ", menubar=no, directories=no, location = no, scrollbars=no, resizable=no";
+            var option = "width =" + width + ", height =" + height + ", menubar=no, directories=no, location = no, scrollbars=yes, resizable=no";
             option += ", left=" + popupX + ", top=" + popupY;
 
             window.open(url, title, option);

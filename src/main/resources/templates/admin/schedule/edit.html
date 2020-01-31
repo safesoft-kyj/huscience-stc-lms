@@ -78,7 +78,7 @@
                                             <tbody>
                                             <tr th:each="uploadFile : ${schedule.getScheduleFiles()}">
                                                 <td>
-                                                    <a th:href="@{/admin/schedule/{sctype}/download-file/{id}(sctype=${sctype}, id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}"></a>
+                                                    <a th:href="@{/admin/schedule/{sctype}/download-file/{id}(sctype=${sctype}, id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}" target="_blank"></a>
                                                 </td>
                                                 <td th:text="${uploadFile.getSize()}" class="text-center"></td>
                                                 <td class="text-center col-sm-2">

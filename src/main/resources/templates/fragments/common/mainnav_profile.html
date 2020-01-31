@@ -28,7 +28,7 @@
                     </th:block>
                 </th:block>
                 <th:block th:unless="${#authentication.getPrincipal().getJobTitle().isEmpty()}">
-                    <div sec:authentication="principal.jobTitle" class="label label-primary"></div>
+                    <br><span sec:authentication="principal.jobTitle" class="label label-primary"></span>
                 </th:block>
             </p>
 <!--            <span sec:authorize="isAuthenticated()" class="mnp-desc" sec:authentication="principal.email"></span>-->

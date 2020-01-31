@@ -817,21 +817,24 @@ public class ApprovalCourseProcessService {
                 // 전자결재가 있는 경우는 교육상태를 request 상태로 변경한다.
                 saveCourseAccount.setCourseStatus(CourseStepStatus.request);
 
-            } else {    // 전자결재가 없는 경우 교육을 진행상태로 변경한다.
+            } else {    // 전자결재가 없는 경우 교육을 진행상태로 변경하고 신청자에게 교육신청 완료 메일을 보낸다.
                 saveCourseAccount.setCourseStatus(CourseStepStatus.process);
 
-                MessageSource messageSource = MessageSource.builder()
-                        .courseAccount(saveCourseAccount)
-                        .alarmGubun(LmsAlarmGubun.INFO)
-                        .lmsAlarmCourseType(LmsAlarmCourseType.Request)
-                        .sender(saveCourseAccount.getAccount())
-                        .receive(courseManagerService.getCourseManager().getAccount())
-                        .course(course)
-                        .title(String.format("[LMS/교육신청/완료] %s", course.getTitle()))
-                        .subject(String.format("[LMS/교육신청/완료] %s", course.getTitle()))
-                        .content("")
-                        .build();
-                MessageUtil.sendNotificationMessage(messageSource, true);
+                // Self 교육인 경우 교육신청자에게 교육신청 완료 메일을 보낸다.
+                if (course.getCourseMaster().getId().equals("BC0101")) {
+                    MessageSource messageSource = MessageSource.builder()
+                            .courseAccount(saveCourseAccount)
+                            .alarmGubun(LmsAlarmGubun.INFO)
+                            .lmsAlarmCourseType(LmsAlarmCourseType.Request)
+                            .sender(saveCourseAccount.getAccount())
+                            .receive(saveCourseAccount.getAccount())
+                            .course(course)
+                            .title(String.format("[LMS/교육신청/완료] %s", course.getTitle()))
+                            .subject(String.format("[LMS/교육신청/완료] %s", course.getTitle()))
+                            .content("")
+                            .build();
+                    MessageUtil.sendNotificationMessage(messageSource, true);
+                }
 
                 // self 교육이고 전자결재가 없고 (시험, 설문)이 없으면 교육을 종결시킨다.
 //                if (course.getCourseMaster().getId().equals("BC0101") && course.getSections() != null && course.getIsQuiz().equals("N") && course.getIsSurvey().equals("N")) {
