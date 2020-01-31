@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Billing e.g. invoices and receipts</title>
-    <link href="http://lms.dtnsm.com/default/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="http://lms.dtnsm.com/static/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
 </head>
 
 <body itemscope itemtype="http://schema.org/EmailMessage">
@@ -27,17 +27,29 @@
                                     <td class="content-block aligncenter">
                                         <table class="invoice">
                                             <tr>
-                                                <td>Digital Binder는 최소 1년에 한 번 정기적으로 팀장/부서장의 검토를 받아야 하며,<br/>
+                                                <td><strong th:text="${empName}">홍길동</strong>님의 Digital Binder에 대한 팀장/부서장의 검토/승인 기한 <span th:text="${remainDay}"></span>일 전입니다.<br/>
+                                                <br/>
+                                                빠른 시일 내 Digital Binder를 등록해 주시기 바라며, 입사일 기준 8주 이내로 팀장/부서장의 검토/승인을 받으십시오.(<a href="http://lms.dtnsm.com/binder" target="_blank">Digital Binder 바로가기</a>) </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-size:12px !important;">
                                                     <br/>
-                                                    <span th:text="${empName}">{홍길동}</span>님의 Digital Binder 정기 검토 기한이 <span th:text="${remainDay}">{3주,2주,1주,3일,1일}</span> 전입니다.<br/><br/>
-                                                빠른 시일 내 Digital Binder를 최신 정보로 업데이트 해주시기 바라며, 팀장/부서장의 검토/승인을 받으십시오.</td>
+                                                    -------------Digital Binder 등록 안내-------------<br/><br/>
+
+                                                    1.	CV: LMS > 마이페이지 > Curriculum Vitae 작성 후 ‘Publish’<br/>
+                                                    2.	JD: LMS > 마이페이지 > Job Description 확인 (JD 최종 승인: 팀장/부서장)<br/>
+                                                    3.	Employee Training Log (SOP): eSOP > My Training (필수교육 완료 후 Employee Training Log (SOP) ‘배포’<br/>
+                                                    4.	Employee Training Log (TM): LMS > 교육현황 (필수교육 신청 및 완료 후 Employee Training Log (TM) ‘배포’<br/>
+                                                    5.	Certification: LMS > 마이페이지 > 수료증 업로드(보유하고 있는 수료증 있을 경우) 후 Employee Training Log (TM) ‘배포’
+
+                                                </td>
                                             </tr>
                                         </table>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="content-block aligncenter">
-                                        <a href="http://lms.dtnsm.com/binder" target="_blank">Digital Binder 바로가기</a>
+                                        <a href="http://lms.dtnsm.com" target="_blank">LMS 바로가기</a>
                                     </td>
                                 </tr>
                                 <tr>

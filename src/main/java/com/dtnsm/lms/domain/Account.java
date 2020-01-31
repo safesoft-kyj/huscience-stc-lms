@@ -62,6 +62,9 @@ public class Account {
     private boolean enabled;
     private boolean tokenExpired;
 
+    @Transient
+    private int remainDay;
+
     @OneToOne(mappedBy="account")
     @PrimaryKeyJoinColumn
     private CourseManager courseManager;
@@ -264,7 +267,13 @@ public class Account {
         this.roles = roles;
     }
 
+    public int getRemainDay() {
+        return remainDay;
+    }
 
+    public void setRemainDay(int remainDay) {
+        this.remainDay = remainDay;
+    }
 
     @Override
     public String toString() {
