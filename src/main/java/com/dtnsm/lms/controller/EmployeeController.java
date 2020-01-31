@@ -390,6 +390,13 @@ public class EmployeeController {
             trainingRecordReview.setBinderPdf(binderPdf);
             trainingRecordReviewRepository.save(trainingRecordReview);
 
+            Optional<Signature> optionalSignature = signatureRepository.findById(account.getUserId());
+            if(optionalSignature.isPresent()) {
+                Signature signature = optionalSignature.get();
+                signature.setBinderFileName(binderPdf);
+                signatureRepository.save(signature);
+                log.info("@eSOP에서 바인더 정보 조회 가능하도록 정보 업데이트(Signature)");
+            }
         } catch (Exception error) {
             log.error("error : {}", error);
         }
