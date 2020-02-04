@@ -316,6 +316,8 @@ public class EmployeeController {
                  log.info("@merger 객체 생성 {}{}", binderPath, coverPdf);
             }
 
+            //TODO (Review History 추가 필요!)
+
             //cv
             Optional<CurriculumVitae> optionalCurriculumVitae = curriculumVitaeRepository.findTop1ByAccountAndStatusOrderByIdDesc(account, CurriculumVitaeStatus.CURRENT);
             if(optionalCurriculumVitae.isPresent()) {
