@@ -119,13 +119,14 @@
                                                 <table id="" class="" cellspacing="0" width="100%">
                                                     <tbody>
                                                     <tr th:each="border, index : ${alarmList}">
-                                                        <td class="text-left col-md-3" th:text="${#dates.format(border.getCreatedDate(), 'yyyy/MM/dd hh:mm')}">
-                                                        </td>
-                                                        <!--                                                        <td class="text-left col-md-2">-->
-                                                        <!--                                                            <span th:utext="${border.getAlarmGubun().getLabel()}"></span>-->
-                                                        <!--                                                        </td>-->
-                                                        <td class="text-left col-md-9">
-                                                            <a th:href="@{/notification/view/{id}(id=${border.getId()})}" th:text="${border.getTitle()}"></a>
+                                                        <td>
+                                                            <span th:text="${#dates.format(border.getCreatedDate(), 'yyyy-MM-dd hh:mm')}"></span>&nbsp;
+                                                            <th:block th:if="${#strings.length(border.getTitle()) > 30}">
+                                                                <a th:href="@{/notification/view/{id}(id=${border.getId()})}" th:text="${#strings.substring(border.getTitle(), 0, 30) + '...'}"></a>
+                                                            </th:block>
+                                                            <th:block th:unless="${#strings.length(border.getTitle()) > 30}">
+                                                                <a th:href="@{/notification/view/{id}(id=${border.getId()})}" th:text="${border.getTitle()}"></a>
+                                                            </th:block>
                                                         </td>
                                                     </tr>
                                                     </tbody>
@@ -135,10 +136,6 @@
                                     </div>
                                 </div>
                             </div>
-
-
-
-
                         </div>
                     </div>
 

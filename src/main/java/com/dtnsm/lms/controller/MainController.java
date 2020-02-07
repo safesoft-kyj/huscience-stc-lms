@@ -61,7 +61,7 @@ public class MainController {
     @Autowired
     BorderMasterService borderMasterService;
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseAdminController.class);
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(MainController.class);
 
     private PageInfo pageInfo = new PageInfo();
 

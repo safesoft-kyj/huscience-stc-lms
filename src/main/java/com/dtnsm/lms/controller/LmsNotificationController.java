@@ -32,7 +32,7 @@ public class LmsNotificationController {
 
     public LmsNotificationController() {
         pageInfo.setParentId("m-customer");
-        pageInfo.setParentTitle("알람 로그");
+        pageInfo.setParentTitle("알람사항");
     }
 
     @GetMapping("")
@@ -55,7 +55,7 @@ public class LmsNotificationController {
         borders = lmsNotificationRepository.findAll(builder, pageable);
 
         pageInfo.setPageId("m-customer-list-page");
-        pageInfo.setPageTitle("알람 로그");
+        pageInfo.setPageTitle("알람사항");
         model.addAttribute(pageInfo);
         model.addAttribute("borders", borders);
 
@@ -65,7 +65,7 @@ public class LmsNotificationController {
     @GetMapping("/view/{id}")
     public String viewPage(@PathVariable("id") long id, Model model) {
 
-        pageInfo.setPageTitle("알람 로그");
+        pageInfo.setPageTitle("알람사항");
 
         QLmsNotification qLmsNotification = QLmsNotification.lmsNotification;
         BooleanBuilder builder = new BooleanBuilder();
