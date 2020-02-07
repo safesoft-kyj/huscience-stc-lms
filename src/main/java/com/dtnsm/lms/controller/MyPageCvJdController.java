@@ -15,7 +15,6 @@ import com.dtnsm.lms.properties.FileUploadProperties;
 import com.dtnsm.lms.repository.CurriculumVitaeRepository;
 import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.CurriculumVitaeService;
-import com.dtnsm.lms.service.Mail;
 import com.dtnsm.lms.service.MailService;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.DocumentConverter;
@@ -27,6 +26,11 @@ import com.dtnsm.lms.xdocreport.dto.CV;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -44,6 +48,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Date;
@@ -503,6 +508,35 @@ public class MyPageCvJdController {
             CurriculumVitae savedCV = curriculumVitaeRepository.save(cv);
         }
         return "redirect:/mypage/cv";
+    }
+
+    @GetMapping("/cv/{id}/download")
+    public ResponseEntity<Resource> downloadCV(@PathVariable("id") Integer id) {
+        try {
+            Optional<CurriculumVitae> optionalCurriculumVitae = curriculumVitaeRepository.findById(id);
+            if(optionalCurriculumVitae.isPresent()) {
+//                Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
+
+                CurriculumVitae cv = optionalCurriculumVitae.get();
+//                String filePath = prop.getBinderDir() + cv.getCvFileName();
+                Path fileStorageLocation = Paths.get(prop.getBinderDir()).toAbsolutePath().normalize();
+                Path filePath = fileStorageLocation.resolve(cv.getCvFileName()).normalize();
+                log.info("@CV Id :{}, Download : {}", cv.getId(), filePath.toUri());
+                Resource resource = new UrlResource(filePath.toUri());
+                if (resource.exists()) {
+                    return ResponseEntity.ok()
+                            .contentType(MediaType.parseMediaType("application/octet-stream"))
+                            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"CV_" + cv.getAccount().getComNum() + "("+cv.getInitialName()+").pdf\"")
+                            .body(resource);
+                } else {
+                    throw new RuntimeException("File not found CV ID : " + id);
+                }
+            } else {
+                throw new RuntimeException("File not found CV ID : " + id);
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     @GetMapping("/cv/{id}/generate")
