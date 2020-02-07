@@ -27,262 +27,270 @@
 , logurl = 'http://lms.dtnsm.com/mypage/courseTraingLog'
 , docurl1='http://lms.dtnsm.com/approval/mainRequest1'
 , docurl2='http://lms.dtnsm.com/approval/mainRequest2'
-, doccommiturl2='http://lms.dtnsm.com/approval/mainRequest2?status=complete'" style="background: #fff">
-        <br><p>&lt;LMS 안내 메일&gt;</p><br>
-
-        <th:block th:switch="${messageSource.getCourse().getCourseMaster().getId()}">
-            <!-- Self Training -->
-            <th:block th:case="BC0101">
-                <th:block th:switch="${messageSource.getLmsAlarmCourseType()}">
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseAccountAssign}">
-                        <p style="padding: 5px 0px;">
-                            <span th:text="${messageSource.getCourse().getTitle()}"></span> 교육 수강생으로 지정되었습니다.
-                        </p>
-                        <p style="padding: 5px 0px;">
-                            해당 교육을 신청하셔서 교육기간 내 완료해 주십시오.(<a th:href="${mainurl}" target="_blank">교육현황 바로가기</a>)
-                        </p>
-                    </th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseReportApproach}">
-
-                    </th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseToDateApproach}"></th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Request}">
-                        <p style="padding: 5px 0px;">
-                            <span th:text="${messageSource.getCourse().getTitle()}"></span> 교육 신청이 완료되었습니다.
-                        </p>
-                        <p style="padding: 5px 0px;">
-                            교육 완료 후 시험 및/또는 설문을 완료해 주십시오(<a th:href="${mainurl}" target="_blank">교육현황 바로가기</a>)
-                        </p>
-                    </th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Approval}"></th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).ApprovalTeam}"></th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).ApprovalManager}"></th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Reject}"></th:block>
-
-                </th:block>
-                <br>
-            </th:block>
-
-
-            <!-- Class Training -->
-            <th:block th:case="BC0102">
-                <th:block th:switch="${messageSource.getLmsAlarmCourseType()}">
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseAccountAssign}">
-                        <p style="padding: 5px 0px;">
-                            <span th:text="${messageSource.getCourse().getTitle()}"></span> 교육 수강생으로 지정되었습니다.
-                        </p>
-                        <p style="padding: 5px 0px;">
-                            해당 교육을 신청하셔서 교육기간 내 완료해 주십시오.(<a th:href="${mainurl}" target="_blank">교육현황 바로가기</a>)
-                        </p>
-                    </th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseReportApproach}">
-
-                    </th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseToDateApproach}"></th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Request}"></th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Approval}">
-                        <p style="padding: 5px 0px;">
-                            아래 교육에 대한 <span th:text="${messageSource.getSender().getName()}"></span>님의 승인 요청이 있습니다.(<a th:href="${appurl}" target="_blank">결재함 바로가기</a>)
-                        </p>
-                    </th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).ApprovalTeam}">
-                        <p style="padding: 5px 0px;">
-                            아래 교육에 대한 <span th:text="${messageSource.getCourseAccount().getAccount().getName()}"></span>님의 관리자 승인 요청이 있습니다.(<a th:href="${appurl}" target="_blank">결재함 바로가기</a>)
-                        </p>
-                    </th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).ApprovalManager}">
-                        <p style="padding: 5px 0px;">
-                            <span th:text="${messageSource.getCourse().getTitle()}"></span> 교육에 대한 결재가 완료되었습니다.
-                        </p>
-                        <p style="padding: 5px 0px;">
-                            교육 완료 후 시험 및/또는 설문을 완료해 주십시오(<a th:href="${mainurl}" target="_blank">교육현황 바로가기</a>)
-                        </p>
-                    </th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Reject}">
-                        <p style="padding: 5px 0px;">
-                            <span th:text="${messageSource.getCourse().getTitle()}"></span>&nbsp;
-                            교육에 대한 결재가 반려되었습니다.
-                        </p>
-                        <p style="padding: 5px 0px;">
-                            반려 사유를 확인하시기 바랍니다.(<a th:href="${docurl1}" target="_blank">결재함 바로가기</a>)
-                        </p>
-                    </th:block>
-                </th:block>
-                <br>
-            </th:block>
-
-
-            <!-- 부서별 교육 -->
-            <th:block th:case="BC0103">
-                <th:block th:switch="${messageSource.getLmsAlarmCourseType()}">
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseAccountAssign}">
-                    </th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseReportApproach}">
-                    </th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseToDateApproach}"></th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Request}"></th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Approval}"></th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).ApprovalTeam}"></th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).ApprovalManager}"></th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Reject}"></th:block>
-                </th:block>
-            </th:block>
-
-
-            <!-- 외부 교육 -->
-            <th:block th:case="BC0104">
-                <th:block th:switch="${messageSource.getLmsAlarmCourseType()}">
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseAccountAssign}">
-                        <p style="padding: 5px 0px;">
-                            <span th:text="${messageSource.getCourse().getTitle()}"></span> 교육 수강생으로 지정되었습니다.
-                        </p>
-                        <p style="padding: 5px 0px;">
-                            해당 교육을 신청해 주십시오.(<a th:href="${mainurl}" target="_blank">교육현황 바로가기</a>)
-                        </p>
-                        <br>
-                    </th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseReportApproach}">
-                        <p style="padding: 5px 0px;">
-                            <span th:text="${messageSource.getTitle()}"></span>
-                        </p>
-                        <p style="padding: 5px 0px;">
-                            외부교육 완료 후 3일 이내 교육참석보고서를 작성해 주십시오.(<a th:href="${rpturl}" target="_blank">외부결재 바로가기</a>)
-                        </p>
-                    </th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseToDateApproach}"></th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Request}">
-                    </th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Approval}">
-                        <p style="padding: 5px 0px;">
-                            아래 교육에 대한 <span th:text="${messageSource.getSender().getName()}"></span>님의 승인 요청이 있습니다.(<a th:href="${appurl}" target="_blank">결재함 바로가기</a>)
-                        </p>
-                    </th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).ApprovalTeam}">
-                        <p style="padding: 5px 0px;">
-                            <span th:text="${messageSource.getCourse().getTitle()}"></span> 교육에 대한 결재가 완료되었습니다.
-                        </p>
-                        <p style="padding: 5px 0px;">
-                            외부교육 완료 후 3일 이내 교육참석보고서를 작성해 주십시오.(<a th:href="${doccommiturl2}" target="_blank">외부결재 바로가기</a>)
-                        </p>
-                    </th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).ApprovalManager}"></th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Reject}">
-                        <p style="padding: 5px 0px;">
-                            <span th:text="${messageSource.getCourse().getTitle()}"></span>&nbsp;
-                            교육에 대한 결재가 반려되었습니다.
-                        </p>
-                        <p style="padding: 5px 0px;">
-                            반려 사유를 확인하시기 바랍니다.(<a th:href="${docurl2}" target="_blank">결재함 바로가기</a>)
-                        </p>
-                    </th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).DocApproval}">
-                        <span th:text="${messageSource.getDocument().getAccount().getName()}"></span>님의 교육참석보고서 승인 요청이 있습니다.(<a th:href="${appurl}" target="_blank">결재함 바로가기</a>)
-                    </th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).DocApprovalTeam}">
-                        <p style="padding: 5px 0px;">
-                            <span th:text="${messageSource.getCourse().getTitle()}"></span>&nbsp;
-                            교육에 대한 교육참석보고서가 승인 되었습니다.(<a th:href="${rpturl}" target="_blank">결재완료 바로가기</a>)
-                        </p>
-                        <p style="padding: 5px 0px;">
-                            *수료증이 있는 경우 LMS에 수료증을 업로드해 주세요.(<a th:href="${certiurl}" target="_blank">수료증 업로드 바로가기</a>)
-                        </p>
-                        <p style="padding: 5px 0px;">
-                            *수료증 업로드 후 Employee Training Log에서 외부교육 기록을 확인 및 '배포'해 주십시오.(<a th:href="${logurl}" target="_blank">Employee Training Log 바로가기</a>)
-                        </p>
-
-                    </th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).DocReject}">
-                        <p style="padding: 5px 0px;">
-                            <span th:text="${messageSource.getCourse().getTitle()}"></span>&nbsp;
-                            교육에 대한 교육참석보고서가 반려되었습니다.(<a th:href="${rpturl}" target="_blank">외부결재 바로가기</a>)
-                        </p>
-                        <p style="padding: 5px 0px;">
-                            반려 사유를 확인하시기 바랍니다.(<a th:href="${rpturl}" target="_blank">결재함 바로가기</a>)
-                        </p>
-                    </th:block>
-                </th:block>
-                <br>
-            </th:block>
-
-        </th:block>
-
-        <!-- 교육과정일 경우 -->
-        <th:block th:if="${messageSource.getDocument()} == null">
-            <table width="100%" cellpadding="10" cellspacing="5" border="1" align="center" style="border-collapse:collapse; border:1px gray solid;">
-                <thead>
-                <tr>
-                    <th style="padding: 5px; border:1px gray solid; text-align: center; background: #FAFAFA">교육유형</th>
-                    <th style="padding: 5px; border:1px gray solid; text-align: center; background: #FAFAFA">과정명</th>
-                    <th style="padding: 5px; border:1px gray solid; text-align: center; background: #FAFAFA">교육기간</th>
-    <!--                <th class="text-center">수강기간</th>-->
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td th:text="${messageSource.getCourse().getCourseMaster().getCourseName()}" style="padding: 5px; border:1px gray solid; text-align: center"></td>
-                    <td th:text="${messageSource.getCourse().getTitle()}" style="padding: 5px; border:1px gray solid;"></td>
-                    <td style="padding: 5px; border:1px gray solid; text-align: center">
-                        <span th:if="${#strings.equalsIgnoreCase( messageSource.getCourse().getIsAlways(), '1')}" th:text="${'(상시교육) 교육일수:' + messageSource.getCourse().getDay() + '일'}"></span>
-                        <span th:if="${#strings.equalsIgnoreCase( messageSource.getCourse().getIsAlways(), '0')}" th:text="${messageSource.getCourse().getFromDate() + ' ~ ' + messageSource.getCourse().getToDate()}"></span>
-                    </td>
-    <!--                <td>-->
-    <!--                    <th:block th:unless="${messageSource.getCourseAccount()} != null">-->
-    <!--                        <span th:text="${messageSource.getCourseAccount().getFromDate() + ' ~ ' + messageSource.getCourseAccount().getToDate()}"></span>-->
-    <!--                    </th:block>-->
-    <!--                </td>-->
-                </tr>
-                </tbody>
-            </table>
-        </th:block>
+, doccommiturl2='http://lms.dtnsm.com/approval/mainRequest2?status=complete'" style="width:800px; background: #fff">
 
         <br>
-        <!-- 교육참석보고서일 경우 -->
-        <th:block th:if="${messageSource.getDocument()} != null">
-            <p style="padding: 5px 0px;" th:utext="|${messageSource.getDocument().getContent()}|">content</p></td>
-        </th:block>
-
-        <th:block th:switch="${messageSource.getCourse().getCourseMaster().getId()}">
-            <!-- Self Training -->
-            <th:block th:case="BC0101">
-                <th:block th:switch="${messageSource.getLmsAlarmCourseType()}">
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Request}">
-                        <p style="padding: 5px 0px;">*시험설문을 완료해야 Employee Training Log에 자동 기록됩니다.</p>
-                    </th:block>
-                </th:block>
-            </th:block>
-
-            <!-- Class Training -->
-            <th:block th:case="BC0102">
-                <th:block th:switch="${messageSource.getLmsAlarmCourseType()}">
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).ApprovalManager}">
-                        <p style="padding: 5px 0px;">*시험설문을 완료해야 Employee Training Log에 자동 기록됩니다.</p>
-                    </th:block>
-                </th:block>
-            </th:block>
-
-            <!-- 부서별 Training -->
-            <th:block th:case="BC0103"></th:block>
-
-            <!-- 외부 Training -->
-            <th:block th:case="BC0104">
-                <th:block th:switch="${messageSource.getLmsAlarmCourseType()}">
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseReportApproach}">
-                        <p style="padding: 5px 0px;">*교육참석보고서를 작성해야 Employee Training Log에 자동 기록됩니다.</p>
-                    </th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).ApprovalTeam}">
-                        <p style="padding: 5px 0px;">*교육참석보고서를 작성해야 Employee Training Log에 자동 기록됩니다.</p>
-                    </th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseReportApproach}">
-                        <p style="padding: 5px 0px;">*교육참석보고서를 작성해야 Employee Training Log에 자동 기록됩니다.</p>
-                    </th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).DocApproval}"></th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).DocApprovalTeam}"></th:block>
-                    <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).DocReject}"></th:block>
-                </th:block>
-            </th:block>
-        </th:block>
+        <div style="width:100%; height:70px; line-height: 70px;; background: #8BC34A; text-align: center; ">
+            <b><span style="color:white; font-size: 16px;">&lt;LMS 안내 메일&gt;</span></b>
+        </div>
         <br>
-        <div class="footer">
+
+        <div style="padding-left: 10px; padding-right: 10px;">
+            <th:block th:switch="${messageSource.getCourse().getCourseMaster().getId()}">
+                <!-- Self Training -->
+                <th:block th:case="BC0101">
+                    <th:block th:switch="${messageSource.getLmsAlarmCourseType()}">
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseAccountAssign}">
+                            <p style="padding: 5px 0px;">
+                                <span th:text="${messageSource.getCourse().getTitle()}"></span> 교육 수강생으로 지정되었습니다.
+                            </p>
+                            <p style="padding: 5px 0px;">
+                                해당 교육을 신청하셔서 교육기간 내 완료해 주십시오.(<a th:href="${mainurl}" target="_blank">교육현황 바로가기</a>)
+                            </p>
+                        </th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseReportApproach}">
+
+                        </th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseToDateApproach}"></th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Request}">
+                            <p style="padding: 5px 0px;">
+                                <span th:text="${messageSource.getCourse().getTitle()}"></span> 교육 신청이 완료되었습니다.
+                            </p>
+                            <p style="padding: 5px 0px;">
+                                교육 완료 후 시험 및/또는 설문을 완료해 주십시오(<a th:href="${mainurl}" target="_blank">교육현황 바로가기</a>)
+                            </p>
+                        </th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Approval}"></th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).ApprovalTeam}"></th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).ApprovalManager}"></th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Reject}"></th:block>
+
+                    </th:block>
+                    <br>
+                </th:block>
+
+
+                <!-- Class Training -->
+                <th:block th:case="BC0102">
+                    <th:block th:switch="${messageSource.getLmsAlarmCourseType()}">
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseAccountAssign}">
+                            <p style="padding: 5px 0px;">
+                                <span th:text="${messageSource.getCourse().getTitle()}"></span> 교육 수강생으로 지정되었습니다.
+                            </p>
+                            <p style="padding: 5px 0px;">
+                                해당 교육을 신청하셔서 교육기간 내 완료해 주십시오.(<a th:href="${mainurl}" target="_blank">교육현황 바로가기</a>)
+                            </p>
+                        </th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseReportApproach}">
+
+                        </th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseToDateApproach}"></th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Request}"></th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Approval}">
+                            <p style="padding: 5px 0px;">
+                                아래 교육에 대한 <span th:text="${messageSource.getSender().getName()}"></span>님의 승인 요청이 있습니다.(<a th:href="${appurl}" target="_blank">결재함 바로가기</a>)
+                            </p>
+                        </th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).ApprovalTeam}">
+                            <p style="padding: 5px 0px;">
+                                아래 교육에 대한 <span th:text="${messageSource.getCourseAccount().getAccount().getName()}"></span>님의 관리자 승인 요청이 있습니다.(<a th:href="${appurl}" target="_blank">결재함 바로가기</a>)
+                            </p>
+                        </th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).ApprovalManager}">
+                            <p style="padding: 5px 0px;">
+                                <span th:text="${messageSource.getCourse().getTitle()}"></span> 교육에 대한 결재가 완료되었습니다.
+                            </p>
+                            <p style="padding: 5px 0px;">
+                                교육 완료 후 시험 및/또는 설문을 완료해 주십시오(<a th:href="${mainurl}" target="_blank">교육현황 바로가기</a>)
+                            </p>
+                        </th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Reject}">
+                            <p style="padding: 5px 0px;">
+                                <span th:text="${messageSource.getCourse().getTitle()}"></span>&nbsp;
+                                교육에 대한 결재가 반려되었습니다.
+                            </p>
+                            <p style="padding: 5px 0px;">
+                                반려 사유를 확인하시기 바랍니다.(<a th:href="${docurl1}" target="_blank">결재함 바로가기</a>)
+                            </p>
+                        </th:block>
+                    </th:block>
+                    <br>
+                </th:block>
+
+
+                <!-- 부서별 교육 -->
+                <th:block th:case="BC0103">
+                    <th:block th:switch="${messageSource.getLmsAlarmCourseType()}">
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseAccountAssign}">
+                        </th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseReportApproach}">
+                        </th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseToDateApproach}"></th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Request}"></th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Approval}"></th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).ApprovalTeam}"></th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).ApprovalManager}"></th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Reject}"></th:block>
+                    </th:block>
+                </th:block>
+
+
+                <!-- 외부 교육 -->
+                <th:block th:case="BC0104">
+                    <th:block th:switch="${messageSource.getLmsAlarmCourseType()}">
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseAccountAssign}">
+                            <p style="padding: 5px 0px;">
+                                <span th:text="${messageSource.getCourse().getTitle()}"></span> 교육 수강생으로 지정되었습니다.
+                            </p>
+                            <p style="padding: 5px 0px;">
+                                해당 교육을 신청해 주십시오.(<a th:href="${mainurl}" target="_blank">교육현황 바로가기</a>)
+                            </p>
+                            <br>
+                        </th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseReportApproach}">
+                            <p style="padding: 5px 0px;">
+                                <span th:text="${messageSource.getTitle()}"></span>
+                            </p>
+                            <p style="padding: 5px 0px;">
+                                외부교육 완료 후 3일 이내 교육참석보고서를 작성해 주십시오.(<a th:href="${rpturl}" target="_blank">외부결재 바로가기</a>)
+                            </p>
+                        </th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseToDateApproach}"></th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Request}">
+                        </th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Approval}">
+                            <p style="padding: 5px 0px;">
+                                아래 교육에 대한 <span th:text="${messageSource.getSender().getName()}"></span>님의 승인 요청이 있습니다.(<a th:href="${appurl}" target="_blank">결재함 바로가기</a>)
+                            </p>
+                        </th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).ApprovalTeam}">
+                            <p style="padding: 5px 0px;">
+                                <span th:text="${messageSource.getCourse().getTitle()}"></span> 교육에 대한 결재가 완료되었습니다.
+                            </p>
+                            <p style="padding: 5px 0px;">
+                                외부교육 완료 후 3일 이내 교육참석보고서를 작성해 주십시오.(<a th:href="${doccommiturl2}" target="_blank">외부결재 바로가기</a>)
+                            </p>
+                        </th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).ApprovalManager}"></th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Reject}">
+                            <p style="padding: 5px 0px;">
+                                <span th:text="${messageSource.getCourse().getTitle()}"></span>&nbsp;
+                                교육에 대한 결재가 반려되었습니다.
+                            </p>
+                            <p style="padding: 5px 0px;">
+                                반려 사유를 확인하시기 바랍니다.(<a th:href="${docurl2}" target="_blank">결재함 바로가기</a>)
+                            </p>
+                        </th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).DocApproval}">
+                            <span th:text="${messageSource.getDocument().getAccount().getName()}"></span>님의 교육참석보고서 승인 요청이 있습니다.(<a th:href="${appurl}" target="_blank">결재함 바로가기</a>)
+                        </th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).DocApprovalTeam}">
+                            <p style="padding: 5px 0px;">
+                                <span th:text="${messageSource.getCourse().getTitle()}"></span>&nbsp;
+                                교육에 대한 교육참석보고서가 승인 되었습니다.(<a th:href="${rpturl}" target="_blank">결재완료 바로가기</a>)
+                            </p>
+                            <p style="padding: 5px 0px;">
+                                *수료증이 있는 경우 LMS에 수료증을 업로드해 주세요.(<a th:href="${certiurl}" target="_blank">수료증 업로드 바로가기</a>)
+                            </p>
+                            <p style="padding: 5px 0px;">
+                                *수료증 업로드 후 Employee Training Log에서 외부교육 기록을 확인 및 '배포'해 주십시오.(<a th:href="${logurl}" target="_blank">Employee Training Log 바로가기</a>)
+                            </p>
+
+                        </th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).DocReject}">
+                            <p style="padding: 5px 0px;">
+                                <span th:text="${messageSource.getCourse().getTitle()}"></span>&nbsp;
+                                교육에 대한 교육참석보고서가 반려되었습니다.(<a th:href="${rpturl}" target="_blank">외부결재 바로가기</a>)
+                            </p>
+                            <p style="padding: 5px 0px;">
+                                반려 사유를 확인하시기 바랍니다.(<a th:href="${rpturl}" target="_blank">결재함 바로가기</a>)
+                            </p>
+                        </th:block>
+                    </th:block>
+                    <br>
+                </th:block>
+
+            </th:block>
+
+            <!-- 교육과정일 경우 -->
+            <th:block th:if="${messageSource.getDocument()} == null">
+                <table width="100%" cellpadding="10" cellspacing="5" border="1" align="center" style="border-collapse:collapse; border:1px gray solid;">
+                    <thead>
+                    <tr>
+                        <th style="padding: 5px; border:1px gray solid; text-align: center; background: #FAFAFA">교육유형</th>
+                        <th style="padding: 5px; border:1px gray solid; text-align: center; background: #FAFAFA">과정명</th>
+                        <th style="padding: 5px; border:1px gray solid; text-align: center; background: #FAFAFA">교육기간</th>
+        <!--                <th class="text-center">수강기간</th>-->
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td th:text="${messageSource.getCourse().getCourseMaster().getCourseName()}" style="padding: 5px; border:1px gray solid; text-align: center"></td>
+                        <td th:text="${messageSource.getCourse().getTitle()}" style="padding: 5px; border:1px gray solid;"></td>
+                        <td style="padding: 5px; border:1px gray solid; text-align: center">
+                            <span th:if="${#strings.equalsIgnoreCase( messageSource.getCourse().getIsAlways(), '1')}" th:text="${'(상시교육) 교육일수:' + messageSource.getCourse().getDay() + '일'}"></span>
+                            <span th:if="${#strings.equalsIgnoreCase( messageSource.getCourse().getIsAlways(), '0')}" th:text="${messageSource.getCourse().getFromDate() + ' ~ ' + messageSource.getCourse().getToDate()}"></span>
+                        </td>
+        <!--                <td>-->
+        <!--                    <th:block th:unless="${messageSource.getCourseAccount()} != null">-->
+        <!--                        <span th:text="${messageSource.getCourseAccount().getFromDate() + ' ~ ' + messageSource.getCourseAccount().getToDate()}"></span>-->
+        <!--                    </th:block>-->
+        <!--                </td>-->
+                    </tr>
+                    </tbody>
+                </table>
+            </th:block>
+
+            <br>
+            <!-- 교육참석보고서일 경우 -->
+            <th:block th:if="${messageSource.getDocument()} != null">
+                <p style="padding: 5px 0px;" th:utext="|${messageSource.getDocument().getContent()}|">content</p></td>
+            </th:block>
+
+            <th:block th:switch="${messageSource.getCourse().getCourseMaster().getId()}">
+                <!-- Self Training -->
+                <th:block th:case="BC0101">
+                    <th:block th:switch="${messageSource.getLmsAlarmCourseType()}">
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Request}">
+                            <p style="padding: 5px 0px;">*시험설문을 완료해야 Employee Training Log에 자동 기록됩니다.</p>
+                        </th:block>
+                    </th:block>
+                </th:block>
+
+                <!-- Class Training -->
+                <th:block th:case="BC0102">
+                    <th:block th:switch="${messageSource.getLmsAlarmCourseType()}">
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).ApprovalManager}">
+                            <p style="padding: 5px 0px;">*시험설문을 완료해야 Employee Training Log에 자동 기록됩니다.</p>
+                        </th:block>
+                    </th:block>
+                </th:block>
+
+                <!-- 부서별 Training -->
+                <th:block th:case="BC0103"></th:block>
+
+                <!-- 외부 Training -->
+                <th:block th:case="BC0104">
+                    <th:block th:switch="${messageSource.getLmsAlarmCourseType()}">
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseReportApproach}">
+                            <p style="padding: 5px 0px;">*교육참석보고서를 작성해야 Employee Training Log에 자동 기록됩니다.</p>
+                        </th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).ApprovalTeam}">
+                            <p style="padding: 5px 0px;">*교육참석보고서를 작성해야 Employee Training Log에 자동 기록됩니다.</p>
+                        </th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseReportApproach}">
+                            <p style="padding: 5px 0px;">*교육참석보고서를 작성해야 Employee Training Log에 자동 기록됩니다.</p>
+                        </th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).DocApproval}"></th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).DocApprovalTeam}"></th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).DocReject}"></th:block>
+                    </th:block>
+                </th:block>
+            </th:block>
+
+        </div>
+        <hr>
+        <div class="footer" style="text-align: center">
             <p>본 이메일의 발신자 주소는 발신전용으로 회신되지 않습니다.</p>
             <p>COPYRIGHT© Dt&SanoMedics. CO. LTD. ALL RIGHTS RESERVED.</p>
             <br>
