@@ -58,7 +58,7 @@
                             </div>
                             <div class="panel-footer text-right">
                                 <th:block th:if="${cv.status != null and cv.status.name() eq 'CURRENT'}">
-                                    <a class="btn btn-purple" th:href="@{/mypage/{id}/download(id=${cv.id})}"><i class="fa fa-download"></i> Download</a>
+                                    <a class="btn btn-purple" th:href="@{/mypage/cv/{id}/download(id=${cv.id})}"><i class="fa fa-download"></i> Download</a>
                                     <a class="btn btn-primary" th:href="@{/mypage/cv/new?id={id}(id=${cv.id})}">
                                         <i class="fa fa-pencil"></i> New CV
                                     </a>
