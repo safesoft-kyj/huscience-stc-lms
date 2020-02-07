@@ -51,7 +51,7 @@ public class CertificateNumberController {
     public String add(Model model) {
 
         pageInfo.setPageId("m-course-add");
-        pageInfo.setPageTitle("수료증정보");
+        pageInfo.setPageTitle("수료증채번");
 
         CourseCertificateNumber courseCertificateNumber = new CourseCertificateNumber();
 
@@ -76,7 +76,7 @@ public class CertificateNumberController {
     public String edit(@PathVariable("id") int id, Model model) {
 
         pageInfo.setPageId("m-course-edit");
-        pageInfo.setPageTitle("수료증정보");
+        pageInfo.setPageTitle("수료증채번");
         model.addAttribute(pageInfo);
         model.addAttribute("border", courseCertificateNumberRepository.findById(id).get());
 

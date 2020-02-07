@@ -1,6 +1,5 @@
 package com.dtnsm.lms.mybatis.controller;
 
-import com.dtnsm.lms.controller.BorderAdminController;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.util.PageInfo;
 import org.slf4j.LoggerFactory;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin/user")
 public class UserController {
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(BorderAdminController.class);
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     UserMapperService userMapperService;

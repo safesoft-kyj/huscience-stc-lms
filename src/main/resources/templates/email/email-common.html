@@ -26,7 +26,8 @@
 , rpturl='http://lms.dtnsm.com/approval/mainRequest2?status=report', certiurl='http://lms.dtnsm.com/mypage/certificate/file'
 , logurl = 'http://lms.dtnsm.com/mypage/courseTraingLog'
 , docurl1='http://lms.dtnsm.com/approval/mainRequest1'
-, docurl2='http://lms.dtnsm.com/approval/mainRequest2'" style="background: #fff">
+, docurl2='http://lms.dtnsm.com/approval/mainRequest2'
+, doccommiturl2='http://lms.dtnsm.com/approval/mainRequest2?status=complete'" style="background: #fff">
         <br><p>&lt;LMS 안내 메일&gt;</p><br>
 
         <th:block th:switch="${messageSource.getCourse().getCourseMaster().getId()}">
@@ -161,7 +162,7 @@
                             <span th:text="${messageSource.getCourse().getTitle()}"></span> 교육에 대한 결재가 완료되었습니다.
                         </p>
                         <p style="padding: 5px 0px;">
-                            외부교육 완료 후 3일 이내 교육참석보고서를 작성해 주십시오.(<a th:href="${apprcommiturl}" target="_blank">결재완료 바로가기</a>)
+                            외부교육 완료 후 3일 이내 교육참석보고서를 작성해 주십시오.(<a th:href="${doccommiturl2}" target="_blank">외부결재 바로가기</a>)
                         </p>
                     </th:block>
                     <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).ApprovalManager}"></th:block>
