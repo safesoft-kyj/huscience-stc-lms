@@ -80,7 +80,8 @@
                                     <td th:text="${uploadFile.getAccount().getName()}"></td>
 
                                     <td class="text-center">
-                                        <a th:href="@{/mypage/certificate/file/delete/{id}(id=${uploadFile.getId()})}">Delete</a>
+<!--                                        <a th:href="@{/mypage/certificate/file/delete/{id}(id=${uploadFile.getId()})}">Delete</a>-->
+                                        <a th:text="#{label.delete}" th:href="@{/mypage/certificate/file/delete/{id}(id=${uploadFile.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
 <!--                                        <a th:if="${uploadFile.getCourseAccount() == null}" th:href="@{/mypage/certificate/file/delete/{id}(id=${uploadFile.getId()})}">Delete</a>-->
                                     </td>
                                 </tr>
