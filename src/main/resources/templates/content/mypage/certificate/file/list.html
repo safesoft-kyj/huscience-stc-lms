@@ -54,10 +54,12 @@
                                 <tr>
                                     <th class="col-md-1">#</th>
 <!--                                    <th>UserID</th>-->
+                                    <th class="min-tablet col-md-1">생성구분</th>
                                     <th>수료증</th>
 <!--                                    <th>저장 파일명</th>-->
                                     <th class="min-tablet col-md-1">작성일</th>
                                     <th class="min-tablet col-md-1">사용자</th>
+
 <!--                                    <th class="min-desktop">용량</th>-->
                                     <th class="text-center col-md-1" th:text="#{label.actions}">Delete</th>
                                 </tr>
@@ -65,6 +67,10 @@
                                 <tbody>
                                 <tr th:each="uploadFile, index : ${fileList}">
                                     <td th:text="${index.count}"></td>
+                                    <td class="text-center">
+                                        <span th:if="${uploadFile.getCourseAccount() == null}">사용자업로드</span>
+                                        <span th:if="${uploadFile.getCourseAccount() != null}">시스템발급</span>
+                                    </td>
 <!--                                    <td th:text="${uploadFile.getAccount().getUserId()}"></td>-->
                                     <td class="text-left">
                                         <a th:href="@{/mypage/certificate/file/downloadFile/{id}(id=${uploadFile.getId()})}" th:text="${uploadFile.getFileName()}" target="_blank"></a>
@@ -72,9 +78,10 @@
 <!--                                    <td th:text="${uploadFile.getSaveName()}"></td>-->
                                     <td th:text="${uploadFile.getCreatedDate()} ? ${#dates.format(uploadFile.getCreatedDate(), 'yyyy-MM-dd')} : ${uploadFile.getCreatedDate()}" class="text-center"></td>
                                     <td th:text="${uploadFile.getAccount().getName()}"></td>
-<!--                                    <td th:text="${uploadFile.getSize()}"></td>-->
+
                                     <td class="text-center">
-                                        <a th:if="${uploadFile.getCourseAccount() == null}" th:href="@{/mypage/certificate/file/delete/{id}(id=${uploadFile.getId()})}">Delete</a>
+                                        <a th:href="@{/mypage/certificate/file/delete/{id}(id=${uploadFile.getId()})}">Delete</a>
+<!--                                        <a th:if="${uploadFile.getCourseAccount() == null}" th:href="@{/mypage/certificate/file/delete/{id}(id=${uploadFile.getId()})}">Delete</a>-->
                                     </td>
                                 </tr>
                                 </tbody>
