@@ -102,6 +102,7 @@ public class InfoController {
         return "content/info/monthUser";
     }
 
+
     @GetMapping("/year/{sctype}")
     public String year(@RequestParam(value = "title", defaultValue = "") String title
             , @PathVariable("sctype") ScheduleType sctype
