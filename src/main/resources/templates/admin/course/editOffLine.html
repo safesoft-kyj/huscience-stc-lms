@@ -114,7 +114,7 @@
                             <span th:if="${#fields.hasErrors('cnt')}" th:errors="*{cnt}"></span>
                         </div>
                         <!-- 부서별 교육은 시험, 설문, 수료증이 없음 -->
-                        <th:block th:if="${#strings.equalsIgnoreCase(course.getCourseMaster().getId(), 'BC0103')}">
+                        <th:block th:if="${#strings.equalsIgnoreCase(course.getCourseMaster().getId(), 'BC0102')}">
                             <div class="form-group">
                                 <label class="col-sm-2 control-label" th:text="#{label.course.isbook}">교제제공여부</label>
                                 <div class="col-sm-4">

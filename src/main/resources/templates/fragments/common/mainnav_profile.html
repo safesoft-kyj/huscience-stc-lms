@@ -19,7 +19,7 @@
                     <div sec:authentication="principal.engName"></div>
                 </th:block>
                 <th:block th:if="${#authentication.getPrincipal().getEngName().isEmpty()}">
-                    <div sec:authentication="principal.userName"></div>
+                    <div sec:authentication="principal.username"></div>
                 </th:block>
                 <th:block th:unless="${#authentication.getPrincipal().getOrgDept().isEmpty()}">
                     <span sec:authentication="principal.orgDept"></span>

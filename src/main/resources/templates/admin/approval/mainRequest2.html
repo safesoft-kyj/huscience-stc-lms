@@ -222,7 +222,7 @@
                                                                     </div>
                                                                     <div th:if="${#strings.equalsIgnoreCase(doc.getFnStatus(), '2')}">
                                                                         <a class="btn btn-danger"  th:href="@{/admin/approval/{requestName}/approvalDocument/{id}(requestName=${requestName}, status=${status}, id=${doc.getId()})}">
-                                                                            <i class="demo-pli-inbox-into"></i> <span th:text="${'참석보고서(기각)'}"></span>
+                                                                            <i class="demo-pli-inbox-into"></i> <span th:text="${'참석보고서(반려)'}"></span>
                                                                         </a>
                                                                     </div>
                                                                     <!-- 진행중 -->
