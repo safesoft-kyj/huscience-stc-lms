@@ -129,7 +129,12 @@ public class ScheduleController {
         Calendar now = Calendar.getInstance();
         schedule.setYear(String.valueOf(now.get(Calendar.YEAR)));
 
-        pageInfo.setPageTitle("연간일정");
+        if (sctype == ScheduleType.MATRIX) {
+            pageInfo.setPageTitle("Employee Matrix");
+        }
+        else if (sctype == ScheduleType.CALENDAR) {
+            pageInfo.setPageTitle("연간일정");
+        }
 
         model.addAttribute(pageInfo);
         model.addAttribute("schedule", schedule);
@@ -165,7 +170,14 @@ public class ScheduleController {
             , Model model) {
 
         pageInfo.setPageId("m-border-edit");
-        pageInfo.setPageTitle("연간일정");
+
+        if (sctype == ScheduleType.MATRIX) {
+            pageInfo.setPageTitle("Employee Matrix");
+        }
+        else if (sctype == ScheduleType.CALENDAR) {
+            pageInfo.setPageTitle("연간일정");
+        }
+
 
         Schedule schedule = scheduleService.getById(id);
 

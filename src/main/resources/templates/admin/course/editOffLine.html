@@ -113,54 +113,57 @@
                             </div>
                             <span th:if="${#fields.hasErrors('cnt')}" th:errors="*{cnt}"></span>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" th:text="#{label.course.isbook}">교제제공여부</label>
-                            <div class="col-sm-4">
-                                <select th:field="*{isBook}" class="form-control">
-                                    <option value="Y" >Y</option>
-                                    <option value="N" >N</option>
-                                </select>
+                        <!-- 부서별 교육은 시험, 설문, 수료증이 없음 -->
+                        <th:block th:if="${#strings.equalsIgnoreCase(course.getCourseMaster().getId(), 'BC0103')}">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" th:text="#{label.course.isbook}">교제제공여부</label>
+                                <div class="col-sm-4">
+                                    <select th:field="*{isBook}" class="form-control">
+                                        <option value="Y" >Y</option>
+                                        <option value="N" >N</option>
+                                    </select>
+                                </div>
+                                <span th:if="${#fields.hasErrors('isBook')}" th:errors="*{isBook}"></span>
+                                <label class="col-sm-2 control-label" th:text="#{label.course.isquiz}">시험진행여부</label>
+                                <div class="col-sm-4">
+                                    <select th:field="*{isQuiz}" class="form-control">
+                                        <option value="Y" >Y</option>
+                                        <option value="N" >N</option>
+                                    </select>
+                                </div>
+                                <span th:if="${#fields.hasErrors('isQuiz')}" th:errors="*{isQuiz}"></span>
                             </div>
-                            <span th:if="${#fields.hasErrors('isBook')}" th:errors="*{isBook}"></span>
-                            <label class="col-sm-2 control-label" th:text="#{label.course.isquiz}">시험진행여부</label>
-                            <div class="col-sm-4">
-                                <select th:field="*{isQuiz}" class="form-control">
-                                    <option value="Y" >Y</option>
-                                    <option value="N" >N</option>
-                                </select>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" th:text="#{label.course.iscerti}">수료증여부</label>
+                                <div class="col-sm-4">
+                                    <select th:field="*{isCerti}" class="form-control">
+                                        <option value="Y" >Y</option>
+                                        <option value="N" >N</option>
+                                    </select>
+                                </div>
+                                <span th:if="${#fields.hasErrors('isCerti')}" th:errors="*{isCerti}"></span>
+                                <label class="col-sm-2 control-label" th:text="#{label.course.issurvey}">설문진행여부</label>
+                                <div class="col-sm-4">
+                                    <select th:field="*{isSurvey}" class="form-control">
+                                        <option value="Y" >Y</option>
+                                        <option value="N" >N</option>
+                                    </select>
+                                </div>
+                                <span th:if="${#fields.hasErrors('isSurvey')}" th:errors="*{isSurvey}"></span>
                             </div>
-                            <span th:if="${#fields.hasErrors('isQuiz')}" th:errors="*{isQuiz}"></span>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" th:text="#{label.course.iscerti}">수료증여부</label>
-                            <div class="col-sm-4">
-                                <select th:field="*{isCerti}" class="form-control">
-                                    <option value="Y" >Y</option>
-                                    <option value="N" >N</option>
-                                </select>
+                            <div class="form-group" id="certi-detail">
+                                <label class="col-sm-2 control-label text-info" th:text="#{label.course.certiHeadText}">발급번호(HeadText)</label>
+                                <div class="col-sm-10">
+                                    <input type="text" th:field="*{certiHead}" id="certiHead" placeholder="수료증 발급번호" class="form-control" onKeyUp="this.value=this.value.toUpperCase();">
+                                </div>
+                                <span th:if="${#fields.hasErrors('certiHead')}" th:errors="*{certiHead}"></span>
                             </div>
-                            <span th:if="${#fields.hasErrors('isCerti')}" th:errors="*{isCerti}"></span>
-                            <label class="col-sm-2 control-label" th:text="#{label.course.issurvey}">설문진행여부</label>
-                            <div class="col-sm-4">
-                                <select th:field="*{isSurvey}" class="form-control">
-                                    <option value="Y" >Y</option>
-                                    <option value="N" >N</option>
-                                </select>
-                            </div>
-                            <span th:if="${#fields.hasErrors('isSurvey')}" th:errors="*{isSurvey}"></span>
-                        </div>
-                        <div class="form-group" id="certi-detail">
-                            <label class="col-sm-2 control-label text-info" th:text="#{label.course.certiHeadText}">발급번호(HeadText)</label>
-                            <div class="col-sm-10">
-                                <input type="text" th:field="*{certiHead}" id="certiHead" placeholder="수료증 발급번호" class="form-control" onKeyUp="this.value=this.value.toUpperCase();">
-                            </div>
-                            <span th:if="${#fields.hasErrors('certiHead')}" th:errors="*{certiHead}"></span>
-                        </div>
+                        </th:block>
                         <div id="editSection"></div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="editor" th:text="#{label.course.introduce}">소개</label>
                             <div class="col-sm-10">
-                                <textarea class="form-control" th:field="*{content}" name="content" id="editor" style="width: 100%; height: 300px;"></textarea>
+                                <textarea class="form-control" th:field="*{content}" name="content" id="editor" style="width: 100%; height: 200px;"></textarea>
                             </div>
                             <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
                         </div>

@@ -40,7 +40,7 @@ public class CertificateNumberController {
     public String list(Model model) {
 
         pageInfo.setPageId("m-course-list-page");
-        pageInfo.setPageTitle("수료증정보");
+        pageInfo.setPageTitle("수료증채번");
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courseCertificateNumberRepository.findAll());
 

@@ -65,10 +65,10 @@
                             <table id="demo-dt-basic" class="table table-striped table-bordered" cellspacing="0" width="100%">
                                 <thead>
                                 <tr>
-                                    <th th:text="#{label.id}">ID</th>
-                                    <th th:text="#{label.name}">관리자명</th>
-                                    <th th:text="#{label.createdate}">등록일</th>
-                                    <th class="text-center col-sm-2" th:text="#{label.edit}">Edit</th>
+                                    <th th:text="#{label.id}" class="text-center col-sm-2">ID</th>
+                                    <th th:text="#{label.name}" class="text-center col-sm-3">관리자명</th>
+                                    <th class="text-center col-sm-3">적용일</th>
+                                    <th class="text-center col-sm-4" th:text="#{label.edit}">Edit</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -84,7 +84,7 @@
                                     <td>
                                         <div class="form-inline">
                                             <a th:text="#{label.active}" th:href="@{/admin/registration/courseManager/updateActive(userId=${manager.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Active" data-container="body"></a>
-                                            <a th:text="#{label.edit}" th:href="@{/admin/registration/courseManager/edit(userId=${manager.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+<!--                                            <a th:text="#{label.edit}" th:href="@{/admin/registration/courseManager/edit(userId=${manager.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>-->
                                             <a th:text="#{label.delete}" th:href="@{/admin/registration/courseManager/delete(userId=${manager.getUserId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
                                         </div>
                                     </td>

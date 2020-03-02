@@ -132,77 +132,79 @@
                             </div>
                             <span th:if="${#fields.hasErrors('cnt')}" th:errors="*{cnt}"></span>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" th:text="#{label.course.isquiz}">시험진행여부</label>
-                            <div class="col-sm-10">
-                                <select th:field="*{isQuiz}" class="form-control">
-                                    <option value="Y" >Y</option>
-                                    <option value="N" >N</option>
-                                </select>
-                            </div>
-                            <span th:if="${#fields.hasErrors('isQuiz')}" th:errors="*{isQuiz}"></span>
-                        </div>
-                        <div class="form-group" style="display: none" id="quiz-detail">
-                            <label class="col-sm-2 control-label" for="quiz_file"><i class="fa fa-file-excel-o"></i> 시험문제</label>
-                            <div class="col-sm-2">
-                                <input type="file" name="quiz_file" id="quiz_file" accept=".xlsx">
-                            </div>
-                            <label class="col-sm-2 control-label" for="passCount" th:text="#{label.course.quiz.pathCount}">합격문항수</label>
-                            <div class="col-sm-2">
-                                <input type="number" name="passCount" id="passCount" placeholder="" class="form-control">
-                            </div>
-                            <label class="col-sm-2 control-label" for="examHour">시험시간</label>
-                            <div class="col-sm-2">
-                                <input type="number" step=".01" name="examHour" id="examHour" placeholder="example hour" class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" th:text="#{label.course.issurvey}">설문진행여부</label>
-                            <div class="col-sm-10">
-                                <select th:field="*{isSurvey}" class="form-control">
-                                    <option value="Y" >Y</option>
-                                    <option value="N" >N</option>
-                                </select>
-                            </div>
-                            <span th:if="${#fields.hasErrors('isSurvey')}" th:errors="*{isSurvey}"></span>
-                        </div>
-                        <th:block th:if="${surveys != null}">
-                            <div class="form-group" style="display: none" id="survey-detail">
-                                <label class="col-sm-2 control-label">설문선택</label>
+                        <!-- 부서별 교육은 시험, 설문, 수료증이 없음 -->
+                        <th:block th:if="${#strings.equalsIgnoreCase(course.getCourseMaster().getId(), 'BC0102')}">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" th:text="#{label.course.isquiz}">시험진행여부</label>
                                 <div class="col-sm-10">
-                                    <select  class="form-control" name="activeSurvey">
-                                        <option th:each="survey : ${surveys}" th:value="${survey.getId()}" th:text="${survey.getName()}"></option>
+                                    <select th:field="*{isQuiz}" class="form-control">
+                                        <option value="Y" >Y</option>
+                                        <option value="N" >N</option>
                                     </select>
                                 </div>
+                                <span th:if="${#fields.hasErrors('isQuiz')}" th:errors="*{isQuiz}"></span>
+                            </div>
+                            <div class="form-group" style="display: none" id="quiz-detail">
+                                <label class="col-sm-2 control-label" for="quiz_file"><i class="fa fa-file-excel-o"></i> 시험문제</label>
+                                <div class="col-sm-4">
+                                    <input type="file" name="quiz_file" id="quiz_file" accept=".xlsx">
+                                </div>
+                                <label class="col-sm-2 control-label" for="passCount" th:text="#{label.course.quiz.pathCount}">합격문항수</label>
+                                <div class="col-sm-1">
+                                    <input type="number" name="passCount" id="passCount" placeholder="" class="form-control">
+                                </div>
+                                <label class="col-sm-2 control-label" for="examHour">시험시간</label>
+                                <div class="col-sm-1">
+                                    <input type="number" step=".01" name="examHour" id="examHour" placeholder="example hour" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" th:text="#{label.course.issurvey}">설문진행여부</label>
+                                <div class="col-sm-10">
+                                    <select th:field="*{isSurvey}" class="form-control">
+                                        <option value="Y" >Y</option>
+                                        <option value="N" >N</option>
+                                    </select>
+                                </div>
+                                <span th:if="${#fields.hasErrors('isSurvey')}" th:errors="*{isSurvey}"></span>
+                            </div>
+                            <th:block th:if="${surveys != null}">
+                                <div class="form-group" style="display: none" id="survey-detail">
+                                    <label class="col-sm-2 control-label">설문선택</label>
+                                    <div class="col-sm-10">
+                                        <select  class="form-control" name="activeSurvey">
+                                            <option th:each="survey : ${surveys}" th:value="${survey.getId()}" th:text="${survey.getName()}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </th:block>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" th:text="#{label.course.iscerti}">수료증여부</label>
+                                <div class="col-sm-10">
+                                    <select th:field="*{isCerti}" class="form-control">
+                                        <option value="Y" >Y</option>
+                                        <option value="N" >N</option>
+                                    </select>
+                                </div>
+                                <span th:if="${#fields.hasErrors('isCerti')}" th:errors="*{isCerti}"></span>
+                            </div>
+                            <div class="form-group" style="display: none" id="certi-detail">
+                                <label class="col-sm-2 control-label text-info" th:text="#{label.course.certiHeadText}">발급번호(HeadText)</label>
+                                <div class="col-sm-10">
+                                    <input type="text" th:field="*{certiHead}" id="certiHead" placeholder="수료증 발급번호" class="form-control" onKeyUp="this.value=this.value.toUpperCase();">
+                                </div>
+                                <span th:if="${#fields.hasErrors('certiHead')}" th:errors="*{certiHead}"></span>
                             </div>
                         </th:block>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" th:text="#{label.course.iscerti}">수료증여부</label>
-                            <div class="col-sm-10">
-                                <select th:field="*{isCerti}" class="form-control">
-                                    <option value="Y" >Y</option>
-                                    <option value="N" >N</option>
-                                </select>
-                            </div>
-                            <span th:if="${#fields.hasErrors('isCerti')}" th:errors="*{isCerti}"></span>
-                        </div>
-                        <div class="form-group" style="display: none" id="certi-detail">
-                            <label class="col-sm-2 control-label text-info" th:text="#{label.course.certiHeadText}">발급번호(HeadText)</label>
-                            <div class="col-sm-10">
-                                <input type="text" th:field="*{certiHead}" id="certiHead" placeholder="수료증 발급번호" class="form-control" onKeyUp="this.value=this.value.toUpperCase();">
-                            </div>
-                            <span th:if="${#fields.hasErrors('certiHead')}" th:errors="*{certiHead}"></span>
-                        </div>
-
                         <div id="editSection"></div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="editor" th:text="#{label.course.introduce}">소개</label>
                             <div class="col-sm-10">
-                                <textarea class="form-control" th:field="*{content}" name="content" id="editor" style="width: 100%; height: 300px;"></textarea>
+                                <textarea class="form-control" th:field="*{content}" name="content" id="editor" style="width: 100%; height: 200px;"></textarea>
                             </div>
                             <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
                         </div>
-                        <div class="form-group" th:each="num: ${#numbers.sequence(1,2)}">
+                        <div class="form-group" th:each="num: ${#numbers.sequence(1,1)}">
                             <label class="col-sm-2 control-label" for="editor" th:text="#{label.file} + ${num}">첨부파일</label>
                             <div class="col-sm-10">
                                 <input type="file" name="files">

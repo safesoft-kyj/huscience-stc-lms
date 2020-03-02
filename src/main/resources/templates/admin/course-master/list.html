@@ -45,9 +45,9 @@
 
                 <div class="panel-body">
                     <div>
-                        <div class="col-sm-6">
-                        </div>
-                        <div class="col-sm-6 text-right">
+<!--                        <div class="col-sm-6">-->
+<!--                        </div>-->
+                        <div class="col-sm-12 text-right">
                             <a class="btn btn-purple" th:href="@{/admin/course-master/courseStatusUpdate}"><i class="demo-pli-upload-to-cloud"></i> 교육과정 상태 업데이트</a>
                             <a class="btn btn-purple" th:href="@{/admin/course-master/courseStepStatusUpdate}"><i class="demo-pli-upload-to-cloud"></i> 교육중->수강기간만료 상태 업데이트</a>
                             <a class="btn btn-purple" th:href="@{/admin/course-master/add}"><i class="demo-pli-add"></i> Add</a>
@@ -64,9 +64,11 @@
                                     <th class="text-center col-sm-1" th:text="#{label.no}">번호</th>
                                     <th class="text-center col-sm-1" th:text="#{label.id}">ID</th>
                                     <th class="text-center" th:text="#{label.course.type}">교육유형명</th>
-                                    <th class="text-center col-sm-2" th:text="#{label.type}">신청일자유형</th>
-                                    <th class="text-center col-sm-2" th:text="#{label.course.isCourseTeamApproval}">팀장/부서장 승인여부</th>
-                                    <th class="text-center col-sm-2" th:text="#{label.course.isCourseManagerApproval}">과정관리자 승인여부</th>
+                                    <th class="text-center col-sm-1" th:text="#{label.type}">신청일자유형</th>
+                                    <th class="text-center col-sm-1" th:text="#{label.course.isCourseTeamApproval}">팀장/부서장 승인여부</th>
+                                    <th class="text-center col-sm-1" th:text="#{label.course.isCourseManagerApproval}">과정관리자 승인여부</th>
+                                    <th class="text-center col-sm-1">기본학습일수</th>
+                                    <th class="text-center col-sm-1">기본학습시간</th>
                                     <th class="text-center col-sm-2" th:text="#{label.edit}">Edit</th>
                                 </tr>
                                 </thead>
@@ -83,6 +85,8 @@
                                     </td>
                                     <td class="text-center" th:text="${border.getIsTeamMangerApproval()}"></td>
                                     <td class="text-center" th:text="${border.getIsCourseMangerApproval()}"></td>
+                                    <td class="text-center" th:text="${border.getDay()}"></td>
+                                    <td class="text-center" th:text="${border.getHour()}"></td>
                                     <td>
                                         <div class="form-inline">
                                             <a th:text="#{label.edit}" th:href="@{/admin/course-master/edit/{id}(id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>

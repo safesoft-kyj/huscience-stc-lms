@@ -235,6 +235,12 @@ public class CourseAdminController {
 
         course.setCourseMaster(courseMasterService.getById(typeId));
 
+        if(course.getCourseMaster().getId().equalsIgnoreCase("BC0101")) {
+            if(section_file.getName().equals("") || section_file.getSize() == 0) {
+                return String.format("redirect:/admin/course/%s/addOnline", typeId);
+            }
+        }
+
         // isAlways : 1:상시, 2:기간 => 상시인 경우 오늘부터 최대일자로 기간을 설정한다.
         if(course.getIsAlways().equals("1")) {
             course.setRequestFromDate(DateUtil.getTodayString());
