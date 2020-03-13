@@ -105,7 +105,7 @@
                             </tr>
                             <tr th:each="tr, stat : ${trainingRecordReviewList}">
                                 <td class="text-center" th:text="${#dates.format(tr.requestDate, 'dd-MMM-yyyy').toUpperCase()}"></td>
-                                <td class="text-center" th:text="${#dates.format(tr.dateOfReview, 'dd-MMM-yyyy').toUpperCase()}"></td>
+                                <td class="text-center" th:if="${tr.dateOfReview != null}" th:text="${#dates.format(tr.dateOfReview, 'dd-MMM-yyyy').toUpperCase()}"></td>
                                 <td>
                                     <span th:if="${tr.curriculumVitae != null}"><i class="fa fa-check-square-o"></i> CV</span>
                                     <span th:if="${tr.trainingRecordReviewJdList != null && #lists.size(tr.trainingRecordReviewJdList) > 0}"><i class="fa fa-check-square-o"></i> JD</span>
