@@ -1092,6 +1092,11 @@ public class ApprovalCourseProcessService {
 
         courseAccount.setFnStatus("2");
         courseAccount.setCourseStatus(CourseStepStatus.reject);
+
+        // TODO : 반려처리시 요청타입을 9로 변경하여 교육신청을 다시 할 수 있도록 처리한다.
+        // 1:관리자 지정, 2:교육자 신청, 9:결재반려(교육신청시 교육자신청상태 2를 찾아 신청하지 못하도록 되어 있음)
+//        courseAccount.setRequestType("9");
+
         courseAccount.setIsCommit("1");
 
         courseAccount = courseAccountService.save(courseAccount);
@@ -1258,6 +1263,11 @@ public class ApprovalCourseProcessService {
 
         courseAccount.setFnStatus("2");
         courseAccount.setCourseStatus(CourseStepStatus.reject);
+
+        // TODO : 반려처리시 요청타입을 9로 변경하여 교육신청을 다시 할 수 있도록 처리한다.
+        // 1:관리자 지정, 2:교육자 신청, 9:결재반려(교육신청시 교육자신청상태 2를 찾아 신청하지 못하도록 되어 있음)
+//        courseAccount.setRequestType("9");
+
         courseAccount.setIsCommit("1");
 
         courseAccount = courseAccountService.save(courseAccount);

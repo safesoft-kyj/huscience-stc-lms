@@ -10,6 +10,7 @@ import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import com.dtnsm.lms.domain.constant.QuizStatusType;
 import com.dtnsm.lms.domain.constant.SurveyStatusType;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
+import com.dtnsm.lms.repository.CourseAccountRepository;
 import com.dtnsm.lms.repository.CourseTrainingLogRepository;
 import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.*;
@@ -17,11 +18,15 @@ import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -54,6 +59,8 @@ public class MyPageController {
     @Autowired
     CourseAccountService courseAccountService;
     @Autowired
+    CourseAccountRepository courseAccountRepository;
+    @Autowired
     CourseSectionService courseSectionService;
     @Autowired
     CourseSectionActionService courseSectionActionService;
@@ -85,6 +92,9 @@ public class MyPageController {
     @Autowired
     JobDescriptionFileService jobDescriptionFileService;
 
+    @Autowired
+    JPAQueryFactory queryFactory;
+
     private MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
 
     private PageInfo pageInfo = new PageInfo();
@@ -93,6 +103,42 @@ public class MyPageController {
         pageInfo.setParentId("m-mypage");
         pageInfo.setParentTitle("마이페이지");
     }
+
+//    @GetMapping("/main")
+//    public String main(Model model
+//            , @RequestParam(value="typeId",  defaultValue = "%") String typeId
+//            , @RequestParam(value="courseStepStatusId",  defaultValue = "%") String courseStepStatusId
+//            , @RequestParam(value="title",  defaultValue = "%") String title
+//            , Pageable pageable) {
+//
+//        pageInfo.setPageId("m-mypage-main");
+//        pageInfo.setPageTitle("교육현황");
+//
+//        //CustomUserDetails userDetails = SessionUtil.getUserDetail();
+//        Account account = userService.getAccountByUserId(SessionUtil.getUserId());
+//
+//        Page<CourseAccount> courseAccountList;
+//        if (courseStepStatusId.equals("%")) {
+//            courseAccountList = courseAccountService.getListUserId(SessionUtil.getUserId(), typeId + "%", "%" + title + "%", pageable);
+//        } else {
+//            courseAccountList = courseAccountService.getListUserId(SessionUtil.getUserId(), typeId + "%", "%" + title + "%", CourseStepStatus.valueOf(courseStepStatusId), pageable);
+//        }
+//
+//        Account parentAccount = userService.getAccountByUserId(account.getParentUserId());
+//
+////        UserVO userVO = userMapperService.getUserById(account.getUserId());
+//
+//        model.addAttribute(pageInfo);
+//        model.addAttribute("courseAccountList", courseAccountList);
+//        model.addAttribute("account", account);
+//        model.addAttribute("parentAccount", parentAccount);
+//        model.addAttribute("accountList", userService.getAccountList());
+//        model.addAttribute("courseMasterList", courseMasterService.getList());
+//        model.addAttribute("courseTypeList", codeService.getMinorList("BC01")); // onLine, offLine 구분
+//        model.addAttribute("courseStepStatus", CourseStepStatus.class.getEnumConstants()); // 교육상태
+//
+//        return "content/mypage/main";
+//    }
 
     @GetMapping("/main")
     public String main(Model model
@@ -105,26 +151,39 @@ public class MyPageController {
         pageInfo.setPageTitle("교육현황");
 
         //CustomUserDetails userDetails = SessionUtil.getUserDetail();
-        Account account = userService.getAccountByUserId(SessionUtil.getUserId());
+//        Account account = userService.getAccountByUserId(SessionUtil.getUserId());
 
         Page<CourseAccount> courseAccountList;
+//        QCourseAccount account = QCourseAccount.courseAccount;
+//        BooleanBuilder builder = new BooleanBuilder();
+//        builder.and(account.account.userId.contains(SessionUtil.getUserId()));
+
         if (courseStepStatusId.equals("%")) {
             courseAccountList = courseAccountService.getListUserId(SessionUtil.getUserId(), typeId + "%", "%" + title + "%", pageable);
+
         } else {
             courseAccountList = courseAccountService.getListUserId(SessionUtil.getUserId(), typeId + "%", "%" + title + "%", CourseStepStatus.valueOf(courseStepStatusId), pageable);
+
+//            builder.and(account.course.courseMaster.id.contains(typeId));
+//            builder.and(account.course.title.contains(title));
+//            builder.and(account.courseStatus.eq(CourseStepStatus.valueOf(courseStepStatusId)));
         }
 
-        Account parentAccount = userService.getAccountByUserId(account.getParentUserId());
+//        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+//        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "fromDate", "isCommit"));
+//        courseAccountList = courseAccountRepository.findAll(builder, pageable);
+
+//        Account parentAccount = userService.getAccountByUserId(account.getParentUserId());
 
 //        UserVO userVO = userMapperService.getUserById(account.getUserId());
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseAccountList", courseAccountList);
-        model.addAttribute("account", account);
-        model.addAttribute("parentAccount", parentAccount);
-        model.addAttribute("accountList", userService.getAccountList());
+//        model.addAttribute("account", account);
+//        model.addAttribute("parentAccount", parentAccount);
+//        model.addAttribute("accountList", userService.getAccountList());
         model.addAttribute("courseMasterList", courseMasterService.getList());
-        model.addAttribute("courseTypeList", codeService.getMinorList("BC01")); // onLine, offLine 구분
+//        model.addAttribute("courseTypeList", codeService.getMinorList("BC01")); // onLine, offLine 구분
         model.addAttribute("courseStepStatus", CourseStepStatus.class.getEnumConstants()); // 교육상태
 
         return "content/mypage/main";
@@ -137,18 +196,18 @@ public class MyPageController {
         pageInfo.setPageTitle("사용자정보");
 
         Account account = userService.getAccountByUserId(SessionUtil.getUserId());
-        List<CourseAccount> courseAccountList = courseAccountService.getCourseAccountByUserId(SessionUtil.getUserId());
+//        List<CourseAccount> courseAccountList = courseAccountService.getCourseAccountByUserId(SessionUtil.getUserId());
 
-        Account parentAccount = userService.getAccountByUserId(account.getParentUserId());
+//        Account parentAccount = userService.getAccountByUserId(account.getParentUserId());
 
         // 나의 서명을 가지고 온다.
         Optional<Signature> optionalSignature = signatureRepository.findById(SessionUtil.getUserId());
         String sign = optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "";
 
         model.addAttribute(pageInfo);
-        model.addAttribute("courseAccountList", courseAccountList);
+//        model.addAttribute("courseAccountList", courseAccountList);
         model.addAttribute("account", account);
-        model.addAttribute("parentAccount", parentAccount);
+//        model.addAttribute("parentAccount", parentAccount);
         model.addAttribute("accountList", userService.getAccountList());
         model.addAttribute("sign", sign);
 

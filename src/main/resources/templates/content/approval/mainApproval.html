@@ -89,6 +89,14 @@
 <!--                                        <hr class="table-head">-->
                                         <div class="table-responsive">
                                             <table id="customer-list-page" class="table" cellspacing="0" width="100%">
+                                                <colgroup>
+                                                    <col width="5%">
+                                                    <col width="15%">
+                                                    <col width="35%">
+                                                    <col width="10%">
+                                                    <col width="10%">
+                                                    <col width="35%">
+                                                </colgroup>
                                                 <thead>
                                                 <tr style="background: #FAFAFA;">
                                                     <th class="text-center col-sm-1" th:text="#{label.no}">번호</th>
@@ -102,7 +110,8 @@
                                                 </thead>
                                                 <tbody>
                                                 <tr th:each="border, index : ${borders}">
-                                                    <td th:text="${borders.size() + documents.size() - index.index}" class="text-center"></td>
+<!--                                                    <td th:text="${borders.size() + documents.size() - index.index}" class="text-center"></td>-->
+                                                    <td class="text-center"></td>
                                                     <td class="text-center">
                                                         <span th:text="${border.getCourseAccount().getCourse().getCourseMaster().getCourseName()}"></span>
                                                     </td>
@@ -151,7 +160,7 @@
                                                                                         </colgroup>
                                                                                         <thead>
                                                                                         <tr style="background: #FAFAFA;">
-                                                                                            <th class="text-center">#</th>
+                                                                                            <th class="text-center" th:text="#{label.no}">#</th>
                                                                                             <th class="text-center">결재상태</th>
                                                                                             <th class="text-center">결재일</th>
                                                                                             <th class="text-center">결재자</th>
@@ -193,8 +202,8 @@
                                                     </td>
                                                 </tr>
                                                 <tr th:each="document, index : ${documents}">
-
-                                                    <td class="text-center" th:text="${documents.size() - index.index}"></td>
+                                                    <td class="text-center"></td>
+<!--                                                    <td class="text-center" th:text="${documents.size() - index.index}"></td>-->
                                                     <td class="text-center" th:text="${document.getDocument().getTemplate().getTitle()}">
                                                     </td>
 <!--                                                    <td>-->
@@ -243,7 +252,7 @@
                                                                                     </colgroup>
                                                                                     <thead>
                                                                                     <tr style="background: #FAFAFA;">
-                                                                                        <th class="text-center">#</th>
+                                                                                        <th th:text="#{label.no}" class="text-center">#</th>
                                                                                         <th class="text-center">결재상태</th>
                                                                                         <th class="text-center">결재일</th>
                                                                                         <th class="text-center">결재자</th>
@@ -254,7 +263,7 @@
                                                                                     <th:block  th:each="order, child_index : ${document.getDocument().getDocumentAccountOrders()}">
                                                                                         <th:block th:if="${#strings.equalsIgnoreCase(order.getFnStatus(), '2')}">
                                                                                             <tr>
-                                                                                                <td class="text-center" th:text="${child_index.index}"></td>
+                                                                                                <td class="text-center"></td>
                                                                                                 <td class="text-center text-danger" th:text="${'반려'}"></td>
                                                                                                 <td class="text-center" th:text="${#dates.format(order.getFnDate(), 'yyyy-MM-dd')}"></td>
                                                                                                 <td class="text-center" th:text="${order.getFnUser().getName()}"></td>
@@ -347,24 +356,68 @@
             });
 
 
-            $('#customer-list-page').DataTable({
-                "language": {
-                    "emptyTable": "데이터가 없습니다.",
-                    "lengthMenu": "페이지당 _MENU_ 개씩 보기",
-                    // "lengthMenu": "",
-                    "info": "현재 _START_ - _END_ / _TOTAL_건",
-                    "infoEmpty": "",
-                    "infoFiltered": "( _MAX_건의 데이터에서 필터링됨 )",
-                    "search": "검색: ",
-                    "zeroRecords": "일치하는 데이터가 없습니다.",
-                    "loadingRecords": "로딩중...",
-                    "processing":     "잠시만 기다려 주세요...",
-                    "paginate": {
-                        "next": "다음",
-                        "previous": "이전"
-                    }
-                },
+            var t = $('#customer-list-page').DataTable( {
+                "columnDefs": [ {
+                    "searchable": false,
+                    "orderable": false,
+                    "targets": 0
+                } ],
+                // "language": {
+                //     "emptyTable": "데이터가 없습니다.",
+                //     "lengthMenu": "페이지당 _MENU_ 개씩 보기",
+                //     // "lengthMenu": "",
+                //     "info": "현재 _START_ - _END_ / _TOTAL_건",
+                //     "infoEmpty": "",
+                //     "infoFiltered": "( _MAX_건의 데이터에서 필터링됨 )",
+                //     "search": "검색: ",
+                //     "zeroRecords": "일치하는 데이터가 없습니다.",
+                //     "loadingRecords": "로딩중...",
+                //     "processing":     "잠시만 기다려 주세요...",
+                //     "paginate": {
+                //         "next": "다음",
+                //         "previous": "이전"
+                //     }
+                // },
             });
+            t.order([3, 'desc']).draw();
+            t.on( 'order.dt search.dt', function () {
+                t.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+                    cell.innerHTML = i+1;
+                } );
+            } ).draw();
+
+            // t.on( 'order.dt search.dt', function () {
+            //     t.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+            //         cell.innerHTML = i+1;
+            //     } );
+            // } ).draw();
+            //
+            // var table = $('#customer-list-page').DataTable({
+            //     "language": {
+            //         "emptyTable": "데이터가 없습니다.",
+            //         "lengthMenu": "페이지당 _MENU_ 개씩 보기",
+            //         // "lengthMenu": "",
+            //         "info": "현재 _START_ - _END_ / _TOTAL_건",
+            //         "infoEmpty": "",
+            //         "infoFiltered": "( _MAX_건의 데이터에서 필터링됨 )",
+            //         "search": "검색: ",
+            //         "zeroRecords": "일치하는 데이터가 없습니다.",
+            //         "loadingRecords": "로딩중...",
+            //         "processing":     "잠시만 기다려 주세요...",
+            //         "paginate": {
+            //             "next": "다음",
+            //             "previous": "이전"
+            //         }
+            //     },
+            // });
+            //
+            // table.order([3, 'desc']).draw();
+            //
+            // table.on( 'order.dt search.dt', function () {
+            //     t.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+            //         cell.innerHTML = i+1;
+            //     } );
+            // } ).draw();
         });
 
     </script>

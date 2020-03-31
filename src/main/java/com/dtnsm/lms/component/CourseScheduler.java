@@ -324,22 +324,22 @@ public class CourseScheduler {
         }
 
         // 교육일이 7일로 임박한 사용자에게 알림 발송(Self 교육만)
-//        for (CourseAccount courseAccountVO : courseAccountMapperService.getCourseToDateAlarm("BC0101", "-7")) {
-//            CourseAccount courseAccount = courseAccountService.getById(courseAccountVO.getId());
-//
-//            MessageSource messageSource = MessageSource.builder()
-//                    .courseAccount(courseAccount)
-//                    .alarmGubun(LmsAlarmGubun.INFO)
-//                    .lmsAlarmCourseType(LmsAlarmCourseType.CourseToDateApproach)
-//                    .sender(courseAccount.getAccount()) // 승인자
-//                    .receive(courseAccount.getAccount())
-//                    .course(courseAccount.getCourse())
-//                    .title(String.format("%s에 대한 교육 기한 %s일 전입니다.", courseAccount.getCourse().getTitle(), 7))
-//                    .subject(String.format("[LMS/교육] %s 교육 %s일 전", courseAccount.getCourse().getTitle(), 7))
-//                    .content("")
-//                    .build();
-//
-//            MessageUtil.sendNotificationMessage(messageSource, true);
-//        }
+        for (CourseAccount courseAccountVO : courseAccountMapperService.getCourseToDateAlarm("BC0101", "-7")) {
+            CourseAccount courseAccount = courseAccountService.getById(courseAccountVO.getId());
+
+            MessageSource messageSource = MessageSource.builder()
+                    .courseAccount(courseAccount)
+                    .alarmGubun(LmsAlarmGubun.INFO)
+                    .lmsAlarmCourseType(LmsAlarmCourseType.CourseToDateApproach)
+                    .sender(courseAccount.getAccount()) // 승인자
+                    .receive(courseAccount.getAccount())
+                    .course(courseAccount.getCourse())
+                    .title(String.format("%s에 대한 교육 기한 %s일 전입니다.", courseAccount.getCourse().getTitle(), 7))
+                    .subject(String.format("[LMS/교육] %s 교육 %s일 전", courseAccount.getCourse().getTitle(), 7))
+                    .content("")
+                    .build();
+
+            MessageUtil.sendNotificationMessage(messageSource, true);
+        }
     }
 }
