@@ -65,9 +65,9 @@ public class Account {
     @Transient
     private int remainDay;
 
-    @OneToOne(mappedBy="account")
-    @PrimaryKeyJoinColumn
-    private CourseManager courseManager;
+//    @OneToOne(mappedBy="account")
+//    @PrimaryKeyJoinColumn
+//    private CourseManager courseManager;
 
 //    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<CourseAccount> courseAccounts = new ArrayList<>();

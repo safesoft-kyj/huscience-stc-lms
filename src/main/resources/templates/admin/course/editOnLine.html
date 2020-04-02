@@ -384,6 +384,17 @@
             todayHighlight: true
         });
 
+        $('#fromDate').change(function(){
+            var gap1 = dateDiff($('#fromDate').val(), $('#toDate').val());
+
+            $('#day').val(gap1);
+        });
+
+        $('#toDate').change(function(){
+            var gap2 = dateDiff($('#fromDate').val(), $('#toDate').val());
+            $('#day').val(gap2);
+        });
+
         // 상시여부
         $("#isAlways").change(function(){
             if($("#isAlways").is(":checked")){

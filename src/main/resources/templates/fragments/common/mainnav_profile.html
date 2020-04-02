@@ -16,10 +16,10 @@
 <!--                                            </span>-->
             <p class="mnp-name" sec:authorize="isAuthenticated()">
                 <th:block th:unless="${#authentication.getPrincipal().getEngName().isEmpty()}">
-                    <div sec:authentication="principal.engName"></div>
+                    <span sec:authentication="principal.engName"></span><br>
                 </th:block>
                 <th:block th:if="${#authentication.getPrincipal().getEngName().isEmpty()}">
-                    <div sec:authentication="principal.username"></div>
+                    <span sec:authentication="principal.username"></span><br>
                 </th:block>
                 <th:block th:unless="${#authentication.getPrincipal().getOrgDept().isEmpty()}">
                     <span sec:authentication="principal.orgDept"></span>

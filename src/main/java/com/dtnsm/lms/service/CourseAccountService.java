@@ -6,6 +6,7 @@ import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import com.dtnsm.lms.repository.CourseAccountOrderRepository;
 import com.dtnsm.lms.repository.CourseAccountRepository;
 import com.dtnsm.lms.repository.CourseCertificateInfoRepository;
+import com.querydsl.core.BooleanBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -85,12 +86,13 @@ public class CourseAccountService {
         return courseAccountRepository.findByCourse_IdAndAccount_UserId(courseId, userId);
     }
 
+    // 교육을 신청한 적이 있는지 확인
     public CourseAccount getByCourseIdAndUserIdAndRequestType(long courseId, String userId, String requestType) {
         return courseAccountRepository.findByCourse_IdAndAccount_UserIdAndRequestType(courseId, userId, requestType);
     }
 
 
-
+    // 교육필수대상자로 지정된 상태에서 교육신청대기중이 건.
     public CourseAccount getByCourseIdAndUserIdAndCourseStatus(long courseId, String userId, CourseStepStatus courseStepStatus) {
         return courseAccountRepository.findByCourse_IdAndAccount_UserIdAndCourseStatus(courseId, userId, courseStepStatus);
     }

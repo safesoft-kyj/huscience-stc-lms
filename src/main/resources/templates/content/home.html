@@ -485,9 +485,14 @@
                                 <div th:case="*">
                                     <hr class="table-head">
                                     <table id="customer-page" class="table" cellspacing="0" width="100%">
+                                        <colgroup width="5%"></colgroup>
+                                        <colgroup width="30%"></colgroup>
+                                        <colgroup width="10%"></colgroup>
+                                        <colgroup width="30%"></colgroup>
+                                        <colgroup width="25%"></colgroup>
                                         <thead>
                                         <tr style="background: #FAFAFA;">
-                                            <th class="text-center">#</th>
+                                            <th class="text-center" th:text="#{label.no}">No.</th>
                                             <th th:text="#{label.customer.name}" class="text-center">협약기관명</th>
                                             <th th:text="#{label.customer.date}" class="text-center">협약체결일자</th>
                                             <th th:text="#{label.customer.condition}" class="text-center">협약 특혜</th>

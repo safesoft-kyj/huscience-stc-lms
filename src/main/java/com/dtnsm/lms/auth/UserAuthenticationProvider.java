@@ -67,6 +67,9 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 
         } else {
             account = (CustomUserDetails) userService.loadUserByUsername(userId, password);
+
+            // 외부사용 사용유무가 flase면 로그인을 못하게 막는다.
+            if (!account.isEnabled()) account = null;
         }
 
         if(!ObjectUtils.isEmpty(account)) {

@@ -181,7 +181,7 @@ public class RegistrationController {
         Account account = userService.getAccountByUserId(id);
 
         pageInfo.setPageId("m-customer-edit");
-        pageInfo.setPageTitle("Role 수정");
+        pageInfo.setPageTitle("사용자");
         List<Role> roleList = roleService.getList();
 
         model.addAttribute(pageInfo);

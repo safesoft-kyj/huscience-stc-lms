@@ -80,23 +80,33 @@
                             <hr class="table-head">
                             <div class="table-responsive">
                                 <table id="customer-list-page" class="table" cellspacing="0" width="100%">
+                                    <colgroup width="2%"></colgroup>
+                                    <colgroup width="5%"></colgroup>
+                                    <colgroup width="40%"></colgroup>
+                                    <colgroup width="2%"></colgroup>
+                                    <colgroup width="10%"></colgroup>
+                                    <colgroup width="20%"></colgroup>
+                                    <colgroup width="10%"></colgroup>
                                     <thead>
                                     <tr style="background: #FAFAFA;">
-                                        <th class="text-center col-sm-1" th:text="#{label.no}">번호</th>
+                                        <th class="text-center">!</th>
+                                        <th class="text-center" th:text="#{label.no}">번호</th>
                                         <th class="text-center" th:text="#{label.subject}">제목</th>
-                                        <th class="text-center col-sm-1">! <i class="ion-paperclip"></i></th>
-                                        <th class="text-center col-sm-2" th:text="#{label.createby}">작성자</th>
-                                        <th class="text-center col-sm-2" th:text="#{label.createdate}">작성일</th>
-                                        <th class="text-center col-sm-1" th:text="#{label.readcount}">읽음</th>
+                                        <th class="text-center"><i class="fa fa-paperclip" aria-hidden="true"></i></th>
+                                        <th class="text-center" th:text="#{label.createby}">작성자</th>
+                                        <th class="text-center" th:text="#{label.createdate}">작성일</th>
+                                        <th class="text-center" th:text="#{label.readcount}">읽음</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr th:each="border, index : ${borders}" th:class="${border.getIsNotice().equals('1')} ? 'text-success' : ''">
+                                        <td class="text-center">
+                                            <span th:if="${#strings.equalsIgnoreCase(border.getIsNotice(), '1')}">!</span>
+                                        </td>
                                         <td th:text="${(borders.getTotalElements() - index.index) - (borders.number * 10)}" class="text-center"></td>
                                         <td><a th:href="@{/border/{typeId}/view/{id}(typeId=${typeId}, id=${border.getId()})}" th:text="${border.getTitle()}" th:class="${border.getIsNotice().equals('1')} ? 'text-success' : ''"></a></td>
                                         <td  class="text-center">
-                                            <span th:if="${#strings.equalsIgnoreCase(border.getIsNotice(), '1')}">!</span>
-                                            <span th:if="${border.getBorderFiles().size() > 0}" class="demo-icon"><i class="ion-paperclip"></i><span></span></span>
+                                            <span th:if="${border.getBorderFiles().size() > 0}" class="demo-icon"><i class="fa fa-paperclip" aria-hidden="true"></i><span></span></span>
                                         </td>
                                         <td th:text="${border.getAccount().getName()}" class="text-center"></td>
                                         <td th:text="${border.getCreatedDate()} ? ${#dates.format(border.getCreatedDate(), 'yyyy-MM-dd HH:mm:ss')} : ${border.getCreatedDate()}" class="text-center"></td>

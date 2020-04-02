@@ -28,4 +28,16 @@
         and a.course_status = 'process'
     </select>
 
+<!--    교육기간내 교육을 완료하지 않는 교육과정정-->
+<!--    select b.type_id, a.user_id, c.name, a.from_date, a.to_date, a.course_status-->
+<!--    , DATEDIFF(dd, a.from_date, a.to_date)+1 as 교육일수	&#45;&#45; 교육일수-->
+<!--    , DATEDIFF(dd, a.to_date, convert(char(10), getdate(), 121)) as 교육초과일수	&#45;&#45;교육초과일수-->
+<!--    , convert(varchar(10), getdate() + convert(int, -7), 121)-->
+<!--    from el_course_account a-->
+<!--    inner join el_course b-->
+<!--    on a.course_id = b.id-->
+<!--    left outer join account c-->
+<!--    on a.user_id = c.user_id-->
+<!--    where course_status = 'periodEnd'-->
+<!--    and b.type_id = 'BC0101'-->
 </mapper>
