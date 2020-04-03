@@ -80,7 +80,7 @@
                                             <input type="text" class="form-control" placeholder="Level or Score" th:field="*{languages[__${stat.index}__].languageCertifications[__${certStat.index}__].levelOrScore}">
                                         </td>
                                         <td>
-                                            <button class="btn btn-xs btn-danger" th:if="${language.readOnly eq false}" type="submit" name="remove" th:value="|languageCertification:${stat.index}.${certStat.index}|"><i class="fa fa-trash-o"></i>
+                                            <button class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|languageCertification:${stat.index}.${certStat.index}|"><i class="fa fa-trash-o"></i>
                                             </button>
                                         </td>
                                     </tr>

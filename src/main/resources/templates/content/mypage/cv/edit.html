@@ -227,14 +227,14 @@
 
             $(".career-present").change(function(e) {
                 if($(this).is(":checked")) {
-                    $("#careerHistories"+$(this).data("index")+"\\.endDate").val("").attr("disabled", "disabled");
+                    $("#careerHistories"+$(this).data("index")+"\\.endDate").attr("disabled", "disabled");
                 } else {
                     $("#careerHistories"+$(this).data("index")+"\\.endDate").removeAttr("disabled");
                 }
             }).trigger("change");
             $(".member-present").change(function(e) {
                 if($(this).is(":checked")) {
-                    $("#memberships"+$(this).data("index")+"\\.endYear").val("").attr("disabled", "disabled");
+                    $("#memberships"+$(this).data("index")+"\\.endYear").attr("disabled", "disabled");
                 } else {
                     $("#memberships"+$(this).data("index")+"\\.endYear").removeAttr("disabled");
                 }
@@ -254,7 +254,7 @@
                 var index = $(this).data("index");
                 var cindex = $(this).data("cindex");
                 if("Others" == val) {
-                    $("#languages"+index+"\\.languageCertifications"+cindex+"\\.certificateProgramOther").val("").removeAttr("disabled");
+                    $("#languages"+index+"\\.languageCertifications"+cindex+"\\.certificateProgramOther").removeAttr("disabled");
                 } else {
                     $("#languages"+index+"\\.languageCertifications"+cindex+"\\.certificateProgramOther").attr("disabled", "disabled");
                 }
@@ -289,12 +289,13 @@
                 }
 
                 var $sel = $("#experiences"+index+"\\.indication");
+                var $val = $("#experiences"+index+"\\.indication option:selected").val();
                 $('optgroup', $sel).hide();//.addClass('bg-gray');
                 var optgroup = $('optgroup[label="' + val + '"]', $sel);
                 setTimeout(function() {
                     optgroup.show();//.addClass('bg-gray');
                     optgroup.find('option:eq(0)').attr("selected", "selected");
-                    $sel.trigger("change");
+                    $sel.val($val).trigger("change");
                 }, 300);
 
                 // console.log($sel.find("option").eq(0));//.addClass('bg-gray').trigger("change");
