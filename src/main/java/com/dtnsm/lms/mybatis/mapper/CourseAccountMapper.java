@@ -14,4 +14,8 @@ public interface CourseAccountMapper {
 
     // 교육기간이 임박한 과정 사용자 Alarm 발송 대상자 조회
     List<CourseAccount> selectBeforeCourseToDateAlarm(String typeId, String day);
+
+    // 교육 수강 기간 만료 되었으나 교육을 완료하지 않은 교육대상자에게 보내지는 이메일
+    List<CourseAccount> getSelfTrainingExpirationToDateAlarm(Integer day);
+
 }

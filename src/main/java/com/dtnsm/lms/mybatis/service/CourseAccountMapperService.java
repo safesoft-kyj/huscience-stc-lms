@@ -21,4 +21,9 @@ public class CourseAccountMapperService {
     public List<CourseAccount> getCourseToDateAlarm(String typeId, String day) {
         return courseAccountMapper.selectBeforeCourseToDateAlarm(typeId, day);
     }
+
+    // 교육 수강 기간 만료 되었으나 교육을 완료하지 않은 교육대상자에게 보내지는 이메일
+    public List<CourseAccount> getSelfTrainingExpirationToDateAlarm(Integer day) {
+        return courseAccountMapper.getSelfTrainingExpirationToDateAlarm(day);
+    }
 }

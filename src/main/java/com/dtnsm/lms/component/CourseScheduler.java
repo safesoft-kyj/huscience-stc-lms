@@ -12,6 +12,7 @@ import com.dtnsm.lms.domain.datasource.MessageSource;
 import com.dtnsm.lms.mybatis.dto.UserVO;
 import com.dtnsm.lms.mybatis.service.CourseAccountMapperService;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
+import com.dtnsm.lms.repository.CourseAccountRepository;
 import com.dtnsm.lms.repository.RoleRepository;
 import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.CourseAccountService;
@@ -68,6 +69,9 @@ public class CourseScheduler {
 
     @Autowired
     private CourseAccountService courseAccountService;
+
+    @Autowired
+    private CourseAccountRepository courseAccountRepository;
 
 //    @Scheduled(cron = "10 * * * * *")
 //    public void run() {
@@ -289,6 +293,7 @@ public class CourseScheduler {
 
     // 매일 2시 40분에 실행
     // 외부교육 ToDate 익일 새벽에 외부교육참석보고서 작성 Alarm 발송 대상자 조회
+    // Self-Training 교육이수를 안했을 경우 만료일 다음날 새벽에 만료메일을 발송
     @Scheduled(cron = "0 40 2 * * *")
     public void sendCourseToDateAlarm() {
         List<CourseAccount> courseAccounts;
@@ -323,23 +328,43 @@ public class CourseScheduler {
             }
         }
 
+        // 교육 수강 기간 만료 되었으나 교육을 완료하지 않은 Self Training 교육대상자에게 보내지는 이메일 (1일 초과)
+//        for (CourseAccount courseAccount : courseAccountRepository.getCourseAccountByExpiration("BC0101", 1)) {
         // 교육일이 7일로 임박한 사용자에게 알림 발송(Self 교육만)
-        for (CourseAccount courseAccountVO : courseAccountMapperService.getCourseToDateAlarm("BC0101", "-7")) {
+        for (CourseAccount courseAccountVO : courseAccountMapperService.getSelfTrainingExpirationToDateAlarm(1)) {
             CourseAccount courseAccount = courseAccountService.getById(courseAccountVO.getId());
-
             MessageSource messageSource = MessageSource.builder()
                     .courseAccount(courseAccount)
                     .alarmGubun(LmsAlarmGubun.INFO)
-                    .lmsAlarmCourseType(LmsAlarmCourseType.CourseToDateApproach)
+                    .lmsAlarmCourseType(LmsAlarmCourseType.CourseToDateExpire)
                     .sender(courseAccount.getAccount()) // 승인자
                     .receive(courseAccount.getAccount())
                     .course(courseAccount.getCourse())
-                    .title(String.format("%s에 대한 교육 기한 %s일 전입니다.", courseAccount.getCourse().getTitle(), 7))
-                    .subject(String.format("[LMS/교육] %s 교육 %s일 전", courseAccount.getCourse().getTitle(), 7))
+                    .title(String.format("%s에 대한 교육 수강기간이 만료되었습니다.", courseAccount.getCourse().getTitle(), 7))
+                    .subject(String.format("[LMS/Self-Training] %s 교육 수강기간 만료", courseAccount.getCourse().getTitle(), 7))
                     .content("")
                     .build();
 
             MessageUtil.sendNotificationMessage(messageSource, true);
         }
+
+//        // 교육일이 7일로 임박한 사용자에게 알림 발송(Self 교육만)
+//        for (CourseAccount courseAccountVO : courseAccountMapperService.getCourseToDateAlarm("BC0101", "-7")) {
+//            CourseAccount courseAccount = courseAccountService.getById(courseAccountVO.getId());
+//
+//            MessageSource messageSource = MessageSource.builder()
+//                    .courseAccount(courseAccount)
+//                    .alarmGubun(LmsAlarmGubun.INFO)
+//                    .lmsAlarmCourseType(LmsAlarmCourseType.CourseToDateApproach)
+//                    .sender(courseAccount.getAccount()) // 승인자
+//                    .receive(courseAccount.getAccount())
+//                    .course(courseAccount.getCourse())
+//                    .title(String.format("%s에 대한 교육 기한 %s일 전입니다.", courseAccount.getCourse().getTitle(), 7))
+//                    .subject(String.format("[LMS/교육] %s 교육 %s일 전", courseAccount.getCourse().getTitle(), 7))
+//                    .content("")
+//                    .build();
+//
+//            MessageUtil.sendNotificationMessage(messageSource, true);
+//        }
     }
 }
