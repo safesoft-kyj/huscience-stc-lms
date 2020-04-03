@@ -52,7 +52,7 @@ public class BorderRestController {
 
             sb.append("<table class='table'>");
             sb.append("<tr>");
-            sb.append("<th class='text-center'>#</th>");
+            sb.append("<th class='text-center'>No.</th>");
             sb.append("<th class='text-center'>조회자</th>");
             sb.append("<th class='text-center'>조회일</th>");
             sb.append("</tr>");
