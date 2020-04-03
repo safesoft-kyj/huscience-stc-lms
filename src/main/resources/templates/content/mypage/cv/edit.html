@@ -289,12 +289,13 @@
                 }
 
                 var $sel = $("#experiences"+index+"\\.indication");
+                var $val = $("#experiences"+index+"\\.indication option:selected").val();
                 $('optgroup', $sel).hide();//.addClass('bg-gray');
                 var optgroup = $('optgroup[label="' + val + '"]', $sel);
                 setTimeout(function() {
                     optgroup.show();//.addClass('bg-gray');
                     optgroup.find('option:eq(0)').attr("selected", "selected");
-                    $sel.trigger("change");
+                    $sel.val($val).trigger("change");
                 }, 300);
 
                 // console.log($sel.find("option").eq(0));//.addClass('bg-gray').trigger("change");
