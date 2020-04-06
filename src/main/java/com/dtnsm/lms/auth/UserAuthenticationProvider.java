@@ -49,9 +49,13 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         boolean isLogin = false;
         try {
             //TODO Test code
-            if(("hjlim".equals(userId) || "mjlee".equals(userId)) && "1".equals(password)) {
-                isLogin = true;
-            } else {
+//            if(("hjlim".equals(userId) || "mjlee".equals(userId)) && "1".equals(password)) {
+//                isLogin = true;
+//            } else {
+//                isLogin = UserLogin.isLogin(userId, password);
+//            }
+            // 혹시 그룹웨어에 admin 계정을 있을경우 대비해서 제외시킴
+            if (!userId.equals("admin")) {
                 isLogin = UserLogin.isLogin(userId, password);
             }
         } catch (MalformedURLException e) {

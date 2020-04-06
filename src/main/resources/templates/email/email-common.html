@@ -52,6 +52,12 @@
 
                         </th:block>
                         <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseToDateApproach}"></th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseToDateExpire}">
+                            <p style="padding: 5px 0px;">
+                                <span th:text="${messageSource.getCourse().getTitle()}"></span> 교육에 교육 수강 기간이 만료 되었으나 교육을 이수 하지 않는 것으로 확인되었습니다.(<a th:href="${mainurl}" target="_blank">교육현황 바로가기</a>)
+                            </p>
+
+                        </th:block>
                         <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Request}">
                             <p style="padding: 5px 0px;">
                                 <span th:text="${messageSource.getCourse().getTitle()}"></span> 교육 신청이 완료되었습니다.
@@ -228,8 +234,24 @@
                         <td th:text="${messageSource.getCourse().getCourseMaster().getCourseName()}" style="padding: 5px; border:1px gray solid; text-align: center"></td>
                         <td th:text="${messageSource.getCourse().getTitle()}" style="padding: 5px; border:1px gray solid;"></td>
                         <td style="padding: 5px; border:1px gray solid; text-align: center">
-                            <span th:if="${#strings.equalsIgnoreCase( messageSource.getCourse().getIsAlways(), '1')}" th:text="${'(상시교육) 교육일수:' + messageSource.getCourse().getDay() + '일'}"></span>
-                            <span th:if="${#strings.equalsIgnoreCase( messageSource.getCourse().getIsAlways(), '0')}" th:text="${messageSource.getCourse().getFromDate() + ' ~ ' + messageSource.getCourse().getToDate()}"></span>
+
+                            <!-- 교육기간 만료이후 발송되는 메일일때 -->
+<!--                            <th:block th:if="${messageSource.getLmsAlarmCourseType() == T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseToDateExpire}">-->
+<!--                                <span th:if="${#strings.equalsIgnoreCase( messageSource.getCourse().getIsAlways(), '0')}" th:text="${messageSource.getCourseAccount().getFromDate() + ' ~ ' + messageSource.getCourseAccount().getToDate()}"></span>-->
+<!--                                <span th:if="${#strings.equalsIgnoreCase( messageSource.getCourse().getIsAlways(), '1')}" th:text="${'(상시교육) 교육일수:' + messageSource.getCourse().getDay() + '일'}"></span>-->
+<!--                                <span th:if="${#strings.equalsIgnoreCase( messageSource.getCourse().getIsAlways(), '0')}" th:text="${messageSource.getCourse().getFromDate() + ' ~ ' + messageSource.getCourse().getToDate()}"></span>-->
+<!--                            </th:block>-->
+
+                            <!--  개인별 교육기간이 없는 경우는 교육과정 교육기간을 표시한다. -->
+                            <th:block th:if="${messageSource.getCourseAccount() == null}">
+                                <span th:if="${#strings.equalsIgnoreCase( messageSource.getCourse().getIsAlways(), '1')}" th:text="${'(상시교육) 교육일수:' + messageSource.getCourse().getDay() + '일'}"></span>
+                                <span th:if="${#strings.equalsIgnoreCase( messageSource.getCourse().getIsAlways(), '0')}" th:text="${messageSource.getCourse().getFromDate() + ' ~ ' + messageSource.getCourse().getToDate()}"></span>
+                            </th:block>
+
+                            <!-- 개인별 교육기간이 있는 경우 -->
+                            <th:block th:if="${messageSource.getCourseAccount() != null}">
+                                <span th:text="${messageSource.getCourseAccount().getFromDate() + ' ~ ' + messageSource.getCourseAccount().getToDate()}"></span>
+                            </th:block>
                         </td>
         <!--                <td>-->
         <!--                    <th:block th:unless="${messageSource.getCourseAccount()} != null">-->
@@ -253,6 +275,10 @@
                     <th:block th:switch="${messageSource.getLmsAlarmCourseType()}">
                         <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).Request}">
                             <p style="padding: 5px 0px;">*시험설문을 완료해야 Employee Training Log에 자동 기록됩니다.</p>
+                        </th:block>
+                        <th:block th:case="${T(com.dtnsm.lms.domain.constant.LmsAlarmCourseType).CourseToDateExpire}">
+                            <p style="padding: 5px 0px;">*교육현황에서 해당 교육과정의 연장 버튼을 클릭하면 최초 1번 연장 할 수 있습니다.</p>
+                            <p style="padding: 5px 0px;">*수강기간을 연장해 기간내 교육을 이수해 주십시오.</p>
                         </th:block>
                     </th:block>
                 </th:block>

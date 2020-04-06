@@ -10,7 +10,7 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import java.util.List;
 
 
-public interface CourseAccountRepository extends JpaRepository<CourseAccount, Long>, QuerydslPredicateExecutor<CourseAccount> {
+public interface CourseAccountRepository extends JpaRepository<CourseAccount, Long>, QuerydslPredicateExecutor<CourseAccount>, CourseAccountCustomRepository {
 
 
 
@@ -51,7 +51,6 @@ public interface CourseAccountRepository extends JpaRepository<CourseAccount, Lo
 
     void deleteCourseAccountByAccount_UserId(String userId);
     void deleteCourseAccountByCourse_Id(long courseId);
-
 
 
     // 교육과정별 교육 상태

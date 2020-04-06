@@ -128,7 +128,11 @@ public class InfoController {
             // 읽음 증가
             scheduleService.updateViewCnt(schedule.getId(), SessionUtil.getUserId());
 
-            model.addAttribute("scheduleFileId", scheduleFile.getId());
+            if (scheduleFile != null) {
+                model.addAttribute("scheduleFileId", scheduleFile.getId());
+            } else {
+                model.addAttribute("scheduleFileId", "");
+            }
 //            model.addAttribute("titleList", titleList);
         } else {
             model.addAttribute("scheduleFileId", "");
