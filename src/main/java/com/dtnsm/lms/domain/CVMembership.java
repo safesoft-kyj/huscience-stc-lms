@@ -24,13 +24,13 @@ public class CVMembership extends AuditorEntity<String> implements Serializable 
     @JoinColumn(name = "cv_id", referencedColumnName = "id")
     private CurriculumVitae curriculumVitae;
 
-    @Column(name = "membership_name")
+    @Column(name = "membership_name", length = 500)
     private String membershipName;
 
-    @Column(name = "start_year")
+    @Column(name = "start_year", length = 4)
     private String startYear;
 
-    @Column(name = "end_year")
+    @Column(name = "end_year", length = 4)
     private String endYear;
 
     @Column(name = "present")

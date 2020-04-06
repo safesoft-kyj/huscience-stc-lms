@@ -53,10 +53,10 @@ public class CVEducation extends AuditorEntity<String> implements Serializable {
     @Enumerated(EnumType.STRING)
     private DegreeType degreeType;
 
-    @Column(name = "degree")
+    @Column(name = "degree", length = 500)
     private String degree;
 
-    @Column(name = "thesis_title")
+    @Column(name = "thesis_title", length = 500)
     private String thesisTitle;
 
     @Column(name = "name_of_supervisor")

@@ -27,7 +27,7 @@ public class CVCareerHistory extends AuditorEntity<String> implements Serializab
     @JoinColumn(name = "cv_id", referencedColumnName = "id")
     private CurriculumVitae curriculumVitae;
 
-    @Column(name = "company_name", length = 50)
+    @Column(name = "company_name", length = 150)
     private String companyName;
 
     @Column(name = "city_country")

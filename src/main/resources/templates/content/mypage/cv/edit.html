@@ -35,42 +35,41 @@
             <!-- Main Form Wizard -->
             <!--===================================================-->
                     <div id="demo-main-wz">
-
                         <!--nav-->
                         <ul class="row wz-steps wz-icon-bw wz-nav-off mar-top">
                             <li class="col-xs-2" th:classappend="${cv.pos == 0 ? 'active' : ''}">
-                                <a>
+                                <a data-id="0" th:styleappend="${cv.id != null && cv.id > 0 ? 'cursor: pointer !important' : ''}">
 <!--                                    <span class="text-danger"><i class="demo-pli-student-hat icon-2x"></i></span>-->
                                     <h5 class="mar-no">EDUCATION</h5>
                                 </a>
                             </li>
                             <li class="col-xs-2" th:classappend="${cv.pos == 1 ? 'active' : ''}">
-                                <a>
+                                <a data-id="1" th:styleappend="${cv.id != null && cv.id > 0 ? 'cursor: pointer !important' : ''}">
 <!--                                    <span class="text-warning"><i class="demo-pli-male icon-2x"></i></span>-->
                                     <h5 class="mar-no">CAREER HISTORY</h5>
                                 </a>
                             </li>
                             <li class="col-xs-2" th:classappend="${cv.pos == 2 ? 'active' : ''}">
-                                <a>
+                                <a data-id="2" th:styleappend="${cv.id != null && cv.id > 0 ? 'cursor: pointer !important' : ''}">
 <!--                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>-->
                                     <h5 class="mar-no">LICENSES & CERTIFICATION</h5>
                                 </a>
                             </li>
                             <li class="col-xs-2" th:classappend="${cv.pos == 3 ? 'active' : ''}">
-                                <a>
+                                <a data-id="3" th:styleappend="${cv.id != null && cv.id > 0 ? 'cursor: pointer !important' : ''}">
 <!--                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>-->
                                     <h5 class="mar-no">PROFESSIONAL AFFILIATIONS
                                     </h5>
                                 </a>
                             </li>
                             <li class="col-xs-2" th:classappend="${cv.pos == 4 ? 'active' : ''}">
-                                <a>
+                                <a data-id="4" th:styleappend="${cv.id != null && cv.id > 0 ? 'cursor: pointer !important' : ''}">
 <!--                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>-->
                                     <h5 class="mar-no">SKILLS</h5>
                                 </a>
                             </li>
                             <li class="col-xs-2" th:classappend="${cv.pos == 5 ? 'active' : ''}">
-                                <a>
+                                <a data-id="5" th:styleappend="${cv.id != null && cv.id > 0 ? 'cursor: pointer !important' : ''}">
 <!--                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>-->
                                     <h5 class="mar-no">EXPERIENCE</h5>
                                 </a>
@@ -84,8 +83,10 @@
 
 
                         <!--form-->
-                        <form class="form-horizontal" id="boardFrm2" action="#" th:action="@{/mypage/cv/edit}" th:object="${cv}" method="post">
+                        <form class="form-horizontal" id="cvForm" th:action="@{/mypage/cv/edit}" th:object="${cv}" method="post">
                             <div class="panel-body">
+                                <input type="hidden" name="currentPos" id="currentPos" th:value="${cv.pos}"/>
+                                <input type="hidden" name="goto" id="goto"/>
                                 <!-- wz form -->
                                 <div th:include="fragments/cv/education"></div>
                                 <div th:include="fragments/cv/careerHistory"></div>
@@ -99,9 +100,9 @@
 
                             <!--Footer buttons-->
                             <div class="pull-right pad-rgt mar-btm">
-                                <button type="submit" name="prev" class="previous btn btn-primary" th:value="${cv.pos - 1}" th:disabled="${cv.pos == 0}"><i class="fa fa-caret-left"></i> Previous</button>
-                                <button type="submit" name="next" class="next btn btn-primary" th:value="${cv.pos + 1}" th:disabled="${cv.pos == 5}">Next <i class="fa fa-caret-right"></i></button>
-                                <button type="submit" name="_submit" value="TEMP" class="btn btn-success" th:disabled="${cv.pos != 5}"><i class="fa fa-check"></i> Save & Preview</button>
+                                <button type="submit" name="prev" class="previous btn btn-primary" th:value="${cv.pos - 1}" th:if="${cv.pos > 0}"><i class="fa fa-caret-left"></i> Previous</button>
+                                <button type="submit" name="next" class="next btn btn-primary" th:value="${cv.pos + 1}" th:if="${cv.pos < 5}">Next <i class="fa fa-caret-right"></i></button>
+                                <button type="submit" name="_submit" value="TEMP" class="btn btn-success" th:if="${cv.pos == 5}"><i class="fa fa-check"></i> Registration</button>
                             </div>
 
                         </form>
@@ -127,6 +128,16 @@
     <script th:src="@{/default/plugins/select2/js/select2.min.js}"></script>
     <!--Bootstrap Wizard [ OPTIONAL ]-->
 <!--    <script th:src="@{/default/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js}"></script>-->
+    <script th:if="${cv.id != null && cv.id > 0}">
+        $(".wz-steps > li > a").click(function() {
+            var currentPos = $("#currentPos").val();
+            var pos = $(this).data("id");
+            if(currentPos != pos) {
+                $("#goto").val(pos);
+                $("#cvForm").submit();
+            }
+        });
+    </script>
     <script>
         $("select.degreeType").change(function() {
            var t = $(this).val();

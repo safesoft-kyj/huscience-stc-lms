@@ -256,11 +256,45 @@ public class MyPageCvJdController {
     @Transactional
     @PostMapping("/cv/edit")
     public String cv(@ModelAttribute("cv") CurriculumVitae cv, BindingResult result,
-                     SessionStatus sessionStatus, HttpServletRequest request, Model model) throws Exception {
+                     SessionStatus sessionStatus, HttpServletRequest request,
+                     @RequestParam("currentPos") Integer currentPos,
+                     @RequestParam(value = "goto", required = false) Integer goIndex,
+                     Model model) throws Exception {
         boolean isAdd = WebUtils.hasSubmitParameter(request, "add");
         boolean isRemove = WebUtils.hasSubmitParameter(request, "remove");
         boolean isPrev = WebUtils.hasSubmitParameter(request, "prev");
         boolean isNext = WebUtils.hasSubmitParameter(request, "next");
+
+        if(!ObjectUtils.isEmpty(goIndex)) {
+            int pos = currentPos.intValue();
+            switch (pos) {
+                case 0:
+                    educationValidator.validate(cv, result);
+                    break;
+                case 1:
+                    careerHistoryValidator.validate(cv, result);
+                    break;
+                case 2:
+                    licenseCertificationValidator.validate(cv, result);
+                    break;
+                case 3:
+                    membershipValidator.validate(cv, result);
+                    break;
+                case 4:
+                    skillValidator.validate(cv, result);
+                    break;
+                case 5:
+                    experienceValidator.validate(cv, result);
+                    break;
+            }
+
+            if(result.hasErrors()) {
+                log.info("<== validation error : {}", result.getAllErrors());
+            } else {
+                cv.setPos(goIndex.intValue());
+            }
+            return "content/mypage/cv/edit";
+        }
 
         if(isPrev) {
             cv.setPos(ServletRequestUtils.getIntParameter(request, "prev"));

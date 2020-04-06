@@ -23,7 +23,7 @@ public class CVLicense extends AuditorEntity<String> implements Serializable {
     @JoinColumn(name = "cv_id", referencedColumnName = "id")
     private CurriculumVitae curriculumVitae;
 
-    @Column(name = "name_of_license")
+    @Column(name = "name_of_license", length = 500)
     private String nameOfLicense;
 
     @Column(name = "license_no")

@@ -24,10 +24,10 @@ public class CVCertification extends AuditorEntity<String> implements Serializab
     @JoinColumn(name = "cv_id", referencedColumnName = "id")
     private CurriculumVitae curriculumVitae;
 
-    @Column(name = "name_of_certification")
+    @Column(name = "name_of_certification", length = 500)
     private String nameOfCertification;
 
-    @Column(name = "organizers")
+    @Column(name = "organizers", length = 500)
     private String organizers;
 
     @DateTimeFormat(pattern = "MMM yyyy")

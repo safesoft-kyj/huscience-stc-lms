@@ -22,7 +22,7 @@ public class CVComputerCertification extends AuditorEntity<String> implements Se
     @JoinColumn(name = "com_id", referencedColumnName = "id")
     private CVComputerKnowledge computerKnowledge;
 
-    @Column(name = "certificate_program")
+    @Column(name = "certificate_program", length = 500)
     private String certificateProgram;
 }
 
