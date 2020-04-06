@@ -3,3 +3,18 @@ spring:
     open-in-view: true
   profiles:
     active: prod
+
+logging:
+  level:
+    root: INFO
+    org.springframework:
+      web: INFO
+      security: INFO
+      session: INFO
+      data: INFO
+      jdbc:
+        core:
+          JdbcTemplate: INFO
+          StatementCreatorUtils: TRACE
+    com.dtnsm: DEBUG
+    org.apache.tiles: DEBUG

@@ -38,38 +38,38 @@
                         <!--nav-->
                         <ul class="row wz-steps wz-icon-bw wz-nav-off mar-top">
                             <li class="col-xs-2" th:classappend="${cv.pos == 0 ? 'active' : ''}">
-                                <a data-id="0" th:styleappend="${cv.id != null && cv.id > 0 ? 'cursor: pointer !important' : ''}">
+                                <a data-id="0" th:styleappend="${((cv.id != null && cv.id > 0) || cv.parentId != null) ? 'cursor: pointer !important' : ''}">
 <!--                                    <span class="text-danger"><i class="demo-pli-student-hat icon-2x"></i></span>-->
                                     <h5 class="mar-no">EDUCATION</h5>
                                 </a>
                             </li>
                             <li class="col-xs-2" th:classappend="${cv.pos == 1 ? 'active' : ''}">
-                                <a data-id="1" th:styleappend="${cv.id != null && cv.id > 0 ? 'cursor: pointer !important' : ''}">
+                                <a data-id="1" th:styleappend="${((cv.id != null && cv.id > 0) || cv.parentId != null) ? 'cursor: pointer !important' : ''}">
 <!--                                    <span class="text-warning"><i class="demo-pli-male icon-2x"></i></span>-->
                                     <h5 class="mar-no">CAREER HISTORY</h5>
                                 </a>
                             </li>
                             <li class="col-xs-2" th:classappend="${cv.pos == 2 ? 'active' : ''}">
-                                <a data-id="2" th:styleappend="${cv.id != null && cv.id > 0 ? 'cursor: pointer !important' : ''}">
+                                <a data-id="2" th:styleappend="${((cv.id != null && cv.id > 0) || cv.parentId != null) ? 'cursor: pointer !important' : ''}">
 <!--                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>-->
                                     <h5 class="mar-no">LICENSES & CERTIFICATION</h5>
                                 </a>
                             </li>
                             <li class="col-xs-2" th:classappend="${cv.pos == 3 ? 'active' : ''}">
-                                <a data-id="3" th:styleappend="${cv.id != null && cv.id > 0 ? 'cursor: pointer !important' : ''}">
+                                <a data-id="3" th:styleappend="${((cv.id != null && cv.id > 0) || cv.parentId != null) ? 'cursor: pointer !important' : ''}">
 <!--                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>-->
                                     <h5 class="mar-no">PROFESSIONAL AFFILIATIONS
                                     </h5>
                                 </a>
                             </li>
                             <li class="col-xs-2" th:classappend="${cv.pos == 4 ? 'active' : ''}">
-                                <a data-id="4" th:styleappend="${cv.id != null && cv.id > 0 ? 'cursor: pointer !important' : ''}">
+                                <a data-id="4" th:styleappend="${((cv.id != null && cv.id > 0) || cv.parentId != null) ? 'cursor: pointer !important' : ''}">
 <!--                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>-->
                                     <h5 class="mar-no">SKILLS</h5>
                                 </a>
                             </li>
                             <li class="col-xs-2" th:classappend="${cv.pos == 5 ? 'active' : ''}">
-                                <a data-id="5" th:styleappend="${cv.id != null && cv.id > 0 ? 'cursor: pointer !important' : ''}">
+                                <a data-id="5" th:styleappend="${((cv.id != null && cv.id > 0) || cv.parentId != null) ? 'cursor: pointer !important' : ''}">
 <!--                                    <span class="text-info"><i class="demo-pli-home icon-2x"></i></span>-->
                                     <h5 class="mar-no">EXPERIENCE</h5>
                                 </a>
@@ -128,7 +128,7 @@
     <script th:src="@{/default/plugins/select2/js/select2.min.js}"></script>
     <!--Bootstrap Wizard [ OPTIONAL ]-->
 <!--    <script th:src="@{/default/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js}"></script>-->
-    <script th:if="${cv.id != null && cv.id > 0}">
+    <script th:if="${((cv.id != null && cv.id > 0) || cv.parentId != null)}">
         $(".wz-steps > li > a").click(function() {
             var currentPos = $("#currentPos").val();
             var pos = $(this).data("id");
