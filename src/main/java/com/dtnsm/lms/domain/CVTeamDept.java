@@ -22,12 +22,12 @@ public class CVTeamDept extends AuditorEntity<String> implements Serializable {
     @JoinColumn(name = "cv_career_history_id", referencedColumnName = "id")
     private CVCareerHistory careerHistory;
 
-    @Column(name = "position")
+    @Column(name = "position", columnDefinition = "nvarchar(100)")
     private String position;
 
-    @Column(name = "team")
+    @Column(name = "team", columnDefinition = "nvarchar(100)")
     private String team;
 
-    @Column(name = "department")
+    @Column(name = "department", columnDefinition = "nvarchar(100)")
     private String department;
 }

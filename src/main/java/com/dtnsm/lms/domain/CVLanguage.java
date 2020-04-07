@@ -28,7 +28,7 @@ public class CVLanguage extends AuditorEntity<String> implements Serializable {
     @Column(name = "language")
     private String language;
 
-    @Column(name = "language_other", length = 500)
+    @Column(name = "language_other", columnDefinition = "nvarchar(500)")
     private String languageOther;
 
     @Column(name = "level")

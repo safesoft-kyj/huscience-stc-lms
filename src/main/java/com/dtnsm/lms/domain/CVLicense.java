@@ -23,7 +23,7 @@ public class CVLicense extends AuditorEntity<String> implements Serializable {
     @JoinColumn(name = "cv_id", referencedColumnName = "id")
     private CurriculumVitae curriculumVitae;
 
-    @Column(name = "name_of_license", length = 500)
+    @Column(name = "name_of_license", columnDefinition = "nvarchar(500)")
     private String nameOfLicense;
 
     @Column(name = "license_no")
@@ -32,7 +32,7 @@ public class CVLicense extends AuditorEntity<String> implements Serializable {
     @Column(name = "license_in_country")
     private String licenseInCountry;
 
-    @Column(name = "license_in_country_other")
+    @Column(name = "license_in_country_other", columnDefinition = "nvarchar(100)")
     private String licenseInCountryOther;
 
     @Column(name = "readonly")
