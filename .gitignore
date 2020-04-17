@@ -22,10 +22,10 @@ target/
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
-/dist/
-/nbdist/
+#/dist/
+/nbdist//
 /.nb-gradle/
-build/
+#build/
 
 ### VS Code ###
 .vscode/

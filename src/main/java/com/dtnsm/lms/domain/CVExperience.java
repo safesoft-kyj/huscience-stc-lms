@@ -28,19 +28,19 @@ public class CVExperience extends AuditorEntity<String> implements Serializable 
     @Column(name = "ta")
     private String ta;
 
-    @Column(name = "ta_other", length = 500)
+    @Column(name = "ta_other", columnDefinition = "nvarchar(255)")
     private String taOther;
 
     @Column(name = "indication")
     private String indication;
 
-    @Column(name = "indication_other", length = 500)
+    @Column(name = "indication_other", columnDefinition = "nvarchar(255)")
     private String indicationOther;
 
     @Column(name = "phase")
     private String phase;
 
-    @Column(name = "phase_other", length = 500)
+    @Column(name = "phase_other", columnDefinition = "nvarchar(255)")
     private String phaseOther;
 
     @Column(name = "global_or_local")
@@ -54,7 +54,7 @@ public class CVExperience extends AuditorEntity<String> implements Serializable 
     @Column(name = "role_other")
     private String roleOther;
 
-    @Column(name = "workingDetails", length = 500)
+    @Column(name = "workingDetails", columnDefinition = "nvarchar(1000)")
     private String workingDetails;
 
     @Column(name = "readonly")

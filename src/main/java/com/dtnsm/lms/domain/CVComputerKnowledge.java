@@ -25,7 +25,7 @@ public class CVComputerKnowledge extends AuditorEntity<String> implements Serial
     @JoinColumn(name = "cv_id", referencedColumnName = "id")
     private CurriculumVitae curriculumVitae;
 
-    @Column(name = "program_name", length = 500)
+    @Column(name = "program_name", columnDefinition = "nvarchar(500)")
     private String programName;
 
     @Column(name = "level")

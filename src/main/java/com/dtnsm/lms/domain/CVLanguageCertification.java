@@ -25,7 +25,7 @@ public class CVLanguageCertification extends AuditorEntity<String> implements Se
     @Column(name = "certificate_program")
     private String certificateProgram;
 
-    @Column(name = "certificate_program_other", length = 500)
+    @Column(name = "certificate_program_other", columnDefinition = "nvarchar(500)")
     private String certificateProgramOther;
 
     @Column(name = "level_or_score")

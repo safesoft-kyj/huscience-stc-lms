@@ -60,7 +60,7 @@
                         <input type="text" class="form-control" placeholder="Role(Other)" th:field="*{experiences[__${stat.index}__].roleOther}">
                     </td>
                     <td class="form-group" th:classappend="${#fields.hasErrors('experiences[__${stat.index}__].workingDetails')} ? 'has-error' : ''">
-                        <input type="text" class="form-control" placeholder="Working Details(Responsibilities)" th:field="*{experiences[__${stat.index}__].workingDetails}">
+                        <textarea rows="3" class="form-control" placeholder="Working Details(Responsibilities)" th:field="*{experiences[__${stat.index}__].workingDetails}"></textarea>
                     </td>
                     <td>
                         <button th:if="${experience.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|experience:${stat.index}|"><i class="fa fa-trash-o"></i>
