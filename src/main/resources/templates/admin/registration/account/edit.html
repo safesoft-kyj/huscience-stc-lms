@@ -42,7 +42,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="userId">User ID</label>
                             <div class="col-sm-10">
-                                <input type="text" th:field="*{userId}" id="userId" placeholder="User ID" class="form-control">
+                                <input type="text" th:field="*{userId}" id="userId" placeholder="User ID" class="form-control" readonly>
                             </div>
                             <span th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}"></span>
                         </div>

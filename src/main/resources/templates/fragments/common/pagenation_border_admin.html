@@ -7,29 +7,29 @@
         th:with="start=${T(Math).floor(borders.number/10)*10 + 1},
                 last=(${start + 9 < borders.totalPages ? start + 9 : borders.totalPages})">
         <li>
-            <a th:href="@{/admin/border/{typeId}(typeId=${typeId}, page=1)}" aria-label="First">
+            <a th:href="@{/admin/border/{typeId}(typeId=${typeId}, page=1, searchType=${param.searchType}, searchText=${param.searchText})}" aria-label="First">
                 <span aria-hidden="true">First</span>
             </a>
         </li>
 
         <li th:class="${borders.first} ? 'disabled'">
-            <a th:href="${borders.first} ? '#' :@{/admin/border/{typeId}(typeId=${typeId}, page=${borders.number})}" aria-label="Previous">
+            <a th:href="${borders.first} ? '#' :@{/admin/border/{typeId}(typeId=${typeId}, page=${borders.number}, searchType=${param.searchType}, searchText=${param.searchText})}" aria-label="Previous">
                 <span aria-hidden="true">&lt;</span>
             </a>
         </li>
 
         <li th:each="page: ${#numbers.sequence(start, last)}" th:class="${page == borders.number + 1} ? 'active'">
-            <a th:text="${page}" th:href="@{/admin/border/{typeId}(typeId=${typeId}, page=${page})}"></a>
+            <a th:text="${page}" th:href="@{/admin/border/{typeId}(typeId=${typeId}, page=${page}, searchType=${param.searchType}, searchText=${param.searchText})}"></a>
         </li>
 
         <li th:class="${borders.last} ? 'disabled'">
-            <a th:href="${borders.last} ? '#' : @{/admin/border/{typeId}(typeId=${typeId}, page=${borders.number + 2})}" aria-label="Next">
+            <a th:href="${borders.last} ? '#' : @{/admin/border/{typeId}(typeId=${typeId}, page=${borders.number + 2}, searchType=${param.searchType}, searchText=${param.searchText})}" aria-label="Next">
                 <span aria-hidden="true">&gt;</span>
             </a>
         </li>
 
         <li>
-            <a th:href="@{/admin/border/{typeId}(typeId=${typeId}, page=${borders.totalPages})}" aria-label="Last">
+            <a th:href="@{/admin/border/{typeId}(typeId=${typeId}, page=${borders.totalPages}, searchType=${param.searchType}, searchText=${param.searchText})}" aria-label="Last">
                 <span aria-hidden="true">Last</span>
             </a>
         </li>

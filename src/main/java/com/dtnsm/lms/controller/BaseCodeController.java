@@ -87,12 +87,16 @@ public class BaseCodeController {
         return "redirect:/admin/code/major";
     }
 
-    @GetMapping("/major-delete/{id}")
-    public String majorDelete(@PathVariable("id") String id) {
+    @GetMapping("/major/delete")
+    public String majorDelete(@RequestParam("id") String id) {
 
-        ElMajor elMajor = codeService.getMajorById(id);
+        try {
+            ElMajor elMajor = codeService.getMajorById(id);
 
-        codeService.majorDelete(elMajor);
+            codeService.majorDelete(elMajor);
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
 
         return "redirect:/admin/code/major";
     }
@@ -172,7 +176,11 @@ public class BaseCodeController {
     @GetMapping("/minor/delete")
     public String minorDelete(@RequestParam("id") String minorCd) {
 
-        codeService.minorDelete(minorCd);
+        try {
+            codeService.minorDelete(minorCd);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         return "redirect:/admin/code/minor";
     }
