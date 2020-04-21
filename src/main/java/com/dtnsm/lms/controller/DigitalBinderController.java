@@ -164,7 +164,7 @@ public class DigitalBinderController {
 
         if(!StringUtils.isEmpty(account.getParentUserId())) {
             String toEmail = userRepository.findByUserId(account.getParentUserId()).getEmail();
-            log.info("매니저에게 Binder 검토 요청 : {}", toEmail);
+//            log.info("매니저에게 Binder 검토 요청 : {}", toEmail);
 //            Mail mail = new Mail();
 //            mail.setEmail(toEmail);
             Context context = new Context();
@@ -181,7 +181,7 @@ public class DigitalBinderController {
     public void download(@PathVariable("id") Integer id, HttpServletResponse response) throws Exception {
         TrainingRecordReview trainingRecordReview = trainingRecordReviewRepository.findById(id).get();
         String path = properties.getBinderDir() + trainingRecordReview.getBinderPdf();
-        log.info("@download path : {}", path);
+//        log.info("@download path : {}", path);
         Account account = SessionUtil.getUserDetail().getUser();
 
         response.setContentType("application/octet-stream");

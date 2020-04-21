@@ -1,6 +1,7 @@
 package com.dtnsm.lms.auth;
 
-import com.dtnsm.lms.auth.UserAuthenticationProvider;
+import com.dtnsm.lms.component.LoginSuccessHandler;
+import com.dtnsm.lms.component.LogoutCustomSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +10,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -50,8 +52,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
          http.formLogin()
                 .loginPage("/login")
+                 .successHandler(successHandler())
                 //.loginProcessingUrl("/authenticate")
-                .defaultSuccessUrl("/")
+//                .defaultSuccessUrl("/")
                 .permitAll();
 
         http.sessionManagement()
@@ -61,11 +64,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .expiredUrl("/login?duplicated");
 
          http.logout()
-                 .logoutUrl("/logout")
+//                 .logoutSuccessHandler(logoutSuccessHandler())
+//                 .logoutUrl("/logout")
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login?logout")
+//                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+//                .logoutSuccessUrl("/login?logout")
+                 .logoutSuccessHandler(logoutSuccessHandler())
+                 .logoutSuccessUrl("/login")
                 .permitAll();
 
          http.headers().frameOptions().disable();
@@ -74,6 +80,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.cors().and();
 
         http.csrf().disable();
+    }
+
+    // Login 인증 후 처리
+    @Bean
+    public AuthenticationSuccessHandler successHandler() {
+        return new LoginSuccessHandler();
+    }
+
+    // Logout 처리
+    @Bean
+    public LogoutSuccessHandler logoutSuccessHandler() {
+        return new LogoutCustomSuccessHandler();
     }
 
 //    @Bean

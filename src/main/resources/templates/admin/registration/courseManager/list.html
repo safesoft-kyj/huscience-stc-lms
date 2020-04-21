@@ -51,18 +51,20 @@
                 <div class="panel-body">
                     <div>
                         <div class="col-sm-6">
-                            <span th:text="#{label.list.title(${managers.size()})}"></span>
+<!--                            <span th:text="#{label.list.title(${managers.size()})}"></span>-->
                         </div>
                         <div class="col-sm-6 text-right">
-                            <p><a th:href="@{/admin/registration/courseManager/add}"
-                                  class="btn btn-success" th:text="#{label.add}">Add new</a></p>
+<!--                            <p><a th:href="@{/admin/registration/courseManager/add}"-->
+<!--                                  class="btn btn-success" th:text="#{label.add}">Add new</a></p>-->
+                            <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/registration/courseManager/add}"><i class="demo-pli-add"></i> Add</a>
                         </div>
                     </div>
                     <div th:switch="${managers}">
                         <h2 th:case="null">No customer yet!</h2>
                         <div th:case="*">
-                            <h2></h2>
-                            <table id="demo-dt-basic" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                            <span th:text="#{label.list.title(${managers.size()})}"></span>
+                            <hr class="table-head">
+                            <table id="demo-dt-basic" class="table" cellspacing="0" width="100%">
                                 <thead>
                                 <tr>
                                     <th th:text="#{label.id}" class="text-center col-sm-2">ID</th>
@@ -103,7 +105,7 @@
 <th:block layout:fragment="custom_js">
 
     <!--DataTables Sample [ SAMPLE ]-->
-    <script th:src="@{/default/js/demo/tables-datatables.js}"></script>
+<!--    <script th:src="@{/default/js/demo/tables-datatables.js}"></script>-->
 
     <!--DataTables Sample [ SAMPLE ]-->
 

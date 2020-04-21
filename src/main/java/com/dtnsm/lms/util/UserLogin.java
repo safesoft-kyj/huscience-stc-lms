@@ -1,9 +1,12 @@
 package com.dtnsm.lms.util;
 
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
+import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -11,6 +14,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 
+@Slf4j
 public class UserLogin {
 
     public static boolean isLogin(String userId, String userPw) throws MalformedURLException {
@@ -65,5 +69,34 @@ public class UserLogin {
         if (sb.toString().equals("Y")) return true;
         else return false;
 
+    }
+
+    public static String getClientIP(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        log.info("> X-FORWARDED-FOR : " + ip);
+
+        if (ip == null) {
+            ip = request.getHeader("Proxy-Client-IP");
+            log.info("> Proxy-Client-IP : " + ip);
+        }
+        if (ip == null) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+            log.info(">  WL-Proxy-Client-IP : " + ip);
+        }
+        if (ip == null) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+            log.info("> HTTP_CLIENT_IP : " + ip);
+        }
+        if (ip == null) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+            log.info("> HTTP_X_FORWARDED_FOR : " + ip);
+        }
+        if (ip == null) {
+            ip = request.getRemoteAddr();
+            log.info("> getRemoteAddr : "+ip);
+        }
+        log.info("> Result : IP Address : "+ip);
+
+        return ip;
     }
 }

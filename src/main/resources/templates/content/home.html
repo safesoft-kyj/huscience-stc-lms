@@ -390,26 +390,45 @@
                         </a>
 
                     </div>
-                    <th:block th:if="${schedule != null}">
+<!--                    <th:block th:if="${schedule != null}">-->
                     <div class="row">
-                        <a href="#" id="popupBtn"
-                           th:onclick="|javascript:popupPdfView('${schedule.getId()}');return false;|" target="_blank" style="color:white">
-                            <div class="panel panel-info panel-colorful media middle pad-all">
-                                <div class="media-left">
-                                    <div class="pad-hor">
-                                        <i class="demo-pli-file icon-3x"></i>
+                        <div th:if="${schedule != null}">
+                            <a href="#" id="popupBtn"
+                               th:onclick="|javascript:popupPdfView('${schedule.getId()}');return false;|" target="_blank" style="color:white">
+                                <div class="panel panel-info panel-colorful media middle pad-all">
+                                    <div class="media-left">
+                                        <div class="pad-hor">
+                                            <i class="demo-pli-file icon-3x"></i>
+                                        </div>
+                                    </div>
+                                    <div class="media-body">
+                                        <p class="text-2x mar-no text-semibold">
+                                            <span>View</span>
+                                        </p>
+                                        <p class="mar-no">Employee training matrix</p>
                                     </div>
                                 </div>
-                                <div class="media-body">
-                                    <p class="text-2x mar-no text-semibold">
-                                        <span>View</span>
-                                    </p>
-                                    <p class="mar-no">Employee training matrix</p>
+                            </a>
+                        </div>
+                        <div th:if="${schedule == null}">
+                            <a id="popupBtn2" data-toggle="modal" href="#demo-default-modal2" style="color:white">
+                                <div class="panel panel-info panel-colorful media middle pad-all">
+                                    <div class="media-left">
+                                        <div class="pad-hor">
+                                            <i class="demo-pli-file icon-3x"></i>
+                                        </div>
+                                    </div>
+                                    <div class="media-body">
+                                        <p class="text-2x mar-no text-semibold">
+                                            <span>View</span>
+                                        </p>
+                                        <p class="mar-no">Employee training matrix</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
+                            </a>
+                        </div>
                     </div>
-                    </th:block>
+<!--                    </th:block>-->
 
                     <th:block th:if="${customers != null}">
                     <div class="row">
@@ -527,6 +546,24 @@
                 </div>
             </div>
 
+            <!--Default Bootstrap Modal-->
+            <!--===================================================-->
+            <div class="modal fade" id="demo-default-modal2" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <!--Modal header-->
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                            <h4 class="modal-title">알림창</h4>
+                        </div>
+
+                        <!--Modal body-->
+                        <div class="modal-body">
+                            <h4 class="modal-title">등록된 Employee training matrix가 없습니다.</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div><!-- Page content End -->
     </div><!-- Content container End -->
 </th:block>
@@ -546,6 +583,10 @@
     <script type="text/javascript" th:src="@{/default/plugins/multiple-picker/lang-css.js}"></script>
 
     <script>
+
+        function showNoSchedule() {
+            alert('등록된 Employee training matrix가 없습니다.');
+        }
 
         function popupPdfView(id) {
             var width = 1500;

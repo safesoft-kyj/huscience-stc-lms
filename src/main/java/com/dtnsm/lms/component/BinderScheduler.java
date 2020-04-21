@@ -55,7 +55,7 @@ public class BinderScheduler {
 
         List<Account> users = cvFinderMapper.findUpdateBinderUsers();
         if(!ObjectUtils.isEmpty(users)) {
-            log.info("Binder Update 알림 대상자가 존재함. 대상자 수 : {}", users.size());
+//            log.info("Binder Update 알림 대상자가 존재함. 대상자 수 : {}", users.size());
 //            Mail mail = new Mail();
             for(Account account : users) {
 //                mail.setEmail(account.getEmail());
@@ -66,7 +66,7 @@ public class BinderScheduler {
                 mailService.send(account.getEmail(), String.format(BinderAlarmType.BINDER_UPDATE.getTitle(), account.getName()), BinderAlarmType.BINDER_UPDATE, context);
             }
         } else {
-            log.info("Binder Update 알림 대상자가 없습니다.");
+//            log.info("Binder Update 알림 대상자가 없습니다.");
         }
     }
 

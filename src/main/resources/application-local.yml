@@ -16,15 +16,15 @@ spring:
     servlet:
       content-type: text/html
   datasource:
-#    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=test_lms
-    url: jdbc:sqlserver://localhost:1433;DatabaseName=lms_manual
+    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=dtnsm_prod
+#    url: jdbc:sqlserver://localhost:1433;DatabaseName=lms_manual
 #    url: jdbc:sqlserver://220.117.192.209:20170;DatabaseName=test_lms
-#    username: sa
-#    password: safe123!@#
+    username: sa
+    password: safe123!@#
 #    password: qwe123!@#
 #    url: jdbc:sqlserver://localhost:1433;DatabaseName=lms_test_20191118
-    username: sa
-    password: qwe123!@#
+#    username: sa
+#    password: qwe123!@#
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     initialization-mode: never
     data: classpath:/init-data/data.sql

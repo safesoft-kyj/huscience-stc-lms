@@ -50,6 +50,9 @@ public class Account {
     @ColumnDefault("''")
     private String indate;
 
+    @Transient
+    private Long loginHistoryId;
+
     // 상위 결재권자
     @Column(length = 30)
     @ColumnDefault(value="''")

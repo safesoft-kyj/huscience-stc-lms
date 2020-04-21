@@ -616,7 +616,7 @@ public class MyPageController {
 //                userAnswer = String.valueOf(Integer.parseInt(userAnswer));
 
             }
-            log.info(String.valueOf(iUserAnswerSum));
+//            log.info(String.valueOf(iUserAnswerSum));
             questionAnswer = new CourseSurveyActionAnswer();
             questionAnswer.setUserAnswer(userAnswer);
             questionAnswer.setQuestion(question);
