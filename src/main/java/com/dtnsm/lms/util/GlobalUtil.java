@@ -56,7 +56,7 @@ public class GlobalUtil {
             builder.and(qUserJobDescription.username.eq(userId));
     //        builder.and(qUserJobDescription.reviewed.eq(false));
 
-            System.out.println(userJobDescriptionRepository);
+//            System.out.println(userJobDescriptionRepository);
 
             return userJobDescriptionRepository.findAll(builder, qUserJobDescription.id.desc());
     }
