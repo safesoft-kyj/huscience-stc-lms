@@ -113,11 +113,12 @@ public class MyPageCvJdController {
     public String oldVersion(Model model) {
         pageInfo.setPageId("m-mypage-cv");
         pageInfo.setPageTitle("Curriculum Vitae");
-
+        Account account = SessionUtil.getUserDetail().getUser();
         model.addAttribute(pageInfo);
 
         BooleanBuilder builder = new BooleanBuilder();
         QCurriculumVitae qCurriculumVitae = QCurriculumVitae.curriculumVitae;
+        builder.and(qCurriculumVitae.account.userId.eq(account.getUserId()));
         builder.and(qCurriculumVitae.status.eq(CurriculumVitaeStatus.SUPERSEDED));
         model.addAttribute("oldVersions", curriculumVitaeRepository.findAll(builder, qCurriculumVitae.id.desc()));
 
