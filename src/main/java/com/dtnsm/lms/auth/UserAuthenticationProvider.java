@@ -1,5 +1,6 @@
 package com.dtnsm.lms.auth;
 
+import com.dtnsm.lms.domain.LoginHistory;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.repository.RoleRepository;
 import com.dtnsm.lms.repository.UserRepository;
@@ -66,7 +67,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 
         // 외부사용자 로그인 체크
         if (isLogin) {
-            log.info("@userId : {}, isLogin : {}", userId, isLogin);
+//            log.info("@userId : {}, isLogin : {}", userId, isLogin);
             account = (CustomUserDetails) userService.loadUserByUsername(userId);
 
         } else {
@@ -77,39 +78,15 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         }
 
         if(!ObjectUtils.isEmpty(account)) {
-            log.info("==> 로그인한 사용자를 매니저로 선택한 사용자 리스트 조회 : {}", userId);
+//            log.info("==> 로그인한 사용자를 매니저로 선택한 사용자 리스트 조회 : {}", userId);
             //로그인한 사용자를 매니저로 선택한 사용자 리스트 조회
             account.setManager(userService.findByParentUserId(userId).isPresent());
-            log.info("==> 로그인한 사용자를 매니저로 선택한 사용자 리스트 조회 : {}, 결과 : {}", userId, account.isManager());
+//            log.info("==> 로그인한 사용자를 매니저로 선택한 사용자 리스트 조회 : {}, 결과 : {}", userId, account.isManager());
         }
 
         if (account == null) {
             return null;
         }
-
-
-
-
-
-//        PasswordEncoding encoding = new PasswordEncoding();
-//        if (!encoding.matches(account.getPassword(), password)) return null;
-
-
-
-//        String confrimPassword = passwordEncoder.encode(password);
-
-//        if (!account.getPassword().equals(confrimPassword)) return null;
-
-
-
-//        String roleName = "";
-//        for(Role role : user.getRoles()) {
-//            roleName = role.getName();
-//        }
-//
-//        ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
-//        authorities.add(new SimpleGrantedAuthority(roleName));
-
 
         UsernamePasswordAuthenticationToken result = new UsernamePasswordAuthenticationToken(account, null, account.getAuthorities());
 

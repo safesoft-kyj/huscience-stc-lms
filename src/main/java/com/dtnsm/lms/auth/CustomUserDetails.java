@@ -27,6 +27,8 @@ public class CustomUserDetails implements UserDetails {
 
     Account user;
 
+    private Long loginSessionId;
+
     private boolean manager;
 
     @Override
@@ -67,6 +69,10 @@ public class CustomUserDetails implements UserDetails {
         return user.getEngName();
     }
 
+//    public Long getLoginSessionId() {
+//        return this.loginSessionId;
+//    }
+
     @Override
         public String getUsername() {
         return user.getName();
@@ -103,7 +109,5 @@ public class CustomUserDetails implements UserDetails {
     public void setManager(boolean manager) {
         this.manager = manager;
     }
-
-
 
 }

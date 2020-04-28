@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import static com.dtnsm.lms.domain.constant.LmsAlarmCourseType.Request;
@@ -168,6 +169,9 @@ public class MailService {
             try {
                 MimeMessage mail = javaMailSender.createMimeMessage();
                 MimeMessageHelper helper = new MimeMessageHelper(mail, true);
+//                helper.setFrom("SanoMedics(LMS)");
+                helper.setFrom(new InternetAddress("no-reply@dtnsm.com", "SanoMedics(LMS)"));
+//                helper.setReplyTo("<no-reply@dtnsm.com>");
                 helper.setTo(to);
                 helper.setSubject(subject);
                 helper.setText(text, isHtml);

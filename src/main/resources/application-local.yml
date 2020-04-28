@@ -16,15 +16,15 @@ spring:
     servlet:
       content-type: text/html
   datasource:
-#    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=test_lms
-    url: jdbc:sqlserver://localhost:1433;DatabaseName=lms_manual
+    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=dtnsm_prod
+#    url: jdbc:sqlserver://localhost:1433;DatabaseName=lms_manual
 #    url: jdbc:sqlserver://220.117.192.209:20170;DatabaseName=test_lms
-#    username: sa
-#    password: safe123!@#
+    username: sa
+    password: safe123!@#
 #    password: qwe123!@#
 #    url: jdbc:sqlserver://localhost:1433;DatabaseName=lms_test_20191118
-    username: sa
-    password: qwe123!@#
+#    username: sa
+#    password: qwe123!@#
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     initialization-mode: never
     data: classpath:/init-data/data.sql
@@ -59,17 +59,12 @@ spring:
       enabled: true
       max-file-size: 200MB
       max-request-size: 215MB
-
-
-
-
-
   mail:
     host: gw.dtnsm.com
     port: 25
     protocol: smtp
     username: sanomedics@dtnsm.com
-#    password: cksdb0826
+    #    password: cksdb0826
     password: qwer1234!
     default-encoding: UTF-8
     properties:
@@ -78,7 +73,6 @@ spring:
           starttls:
             enable: true
           auth: false
-
 mybatis:
   type-aliases-package: com.dtnsm.lms.mybatis.dto
 

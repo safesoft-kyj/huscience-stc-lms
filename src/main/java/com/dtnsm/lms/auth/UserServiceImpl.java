@@ -2,12 +2,14 @@ package com.dtnsm.lms.auth;
 
 import com.dtnsm.lms.domain.Account;
 import com.dtnsm.lms.domain.ElMinor;
+import com.dtnsm.lms.domain.LoginHistory;
 import com.dtnsm.lms.domain.Role;
 import com.dtnsm.lms.mybatis.dto.UserVO;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.repository.RoleRepository;
 import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.CodeService;
+import com.dtnsm.lms.util.UserLogin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -82,34 +85,37 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
 
+        // 사용자 정보 업데이트
+        updateAccountByGroupwareInfo(userId);
+
         // LMS 사용자 정보를 가지고 온다.
         Account user = userRepository.findByUserId(userId);
 
-        if (user == null) {
-            // 그룹웨어 사용자 정보를 가지고 온다.
-            UserVO userVO = userMapperService.getUserById(userId);
-
-            if(userVO != null) {
-
-                Role role = roleRepository.findByName("ROLE_USER");
-
-                Account newUser = new Account();
-                newUser.setUserId(userId);
-                newUser.setName(userVO.getKorName());
-                newUser.setEngName(userVO.getEngName());
-                newUser.setPassword(userVO.getPassword());
-                newUser.setEmail(userVO.getEmail());
-                newUser.setRoles(Arrays.asList(role));
-                // 사용자 구분 (A:admin, U:일반유저, O:외부유저)
-                newUser.setUserType("U");
-                newUser.setEnabled(true);
-                newUser.setOrgDepart(userVO.getOrgDepart());
-                newUser.setOrgTeam(userVO.getOrgTeam());
-                newUser.setComPosition(userVO.getComPosition());
-                newUser.setIndate(userVO.getIndate());
-                user = userRepository.save(newUser);
-            }
-        }
+//        if (user == null) {
+//            // 그룹웨어 사용자 정보를 가지고 온다.
+//            UserVO userVO = userMapperService.getUserById(userId);
+//
+//            if(userVO != null) {
+//
+//                Role role = roleRepository.findByName("ROLE_USER");
+//
+//                Account newUser = new Account();
+//                newUser.setUserId(userId);
+//                newUser.setName(userVO.getKorName());
+//                newUser.setEngName(userVO.getEngName());
+//                newUser.setPassword(userVO.getPassword());
+//                newUser.setEmail(userVO.getEmail());
+//                newUser.setRoles(Arrays.asList(role));
+//                // 사용자 구분 (A:admin, U:일반유저, O:외부유저)
+//                newUser.setUserType("U");
+//                newUser.setEnabled(true);
+//                newUser.setOrgDepart(userVO.getOrgDepart());
+//                newUser.setOrgTeam(userVO.getOrgTeam());
+//                newUser.setComPosition(userVO.getComPosition());
+//                newUser.setIndate(userVO.getIndate());
+//                user = userRepository.save(newUser);
+//            }
+//        }
 
         CustomUserDetails userDetails = null;
 
@@ -119,7 +125,6 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new UsernameNotFoundException("User not exist with name : " + userId);
         }
-
 
         return userDetails;
 
@@ -195,6 +200,8 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(account);
 
     }
+
+
 
     // 그룹웨어 사용자 정보로 Account 계정의 정보를 생성하거나 업데이트 한다.
     public void updateAccountByGroupwareInfo(String userId) {

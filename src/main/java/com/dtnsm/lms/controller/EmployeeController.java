@@ -194,7 +194,7 @@ public class EmployeeController {
         if(optionalUserJobDescription.isPresent()) {
             UserJobDescription userJobDescription = optionalUserJobDescription.get();
             userJobDescription.setStatus(JobDescriptionStatus.SUPERSEDED);
-            log.info("@UserJobDescription Id : {}, Superseded 상태로 변경(직무 배정 해제)", id);
+//            log.info("@UserJobDescription Id : {}, Superseded 상태로 변경(직무 배정 해제)", id);
             userJobDescriptionRepository.save(userJobDescription);
             attributes.addFlashAttribute("message", "직무 배정 해제 처리가 정상적으로 처리 되었습니다.");
         } else {
@@ -259,7 +259,7 @@ public class EmployeeController {
 
         //TODO Review 완료
 
-        log.info("사용자에게 Binder 검토 : {}, 메일 전송 : {}", status.name(), user.getEmail());
+//        log.info("사용자에게 Binder 검토 : {}, 메일 전송 : {}", status.name(), user.getEmail());
 //        Mail mail = new Mail();
 //        mail.setEmail(user.getEmail());
         Context context = new Context();
@@ -268,7 +268,7 @@ public class EmployeeController {
             mailService.send(user.getEmail(), String.format(BinderAlarmType.BINDER_REVIEWED.getTitle(), user.getName()), BinderAlarmType.BINDER_REVIEWED, context);
 
             new Thread(() -> {
-                log.info("@@@ Digital Binder 생성 시작.");
+//                log.info("@@@ Digital Binder 생성 시작.");
                 createBinderPDF(user, savedTrainingRecordReview);
             }).start();
         } else {
@@ -308,12 +308,12 @@ public class EmployeeController {
             DataSourceInfo dataSourceInfo = new DataSourceInfo(account, "");
             FileOutputStream os = new FileOutputStream(new File(binderPath + coverDocx));
             boolean created = documentConverter.assembleDocument(is, os, dataSourceInfo);
-            log.info("@Cover created : {}", created);
+//            log.info("@Cover created : {}", created);
             if(created) {
                 documentConverter.word2pdf(new FileInputStream(binderPath + coverDocx), new FileOutputStream(binderPath + coverPdf));
-                log.info("@cover docx2pdf 변환");
+//                log.info("@cover docx2pdf 변환");
                  merger = new Merger(new FileInputStream(binderPath + coverPdf), loadOptions);
-                 log.info("@merger 객체 생성 {}{}", binderPath, coverPdf);
+//                 log.info("@merger 객체 생성 {}{}", binderPath, coverPdf);
             }
 
             //TODO (Review History 추가 필요!)
@@ -323,7 +323,7 @@ public class EmployeeController {
             if(optionalCurriculumVitae.isPresent()) {
                 CurriculumVitae cv = optionalCurriculumVitae.get();
                 String cvPath = binderPath + cv.getCvFileName();
-                log.info("@cvPath : {}", cvPath);
+//                log.info("@cvPath : {}", cvPath);
                 File file = new File(cvPath);
                 if(file.exists()) {
                     merger = createOrJoin(merger, new FileInputStream(file));
@@ -331,10 +331,10 @@ public class EmployeeController {
                 }
             }
             //jd
-            log.info("@JD 확인");
+//            log.info("@JD 확인");
             Iterable<UserJobDescription> currentJdList = getJobDescriptionList(account.getUserId(), JobDescriptionStatus.APPROVED);
             for(UserJobDescription jd : currentJdList) {
-                log.info("@add current Jd {}", jd.getJdFileName());
+//                log.info("@add current Jd {}", jd.getJdFileName());
                 File f = new File(binderPath + jd.getJdFileName());
                 if(f.exists()) {
                     merger = createOrJoin(merger, new FileInputStream(f));
@@ -342,18 +342,18 @@ public class EmployeeController {
             }
             Iterable<UserJobDescription> supersededJdList = getJobDescriptionList(account.getUserId(), JobDescriptionStatus.SUPERSEDED, JobDescriptionStatus.REVOKED);
             for(UserJobDescription jd : supersededJdList) {
-                log.info("@add superseded Jd : {}", jd.getJdFileName());
+//                log.info("@add superseded Jd : {}", jd.getJdFileName());
                 File f = new File(binderPath + jd.getJdFileName());
                 if(f.exists()) {
                     merger = createOrJoin(merger, new FileInputStream(f));
                 }
             }
             //trainingLog(SOP)
-            log.info("@trainingLog(SOP) 확인");
+//            log.info("@trainingLog(SOP) 확인");
             Optional<TrainingRecord> optionalTrainingRecordSOP = getTrainingRecord(account.getUserId(), "sop");
             if(optionalTrainingRecordSOP.isPresent()) {
                 String sopPath = binderPath + optionalTrainingRecordSOP.get().getSopFileName();
-                log.info("@sopPath : {}", sopPath);
+//                log.info("@sopPath : {}", sopPath);
                 File file = new File(sopPath);
                 if(file.exists()) {
                     ByteArrayOutputStream sop = new ByteArrayOutputStream();
@@ -362,11 +362,11 @@ public class EmployeeController {
                 }
             }
             //trainingLog(TM)
-            log.info("@trainingLog(TM) 확인");
+//            log.info("@trainingLog(TM) 확인");
             Optional<TrainingRecord> optionalTrainingRecordTM = getTrainingRecord(account.getUserId(), "tm");
             if(optionalTrainingRecordTM.isPresent()) {
                 String tmPath = binderPath + optionalTrainingRecordTM.get().getTmFileName();
-                log.info("@tmPath : {}", tmPath);
+//                log.info("@tmPath : {}", tmPath);
                 File file = new File(tmPath);
                 if(file.exists()) {
                     merger = createOrJoin(merger, new FileInputStream(file));
@@ -376,7 +376,7 @@ public class EmployeeController {
             Optional<TrainingRecord> optionalTrainingRecordCert = getTrainingRecord(account.getUserId(), "cert");
             if(optionalTrainingRecordCert.isPresent()) {
                 String certPath = binderPath + optionalTrainingRecordCert.get().getTmCertFileName();
-                log.info("@certPath : {}", certPath);
+//                log.info("@certPath : {}", certPath);
                 File file = new File(certPath);
                 if(file.exists()) {
                     merger = createOrJoin(merger, new FileInputStream(file));
@@ -387,7 +387,7 @@ public class EmployeeController {
             merger.save(binder);
             binder.flush();
             binder.close();
-            log.info("@@ Binder PDF Merge save....{}{}", binderPath, binderPdf);
+//            log.info("@@ Binder PDF Merge save....{}{}", binderPath, binderPdf);
 
             trainingRecordReview.setBinderPdf(binderPdf);
             trainingRecordReviewRepository.save(trainingRecordReview);
@@ -397,7 +397,7 @@ public class EmployeeController {
                 Signature signature = optionalSignature.get();
                 signature.setBinderFileName(binderPdf);
                 signatureRepository.save(signature);
-                log.info("@eSOP에서 바인더 정보 조회 가능하도록 정보 업데이트(Signature)");
+//                log.info("@eSOP에서 바인더 정보 조회 가능하도록 정보 업데이트(Signature)");
             }
         } catch (Exception error) {
             log.error("error : {}", error);
@@ -449,7 +449,7 @@ public class EmployeeController {
 
             //TODO 알림 전송(JD 배정 알림)
             String toEmail = account.getEmail();
-            log.info("사용자에게 JD 배정 알림 메일 전송 : {}", toEmail);
+//            log.info("사용자에게 JD 배정 알림 메일 전송 : {}", toEmail);
             Context context = new Context();
             String jobTitle = jobDescriptionVersionRepository.findById(userJobDescription.getJobDescriptionVersion().getId()).get().getJobDescription().getTitle();
             context.setVariable("jobTitle", jobTitle);
@@ -526,7 +526,7 @@ public class EmployeeController {
             //TODO Job Description (승인 알림)
             Account account = userRepository.findByUserId(userJobDescription.getUsername());
             String toEmail = account.getEmail();
-            log.info("사용자에게 JD 승인 알림 메일 전송 : {}", toEmail);
+//            log.info("사용자에게 JD 승인 알림 메일 전송 : {}", toEmail);
 //            Mail mail = new Mail();
 //            mail.setEmail(toEmail);
             String jobTitle = userJobDescription.getJobDescriptionVersion().getJobDescription().getTitle();

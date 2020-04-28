@@ -136,12 +136,12 @@ public class CVFindController {
             CV cv = curriculumVitaeService.toCV(curriculumVitae, name, company);
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             boolean result = curriculumVitaeReportService.assembleDocument(cv, os);
-            log.info("Generate Result : {}", result);
+//            log.info("Generate Result : {}", result);
             if(result) {
-                log.info("BlindCV -> Word to PDF...");
+//                log.info("BlindCV -> Word to PDF...");
 //                File outputPdf = new File(prop.getCvUploadDir() + outputFileName);
                 documentConverter.word2pdf(new ByteArrayInputStream(os.toByteArray()), httpServletResponse.getOutputStream());
-                log.info("Blind CV -> Word to PDF...Done.");
+//                log.info("Blind CV -> Word to PDF...Done.");
             }
         }
     }

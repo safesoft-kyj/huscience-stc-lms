@@ -272,7 +272,7 @@
                         <nav style="text-align: center;" th:with="start=${T(Math).floor(courseAccountList.number/10)*10 + 1}">
                             <ul class="pagination" th:with="last=(${start + 9 < courseAccountList.totalPages ? start + 9 : (courseAccountList.totalPages == 0 ? 1 : courseAccountList.totalPages)})">
                                 <li>
-                                    <a th:href="@{/mypage/main(page=1)}" aria-label="First">
+                                    <a th:href="@{/mypage/main(page=1, typeId=${param.typeId}, courseStepStatusId=${param.courseStepStatusId}, title=${param.title})}" aria-label="First">
                                         <span aria-hidden="true">First</span>
                                     </a>
                                 </li>
@@ -280,23 +280,23 @@
                                     <a th:if="${courseAccountList.first}" th:href="${'#'}" aria-label="Previous">
                                         <span aria-hidden="true">&lt;</span>
                                     </a>
-                                    <a th:unless="${courseAccountList.first}" th:href="@{/mypage/main(page=${courseAccountList.number})}" aria-label="Previous">
+                                    <a th:unless="${courseAccountList.first}" th:href="@{/mypage/main(page=${courseAccountList.number}, typeId=${param.typeId}, courseStepStatusId=${param.courseStepStatusId}, title=${param.title})}" aria-label="Previous">
                                         <span aria-hidden="true">&lt;</span>
                                     </a>
                                 </li>
                                 <li th:each="page: ${#numbers.sequence(start, last)}" th:class="${page == courseAccountList.number + 1} ? 'active'">
-                                    <a th:text="${page}" th:href="@{/mypage/main(page=${page})}"></a>
+                                    <a th:text="${page}" th:href="@{/mypage/main(page=${page}, typeId=${param.typeId}, courseStepStatusId=${param.courseStepStatusId}, title=${param.title})}"></a>
                                 </li>
                                 <li th:class="${courseAccountList.last} ? 'disabled'">
                                     <a th:if="${courseAccountList.last}" th:href="${'#'}" aria-label="Next">
                                         <span aria-hidden="true">&gt;</span>
                                     </a>
-                                    <a th:unless="${courseAccountList.last}" th:href="@{/mypage/main(page=${courseAccountList.number + 2})}" aria-label="Next">
+                                    <a th:unless="${courseAccountList.last}" th:href="@{/mypage/main(page=${courseAccountList.number + 2}, typeId=${param.typeId}, courseStepStatusId=${param.courseStepStatusId}, title=${param.title})}" aria-label="Next">
                                         <span aria-hidden="true">&gt;</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a th:href="@{/mypage/main(page=${courseAccountList.totalPages})}" aria-label="Last">
+                                    <a th:href="@{/mypage/main(page=${courseAccountList.totalPages}, typeId=${param.typeId}, courseStepStatusId=${param.courseStepStatusId}, title=${param.title})}" aria-label="Last">
                                         <span aria-hidden="true">Last</span>
                                     </a>
                                 </li>

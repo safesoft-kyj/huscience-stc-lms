@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Optional;
 
@@ -23,9 +24,9 @@ public class CommonAuditorAware implements AuditorAware<String> {
             return Optional.empty();
         }
 
-//        String userId = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
-        //String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication()).getUsername();
-        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        String userId = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
+//        String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication()).getUsername();
+//        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         return Optional.of(userId);
     }

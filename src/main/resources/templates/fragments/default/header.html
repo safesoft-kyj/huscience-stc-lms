@@ -333,7 +333,13 @@
 <!--                                <a href="#"><i class="demo-pli-computer-secure icon-lg icon-fw"></i> Lock screen</a>-->
 <!--                            </li>-->
                             <li sec:authorize="isAuthenticated()">
-                                <a th:href="@{/logout}"><i class="demo-pli-unlock icon-lg icon-fw"></i> Logout</a>
+<!--                                <a th:href="@{/logout}"><i class="demo-pli-unlock icon-lg icon-fw"></i> Logout</a>-->
+                                <form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
+<!--                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
+                                    <input hidden type="submit" value="Logout"> Logout</input>
+<!--                                    <i class="demo-pli-unlock icon-lg icon-fw"></i>-->
+                                </form>
+                                <a href="#" onclick="javascript:document.logoutForm.submit();"><i class="demo-pli-unlock icon-lg icon-fw"></i> Logout</a>
                             </li>
                         </ul>
                     </div>
