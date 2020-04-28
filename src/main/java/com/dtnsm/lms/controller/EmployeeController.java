@@ -480,6 +480,7 @@ public class EmployeeController {
     @PostMapping("employees/jd/approval")
     public String approvalEmployeeJD(@RequestParam("id") Integer id) {
         Optional<UserJobDescription> optionalUserJobDescription = userJobDescriptionRepository.findById(id);
+        log.info("==> @user jd : {} approval.", id);
         if(optionalUserJobDescription.isPresent()) {
             Optional<Signature> optionalSignature = signatureRepository.findById(SessionUtil.getUserId());
             UserJobDescription userJobDescription = optionalUserJobDescription.get();
@@ -493,6 +494,7 @@ public class EmployeeController {
              *  같은 JD의 이전 버전을 Superseded 상태로 변경한다.
              */
             superseded(userJobDescription.getUsername(), userJobDescription.getJobDescriptionVersion().getJobDescription().getId());
+            log.info("@userJobDescription save. id : {}", id);
             userJobDescriptionRepository.save(userJobDescription);
 
             /**
@@ -500,6 +502,7 @@ public class EmployeeController {
              */
             new Thread(() -> {
                 try {
+                    log.info("==> user jobDescriptionVersionFile  jd id : {}", id);
                     JobDescriptionVersionFile file = userJobDescription.getJobDescriptionVersion().getJobDescriptionVersionFile();
                     Resource resource = jobDescriptionFileService.loadFileAsResource(file.getSaveName());
                     String format = "dd-MMM-yyyy";
@@ -516,7 +519,7 @@ public class EmployeeController {
                             .mngSign(StringUtils.isEmpty(userJobDescription.getApprovedSign()) ? null : new ByteArrayImageProvider(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(userJobDescription.getApprovedSign())))).build();
 
 //                    String pdfOutput = prop.getBinderJdUploadDir() + "/JD_" + userJobDescription.getId() + ".pdf";
-
+                    log.info("@generateReport => jd report.");
                     jobDescriptionReportService.generateReport(jobDescriptionSign, resource.getInputStream(), id);
                 } catch (Exception e) {
                     System.err.println(e);
