@@ -242,7 +242,7 @@ public class CurriculumVitaeService {
                 LanguageDTO.builder()
                         .language("Others".equals(i.getLanguage()) ? i.getLanguageOther() : i.getLanguage())
                         .level(i.getLevel().getLabel())
-                        .certificateProgramList(i.getLanguageCertifications().stream().map(c -> c.getCertificateProgram()).collect(Collectors.toList()))
+                        .certificateProgramList(i.getLanguageCertifications().stream().map(c -> ("Others".equals(c.getCertificateProgram()) ? c.getCertificateProgramOther() : c.getCertificateProgram())+"(" + c.getLevelOrScore()+")").collect(Collectors.toList()))
                         .build()
         ).collect(Collectors.toList()));
 
