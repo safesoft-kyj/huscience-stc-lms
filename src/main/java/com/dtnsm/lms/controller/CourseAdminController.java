@@ -590,6 +590,35 @@ public class CourseAdminController {
         return "redirect:" +  refUrl;
     }
 
+    @GetMapping("/download-file/{id}")
+    @ResponseBody
+    public ResponseEntity<Resource> downloadFile(@PathVariable long id, HttpServletRequest request){
+
+        CourseFile courseFile =  fileService.getUploadFile(id);
+
+        // Load file as Resource
+        Resource resource = fileService.loadFileAsResource(courseFile.getSaveName());
+
+        // Try to determine file's content type
+//        String contentType = mimeTypesMap.getContentType(courseFile.getSaveName());
+        // contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+        String contentType = courseFile.getMimeType();
+
+        // Fallback to the default content type if type could not be determined
+        if(contentType.equals("")) {
+            contentType = "application/octet-stream";
+        }
+
+        // 한글파일명 깨짐 현상 해소
+        String newFileName = FileUtil.getNewFileName(request, courseFile.getFileName());
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + courseFile.getFileName() + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + newFileName + "\"")
+                .body(resource);
+    }
+
     @GetMapping("/{typeId}/download-file/{id}")
     @ResponseBody
     public ResponseEntity<Resource> downloadFile(@PathVariable("typeId") String typeId, @PathVariable long id, HttpServletRequest request){
