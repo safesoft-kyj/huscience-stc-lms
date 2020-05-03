@@ -67,7 +67,7 @@
                                         <tr th:each="border, index : ${borders}">
 <!--                                            <td th:text="${index.count}" class="text-center"></td>-->
                                             <td  class="text-center">
-                                                <span th:text="${T(com.dtnsm.lms.util.DateUtil).getDateToString(border.getCompleteDate(), 'dd-MMM-yyyy')}"></span>
+                                                <span th:if="${border.getCompleteDate()} != null" th:text="${T(com.dtnsm.lms.util.DateUtil).getDateToString(border.getCompleteDate(), 'dd-MMM-yyyy')}"></span>
                                             </td>
                                             <td  class="text-left">
                                                 <span th:utext="${border.getTrainingCourse().replaceAll('\r\n', '<br>')}"></span>

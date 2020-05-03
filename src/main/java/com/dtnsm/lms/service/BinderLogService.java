@@ -14,8 +14,10 @@ import com.dtnsm.lms.domain.datasource.EmployeeTrainingLogSource;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.repository.CourseTrainingLogRepository;
 import com.dtnsm.lms.util.DateUtil;
+import com.dtnsm.lms.util.LogUtil;
 import com.dtnsm.lms.util.SessionUtil;
 import com.querydsl.core.BooleanBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
@@ -35,6 +37,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+@Slf4j
 @Service
 public class BinderLogService {
 
@@ -212,7 +215,7 @@ public class BinderLogService {
 
     // 초기 교육자료를 업로드 한다.
     @Transactional
-    public boolean uploadTrainingLog(String userId, MultipartFile multipartFile, boolean isUploadDataDelete) throws IOException {
+    public boolean uploadTrainingLog(String userId, MultipartFile multipartFile, boolean isUploadDataDelete) {
 
         boolean isSuccess = true;
 
@@ -245,10 +248,10 @@ public class BinderLogService {
                 boolean isLogTable = logTable.getNumberOfRows() > 1 && logTable.getRow(0).getTableCells().size() == 4;
                 if (isHeader && isLogTable) {
                     String empNo = headerTable.getRow(1).getCell(3).getText();
-//                    logger.debug("@Employee No : {}", empNo);
+                    log.debug("@Employee No : {}", empNo);
 
                     if (!empNo.toUpperCase().equals(user.getComNum().toUpperCase())) {
-//                        logger.warn("로그인한 사용자의 트레이닝 로그 파일 Emp No가 다름.");
+                        log.warn("로그인한 사용자의 트레이닝 로그 파일 Emp No가 다름.");
 
 //                     attributes.addFlashAttribute("message", "Training Log 파일의 사번과 로그인한 사용자의 사번이 다릅니다.");
                         return false;
@@ -277,6 +280,9 @@ public class BinderLogService {
                         String organization = row.getCell(3).getText();
                         double time = Double.parseDouble(trainingHr) * 3600;
                         boolean isSelfTraining = TrainingType.SELF.getLabel().toUpperCase().equals(organization.toUpperCase());
+
+                        log.info("Training log Upload : {}, {}, {}, {}, {}", i, trainingCourse, completionDate, organization, user.getName());
+
                         CourseTrainingLog trainingLog = CourseTrainingLog.builder()
                                 .trainingCourse(trainingCourse)
                                 .completeDate(DateUtil.getStringToDate(completionDate, "dd-MMM-yyyy"))
@@ -291,7 +297,10 @@ public class BinderLogService {
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
+            log.error("Training log Upload Error : {}, {}, {}", user.getUserId(), user.getName(), e.getMessage());
+            LogUtil.write("BinderLogService/uploadTrainingLog", "error", e.getMessage());
+            e.printStackTrace();
             return false;
         }
 
