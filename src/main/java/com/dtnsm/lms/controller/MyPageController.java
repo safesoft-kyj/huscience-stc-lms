@@ -263,11 +263,9 @@ public class MyPageController {
         if(multipartFile.isEmpty()) return "redirect:/mypage/uploadTrainingLog";
 
         boolean isUpload = true;
-        try {
-            isUpload = binderLogService.uploadTrainingLog(SessionUtil.getUserId(), multipartFile, isUploadDataDelete);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        isUpload = binderLogService.uploadTrainingLog(SessionUtil.getUserId(), multipartFile, isUploadDataDelete);
+
         return "redirect:/mypage/uploadTrainingLog";
     }
 

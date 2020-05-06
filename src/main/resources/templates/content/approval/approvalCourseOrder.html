@@ -216,7 +216,7 @@
                             <th><span th:text="#{label.file}">첨부파일</span></th>
                             <td>
                                 <div th:each="sections : ${course.getCourseFiles()}">
-                                    <a th:href="@{/admin/course/download-file/{id}(id=${sections.getId()})}" th:text="${sections.getFileName()}"></a>
+                                    <a th:href="@{/admin/course/download-file/{id}(id=${sections.getId()})}" th:text="${sections.getFileName()}" target="_blank"></a>
                                 </div>
                             </td>
                         </tr>
