@@ -132,6 +132,7 @@ public class CourseBinderRestController {
         String userId = SessionUtil.getUserId();
         long timestamp = System.currentTimeMillis();
 
+        log.info("@userid : {} 트레이닝 이력 바인더 배포 시작", userId);
         // Employee Training Log Template 파일 및 출력 파일 지정
         String srcEmployeeLogTemplateFileName = "etl_tm.docx";
         String outputCertificationFileName = String.format("%s_%s_certi.pdf", userId, timestamp);
@@ -153,6 +154,7 @@ public class CourseBinderRestController {
 //        String outputLogFilePath = outputRootFoloer + outputEmployeeLogFileName;
 
         try {
+            log.info("@userid : {} 바인더 로그 변환 #1", userId);
             // Employee Training Log Data
             EmployeeTrainingLogSource trainingLogSource = binderLogService.getEmployeeTrainingLog(userId, timestamp);
 
@@ -198,7 +200,7 @@ public class CourseBinderRestController {
 
             return true;
         } catch (Exception exp) {
-            System.out.println("Exception: " + exp.getMessage());
+            log.error("사용자 : {}, 교육 이력 바인더 변환 중 오류: {}", userId, exp);
             return false;
         }
 
