@@ -43,7 +43,13 @@
         <!--Page content-->
         <!--===================================================-->
         <div id="page-content">
-
+            <script>
+                function loaded_frame(iframeId) {
+                    var the_height = document.getElementById(iframeId).contentWindow.document.body.scrollHeight;
+                    document.getElementById(iframeId).height= (the_height + 50) + 'px';
+                    document.getElementById(iframeId).style.overflow = "hidden";
+                }
+            </script>
             <!--Stacked Tabs Right-->
             <!--===================================================-->
             <div class="tab-base tab-stacked-right">
@@ -53,30 +59,28 @@
                     <div id="cover" class="tab-pane fade active in">
                         <div class="panel">
                             <div class="panel-body">
-                                <div th:switch="${trainingRecord}">
+                                <div th:switch="${cert}">
                                     <div th:case="null">Certification 이 존재 하지 않습니다.</div>
                                     <div th:case="*">
-                                        <!--                                        <div th:each="tr, stat : ${trainingRecord}">-->
-                                        <!--                                            <th:block th:if="${stat.index < 2}">-->
-                                        <!--                                                <div th:if="${type == 'sop'}" th:utext="${tr.sopHtmlContent}"></div>-->
-                                        <!--                                                <div th:if="${type == 'tm'}" th:utext="${tr.tmHtmlContent}"></div>-->
-                                        <!--                                            </th:block>-->
-                                        <!--                                        </div>-->
-                                        <div class="panel" th:each="tr, stat : ${trainingRecord}" th:if="${stat.index < 1}">
+                                        <div class="panel" >
                                             <!--Accordion title-->
                                             <div class="panel-heading" style="border-bottom: 1px solid #eee;">
                                                 <h4 class="panel-title">
-                                                    <a data-parent="#trainingLog" data-toggle="collapse" th:href="@{#log{id}(id=${stat.index})}">
-                                                        <!--                                                        <span th:text="|Job Description - ${jd.jobDescriptionVersion.jobDescription.title}(${jd.jobDescriptionVersion.jobDescription.shortName}) v${jd.jobDescriptionVersion.version_no}|">"</span> -->
+                                                    <a data-parent="#trainingLog" data-toggle="collapse">
                                                         Certification
                                                     </a>
 
                                                 </h4>
                                             </div>
-                                            <div class="panel-collapse collapse" th:classappend="${stat.index == 0 ? 'in' : ''}" th:id="|log${stat.index}|">
+                                            <div class="panel-collapse collapse in">
                                                 <div class="panel-body">
                                                     <div class="text-center">
-                                                        <div th:if="tr.tmCertHtmlContent != null" th:utext="${tr.tmCertHtmlContent}"></div>
+                                                        <iframe frameborder="0" style="width:100%;" id="tmframe" onload="loaded_frame('tmframe');"></iframe>
+
+                                                        <textarea style="display:none;" th:id="tmtext" th:text="${cert.tmCertHtmlContent}"></textarea>
+                                                        <script>
+                                                            document.getElementById('tmframe').contentWindow.document.write(document.getElementById("tmtext").value);
+                                                        </script>
                                                     </div>
                                                 </div>
                                             </div>
@@ -117,6 +121,14 @@
 </th:block>
 
 <th:block layout:fragment="custom_js">
+<script>
+    $(function() {
+        loaded_frame('tmframe');
+        setTimeout(function() {
+            loaded_frame('tmframe');
+        }, 500);
+    });
+</script>
 </th:block>
 
 </html>

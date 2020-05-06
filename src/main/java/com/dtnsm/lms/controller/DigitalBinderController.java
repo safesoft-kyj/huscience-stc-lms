@@ -39,10 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -300,14 +297,17 @@ public class DigitalBinderController {
 
         QTrainingRecord qTrainingRecord = QTrainingRecord.trainingRecord;
         BooleanBuilder builder = new BooleanBuilder();
-//        builder.and(qTrainingRecord.status.in(TrainingRecordStatus.REVIEW, TrainingRecordStatus.REVIEWED, TrainingRecordStatus.PUBLISHED));
+//        builder.and(qTrainingRecord.tmStatus.in(TrainingRecordStatus.REVIEW, TrainingRecordStatus.REVIEWED, TrainingRecordStatus.PUBLISHED));
         builder.and(qTrainingRecord.tmCertHtmlContent.isNotEmpty());
         builder.and(qTrainingRecord.username.eq(SessionUtil.getUserId()));
         Iterable<TrainingRecord> trainingRecords = trainingRecordRepository.findAll(builder, qTrainingRecord.id.desc());
         if(!ObjectUtils.isEmpty(trainingRecords)) {
-//            model.addAttribute("", null);
-//        } else {
-            model.addAttribute("trainingRecord", trainingRecords);
+            Iterator i = trainingRecords.iterator();
+            if(i.hasNext()) {
+                model.addAttribute("cert", i.next());
+            } else {
+                model.addAttribute("cert", null);
+            }
         }
 
         return "content/binder/certification";
