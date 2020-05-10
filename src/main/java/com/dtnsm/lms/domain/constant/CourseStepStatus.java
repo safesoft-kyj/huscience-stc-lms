@@ -4,7 +4,7 @@ public enum CourseStepStatus {
     none("신청대기"),
     request("신청중"),
 //    periodWait("교육대기"),
-    process("교육중"),
+    process("진행중"),
     periodEnd("기간만료"),
     wait("참석등록중"),
     reject("반려"),
