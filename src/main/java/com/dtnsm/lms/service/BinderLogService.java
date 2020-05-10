@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.hibernate.SessionFactory;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -155,16 +156,28 @@ public class BinderLogService {
 
     public void createTrainingLog(CourseAccount courseAccount) {
 
+        log.info("1.Training Log 생성 시작(BinderLogService) : User {}, Course Name {}, TypeId {}, 교육기간 {} ~ {}", courseAccount.getAccount().getName()
+                , courseAccount.getCourse().getTitle()
+                , courseAccount.getCourse().getCourseMaster().getId()
+                , courseAccount.getFromDate()
+                , courseAccount.getToDate());
+
         //  강의별로 로그를 생성시킨다.
         for (CourseSection courseSection : courseAccount.getCourse().getSections()) {
 
             CourseTrainingLog courseTrainingLog = new CourseTrainingLog();
             courseTrainingLog.setAccount(courseAccount.getAccount());
-            courseTrainingLog.setCompleteDate(DateUtil.getTodayDate());
             courseTrainingLog.setIsUpload("0");
 
             // Self training  이면
             if (courseAccount.getCourse().getCourseMaster().getId().equals("BC0101")) {
+
+                // CompleteDate : self training -> 교육완료일
+                log.info("2. {} CompleteDate : {}"
+                        , courseAccount.getCourse().getCourseMaster().getCourseName()
+                        , DateUtil.getTodayDate());
+                courseTrainingLog.setCompleteDate(DateUtil.getTodayDate());
+
                 for (CourseSectionAction action : courseSection.getCourseSectionActions()) {
 
                     // 학습시간이 지정시간보다 큰경우는 학습시간으로 아니면 지정시간으로 저장한다.
@@ -187,6 +200,13 @@ public class BinderLogService {
                 courseTrainingLog.setTrainingCourse(sb.toString());
 
             } else {
+
+                // 2020-05-08 CompleteDate : class, 부서별교육, 외부교육 -> 교육기간 종료일로 변경
+                log.info("2. {} CompleteDate : {}"
+                        , courseAccount.getCourse().getCourseMaster().getCourseName()
+                        , courseAccount.getToDate());
+                courseTrainingLog.setCompleteDate(DateUtil.getStringToDate(courseAccount.getToDate()));
+
                 courseTrainingLog.setTrainingTime(courseSection.getSecond());
 
                 courseTrainingLog.setType(TrainingType.OTHER);
@@ -210,6 +230,8 @@ public class BinderLogService {
             }
 
             binderLogService.saveLog(courseTrainingLog);
+
+            log.info("Training Log 생성 완료 : User {}", courseAccount.getAccount().getName());
         }
     }
 
@@ -217,6 +239,7 @@ public class BinderLogService {
     @Transactional
     public boolean uploadTrainingLog(String userId, MultipartFile multipartFile, boolean isUploadDataDelete) {
 
+        // TODO : 2020-05-10 초기 교육자료 업로드 시작
         boolean isSuccess = true;
 
         // TODO: 2020-01-02 시스테발 발생로그 부분은 테스트가 완료되는데로 1건이라도 있으면 업로드 되지 않게 주석을 제거해야 한다.
