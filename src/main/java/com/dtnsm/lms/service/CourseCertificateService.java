@@ -248,7 +248,8 @@ public class CourseCertificateService {
             imageBytes2 = DatatypeConverter.parseBase64Binary(data);
         }
 
-        // 교육기간 지정
+        // TODO :수료증 교육기간 설정(사용자별 교육시작일 ~ 교육종료일로 설정)
+        // Self Training인 경우는
         String prior = "";
         // 과정 시작일과 종료일이 같은 경우
         if (courseAccount.getFromDate().equals(courseAccount.getToDate())) {
