@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+
+    <style>
+        .body-wrap {background-color: #ecf0f5;width: 100%;}
+        .container { display: block !important; max-width: 600px !important; margin: 0 auto !important; clear: both !important;}
+        .content {max-width: 600px; margin: 0 auto; display: block; padding: 20px; }
+        th{color: white;}
+        th, td {text-align: center;}
+    </style>
+
+</th:block>
+
+<th:block layout:fragment="content_body">
+
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-body">
+                    <div th:switch="${borders}">
+                        <div class="table-responsive">
+                            `<table id="demo-dt-basic" class="table table-bordered" cellspacing="0" width="100%">
+                                <thead>
+                                <tr class="bg-gray-light">
+                                    <th class="text-center col-md-1" th:text="#{label.no}">#</th>
+                                    <th class="col-sm-1" style="vertical-align: middle">사용자</th>
+                                    <th class="col-sm-1" style="vertical-align: middle">업로드구분</th>
+                                    <th class="col-sm-1" style="vertical-align: middle">Description of Training Course</th>
+                                    <th class="col-sm-2" style="vertical-align: middle">Completion Date<br>(DD-MMM-YYYY)</th>
+                                    <th class="col-sm-5" style="vertical-align: middle">Description of Training Course</th>
+                                    <th class="col-sm-1" style="vertical-align: middle">Training<br>Hr.</th>
+                                    <th class="col-sm-2" style="vertical-align: middle">Organization</th>
+                                </tr>
+                                </thead>
+                                    <h2 th:case="0">
+                                        <tr>
+                                            <td class="text-center" colspan="5">
+                                                <h4 class="text-warning">Training Log 가 존재하지 않습니다.</h4>
+                                            </td>
+                                        </tr>
+                                    </h2>
+                                    <div th:case="*">
+                                        <tbody>
+                                        <tr th:each="log, index : ${borders}">
+                                            <td th:text="${index.count}"></td>
+                                            <td  class="text-center">
+                                                <span th:text="${log.name}"></span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span th:text="${log.is_upload} == '0' ? '시스템생성' : '업로드'"></span>
+                                            </td>
+                                            <td  class="text-left">
+                                                <span th:text="${log.organization}"></span>
+                                            </td>
+                                            <td  class="text-center">
+                                                <span th:if="${log.complete_date} != null" th:text="${T(com.dtnsm.lms.util.DateUtil).getDateToString(log.complete_date, 'dd-MMM-yyyy')}"></span>
+                                            </td>
+                                            <td  class="text-left">
+                                                <span th:utext="${log.training_course.replaceAll('\r\n', '<br>')}"></span>
+                                            </td>
+                                            <td  class="text-center">
+                                                <span th:text="${#numbers.formatDecimal(log.training_time*1.0/3600,1,2)}"></span>
+                                            </td>
+                                            <td  class="text-left">
+                                                <span th:text="${log.organization}"></span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </div>
+                            </table>
+                        </div>
+                    </div><!--switch End -->
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+
+</th:block>
+
+<th:block layout:fragment="custom_js">
+    <script>
+        $('#demo-dt-basic').dataTable( {
+            "paging": false
+        } );
+    </script>
+</th:block>
+
+</html>
+

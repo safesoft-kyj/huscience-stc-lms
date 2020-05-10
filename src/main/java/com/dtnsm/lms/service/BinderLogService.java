@@ -166,6 +166,7 @@ public class BinderLogService {
         for (CourseSection courseSection : courseAccount.getCourse().getSections()) {
 
             CourseTrainingLog courseTrainingLog = new CourseTrainingLog();
+            courseTrainingLog.setCourseAccount(courseAccount);
             courseTrainingLog.setAccount(courseAccount.getAccount());
             courseTrainingLog.setIsUpload("0");
 

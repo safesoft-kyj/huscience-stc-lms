@@ -58,6 +58,10 @@ public class CourseTrainingLog extends AuditorCreateEntity<String> {
     @JoinColumn(name = "user_id")
     private Account account;
 
+    @ManyToOne
+    @JoinColumn(name = "doc_no")
+    private CourseAccount courseAccount;
+
     // 디지털 바이터 서식으로 리턴
     public String getCompleteDateFormat() {
         return DateUtil.getDateToString(this.completeDate, "dd-MMM-yyyy");
