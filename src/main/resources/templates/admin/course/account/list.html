@@ -70,6 +70,7 @@
                                         <th class="text-center" th:text="#{label.course.account.courseStep}">교육상태</th>
                                         <th class="text-center" th:text="#{label.status}">상태</th>
                                         <th class="text-center ">참석등록</th>
+                                        <th class="text-center ">수료증</th>
                                         <th class="text-center" th:text="#{label.actions}">Edit</th>
                                     </tr>
                                     </thead>
@@ -129,6 +130,13 @@
                                             <!--                                            <th:block th:if="${border.getIsAttendance().equals('1') and #strings.equalsIgnoreCase(border.getCourse().getCourseMaster().getCourseGubun(), 'BC0102')}">-->
                                             <!--                                                <span class="label label-success">참석</span>-->
                                             <!--                                            </th:block>-->
+
+                                        </td>
+                                        <td class="text-center">
+                                            <!-- 수료증 버튼 -->
+                                            <th:block th:unless="${border.getCertificateBindDate() == null}">
+                                                <a class="btn btn-mint" th:href="@{/mypage/certificate/file/downloadFile2/{docId}(docId=${border.getId()})}" target="_blank"><i class="fa fa-print"></i> 수료증</a>
+                                            </th:block>
                                         </td>
                                         <td class="text-center">
                                             <a th:text="#{label.delete}" th:href="@{/admin/course/{typeId}/{courseId}/account/delete/{id}(typeId=${typeId}, courseId=${courseId}, id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
