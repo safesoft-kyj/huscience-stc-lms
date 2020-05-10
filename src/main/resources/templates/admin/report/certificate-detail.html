@@ -71,7 +71,7 @@
                                                 <a th:href="@{/mypage/certificate/file/downloadFile/{id}(id=${log.id})}" th:text="${log.file_name}" target="_blank"></a>
                                             </td>
                                             <td  class="text-center">
-                                                <span th:if="${log.insert_dt} != null" th:text="${T(com.dtnsm.lms.util.DateUtil).getDateToString(log.insert_dt, 'yyyy-mm-dd')}"></span>
+                                                <span th:if="${log.insert_dt} != null" th:text="${T(com.dtnsm.lms.util.DateUtil).getDateToString(log.insert_dt, 'yyyy-MM-dd')}"></span>
                                             </td>
                                         </tr>
                                         </tbody>

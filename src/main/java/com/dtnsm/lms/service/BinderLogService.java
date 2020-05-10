@@ -202,11 +202,11 @@ public class BinderLogService {
 
             } else {
 
-                // 2020-05-08 CompleteDate : class, 부서별교육, 외부교육 -> 교육기간 종료일로 변경
+                // 2020-05-08 CompleteDate : class, 부서별교육, 외부교육 -> 강의 교육일로 변경
                 log.info("2. {} CompleteDate : {}"
                         , courseAccount.getCourse().getCourseMaster().getCourseName()
                         , courseAccount.getToDate());
-                courseTrainingLog.setCompleteDate(DateUtil.getStringToDate(courseAccount.getToDate()));
+                courseTrainingLog.setCompleteDate(DateUtil.getStringToDate(courseSection.getStudyDate()));
 
                 courseTrainingLog.setTrainingTime(courseSection.getSecond());
 

@@ -46,7 +46,6 @@
                                     <th class="text-center col-md-1" th:text="#{label.no}">#</th>
                                     <th class="col-sm-1" style="vertical-align: middle">사용자</th>
                                     <th class="col-sm-1" style="vertical-align: middle">업로드구분</th>
-                                    <th class="col-sm-1" style="vertical-align: middle">Description of Training Course</th>
                                     <th class="col-sm-2" style="vertical-align: middle">Completion Date<br>(DD-MMM-YYYY)</th>
                                     <th class="col-sm-5" style="vertical-align: middle">Description of Training Course</th>
                                     <th class="col-sm-1" style="vertical-align: middle">Training<br>Hr.</th>
@@ -69,9 +68,6 @@
                                             </td>
                                             <td class="text-center">
                                                 <span th:text="${log.is_upload} == '0' ? '시스템생성' : '업로드'"></span>
-                                            </td>
-                                            <td  class="text-left">
-                                                <span th:text="${log.organization}"></span>
                                             </td>
                                             <td  class="text-center">
                                                 <span th:if="${log.complete_date} != null" th:text="${T(com.dtnsm.lms.util.DateUtil).getDateToString(log.complete_date, 'dd-MMM-yyyy')}"></span>
