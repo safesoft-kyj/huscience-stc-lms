@@ -528,8 +528,6 @@ public class MyPageCvJdController {
     public String published(@PathVariable("id") Integer id) throws Exception {
         CurriculumVitae cv = curriculumVitaeRepository.findById(id).get();
 
-
-
         CV dto = curriculumVitaeService.toCV(cv, false, false);
             String outputFileName = SessionUtil.getUserId() + "_CV_"+id+ ".pdf";
             Files.createDirectories(Paths.get(prop.getBinderDir()).toAbsolutePath().normalize());
@@ -545,6 +543,12 @@ public class MyPageCvJdController {
             cv.setStatus(CurriculumVitaeStatus.CURRENT);
             cv.setCvFileName(outputFileName);
             CurriculumVitae savedCV = curriculumVitaeRepository.save(cv);
+
+            if(!ObjectUtils.isEmpty(savedCV.getParentId())) {
+                CurriculumVitae parentCV = curriculumVitaeRepository.findById(savedCV.getParentId()).get();
+                parentCV.setStatus(CurriculumVitaeStatus.SUPERSEDED);
+                curriculumVitaeRepository.save(parentCV);
+            }
         }
         return "redirect:/mypage/cv";
     }
@@ -606,12 +610,6 @@ public class MyPageCvJdController {
                 out.write(html);
                 out.flush();
                 out.close();
-
-                if(!ObjectUtils.isEmpty(cv.getParentId())) {
-                    CurriculumVitae parentCV = curriculumVitaeRepository.findById(cv.getParentId()).get();
-                    parentCV.setStatus(CurriculumVitaeStatus.SUPERSEDED);
-                    curriculumVitaeRepository.save(parentCV);
-                }
             } else {
                 response.sendError(500);
             }

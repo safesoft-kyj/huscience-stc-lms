@@ -40,7 +40,7 @@
                 <div class="panel-body">
                     <div class="row" style="margin-bottom: 0px;" >
                         <div class="col-sm-12 text-right">
-                            <a class="btn btn-info" href="#" onclick="createEmployeeLog();return false;"><i class="fa fa-download"></i> 배포</a>
+                            <button class="btn btn-info" id="publishBtn" type="button" data-loading-text="배포중.."><i class="fa fa-download"></i> 배포</button>
                         </div>
                     </div>
                     <div th:switch="${borders}">
@@ -127,25 +127,34 @@
 <th:block layout:fragment="custom_js">
 
     <script>
-        function createEmployeeLog() {
-            var url = "/api/binder/log/create";
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: {},
-                dataType: 'JSON',
-                async: false,
-                success: function (res) {
-                    if (res) {
-                        alert(res.message)
+        $(document).ready(function() {
+            $("#publishBtn").click(function(e) {
+                // $(this).attr("disabled", true);
+                var btn = $(this).button('loading');
+                var url = "/api/binder/log/create";
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {},
+                    dataType: 'JSON',
+                    async: true,
+                    success: function (res) {
+                        if (res) {
+                            alert(res.message)
+                        }
+                        btn.button('reset');
+                    },
+                    error: function (e) {
+                        alert('배포가 정상적으로 처리되지 않았습니다.');
+                        btn.button('reset');
                     }
-                },
-                error: function (e) {
-                    alert('배포가 정상적으로 처리되지 않았습니다.');
-                    // console.log(e.responseText);
-                }
+                });
             });
-        }
+        });
+
+        // function createEmployeeLog() {
+            //
+        // }
     </script>
 
 </th:block>

@@ -36,7 +36,7 @@
                             <form name="f" method="post" id="publishForm">
                                 <a class="btn btn-info" th:href="@{/mypage/cv/edit(id=${id})}">Edit</a>
                                 <input type="hidden" name="id" th:value="${id}"/>
-                            <button type="submit" id="publishBtn" class="btn btn-primary" name="finish">Publish</button>
+                            <button type="submit" id="publishBtn" data-loading-text="배포중.." class="btn btn-primary" name="finish">Publish</button>
                             </form>
                         </div>
                     </h5>
@@ -74,6 +74,8 @@
             e.preventDefault();
             return false;
         }
+
+        $("#publishBtn").button('loading');
     });
 </script>
 </th:block>

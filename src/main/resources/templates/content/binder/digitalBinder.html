@@ -66,9 +66,9 @@
                     <div class="alert alert-danger" th:if="${(trainingRecordReviewList == null || #lists.size(trainingRecordReviewList) == 0) && jdList == null}">
                         <strong>알림!</strong> Job Description 정보가 존재하지 않습니다.
                     </div>
-                    <form method="post" th:action="@{/binder/review}" th:if="${((trainingRecordReviewList == null || #lists.size(trainingRecordReviewList) == 0) && (jdList != null and #lists.size(jdList) > 0 and cv != null and trainingRecord != null and trainingRecord.tmFileName != null and trainingRecord.sopFileName != null)) || (trainingRecordReviewList != null && #lists.size(trainingRecordReviewList) > 0 && trainingRecord != null)}">
+                    <form method="post" th:action="@{/binder/review}" th:if="${((trainingRecordReviewList == null || #lists.size(trainingRecordReviewList) == 0) && (jdList != null and #lists.size(jdList) > 0 and cv != null and trainingRecord != null and trainingRecord.tmFileName != null and trainingRecord.sopFileName != null)) || (trainingRecordReviewList != null && #lists.size(trainingRecordReviewList) > 0 && trainingRecord != null) || (trainingRecordReviewList != null && cv != null)}">
                         <button class="btn btn-primary" ><i class="fa fa-send-o"></i> 검토 요청</button>
-                        </form>
+                    </form>
                         <hr/>
                         <h3 class="text-center" th:text="${engName}"></h3>
                         <hr/>

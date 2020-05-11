@@ -87,7 +87,7 @@
                 </div><!--panel-body End -->
             </div><!-- panel End -->
             </th:block>
-
+                <th:block th:if="${trainingRecord.trainingRecord != null}">
                     <div class="panel" th:if="${trainingRecord.trainingRecord.sopHtmlContent != null}">
                         <div class="panel-heading">
                             <h3 class="panel-title">Training Log(SOP)</h3>
@@ -104,6 +104,7 @@
                             <div th:utext="${trainingRecord.trainingRecord.tmHtmlContent}"></div>
                         </div><!--panel-body End -->
                     </div><!-- panel End -->
+                    </th:block>
                 </div>
                 <div class="panel-footer">
                     <form name="f" id="reviewForm" method="post">

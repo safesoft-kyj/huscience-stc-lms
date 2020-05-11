@@ -102,7 +102,7 @@
                             <div class="pull-right pad-rgt mar-btm">
                                 <button type="submit" name="prev" class="previous btn btn-primary" th:value="${cv.pos - 1}" th:if="${cv.pos > 0}"><i class="fa fa-caret-left"></i> Previous</button>
                                 <button type="submit" name="next" class="next btn btn-primary" th:value="${cv.pos + 1}" th:if="${cv.pos < 5}">Next <i class="fa fa-caret-right"></i></button>
-                                <button type="submit" name="_submit" value="TEMP" class="btn btn-success" th:if="${cv.pos == 5}"><i class="fa fa-check"></i> Registration</button>
+                                <button type="submit" name="_submit" id="regBtn" value="TEMP" data-loading-text="저장중..." class="btn btn-success" th:if="${cv.pos == 5}"><i class="fa fa-check"></i> Registration</button>
                             </div>
 
                         </form>
@@ -312,6 +312,9 @@
                 // console.log($sel.find("option").eq(0));//.addClass('bg-gray').trigger("change");
             }).trigger("change");
 
+            $("#regBtn").click(function() {
+                $(this).button('loading');
+            });
     </script>
     <script>
         /*<![CDATA[*/

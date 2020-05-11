@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -211,11 +212,12 @@ public class CourseBinderRestController {
         if(ObjectUtils.isEmpty(trainingRecordId)) {
             trainingRecord = new TrainingRecord();
             trainingRecord.setUsername(userId);
-            trainingRecord.setStatus(TrainingRecordStatus.PUBLISHED);
-            trainingRecord.setTmStatus(TrainingRecordStatus.PUBLISHED);
         } else {
             trainingRecord = trainingRecordRepository.findById(trainingRecordId).get();
         }
+        trainingRecord.setStatus(TrainingRecordStatus.PUBLISHED);
+        trainingRecord.setTmStatus(TrainingRecordStatus.PUBLISHED);
+        trainingRecord.setTmPublishDate(new Date());
         trainingRecord.setTmFileName(outputFilename);
         trainingRecord.setTmHtmlContent(tmHtml);
 

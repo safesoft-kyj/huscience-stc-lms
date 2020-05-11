@@ -18,32 +18,22 @@ import com.dtnsm.lms.repository.CurriculumVitaeRepository;
 import com.dtnsm.lms.repository.TrainingRecordReviewRepository;
 import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.JobDescriptionFileService;
-import com.dtnsm.lms.service.Mail;
 import com.dtnsm.lms.service.MailService;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.DocumentConverter;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
-//import com.dtnsm.lms.xdocreport.JobDescriptionReportService;
 import com.dtnsm.lms.xdocreport.CurriculumVitaeReportService;
 import com.dtnsm.lms.xdocreport.JobDescriptionReportService;
 import com.dtnsm.lms.xdocreport.dto.JobDescriptionSign;
 import com.groupdocs.assembly.DataSourceInfo;
-import com.groupdocs.conversion.internal.c.a.c.Encoding;
 import com.groupdocs.merger.Merger;
-import com.groupdocs.merger.MergerSettings;
 import com.groupdocs.merger.domain.FileType;
-import com.groupdocs.merger.domain.options.JoinOptions;
 import com.groupdocs.merger.domain.options.LoadOptions;
-import com.joestelmach.natty.generated.b;
 import com.querydsl.core.BooleanBuilder;
 import fr.opensagres.xdocreport.document.images.ByteArrayImageProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.pdfbox.io.MemoryUsageSetting;
-import org.apache.pdfbox.multipdf.PDFMergerUtility;
-import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,12 +47,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.thymeleaf.context.Context;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+//import com.dtnsm.lms.xdocreport.JobDescriptionReportService;
 
 @Controller
 @RequiredArgsConstructor
@@ -143,23 +136,23 @@ public class EmployeeController {
         return "content/employee/cv/list";
     }
 
-    @Deprecated
-    @PostMapping("employees/cv/approval")
-    public String approvalEmployeeCV(@RequestParam("id") Integer id) {
-        Optional<CurriculumVitae> optionalCurriculumVitae = curriculumVitaeRepository.findById(id);
-        if(optionalCurriculumVitae.isPresent()) {
-
-            CurriculumVitae cv = optionalCurriculumVitae.get();
-            cv.setReviewedDate(new Date());
-            cv.setReviewerId(SessionUtil.getUserId());
-            cv.setStatus(CurriculumVitaeStatus.CURRENT);
-            curriculumVitaeRepository.save(cv);
-
-            //TODO CV (승인 알림) :: CV 단독 검토 기능 제거
-        }
-
-        return "redirect:/employees/cv/current";
-    }
+//    @Deprecated
+//    @PostMapping("employees/cv/approval")
+//    public String approvalEmployeeCV(@RequestParam("id") Integer id) {
+//        Optional<CurriculumVitae> optionalCurriculumVitae = curriculumVitaeRepository.findById(id);
+//        if(optionalCurriculumVitae.isPresent()) {
+//
+//            CurriculumVitae cv = optionalCurriculumVitae.get();
+//            cv.setReviewedDate(new Date());
+//            cv.setReviewerId(SessionUtil.getUserId());
+//            cv.setStatus(CurriculumVitaeStatus.CURRENT);
+//            curriculumVitaeRepository.save(cv);
+//
+//            //TODO CV (승인 알림) :: CV 단독 검토 기능 제거
+//        }
+//
+//        return "redirect:/employees/cv/current";
+//    }
 
     @GetMapping("/employees/jd/{status}")
     public String getEmployeeJD(@PathVariable("status") String stringStatus, @RequestParam(value = "id", required = false, defaultValue = "") String userId, Model model) {
@@ -236,7 +229,7 @@ public class EmployeeController {
             curriculumVitaeRepository.save(cv);
         }
 
-        if(!ObjectUtils.isEmpty(trainingRecordReview.getTrainingRecordReviewJdList())) {
+        if(!ObjectUtils.isEmpty(trainingRecordReview.getTrainingRecordReviewJdList()) && status == TrainingRecordReviewStatus.REVIEWED) {
             for(TrainingRecordReviewJd jd : trainingRecordReview.getTrainingRecordReviewJdList()) {
                 UserJobDescription userJobDescription = jd.getUserJobDescription();
                 userJobDescription.setReviewed(true);
@@ -245,7 +238,7 @@ public class EmployeeController {
             }
         }
 
-        if(!ObjectUtils.isEmpty(trainingRecordReview.getTrainingRecord())) {
+        if(!ObjectUtils.isEmpty(trainingRecordReview.getTrainingRecord()) && status == TrainingRecordReviewStatus.REVIEWED) {
             TrainingRecord trainingRecord = trainingRecordReview.getTrainingRecord();
 //            if(!ObjectUtils.isEmpty(trainingRecord.getSopFileName())) {
             trainingRecord.setStatus(TrainingRecordStatus.REVIEWED);
@@ -417,7 +410,7 @@ public class EmployeeController {
             builder.and(qTrainingRecord.tmCertFileName.isNotEmpty());
         }
         builder.and(qTrainingRecord.status.eq(TrainingRecordStatus.REVIEWED));
-        Iterable<TrainingRecord> trainingRecords = trainingRecordRepository.findAll(builder);
+        Iterable<TrainingRecord> trainingRecords = trainingRecordRepository.findAll(builder, QTrainingRecord.trainingRecord.id.desc());
         if(ObjectUtils.isEmpty(trainingRecords)) {
             return Optional.empty();
         } else {

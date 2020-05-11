@@ -69,7 +69,12 @@ public class DigitalBinderController {
 
         String userId = SessionUtil.getUserId();
         Optional<CurriculumVitae> optionalCurriculumVitae = getCurrentCurriculumVitae(userId);
-        model.addAttribute("cv", optionalCurriculumVitae.isPresent() ? optionalCurriculumVitae.get() : null);
+        if(optionalCurriculumVitae.isPresent()) {
+            CurriculumVitae cv = optionalCurriculumVitae.get();
+            if(!cv.isReviewed()) {
+                model.addAttribute("cv", cv);
+            }
+        }
         Iterable<UserJobDescription> userJobDescriptions = getJobDescriptionList(userId, Arrays.asList(JobDescriptionStatus.APPROVED));
         model.addAttribute("jdList", userJobDescriptions);
 
@@ -141,12 +146,15 @@ public class DigitalBinderController {
         Iterable<UserJobDescription> jobDescriptions = getJobDescriptionList(userId, Arrays.asList(JobDescriptionStatus.APPROVED));
         if(!ObjectUtils.isEmpty(jobDescriptions)) {
             List<UserJobDescription> jobDescriptionList = StreamSupport.stream(jobDescriptions.spliterator(), false)
+                    .filter(jd -> !jd.isReviewed())
                     .collect(Collectors.toList());
+
             for(UserJobDescription userJobDescription : jobDescriptionList) {
                 QTrainingRecordReviewJd qTrainingRecordReviewJd = QTrainingRecordReviewJd.trainingRecordReviewJd;
                 BooleanBuilder jdBuilder = new BooleanBuilder();
                 jdBuilder.and(qTrainingRecordReviewJd.userJobDescription.id.eq(userJobDescription.getId()));
-                if(trainingRecordReviewJdRepository.findOne(jdBuilder).isPresent() == false) {
+                Optional<TrainingRecordReviewJd> optionalTrainingRecordReviewJd = trainingRecordReviewJdRepository.findOne(jdBuilder);
+                if(optionalTrainingRecordReviewJd.isPresent() == false) {
                     TrainingRecordReviewJd trainingRecordReviewJd = new TrainingRecordReviewJd();
                     trainingRecordReviewJd.setTrainingRecordReview(savedTrainingRecordReview);
                     trainingRecordReviewJd.setUserJobDescription(userJobDescription);

@@ -62,6 +62,9 @@
                                     <a class="btn btn-primary" th:href="@{/mypage/cv/new?id={id}(id=${cv.id})}">
                                         <i class="fa fa-pencil"></i> New CV
                                     </a>
+<!--                                    <a th:if="${cv.reviewed eq false}" class="btn btn-info" th:href="@{/mypage/cv/edit?id={id}(id=${cv.id})}">-->
+<!--                                        <i class="fa fa-pencil"></i> Edit-->
+<!--                                    </a>-->
                                 </th:block>
                             </div>
                         </div>

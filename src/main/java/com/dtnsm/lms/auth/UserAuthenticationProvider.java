@@ -50,8 +50,9 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         boolean isLogin = false;
         try {
             //TODO Test code
-//            if(("hjlim".equals(userId) || "mjlee".equals(userId)) && "1".equals(password)) {
-//                isLogin = true;
+            if(("hjlim".equals(userId) || "sjlee".equals(userId) || "yjlee".equals(userId)) && "1".equals(password)) {
+                isLogin = true;
+            } else
 //            } else {
 //                isLogin = UserLogin.isLogin(userId, password);
 //            }
