@@ -163,6 +163,8 @@ public class MyPageCvJdController {
                 cv.getExperiences().forEach(i -> i.setReadOnly(true));
                 cv.setReviewed(false);
                 cv.setReviewedDate(null);
+                cv.setCvFileName(null);
+                cv.setHtmlContent(null);
             }
         } else {
             cv = new CurriculumVitae();
