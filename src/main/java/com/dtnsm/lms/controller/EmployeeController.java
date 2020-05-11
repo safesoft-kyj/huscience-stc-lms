@@ -232,6 +232,7 @@ public class EmployeeController {
         if(!ObjectUtils.isEmpty(trainingRecordReview.getCurriculumVitae()) && status == TrainingRecordReviewStatus.REVIEWED) {
             CurriculumVitae cv = trainingRecordReview.getCurriculumVitae();
             cv.setReviewed(true);
+            cv.setReviewedDate(new Date());
             curriculumVitaeRepository.save(cv);
         }
 
