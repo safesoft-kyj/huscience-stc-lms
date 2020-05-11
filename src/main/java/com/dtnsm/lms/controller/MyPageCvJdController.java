@@ -161,6 +161,8 @@ public class MyPageCvJdController {
                 cv.getLanguages().forEach(i -> i.setReadOnly(true));
                 cv.getComputerKnowledges().forEach(i -> i.setReadOnly(true));
                 cv.getExperiences().forEach(i -> i.setReadOnly(true));
+                cv.setReviewed(false);
+                cv.setReviewedDate(null);
             }
         } else {
             cv = new CurriculumVitae();
