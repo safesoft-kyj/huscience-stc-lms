@@ -229,7 +229,7 @@ public class EmployeeController {
 
         TrainingRecordReview savedTrainingRecordReview = trainingRecordReviewRepository.save(trainingRecordReview);
 
-        if(!ObjectUtils.isEmpty(trainingRecordReview.getCurriculumVitae())) {
+        if(!ObjectUtils.isEmpty(trainingRecordReview.getCurriculumVitae()) && status == TrainingRecordReviewStatus.REVIEWED) {
             CurriculumVitae cv = trainingRecordReview.getCurriculumVitae();
             cv.setReviewed(true);
             curriculumVitaeRepository.save(cv);
