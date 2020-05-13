@@ -238,20 +238,19 @@ public class EmployeeController {
             }
         }
 
-        if(!ObjectUtils.isEmpty(trainingRecordReview.getTrainingRecord()) && status == TrainingRecordReviewStatus.REVIEWED) {
+        if(!ObjectUtils.isEmpty(trainingRecordReview.getTrainingRecord())) {
             TrainingRecord trainingRecord = trainingRecordReview.getTrainingRecord();
-//            if(!ObjectUtils.isEmpty(trainingRecord.getSopFileName())) {
-            trainingRecord.setStatus(TrainingRecordStatus.REVIEWED);
-//            }
+            if(status == TrainingRecordReviewStatus.REVIEWED) {
+                trainingRecord.setStatus(TrainingRecordStatus.REVIEWED);
+            } else {
+                //Training Record 상태도 Rejected 상태로 변경 되도록 수정
+                trainingRecord.setStatus(TrainingRecordStatus.REJECTED);
+            }
 
             trainingRecordRepository.save(trainingRecord);
         }
 
-
         Account user = savedTrainingRecordReview.getAccount();
-
-
-        //TODO Review 완료
 
 //        log.info("사용자에게 Binder 검토 : {}, 메일 전송 : {}", status.name(), user.getEmail());
 //        Mail mail = new Mail();

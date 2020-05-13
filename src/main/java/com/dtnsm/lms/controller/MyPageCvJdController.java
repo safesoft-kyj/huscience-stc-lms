@@ -325,7 +325,7 @@ public class MyPageCvJdController {
             return "content/mypage/cv/edit";
         }
 
-        log.debug("@CV.id : {}", cv.getId());
+//        log.debug("@CV.id : {}", cv.getId());
         if(isAdd) {
             String target = ServletRequestUtils.getStringParameter(request,"add");
             int index = -1;
@@ -533,12 +533,12 @@ public class MyPageCvJdController {
             Files.createDirectories(Paths.get(prop.getBinderDir()).toAbsolutePath().normalize());
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         boolean result = curriculumVitaeReportService.assembleDocument(dto, os);
-        log.info("Generate Result : {}", result);
+        log.info("CV Id : {}, Generate Result : {}", id, result);
         if(result) {
-            log.info("Word to PDF...");
+            log.info("CV ID : {}, Word to PDF...", id);
             File outputPdf = new File(prop.getBinderDir() + outputFileName);
             documentConverter.word2pdf(new ByteArrayInputStream(os.toByteArray()), new FileOutputStream(outputPdf));
-            log.info("Word to PDF...Done.");
+            log.info("CV ID : {}, Word to PDF...Done.", id);
 
             cv.setStatus(CurriculumVitaeStatus.CURRENT);
             cv.setCvFileName(outputFileName);
@@ -596,16 +596,16 @@ public class MyPageCvJdController {
 //                        curriculumVitaeReportService.generateReport(dto, prop.getCvUploadDir() + outputFileName, savedCV.getId());
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             boolean result = curriculumVitaeReportService.assembleDocument(dto, os);
-            log.info("Generate Result : {}", result);
+            log.info("CV Id : {}, Generate Result : {}", id, result);
             if(result) {
-                log.info("Word to HTML...");
+                log.info("CV ID : {}, Word to HTML...", id);
                 ByteArrayOutputStream htmlOutput = new ByteArrayOutputStream();
                 documentConverter.toHTML(new ByteArrayInputStream(os.toByteArray()), htmlOutput);
                 byte[] html = htmlOutput.toByteArray();
                 cv.setHtmlContent(new String(html, "utf-8"));
-                log.info("Word to HTML...Done.");
+                log.info("CV ID : {}, Word to HTML...Done.", id);
                 curriculumVitaeRepository.save(cv);
-                log.info("CV Html Content Update.");
+                log.info("CV ID : {}, CV Html Content Update.", id);
                 OutputStream out = response.getOutputStream();
                 out.write(html);
                 out.flush();
@@ -616,7 +616,7 @@ public class MyPageCvJdController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("error : {}", e);
+            log.error("CV Id : {}, error : {}", id, e);
         }
     }
 

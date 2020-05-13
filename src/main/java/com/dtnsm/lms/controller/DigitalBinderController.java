@@ -277,7 +277,7 @@ public class DigitalBinderController {
 
         QTrainingRecord qTrainingRecord = QTrainingRecord.trainingRecord;
         BooleanBuilder builder = new BooleanBuilder();
-//        builder.and(qTrainingRecord.status.in(TrainingRecordStatus.REVIEW, TrainingRecordStatus.REVIEWED));
+        builder.and(qTrainingRecord.status.notIn(TrainingRecordStatus.REJECTED));//반려된 이력을 제외하고 가져오도록 수정
         if("sop".equals(type)) {
             builder.and(qTrainingRecord.sopFileName.isNotEmpty());
         } else if("tm".equals(type)) {
