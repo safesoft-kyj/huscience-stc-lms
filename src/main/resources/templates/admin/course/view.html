@@ -168,7 +168,12 @@
                                                                     <div th:text="${section.getName()}"></div>
                                                                 </th:block>
                                                             </td>
-                                                            <td th:text="${section.getStudyDate()}" class="text-center"></td>
+                                                            <th:block th:if="${#strings.equalsIgnoreCase(section.getCourse().getCourseMaster().getId(), 'BC0101')}">
+                                                                <td th:text="${course.getFromDate() + '~' + course.getToDate()}" class="text-center"></td>
+                                                            </th:block>
+                                                            <th:block th:unless="${#strings.equalsIgnoreCase(section.getCourse().getCourseMaster().getId(), 'BC0101')}">
+                                                                <td th:text="${section.getStudyDate()}" class="text-center">
+                                                            </th:block>
                                                             <td class="text-center" th:text="#{label.course.minute(${section.getMinute()})}"></td>
                                                         </tr>
 
