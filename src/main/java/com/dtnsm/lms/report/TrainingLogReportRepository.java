@@ -70,4 +70,42 @@ public class TrainingLogReportRepository {
         query = "select * from vw_certificate_file_detail where user_id like ? order by org_depart, org_team, user_id";
         return jdbcTemplate.queryForList(query, new Object[]{userId + '%'});
     }
+
+    /**
+     * 수료증 상세 조회
+     * @param
+     * @return
+     * @exception
+     * @see
+     */
+    public List<Map<String, Object>> findBindTargetList() {
+        query = "select z.id, a.id as doc_id, z.title, a.user_id, u.name\n" +
+                "\t, a.course_status\n" +
+                "\t, d.status as section_status\n" +
+                "\t, z.is_quiz\n" +
+                "\t, isnull(c.id, 0) as quiz_action_id\n" +
+                "\t, z.is_survey\n" +
+                "\t, isnull(b.id, 0) as survey_action_id\n" +
+                "\t, (select max(end_date) from el_course_section_action_history where section_action_id = d.id) as section_complete_date\n" +
+                "\t, z.type_id\n" +
+                "from el_course_account a with(nolock)\n" +
+                "\tleft outer join el_course z with(nolock)\n" +
+                "\t\ton z.id = a.course_id\n" +
+                "\tleft outer join el_course_survey_action b with(nolock)\n" +
+                "\t\ton a.id = b.doc_id\n" +
+                "\tleft outer join el_course_quiz_action c with(nolock)\n" +
+                "\t\ton a.id = c.doc_id\n" +
+                "\tleft outer join el_course_section_action d with(nolock)\n" +
+                "\t\ton a.id = d.doc_id\n" +
+                "\tleft outer join account u with(nolock)\n" +
+                "\t\ton a.user_id = u.user_id\n" +
+                "--where z.title like '%[MFDS]%'\n" +
+                "where z.is_survey = 'Y'\n" +
+                "--and b.id is null\n" +
+                "and a.course_status <> 'complete'\n" +
+                "--and z.type_id = 'BC0101'\n" +
+                "and d.status = 'COMPLETE'\n" +
+                "order by course_status";
+        return jdbcTemplate.queryForList(query);
+    }
 }

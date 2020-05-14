@@ -1,5 +1,7 @@
 package com.dtnsm.lms.report;
 
+import com.dtnsm.lms.domain.CourseAccount;
+import com.dtnsm.lms.service.CourseAccountService;
 import com.dtnsm.lms.util.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +22,9 @@ import java.util.Map;
 @RequestMapping("/admin/report")
 @Controller
 public class JdbcReportController {
+
+    @Autowired
+    CourseAccountService courseAccountService;
 
     @Autowired
     private TrainingLogReportRepository trainingLogReportRepository;
@@ -79,6 +84,29 @@ public class JdbcReportController {
         model.addAttribute("borders", logList);
 
         return "admin/report/certificate-detail";
+    }
+
+    @GetMapping("/bind/target")
+    public String bindTarget(Model model) {
+
+        List<Map<String, Object>> logList = trainingLogReportRepository.findBindTargetList();
+
+        pageInfo.setPageTitle("Bind Target");
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("logList", logList);
+
+        return "admin/report/bind-target";
+    }
+
+    @GetMapping("/bind/target/process")
+    public String bindTarget(@RequestParam("docId") Long docId) {
+
+        CourseAccount courseAccount = courseAccountService.getById(docId);
+
+        courseAccountService.courseAccountManualCommit(courseAccount);
+
+        return "redirect:/admin/report/bind/target";
     }
 
 }

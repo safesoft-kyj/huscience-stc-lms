@@ -192,7 +192,8 @@ public class CourseAccountAdminController {
 
             } else if (courseAccount.getCourse().getCourseMaster().getId().equals("BC0102")) {   // Class 교육이면 시험, 설문, 수료증을 체크하여 종료 처리한다.
 
-                if(courseAccount.getCourse().getIsQuiz().equals("N") && courseAccount.getCourse().getIsSurvey().equals("N")) {
+                if(courseAccount.getCourseQuizActions().size() == 0 && courseAccount.getCourseSurveyActions().size() == 0) {
+//                if(courseAccount.getCourse().getIsQuiz().equals("N") && courseAccount.getCourse().getIsSurvey().equals("N")) {
                     courseAccount.setCourseStatus(CourseStepStatus.complete);
                     courseAccount.setIsCommit("1");
 

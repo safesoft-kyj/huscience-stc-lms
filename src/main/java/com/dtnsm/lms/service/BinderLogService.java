@@ -62,6 +62,9 @@ public class BinderLogService {
     @Autowired
     private UserJobDescriptionRepository userJobDescriptionRepository;
 
+    @Autowired
+    CourseSectionActionService courseSectionActionService;
+
     // Employee Training Log 데이터 생성
     public EmployeeTrainingLogSource getEmployeeTrainingLog(String userId, long timestamp) {
 
@@ -230,7 +233,16 @@ public class BinderLogService {
                 }
             }
 
+            // Employee trining log 저장
             binderLogService.saveLog(courseTrainingLog);
+
+            // 강의 바인더 적용여부및 일자 저장
+            for(CourseSectionAction courseSectionAction : courseAccount.getCourseSectionActions()) {
+                CourseSectionAction courseSectionAction1 = courseSectionActionService.getById(courseSectionAction.getId());
+                courseSectionAction1.setLogApplyDate(DateUtil.getTodayDate());
+                courseSectionAction1.setIsLogApply("1");
+                courseSectionActionService.save(courseSectionAction1);
+            }
 
             log.info("Training Log 생성 완료 : User {}", courseAccount.getAccount().getName());
         }

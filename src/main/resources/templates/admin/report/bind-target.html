@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+
+</th:block>
+
+<th:block layout:fragment="content_body">
+
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-body">
+                    <div th:switch="${logList}">
+                        <div class="table-responsive">
+                            `<table id="demo-dt-basic" class="table table-bordered" cellspacing="0" width="100%">
+                                <thead>
+                                <tr class="bg-gray-light">
+                                    <th class="text-center" th:text="#{label.no}">#</th>
+                                    <th style="vertical-align: middle">수강번호</th>
+                                    <th style="vertical-align: middle">과정명</th>
+                                    <th style="vertical-align: middle">사용자ID</th>
+                                    <th style="vertical-align: middle">사용자명</th>
+                                    <th style="vertical-align: middle">과정상태</th>
+                                    <th style="vertical-align: middle">강의상태</th>
+                                    <th style="vertical-align: middle">시험여부</th>
+                                    <th style="vertical-align: middle">시험번호</th>
+                                    <th style="vertical-align: middle">설문여부</th>
+                                    <th style="vertical-align: middle">설문번호</th>
+                                    <th style="vertical-align: middle">강의완료일</th>
+                                    <th style="vertical-align: middle">과정타입</th>
+                                    <th style="vertical-align: middle">Action</th>
+                                </tr>
+                                </thead>
+                                    <h2 th:case="0">
+                                        <tr>
+                                            <td class="text-center" colspan="5">
+                                                <h4 class="text-warning">Training Log 가 존재하지 않습니다.</h4>
+                                            </td>
+                                        </tr>
+                                    </h2>
+                                    <div th:case="*">
+                                        <tbody>
+                                        <tr th:each="log, index : ${logList}">
+                                            <td th:text="${index.count}"></td>
+                                            <td  class="text-center">
+                                                <span th:text="${log.doc_id}"></span>
+                                            </td>
+                                            <td class="text-left">
+                                                <span th:text="${log.title}"></span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span th:text="${log.user_id}"></span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span th:text="${log.name}"></span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span th:text="${log.course_status}"></span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span th:text="${log.section_status}"></span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span th:text="${log.is_quiz}"></span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span th:text="${log.quiz_action_id}"></span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span th:text="${log.is_survey}"></span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span th:text="${log.survey_action_id}"></span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span th:text="${log.section_complete_date}"></span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span th:text="${log.type_id}"></span>
+                                            </td>
+                                            <td  class="text-left">
+                                                <a th:text="처리" th:href="@{/admin/report/bind/target/process(docId=${log.doc_id})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="처리" data-container="body"></a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </div>
+                            </table>
+                        </div>
+                    </div><!--switch End -->
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+
+</th:block>
+
+<th:block layout:fragment="custom_js">
+    <script>
+        // $('#demo-dt-basic').dataTable( {
+        //     "paging": false
+        // } );
+    </script>
+</th:block>
+
+</html>
+

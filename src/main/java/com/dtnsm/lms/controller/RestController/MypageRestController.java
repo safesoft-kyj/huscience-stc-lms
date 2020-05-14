@@ -154,14 +154,13 @@ public class MypageRestController {
                 //
                 // TODO: 2019/11/12 Digital Binder Employee Training Log 처리 -ks Hwang
                 // 강의별로 로그를 생성시킨다.
-                binderLogService.createTrainingLog(courseAccount);
+                binderLogService.createTrainingLog(courseAccountService.save(courseAccount));
 
-                courseAccountService.save(courseAccount);
-
-                courseSectionAction1 = courseSectionActionService.getById(sectionActionId);
-                courseSectionAction1.setLogApplyDate(DateUtil.getTodayDate());
-                courseSectionAction1.setIsLogApply("1");
-                courseSectionAction1 = courseSectionActionService.save(courseSectionAction1);
+                // binderLogService.createTrainingLog 에서 처리
+//                courseSectionAction1 = courseSectionActionService.getById(sectionActionId);
+//                courseSectionAction1.setLogApplyDate(DateUtil.getTodayDate());
+//                courseSectionAction1.setIsLogApply("1");
+//                courseSectionAction1 = courseSectionActionService.save(courseSectionAction1);
 
             }
         }
@@ -276,9 +275,7 @@ public class MypageRestController {
                 //
                 // TODO: 2019/11/12 Digital Binder Employee Training Log 처리 -ks Hwang
                 // 강의별로 로그를 생성시킨다.
-                binderLogService.createTrainingLog(courseAccount);
-
-                courseAccountService.save(courseAccount);
+                binderLogService.createTrainingLog(courseAccountService.save(courseAccount));
 
             }
         }
