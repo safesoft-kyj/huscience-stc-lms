@@ -6,6 +6,7 @@ import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import com.dtnsm.lms.repository.CourseAccountOrderRepository;
 import com.dtnsm.lms.repository.CourseAccountRepository;
 import com.dtnsm.lms.repository.CourseCertificateInfoRepository;
+import com.dtnsm.lms.util.DateUtil;
 import com.querydsl.core.BooleanBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -38,6 +39,11 @@ public class CourseAccountService {
     @Autowired
     CourseCertificateInfoRepository courseCertificateInfoRepository;
 
+    @Autowired
+    BinderLogService binderLogService;
+
+    @Autowired
+    CourseCertificateService courseCertificateService;
 
     public CourseAccount save(CourseAccount courseAccount){
         return courseAccountRepository.save(courseAccount);
@@ -305,6 +311,34 @@ public class CourseAccountService {
 
         return 9;
     }
+
+
+    /**
+     * 2020-05-14 SelfTraining 교육수강생 지정후 시험이나 설문이 지정되어 시험이나 설문이 없는 경우 수동으로 종료 시킨다.
+     *
+     * @param courseAccount
+     * @return
+     * @exception
+     * @see
+     */
+    public void courseAccountManualCommit(CourseAccount courseAccount) {
+        courseAccount.setCourseStatus(CourseStepStatus.complete);
+        courseAccount.setIsCommit("1");
+
+        // 수료증 처리
+        if(courseAccount.getCourse().getIsCerti().equals("Y") && !courseAccount.getCourse().getCertiHead().equals("")){
+            String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
+            courseAccount.setCertificateNo(certificateNo);
+        }
+
+        //
+        // TODO: 2019/11/12 Digital Binder Employee Training Log 처리 -ks Hwang
+        // 강의별로 로그를 생성시킨다.
+        binderLogService.createTrainingLog(courseAccount);
+
+        this.save(courseAccount);
+    }
+
 
 
     //    public CourseAccount getByCourseIdAndApprUserId1(long courseId, String userId) {

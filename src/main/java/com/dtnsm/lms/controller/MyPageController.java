@@ -548,7 +548,15 @@ public class MyPageController {
                 }
 
                 // TODO: 2019/11/12 Digital Binder Employee Training Log 처리 -ks Hwang
-                binderLogService.createTrainingLog(courseAccountService.save(courseAccount));
+                courseAccount = courseAccountService.save(courseAccount);
+                binderLogService.createTrainingLog(courseAccount);
+
+                for(CourseSectionAction courseSectionAction : courseAccount.getCourseSectionActions()) {
+                    CourseSectionAction courseSectionAction1 = courseSectionActionService.getById(courseSectionAction.getId());
+                    courseSectionAction1.setLogApplyDate(DateUtil.getTodayDate());
+                    courseSectionAction1.setIsLogApply("1");
+                    courseSectionActionService.save(courseSectionAction1);
+                }
             }
         }
 
@@ -658,8 +666,15 @@ public class MyPageController {
             }
 
             // TODO: 2019/11/12 Digital Binder Employee Training Log 처리 -ks Hwang
+            courseAccount1 = courseAccountService.save(courseAccount1);
             binderLogService.createTrainingLog(courseAccountService.save(courseAccount1));
 
+            for(CourseSectionAction courseSectionAction : courseAccount1.getCourseSectionActions()) {
+                CourseSectionAction courseSectionAction1 = courseSectionActionService.getById(courseSectionAction.getId());
+                courseSectionAction1.setLogApplyDate(DateUtil.getTodayDate());
+                courseSectionAction1.setIsLogApply("1");
+                courseSectionActionService.save(courseSectionAction1);
+            }
 //        }
 
 //        pageInfo.setPageId("m-mypage-myinfo");

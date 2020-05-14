@@ -53,6 +53,7 @@ public class MypageRestController {
     UserServiceImpl userService;
 
 
+    // 2020-05-14 강의를 PDF -> Image로 변경하면서 사용
     @PostMapping("/pdfImageview")
     public boolean pdfImageview(@RequestParam("sectionActionId") long sectionActionId
             , @RequestParam("imageCurrent") int imageCurrent
@@ -82,6 +83,8 @@ public class MypageRestController {
             //totalSecond = courseSectionAction.getCourseSection().getSecond();
 
             courseSectionAction.setStatus(SectionStatusType.COMPLETE);
+            courseSectionAction.setExecuteDate(DateUtil.getTodayString());
+
 
             //courseSectionActionHistory.setUseSecond(courseSectionAction.getCourseSection().getSecond() - courseSectionAction.getTotalUseSecond());
             courseSectionActionHistory.setUseSecond(useSecond);
@@ -108,8 +111,8 @@ public class MypageRestController {
             CourseAccount courseAccount = courseSectionAction1.getCourseAccount();
 
             // 교육과정의 퀴즈 여부가 Y인 경우만 실행
-            if (courseAccount.getCourse().getIsQuiz().equals("Y")) {
-
+            if (courseAccount.getCourseQuizActions().size() > 0) {
+//            if (courseAccount.getCourse().getIsQuiz().equals("Y")) {
                 for (CourseSectionAction courseSectionAction2 : courseAccount.getCourseSectionActions()) {
                     if (courseSectionAction2.getStatus().equals(SectionStatusType.COMPLETE)) {
                         completeCount++;
@@ -123,21 +126,21 @@ public class MypageRestController {
                         courseQuizActionService.saveQuizAction(courseQuizAction);
                     }
                 }
-            } else if (courseAccount.getCourse().getIsQuiz().equals("N") && courseAccount.getCourse().getIsSurvey().equals("Y")) {
+            } else if (courseAccount.getCourseQuizActions().size() == 0  && courseAccount.getCourseSurveyActions().size() > 0) {
                 for (CourseSectionAction courseSectionAction2 : courseAccount.getCourseSectionActions()) {
                     if (courseSectionAction2.getStatus().equals(SectionStatusType.COMPLETE)) {
                         completeCount++;
                     }
                 }
 
-                // 2.  강의수와  COMPLETE 수가 같으면 다음 퀴즈를 ONGOING 상태로 변경한다.
+                // 2.  강의수와  COMPLETE 수가 같으면 다음 설문을 ONGOING 상태로 변경한다.
                 if (courseAccount.getCourseSectionActions().size() == completeCount) {
                     for (CourseSurveyAction courseSurveyAction : courseAccount.getCourseSurveyActions()) {
                         courseSurveyAction.setStatus(SurveyStatusType.ONGOING);
                         courseSurveyActionService.saveSurveyAction(courseSurveyAction);
                     }
                 }
-            } else {  // 시험여부가 N인 경우 CourseAccount 의 상태값을 완료로 변경하고 디지털 바인더 로그를 발생시킨다.
+            } else {  // CourseAccount 의 상태값을 완료로 변경하고 디지털 바인더 로그를 발생시킨다.
 
                 courseAccount.setCourseStatus(CourseStepStatus.complete);
                 courseAccount.setIsCommit("1");
@@ -155,6 +158,11 @@ public class MypageRestController {
 
                 courseAccountService.save(courseAccount);
 
+                courseSectionAction1 = courseSectionActionService.getById(sectionActionId);
+                courseSectionAction1.setLogApplyDate(DateUtil.getTodayDate());
+                courseSectionAction1.setIsLogApply("1");
+                courseSectionAction1 = courseSectionActionService.save(courseSectionAction1);
+
             }
         }
 
@@ -169,7 +177,7 @@ public class MypageRestController {
     }
 
 
-
+    // 2020-05-14 강의를 PDF 로 사용(현재 사용하지 않음)
     @PostMapping("/pdfview")
     public boolean treeViewGet(@RequestParam("sectionActionId") long sectionActionId
             , @RequestParam("useSecond") int useSecond
