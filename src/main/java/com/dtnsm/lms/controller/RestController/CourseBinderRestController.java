@@ -193,12 +193,13 @@ public class CourseBinderRestController {
 //            output.flush();
             if(result) {
                 String html = documentConverter.word2html(outputEmployeeLogDocxFilePath);
-                log.debug("Word to HTML : {}", html);
+//                log.debug("Word to HTML : {}", html);
 
                 if(ObjectUtils.isEmpty(trainingRecordId)) {
                     QTrainingRecord qTrainingRecord = QTrainingRecord.trainingRecord;
                     BooleanBuilder builder = new BooleanBuilder();
                     builder.and(qTrainingRecord.status.eq(TrainingRecordStatus.PUBLISHED));
+                    builder.and(qTrainingRecord.username.eq(userId));
                     Optional<TrainingRecord> optionalTrainingRecord = trainingRecordRepository.findOne(builder);
                     if(optionalTrainingRecord.isPresent()) {
                         log.info("@Userid : {} 배포 진행 중 신규 배포 이력이 존재함//배포 시점엔 published 상태가 없었으나, 중복 클릭으로 발생함.", userId);
