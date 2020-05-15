@@ -22,7 +22,7 @@ public class Course extends AuditorCreateEntity<String> {
 
     // 과정명
     //@NotEmpty(message = "No title")
-    @Column(length = 100, nullable = false)
+    @Column(length = 255, nullable = false)
     private String title;
 
     // 과정소개
