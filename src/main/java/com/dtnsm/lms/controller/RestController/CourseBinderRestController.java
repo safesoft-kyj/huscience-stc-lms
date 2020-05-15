@@ -1,5 +1,6 @@
 package com.dtnsm.lms.controller.RestController;
 
+import com.dtnsm.common.entity.QTrainingRecord;
 import com.dtnsm.common.entity.TrainingRecord;
 import com.dtnsm.common.entity.constant.TrainingRecordStatus;
 import com.dtnsm.common.repository.SignatureRepository;
@@ -19,6 +20,7 @@ import com.dtnsm.lms.xdocreport.CurriculumVitaeReportService;
 import com.groupdocs.assembly.DataSourceInfo;
 import com.groupdocs.assembly.DocumentAssembler;
 import com.groupdocs.assembly.DocumentAssemblyOptions;
+import com.querydsl.core.BooleanBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
@@ -193,12 +195,24 @@ public class CourseBinderRestController {
                 String html = documentConverter.word2html(outputEmployeeLogDocxFilePath);
                 log.debug("Word to HTML : {}", html);
 
+                if(ObjectUtils.isEmpty(trainingRecordId)) {
+                    QTrainingRecord qTrainingRecord = QTrainingRecord.trainingRecord;
+                    BooleanBuilder builder = new BooleanBuilder();
+                    builder.and(qTrainingRecord.status.eq(TrainingRecordStatus.PUBLISHED));
+                    Optional<TrainingRecord> optionalTrainingRecord = trainingRecordRepository.findOne(builder);
+                    if(optionalTrainingRecord.isPresent()) {
+                        log.info("@Userid : {} 배포 진행 중 신규 배포 이력이 존재함//배포 시점엔 published 상태가 없었으나, 중복 클릭으로 발생함.", userId);
+                        trainingRecordId = optionalTrainingRecord.get().getId();
+                        log.info("@Userid : {}, Training Record Id : {} 로 업데이트 되도록 변경", userId, trainingRecordId);
+                    }
+                }
                 saveTrainingRecord(trainingRecordId, userId, outputEmployeeLogPdfFileName, html, StringUtils.isEmpty(certHtmlContent) ? "" : outputCertificationFileName, certHtmlContent);
 
                 //word to pdf
                 assembler.assembleDocument(outputEmployeeLogDocxFilePath, outputEmployeeLogFilePath , dataSourceInfo);
             }
 
+            log.info("<== 배포 완료. 사용자 아이디 : {}", userId);
             return true;
         } catch (Exception exp) {
             log.error("사용자 : {}, 교육 이력 바인더 변환 중 오류: {}", userId, exp);
