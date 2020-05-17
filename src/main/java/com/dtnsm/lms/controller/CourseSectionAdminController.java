@@ -111,6 +111,7 @@ public class CourseSectionAdminController {
             , @PathVariable("typeId") String typeId
             , @PathVariable("courseId") Long courseId
             , @RequestParam(value = "files", required = false) MultipartFile file
+            , @RequestParam(value = "page", required = false, defaultValue = "") String page
             , BindingResult result) {
         if(result.hasErrors()) {
             return "admin/course/section/add";
@@ -139,9 +140,10 @@ public class CourseSectionAdminController {
         // 강의 시간의 변경시 과정의 시간을 업데이트 한다.
         courseService.updateCourseHour(course);
 
-        return String.format("redirect:/admin/course/%s/%s/section"
+        return String.format("redirect:/admin/course/%s/%s/section?page=%s"
                 , courseSection1.getCourse().getCourseMaster().getId()
-                , courseSection1.getCourse().getId());
+                , courseSection1.getCourse().getId()
+                , page);
     }
 
     @GetMapping("/{typeId}/{courseId}/section/edit")
@@ -168,6 +170,7 @@ public class CourseSectionAdminController {
             , @PathVariable("typeId") String typeId
             , @RequestParam(value = "files", required = false ) MultipartFile file
             , @Valid CourseSection courseSection
+            , @RequestParam(value = "page", required = false, defaultValue = "") String page
             , BindingResult result) {
         if(result.hasErrors()) {
             courseSection.setId(id);
@@ -197,9 +200,10 @@ public class CourseSectionAdminController {
 //                .map(file -> fileService.storeFile(file, courseSection1))
 //                .collect(Collectors.toList());
 
-        return String.format("redirect:/admin/course/%s/%s/section"
+        return String.format("redirect:/admin/course/%s/%s/section?page=%s"
                 , courseSection1.getCourse().getCourseMaster().getId()
-                , courseSection1.getCourse().getId());
+                , courseSection1.getCourse().getId()
+                , page);
     }
 
     @GetMapping("/{typeId}/{courseId}/section/view/{id}")
@@ -223,7 +227,10 @@ public class CourseSectionAdminController {
 
     @GetMapping("/{typeId}/{courseId}/section/delete/{id}")
     public String noticeDelete(@PathVariable("typeId") String typeId
-            , @PathVariable("courseId") Long courseId, @PathVariable("id") long id, HttpServletRequest request) {
+            , @PathVariable("courseId") Long courseId
+            , @PathVariable("id") long id
+            , @RequestParam(value = "page", required = false, defaultValue = "") String page
+            , HttpServletRequest request) {
 
         CourseSection courseSection = sectionService.getCourseSectionById(id);
 
@@ -233,13 +240,19 @@ public class CourseSectionAdminController {
         }
 
         // 이전 URL를 리턴한다.
-        String refUrl = request.getHeader("referer");
-        return "redirect:" +  refUrl;
+//        String refUrl = request.getHeader("referer");
+//        return "redirect:" +  refUrl;
+
+        return String.format("redirect:/admin/course/%s/%s/section?page=%s"
+                , typeId
+                , courseId
+                , page);
     }
 
     @GetMapping("/{typeId}/{courseId}/section/delete-file/{section_id}/{file_id}")
     public String noticeDeleteFile(@PathVariable("typeId") String typeId
             , @PathVariable("courseId") Long courseId
+            , @RequestParam(value = "page", required = false, defaultValue = "") String page
             , @PathVariable long section_id, @PathVariable long file_id, HttpServletRequest request){
 
         // db및 파일 삭제

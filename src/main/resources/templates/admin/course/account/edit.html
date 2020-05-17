@@ -35,7 +35,7 @@
                 <div class="panel-body">
                     <!--===================================================-->
                     <!--End Horizontal Form-->
-                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/{typeId}/{courseId}/account/edit-post/{id}(typeId=${typeId}, courseId=${courseId}, id=${course.getId()})}" th:object="${course}" method="post" enctype="multipart/form-data">
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/{typeId}/{courseId}/account/edit-post/{id}(typeId=${typeId}, courseId=${courseId}, id=${course.getId()}, page=${param.page})}" th:object="${course}" method="post" enctype="multipart/form-data">
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="mailList" th:text="#{label.course.accountlist}">교육대상자</label>
                             <div class="col-sm-9">
@@ -59,7 +59,7 @@
                             <button class="btn btn-primary" type="submit" id="submit-all" th:text="#{label.save}">
                                 <i class="fa fa-upload-cloud"></i> 저장
                             </button>
-                            <a th:href="@{/admin/course/{typeId}(typeId=${typeId})}" class="btn btn-success" th:text="#{label.list}">
+                            <a th:href="@{/admin/course/{typeId}(typeId=${typeId}, page=${param.page})}" class="btn btn-success" th:text="#{label.list}">
                                 <i class="fa fa-upload-cloud"></i> 목록
                             </a>
                         </div>

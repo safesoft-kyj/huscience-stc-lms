@@ -228,6 +228,7 @@ public class CourseAdminController {
             , @RequestParam("files") MultipartFile[] files
             , @RequestParam(value = "section_file", required = false) MultipartFile section_file
             , @RequestParam(value = "quiz_file", required = false) MultipartFile quiz_file
+            , @RequestParam(value = "page", required = false, defaultValue = "") String page
             , BindingResult result) {
         if(result.hasErrors()) {
             return "redirect:/admin/course/list/" + typeId;
@@ -334,7 +335,7 @@ public class CourseAdminController {
 //            }
 //        }
 
-        return "redirect:/admin/course/" + course1.getCourseMaster().getId();
+        return String.format("redirect:/admin/course/%s?page=%s", course1.getCourseMaster().getId(), page);
     }
 
     // 첨부파일 업로드
@@ -395,6 +396,7 @@ public class CourseAdminController {
             , @Valid Course course
             , @RequestParam(value = "documentId", required = false, defaultValue = "0") long documentId
             , @RequestParam("files") MultipartFile[] files
+            , @RequestParam(value = "page", required = false) String page
             , BindingResult result) {
         if(result.hasErrors()) {
             course.setId(id);
@@ -522,12 +524,14 @@ public class CourseAdminController {
                 .map(file -> courseFileService.storeFile(file, course1))
                 .collect(Collectors.toList());
 
-        return "redirect:/admin/course/" + typeId;
+        return String.format("redirect:/admin/course/%s?page=%s", typeId, page);
     }
 
 
     @GetMapping("/{typeId}/updateActive/{id}")
-    public String updateActive(@PathVariable("typeId") String typeId, @PathVariable("id") long id) {
+    public String updateActive(@PathVariable("typeId") String typeId
+            , @RequestParam(value = "page", required = false) String page
+            , @PathVariable("id") long id) {
 
         Course course = courseService.getCourseById(id);
 
@@ -546,11 +550,14 @@ public class CourseAdminController {
 
         courseService.save(course);
 
-        return "redirect:/admin/course/" + typeId;
+        return String.format("redirect:/admin/course/%s?page=%s", typeId, page);
     }
 
     @GetMapping("/{typeId}/delete/{id}")
-    public String noticeDelete(@PathVariable("typeId") String typeId, @PathVariable("id") long courseId, HttpServletRequest request) {
+    public String noticeDelete(@PathVariable("typeId") String typeId
+            , @PathVariable("id") long courseId
+            , @RequestParam(value = "page", required = false, defaultValue = "") String page
+            , HttpServletRequest request) {
 
         Course course = courseService.getCourseById(courseId);
 
@@ -572,13 +579,18 @@ public class CourseAdminController {
         }
 
         // 이전 URL를 리턴한다.
-        String refUrl = request.getHeader("referer");
-        return "redirect:" +  refUrl;
+//        String refUrl = request.getHeader("referer");
+//        return "redirect:" +  refUrl;
+        return String.format("redirect:/admin/course/%s?page=%s", typeId, page);
     }
 
 
     @GetMapping("/{typeId}/delete-file/{course_id}/{file_id}")
-    public String noticeDeleteFile(@PathVariable("typeId") String typeId, @PathVariable long course_id, @PathVariable long file_id, HttpServletRequest request){
+    public String noticeDeleteFile(@PathVariable("typeId") String typeId
+            , @PathVariable long course_id
+            , @PathVariable long file_id
+            , @RequestParam(value = "page", required = false) String page
+            , HttpServletRequest request){
 
         // db및 파일 삭제
         fileService.deleteFile(file_id);
@@ -588,6 +600,8 @@ public class CourseAdminController {
         // 이전 URL를 리턴한다.
         String refUrl = request.getHeader("referer");
         return "redirect:" +  refUrl;
+
+//        return String.format("redirect:/admin/course/%s?page=%s", typeId, page);
     }
 
     @GetMapping("/download-file/{id}")

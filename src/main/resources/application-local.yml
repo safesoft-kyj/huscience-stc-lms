@@ -72,7 +72,7 @@ spring:
         smtp:
           starttls:
             enable: true
-          auth: false
+          auth: true
 mybatis:
   type-aliases-package: com.dtnsm.lms.mybatis.dto
 

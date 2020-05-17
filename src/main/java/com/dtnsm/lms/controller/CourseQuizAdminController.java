@@ -110,6 +110,7 @@ public class CourseQuizAdminController {
             , @PathVariable("typeId") String typeId
             , @PathVariable("courseId") Long courseId
 //            , @RequestParam("id") Long id
+            , @RequestParam(value = "page", required = false, defaultValue = "") String page
             , @RequestParam("file") MultipartFile file
             , BindingResult result) {
         if(result.hasErrors()) {
@@ -146,9 +147,10 @@ public class CourseQuizAdminController {
             }
         }
 
-        return String.format("redirect:/admin/course/%s/%s/quiz"
+        return String.format("redirect:/admin/course/%s/%s/quiz?page=%s"
                 , quiz.getCourse().getCourseMaster().getId()
-                , quiz.getCourse().getId());
+                , quiz.getCourse().getId()
+                , page);
     }
 
     @GetMapping("/{typeId}/{courseId}/quiz/edit")
@@ -175,6 +177,7 @@ public class CourseQuizAdminController {
 //            , @PathVariable("id") long id
             , @Valid CourseQuiz courseQuiz
             , @RequestParam("file") MultipartFile file
+            , @RequestParam(value = "page", required = false, defaultValue = "") String page
             , BindingResult result) {
         if(result.hasErrors()) {
             course.setId(courseQuiz.getId());
@@ -214,14 +217,16 @@ public class CourseQuizAdminController {
             }
         }
 
-        return String.format("redirect:/admin/course/%s/%s/quiz"
+        return String.format("redirect:/admin/course/%s/%s/quiz?page=%s"
                 , courseQuiz1.getCourse().getCourseMaster().getId()
-                , courseQuiz1.getCourse().getId());
+                , courseQuiz1.getCourse().getId()
+                , page);
     }
 
     @GetMapping("/{typeId}/{courseId}/quiz/delete/{id}")
     public String noticeDelete(@PathVariable("typeId") String typeId
             , @PathVariable("courseId") Long courseId
+            , @RequestParam(value = "page", required = false, defaultValue = "") String page
             , @PathVariable("id") long id, HttpServletRequest request) {
 
         CourseQuiz courseQuiz = quizService.getCourseQuizById(id);
@@ -242,8 +247,13 @@ public class CourseQuizAdminController {
 //        }
 
         // 이전 URL를 리턴한다.
-        String refUrl = request.getHeader("referer");
-        return "redirect:" +  refUrl;
+//        String refUrl = request.getHeader("referer");
+//        return "redirect:" +  refUrl;
+
+        return String.format("redirect:/admin/course/%s/%s/quiz?page=%s"
+                , typeId
+                , courseId
+                , page);
     }
 
     @GetMapping("/{typeId}/{courseId}/quiz/delete-file/{quiz_id}/{file_id}")
@@ -251,6 +261,7 @@ public class CourseQuizAdminController {
             , @PathVariable("courseId") Long courseId
             , @PathVariable long quiz_id
             , @PathVariable long file_id
+            , @RequestParam(value = "page", required = false, defaultValue = "") String page
             , HttpServletRequest request){
 
 

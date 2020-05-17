@@ -52,7 +52,7 @@
 <!--                                        <a class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/account/sendmail(typeId=${typeId}, courseId=${courseId})}"><i class="demo-pli-mail-send"></i> 참석보고서 미작성자 메일 발송</a>-->
 <!--                                    </th:block>-->
                                     <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/account/add(typeId=${typeId}, courseId=${courseId})}"><i class="demo-pli-add"></i> Add</a>
-                                    <a class="btn btn-primary" th:href="@{/admin/course/{typeId}(typeId=${typeId})}"><i class="demo-pli-back"></i> Back</a>
+                                    <a class="btn btn-primary" th:href="@{/admin/course/{typeId}(typeId=${typeId}, page=${param.page})}"><i class="demo-pli-back"></i> Back</a>
                                 </div>
                             </div>
                             <div class="table-responsive">
@@ -91,7 +91,7 @@
                                             <span class="label label-success" th:if="${#strings.equalsIgnoreCase(border.getFnStatus(), '1')}">최종승인</span>
                                         </td>
                                         <td class="text-center">
-                                            <div th:switch="${border.getCourseStatus()}">
+                                            <span th:switch="${border.getCourseStatus()}">
                                                 <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).none}" class="label label-info" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).none.getLabel()}"></span>
                                                 <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).request}" class="label label-info" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).request.getLabel()}"></span>
                                                 <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).process}" class="label label-warning" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).process.getLabel()}"></span>
@@ -99,9 +99,16 @@
                                                 <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).wait}" class="label label-warning" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).wait.getLabel()}"></span>
                                                 <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).complete}" class="label label-success" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).complete.getLabel()}"></span>
                                                 <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).reject}" class="label label-danger" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).reject.getLabel()}"></span>
-                                            </div>
+                                            </span>
+                                            <!-- TODO: 과정상태가 기간연장이고 Self 트레이닝 이면서 상시 교육인 경우는 기간 연장이 가능함 -->
+                                            <th:block th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).periodEnd}">
+                                                <th:block th:if="${#strings.equalsIgnoreCase(border.getCourse().getCourseMaster().getId(), 'BC0101')}">
+                                                    <th:block th:if="${#strings.equalsIgnoreCase(border.getCourse().getIsAlways(), '1')}">
+                                                        <a class="btn btn-info" href="#" th:onclick="|javascript:executeCoursePeriodExtend('${border.getId()}')|"><i class="demo-pli-inbox-into"></i> 연장</a>
+                                                    </th:block>
+                                                </th:block>
+                                            </th:block>
                                         </td>
-
                                         <td class="text-center">
                                             <th:block th:if="${border.getIsCommit().equals('0')}">
                                                 <span class="label label-warning">진행중</span>
@@ -139,7 +146,7 @@
                                             </th:block>
                                         </td>
                                         <td class="text-center">
-                                            <a th:text="#{label.delete}" th:href="@{/admin/course/{typeId}/{courseId}/account/delete/{id}(typeId=${typeId}, courseId=${courseId}, id=${border.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                            <a th:text="#{label.delete}" th:href="@{/admin/course/{typeId}/{courseId}/account/delete/{id}(typeId=${typeId}, courseId=${courseId}, id=${border.getId()}, page=${param.page})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -158,6 +165,38 @@
 <th:block layout:fragment="custom_js">
     <!--DataTables Sample [ SAMPLE ]-->
     <script th:src="@{/default/js/demo/tables-datatables.js}"></script>
+
+    <script>
+        // Self 상시 교육이면서 기간이 만료된 경우 기간 연장
+        function executeCoursePeriodExtend(docId) {
+
+            var con_test = confirm("교육기간을 연장 하시겠습니까?");
+
+            if(con_test == true){
+
+                // 교육기간 연장
+                $.ajax({
+                    type : 'POST',
+                    url : '/api/courseAccount/courseAdminPeriodExtend',
+                    dataType : 'json',
+                    data : {
+                        'docId': docId
+                    },
+                    error: function(xhr, status, error){
+                        alert('교육기간이 연장되지 않았습니다.');
+                    },
+                    success : function(data){
+
+                        if(data == true) {
+                            alert('교육 기간이 연장되었습니다.');
+                            location.reload();
+                        }
+                    },
+                });
+            }
+        }
+
+    </script>
 </th:block>
 
 </html>
