@@ -95,6 +95,7 @@ public class CourseSurveyAdminController {
             , @PathVariable("typeId") String typeId
             , @PathVariable("courseId") Long courseId
             , @RequestParam("id") Long id
+            , @RequestParam(value = "page", required = false, defaultValue = "") String page
             , BindingResult result) {
         if(result.hasErrors()) {
             return "admin/course/section/add/" + id;
@@ -109,9 +110,10 @@ public class CourseSurveyAdminController {
         // 선택된 설문을 복사한다.
         courseSurveyService.CopySurveyQuestion(courseSurvey1);
 
-        return String.format("redirect:/admin/course/%s/%s/survey"
+        return String.format("redirect:/admin/course/%s/%s/survey?page=%s"
                 , courseSurvey1.getCourse().getCourseMaster().getId()
-                , courseSurvey1.getCourse().getId());
+                , courseSurvey1.getCourse().getId()
+                , page);
     }
 
     @GetMapping("/{typeId}/{courseId}/survey/edit")
@@ -137,6 +139,7 @@ public class CourseSurveyAdminController {
             , @PathVariable("courseId") Long courseId
             , @PathVariable("id") long id
             , @Valid CourseSurvey courseSurvey
+            , @RequestParam(value = "page", required = false, defaultValue = "") String page
             , BindingResult result) {
         if(result.hasErrors()) {
             course.setId(id);
@@ -153,14 +156,17 @@ public class CourseSurveyAdminController {
         // 선택된 설문을 복사한다.
         courseSurveyService.CopySurveyQuestion(courseSurvey1);
 
-        return String.format("redirect:/admin/course/%s/%s/survey"
-                , courseSurvey.getCourse().getCourseMaster().getId()
-                , courseSurvey.getCourse().getId());
+
+        return String.format("redirect:/admin/course/%s/%s/survey?page=%s"
+                , courseSurvey1.getCourse().getCourseMaster().getId()
+                , courseSurvey1.getCourse().getId()
+                , page);
     }
 
     @GetMapping("/{typeId}/{courseId}/survey/delete/{id}")
     public String noticeDelete(@PathVariable("typeId") String typeId
             , @PathVariable("courseId") Long courseId
+            , @RequestParam(value = "page", required = false, defaultValue = "") String page
             , @PathVariable("id") long id, HttpServletRequest request) {
 
         CourseSurvey courseSurvey = courseSurveyService.getCourseSurveyById(id);
@@ -171,8 +177,13 @@ public class CourseSurveyAdminController {
         }
 
         // 이전 URL를 리턴한다.
-        String refUrl = request.getHeader("referer");
-        return "redirect:" +  refUrl;
+//        String refUrl = request.getHeader("referer");
+//        return "redirect:" +  refUrl;
+
+        return String.format("redirect:/admin/course/%s/%s/survey?page=%s"
+                , typeId
+                , courseId
+                , page);
     }
 
     @GetMapping("/{typeId}/{courseId}/survey/view")

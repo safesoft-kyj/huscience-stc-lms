@@ -23,7 +23,7 @@ public class CourseAccountRestController {
     @Autowired
     CourseService courseService;
 
-    // 교육기간 연장
+    // 사용자 교육기간 연장(연장횟수 1번만 가능)
     @PostMapping("/coursePeriodExtend")
     public boolean coursePeriodExtend(@RequestParam("docId") long docId) {
 
@@ -48,6 +48,26 @@ public class CourseAccountRestController {
 //            courseAccountService.save(courseAccount);
 //            return true;
 //        }
+
+        return false;
+    }
+
+    // 2020-05-17 관리자 교육기간 연장(연장 횟수 제한 없음)
+    @PostMapping("/courseAdminPeriodExtend")
+    public boolean courseAdminPeriodExtend(@RequestParam("docId") long docId) {
+
+        CourseAccount courseAccount = courseAccountService.getById(docId);
+
+        // self 상시교육인 경우  연장 가능
+        if (courseAccount.getCourse().getCourseMaster().getId().equals("BC0101")
+                && courseAccount.getCourse().getIsAlways().equals("1")) {     // 상시교육일 경우
+//            courseAccount.setFromDate(DateUtil.getTodayString());
+            courseAccount.setToDate(DateUtil.getStringDateAddDay(courseAccount.getToDate(), courseAccount.getCourse().getDay()));
+            courseAccount.setPeriodExtendCount(courseAccount.getPeriodExtendCount() + 1);
+            courseAccount.setCourseStatus(CourseStepStatus.process);
+            courseAccountService.save(courseAccount);
+            return true;
+        }
 
         return false;
     }
