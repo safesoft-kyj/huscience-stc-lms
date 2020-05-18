@@ -528,6 +528,13 @@ public class ApprovalCourseProcessService {
         // 관리자 승인여부
         String isAppr2 = course.getCourseMaster().getIsCourseMangerApproval();
 
+        // Self 교육이면서 신입사원 필수교육이면 전자결재를 하지 않는다.
+        // 부서별 교육은 교육결재(팀장, 관리자)가 설정이 되어 있어도 결재가 없는것으로 강제한다.
+        if((course.getCourseMaster().getId().equals("BC0101") && course.getIsNewEmpCourse().equals("1")) || course.getCourseMaster().getId().equals("BC0103")) {
+            isAppr1 = "N";
+            isAppr2 = "N";
+        }
+
         // 교육신청
         CourseAccount courseAccount = new CourseAccount();
         courseAccount.setCourse(course);
@@ -591,6 +598,13 @@ public class ApprovalCourseProcessService {
         String isAppr1 = course.getCourseMaster().getIsTeamMangerApproval();
         // 관리자 승인여부
         String isAppr2 = course.getCourseMaster().getIsCourseMangerApproval();
+
+        // Self 교육이면서 신입사원 필수교육이면 전자결재를 하지 않는다.
+        // 부서별 교육은 교육결재(팀장, 관리자)가 설정이 되어 있어도 결재가 없는것으로 강제한다.
+        if((course.getCourseMaster().getId().equals("BC0101") && course.getIsNewEmpCourse().equals("1")) || course.getCourseMaster().getId().equals("BC0103")) {
+            isAppr1 = "N";
+            isAppr2 = "N";
+        }
 
         // 과정 신청에 필요한 기본 검증을 진행한다.
         // 0: 계정이 존재하지 않음

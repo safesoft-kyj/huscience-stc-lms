@@ -163,8 +163,23 @@ public class CourseAccountService {
         return courseAccountRepository.findByAccount_UserIdAndIsApprovalAndFnStatusLikeAndRequestTypeLike(userId, isApproval, status, requestType, pageable);
     }
 
+    //교육결재 내부결재(not in)
+    public Page<CourseAccount> getAllByAccount_UserIdAndCourse_CourseMaster_IdInAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(String userId, List<String> typeId, String isApproval, String status, String requestType, String isReport, String reportStatus, Pageable pageable) {
 
-    //교육결재 기안함
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
+
+        return courseAccountRepository.findByAccount_UserIdLikeAndCourse_CourseMaster_IdInAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(userId, typeId, isApproval, status, requestType, isReport, reportStatus, pageable);
+    }
+
+    // 교육결재 count
+    public long countByCourseRequest2(String userId, List<String> typeId, String isApproval, String status, String requestType, String isReport, String reportStatus) {
+        return courseAccountRepository.countByAccount_UserIdLikeAndCourse_CourseMaster_IdInAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(userId, typeId, isApproval, status, requestType, isReport, reportStatus);
+    }
+
+
+    //교육결재 내부결재(Like)
     public Page<CourseAccount> getAllByAccount_UserIdAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(String userId, String typeId, String isApproval, String status, String requestType, String isReport, String reportStatus, Pageable pageable) {
 
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
