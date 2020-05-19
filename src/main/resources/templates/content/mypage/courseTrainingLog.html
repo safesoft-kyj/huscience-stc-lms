@@ -128,6 +128,10 @@
 
     <script>
         $(document).ready(function() {
+            $.ajaxSetup({
+                timeout: 1800000 //Time in milliseconds
+            });
+
             $("#publishBtn").click(function(e) {
                 // $(this).attr("disabled", true);
                 var btn = $(this).button('loading');
@@ -138,7 +142,7 @@
                     data: {r:Math.random()},
                     dataType: 'JSON',
                     async: true,
-                    timeout: 1800000,//30분
+                    // timeout: 1800000,//30분
                     success: function (res) {
                         if (res) {
                             alert(res.message)
