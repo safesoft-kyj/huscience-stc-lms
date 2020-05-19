@@ -26,7 +26,11 @@ public interface CourseAccountRepository extends JpaRepository<CourseAccount, Lo
     List<CourseAccount> findByAccount_UserIdAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(String userId, String isApproval, String status, String requestType, String isReport, String reportStatus);
 
 
+    // 내부결재 리스트(특정교육이 아닌것만)
+    Page<CourseAccount> findByAccount_UserIdLikeAndCourse_CourseMaster_IdInAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(String userId, List<String> typeId, String isApproval, String status, String requestType, String isReport, String reportStatus, Pageable pageable);
+    long countByAccount_UserIdLikeAndCourse_CourseMaster_IdInAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(String userId, List<String> typeId, String isApproval, String status, String requestType, String isReport, String reportStatus);
 
+    // 내부결재 리스트(Class 교육만)
     Page<CourseAccount> findByAccount_UserIdLikeAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(String userId, String typeId, String isApproval, String status, String requestType, String isReport, String reportStatus, Pageable pageable);
 
     List<CourseAccount> findByAccount_UserIdLikeAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(String userId, String typeId, String isApproval, String status, String requestType, String isReport, String reportStatus);

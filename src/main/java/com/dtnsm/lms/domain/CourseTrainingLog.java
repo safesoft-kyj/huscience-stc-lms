@@ -24,7 +24,7 @@ public class CourseTrainingLog extends AuditorCreateEntity<String> {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
 
-    @Column(length = 1000, nullable = false)
+    @Column(nullable = false, columnDefinition = "nvarchar(1000)")
     private String trainingCourse;
 
     // Organization type (SELF, OTHER)

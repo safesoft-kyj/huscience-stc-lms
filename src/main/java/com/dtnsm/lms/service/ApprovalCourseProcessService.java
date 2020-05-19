@@ -528,6 +528,12 @@ public class ApprovalCourseProcessService {
         // 관리자 승인여부
         String isAppr2 = course.getCourseMaster().getIsCourseMangerApproval();
 
+        // Self, 부서별 교육은 결재가 없는걸로 강제한다.
+        if(course.getCourseMaster().getId().equals("BC0101") || course.getCourseMaster().getId().equals("BC0103")) {
+            isAppr1 = "N";
+            isAppr2 = "N";
+        }
+
         // 교육신청
         CourseAccount courseAccount = new CourseAccount();
         courseAccount.setCourse(course);
@@ -574,7 +580,7 @@ public class ApprovalCourseProcessService {
         // 교육 대상자 신청인 경우는 상태를 신청상태로 변경한다.
         courseAccount.setCourseStatus(CourseStepStatus.request);
 
-        // self 교육은 신청시 교육상태로 변경
+        // self 교육이고 신입사원 필수교육이면 신청시 교육상태로 변경
         if (course.getCourseMaster().getId().equals("BC0101")) {  // self
             courseAccount.setCourseStatus(CourseStepStatus.process);
         }
@@ -591,6 +597,12 @@ public class ApprovalCourseProcessService {
         String isAppr1 = course.getCourseMaster().getIsTeamMangerApproval();
         // 관리자 승인여부
         String isAppr2 = course.getCourseMaster().getIsCourseMangerApproval();
+
+        // Self, 부서별 교육은 결재가 없는걸로 강제한다.
+        if(course.getCourseMaster().getId().equals("BC0101") || course.getCourseMaster().getId().equals("BC0103")) {
+            isAppr1 = "N";
+            isAppr2 = "N";
+        }
 
         // 과정 신청에 필요한 기본 검증을 진행한다.
         // 0: 계정이 존재하지 않음
@@ -737,10 +749,11 @@ public class ApprovalCourseProcessService {
 //            }
 
             // 전자결재가 있는 경우
-            if (saveCourseAccount.getIsApproval().equals("1")) {
-
+            if (isAppr1.equals("Y") || isAppr2.equals("Y")) {
+//                if (saveCourseAccount.getIsApproval().equals("1")) {
                 // 전자결재가 있는경우 진행 상태로 변경한다.
                 saveCourseAccount.setFnStatus("0");
+                saveCourseAccount.setIsApproval("1");
 
                 // 내결재사항을 추가한다.
                 CourseAccountOrder courseAccountOrder = new CourseAccountOrder();
@@ -819,6 +832,7 @@ public class ApprovalCourseProcessService {
 
             } else {    // 전자결재가 없는 경우 교육을 진행상태로 변경하고 신청자에게 교육신청 완료 메일을 보낸다.
                 saveCourseAccount.setCourseStatus(CourseStepStatus.process);
+                saveCourseAccount.setIsApproval("0");
 
                 // Self 교육인 경우 교육신청자에게 교육신청 완료 메일을 보낸다.
                 if (course.getCourseMaster().getId().equals("BC0101")) {

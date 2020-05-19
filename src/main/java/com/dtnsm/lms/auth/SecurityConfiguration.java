@@ -46,6 +46,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //                        "/fragments/**",
 //                         "/home",
                          "/login",
+                         "/sample/**",
+                         "/lg/**",
                          "/webjars/**")
                         .permitAll()
                 .anyRequest().authenticated();

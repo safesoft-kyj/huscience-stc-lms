@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -54,12 +56,17 @@ public class ApprovalAdminController {
         String userId = SessionUtil.getUserDetail().getUserId();
         Page<CourseAccount> courseAccountList = null;
 
+        // 보여줄 내부교육(Self, Class 교육)
+        List<String> typeList = new ArrayList<>();
+        typeList.add("BC0101"); // Self
+        typeList.add("BC0102"); // Class
+//        typeList.add("BC0103"); // 부서별
 
-        long requestCount1 = courseAccountService.countByCourseRequest(
-                "%", "BC0102","1","9", "0", "0", "9");
+        long requestCount1 = courseAccountService.countByCourseRequest2(
+                "%", typeList,"1","9", "0", "0", "9");
 
-        long requestCount2 = courseAccountService.countByCourseRequest(
-                "%", "BC0102","1","0", "1", "0", "9");
+        long requestCount2 = courseAccountService.countByCourseRequest2(
+                "%", typeList,"1","0", "1", "0", "9");
 
 //        long requestCount3 = courseAccountService.countByCourseRequest(
 //                userId, "BC0102","1","1", "%", "0", "9");
@@ -74,28 +81,28 @@ public class ApprovalAdminController {
 
         // 교육 결재 상태(status) : 0: 진행중, 1: 승인, 2:기각, 9:미진행
         if (fStatus.equals("request")) {
-            courseAccountList = courseAccountService.getAllByAccount_UserIdAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(
-                    "%", "BC0102", "1","9", "0", "0", "9", pageable);
+            courseAccountList = courseAccountService.getAllByAccount_UserIdAndCourse_CourseMaster_IdInAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(
+                    "%", typeList, "1","9", "0", "0", "9", pageable);
 
 //            documentList = documentService.getAllByAccount_UserIdAndFnStatusLike(userId, "9", pageable);
         } else if (fStatus.equals("process")) {
-            courseAccountList = courseAccountService.getAllByAccount_UserIdAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(
-                    "%", "BC0102","1","0", "1", "0", "9", pageable);
+            courseAccountList = courseAccountService.getAllByAccount_UserIdAndCourse_CourseMaster_IdInAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(
+                    "%", typeList,"1","0", "1", "0", "9", pageable);
 
 //            documentList = documentService.getAllByAccount_UserIdAndFnStatusLike(userId, "0", pageable);
         } else if(fStatus.equals("complete")) {
-            courseAccountList = courseAccountService.getAllByAccount_UserIdAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(
-                    "%", "BC0102","1","1", "%", "0", "9", pageable);
+            courseAccountList = courseAccountService.getAllByAccount_UserIdAndCourse_CourseMaster_IdInAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(
+                    "%", typeList,"1","1", "%", "0", "9", pageable);
 
 //            documentList = documentService.getAllByAccount_UserIdAndFnStatusLike(userId, "1", pageable);
         } else if (fStatus.equals("reject")) {
-            courseAccountList = courseAccountService.getAllByAccount_UserIdAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(
-                    "%", "BC0102","1","2", "%", "0", "9", pageable);
+            courseAccountList = courseAccountService.getAllByAccount_UserIdAndCourse_CourseMaster_IdInAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(
+                    "%", typeList,"1","2", "%", "0", "9", pageable);
 
 //            documentList = documentService.getAllByAccount_UserIdAndFnStatusLike(userId, "2", pageable);
         } else {
-            courseAccountList = courseAccountService.getAllByAccount_UserIdAndCourse_CourseMaster_IdLikeAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(
-                    "%", "BC0102","1","%", "%", "0", "9", pageable);
+            courseAccountList = courseAccountService.getAllByAccount_UserIdAndCourse_CourseMaster_IdInAndIsApprovalAndFnStatusLikeAndRequestTypeLikeAndIsReportLikeAndReportStatusLike(
+                    "%", typeList,"1","%", "%", "0", "9", pageable);
 
 //            documentList = documentService.getAllByAccount_UserIdAndFnStatusLike(userId, "%", pageable);
         }

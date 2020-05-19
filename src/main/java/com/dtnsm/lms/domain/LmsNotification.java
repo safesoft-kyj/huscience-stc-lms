@@ -28,7 +28,7 @@ public class LmsNotification extends AuditorCreateEntity<String> {
     private String gubun;
 
 
-    @Column(length = 255, nullable = false)
+    @Column(length = 1000, nullable = false)
     private String title;
 
     @Column(length = 1000, nullable = false)
