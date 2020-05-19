@@ -580,7 +580,7 @@ public class ApprovalCourseProcessService {
         // 교육 대상자 신청인 경우는 상태를 신청상태로 변경한다.
         courseAccount.setCourseStatus(CourseStepStatus.request);
 
-        // self 교육이고 신입사원 필수교육이면 신청시 교육상태로 변경
+        // self 교육이면 신청시 교육상태로 변경
         if (course.getCourseMaster().getId().equals("BC0101")) {  // self
             courseAccount.setCourseStatus(CourseStepStatus.process);
         }
@@ -593,13 +593,15 @@ public class ApprovalCourseProcessService {
     // 교육 신청 처리
     public boolean courseRequestProcess(Account account, Course course, String requestType) {
 
+        String courseType = course.getCourseMaster().getId();
+
         // 팀장/부서장 승인여부
         String isAppr1 = course.getCourseMaster().getIsTeamMangerApproval();
         // 관리자 승인여부
         String isAppr2 = course.getCourseMaster().getIsCourseMangerApproval();
 
         // Self, 부서별 교육은 결재가 없는걸로 강제한다.
-        if(course.getCourseMaster().getId().equals("BC0101") || course.getCourseMaster().getId().equals("BC0103")) {
+        if(courseType.equals("BC0101") || courseType.equals("BC0103")) {
             isAppr1 = "N";
             isAppr2 = "N";
         }
@@ -613,11 +615,14 @@ public class ApprovalCourseProcessService {
 
         // 교육과정 대상자 지정인 경우는 대상자만 생성한후 프로세스를 종료한다.
         if (requestType.equals("0")) {
+
             String fromDate = "";
             String toDate = "";
 
             // 교육신청
             CourseAccount courseAccount = new CourseAccount();
+            courseAccount.setIsTeamMangerApproval(isAppr1);
+            courseAccount.setIsCourseMangerApproval(isAppr2);
             courseAccount.setCourse(course);
             courseAccount.setAccount(account);
             courseAccount.setRequestDate("");
@@ -629,10 +634,10 @@ public class ApprovalCourseProcessService {
             courseAccount.setCourseStatus(CourseStepStatus.none);
 
             // 결재자수 Max 설정
-            if(isAppr1.equals("Y") && isAppr2.equals("Y")) {
+            if(courseAccount.getIsTeamMangerApproval().equals("Y") && courseAccount.getIsCourseMangerApproval().equals("Y")) {
                 courseAccount.setFnFinalCount(2);
                 courseAccount.setIsApproval("1");   // 전자결재유무 0:없음, 1:있음
-            } else if(isAppr1.equals("Y")) {
+            } else if(courseAccount.getIsTeamMangerApproval().equals("Y")) {
                 courseAccount.setFnFinalCount(1);
                 courseAccount.setIsApproval("1");   // 전자결재유무 0:없음, 1:있음
             } else {
@@ -646,16 +651,24 @@ public class ApprovalCourseProcessService {
             // self 교육은 참석처리를 하지 않기 때문에 미리 처리한다.
             // 외부교육은 교육참석보고서 승인시 참석처리를 자동으로 해야 한다.
             // class 교육 및 부서별교육은 참석처리를 관리자가 직접 한다.
-            if (course.getCourseMaster().getId().equals("BC0101")) {  // self
+            if (courseType.equals("BC0101")) {  // self
                 courseAccount.setIsAttendance("1"); // 교육참석유무(0:미참석, 1:참석) => 기본값 0
             }
 
             // 외부교육이면 isReport(교육보고서 작성유무) 를 1로 설정한다.
-            if (course.getCourseMaster().getId().equals("BC0104")) {  // self
+            if (courseType.equals("BC0104")) {  // self
                 courseAccount.setIsReport("1");
             }
 
-            if (course.getIsAlways().equals("0")) {     // 상시교육이 아닌경우는 과정 교육일자를 기준으로 교육일자를 생성한다.
+//            if (course.getIsAlways().equals("0")) {     // 상시교육이 아닌경우는 과정 교육일자를 기준으로 교육일자를 생성한다.
+//                fromDate = course.getFromDate();
+//                toDate = course.getToDate();
+//            }
+
+            if (course.getIsAlways().equals("1")) {     // 상시교육일 경우
+                fromDate = DateUtil.getTodayString();
+                toDate = DateUtil.getStringDateAddDay(fromDate, course.getDay());
+            } else {    // 상시교육이 아닌 경우
                 fromDate = course.getFromDate();
                 toDate = course.getToDate();
             }
@@ -663,9 +676,8 @@ public class ApprovalCourseProcessService {
             courseAccount.setFromDate(fromDate);
             courseAccount.setToDate(toDate);
 
-
             // 부서별 교육은 교육신청 및 교육과정 프로세스가 없음으로 바로 관리자 교육참석등록 상태로 변경한다.
-            if(course.getCourseMaster().getId().equalsIgnoreCase("BC0103")) {
+            if(courseType.equals("BC0103")) {
                 courseAccount.setCourseStatus(CourseStepStatus.wait);
                 courseAccountService.save(courseAccount);
             } else {
@@ -681,7 +693,7 @@ public class ApprovalCourseProcessService {
                 String subject = "";
 
                 // 외부교육이면
-                if(course.getCourseMaster().getId().equalsIgnoreCase("BC0104")) {
+                if(courseType.equals("BC0104")) {
                     subject = String.format("[LMS/외부교육] %s 교육 신청 요청", course.getTitle());
                 } else {
                     subject = String.format("[LMS/교육안내] %s 교육 신청 요청", course.getTitle());
@@ -713,8 +725,9 @@ public class ApprovalCourseProcessService {
             else {  // 상시교육은 신청 시점에 교육일을 생성한다.
                 // 상시
                 if (course.getIsAlways().equals("1")) {     // 상시교육일 경우
-                    saveCourseAccount.setFromDate(DateUtil.getTodayString());
-                    saveCourseAccount.setToDate(DateUtil.getStringDateAddDay(DateUtil.getTodayString(), course.getDay()));
+                    // 수강생 지정시 교육일자가 안만들어 졌으면 신청시점에 생성한다.
+                    if (saveCourseAccount.getFromDate().equals("")) saveCourseAccount.setFromDate(DateUtil.getTodayString());
+                    if (saveCourseAccount.getToDate().equals("")) saveCourseAccount.setToDate(DateUtil.getStringDateAddDay(DateUtil.getTodayString(), course.getDay()));
                 }
             }
 
@@ -747,6 +760,16 @@ public class ApprovalCourseProcessService {
 //            } else if (course.getCourseMaster().getId().equals("BC0103")) {  // 부서별교육
 //                courseAccount = courseAccountDeptProcess(courseAccount);
 //            }
+
+            if (!saveCourseAccount.getIsTeamMangerApproval().equals("")) {
+                // 팀장/부서장 승인여부
+                isAppr1 = course.getCourseMaster().getIsTeamMangerApproval();
+            }
+
+            if (!saveCourseAccount.getIsCourseMangerApproval().equals("")) {
+                // 과정 관리자 승인여부
+                isAppr2 = course.getCourseMaster().getIsCourseMangerApproval();
+            }
 
             // 전자결재가 있는 경우
             if (isAppr1.equals("Y") || isAppr2.equals("Y")) {
