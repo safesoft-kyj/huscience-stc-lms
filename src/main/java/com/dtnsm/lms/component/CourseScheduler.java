@@ -225,20 +225,23 @@ public class CourseScheduler {
 
         for(CourseAccount courseAccount : courseAccounts) {
 
-            CourseStepStatus courseStepStatus;
+            // Self 교육만 처리한다.
+            if(courseAccount.getCourse().getCourseMaster().getId().equals("BC0101")) {
 
-            Date fromDate = DateUtil.getStringToDate(courseAccount.getFromDate());
-            Date toDate = DateUtil.getStringToDate(courseAccount.getToDate());
-            Date toDay = DateUtil.getToday();
+                CourseStepStatus courseStepStatus;
 
-            int todayFromCompare = toDay.compareTo(fromDate);
-            int todayToCompare = toDay.compareTo(toDate);
+                Date fromDate = DateUtil.getStringToDate(courseAccount.getFromDate());
+                Date toDate = DateUtil.getStringToDate(courseAccount.getToDate());
+                Date toDay = DateUtil.getToday();
 
-            if (todayToCompare > 0) {
-                courseStepStatus = CourseStepStatus.periodEnd; // 교육기간 종료
-                courseAccount.setCourseStatus(courseStepStatus);
-                courseAccountService.save(courseAccount);
-            }
+                int todayFromCompare = toDay.compareTo(fromDate);
+                int todayToCompare = toDay.compareTo(toDate);
+
+                if (todayToCompare > 0) {
+                    courseStepStatus = CourseStepStatus.periodEnd; // 교육기간 종료
+                    courseAccount.setCourseStatus(courseStepStatus);
+                    courseAccountService.save(courseAccount);
+                }
 
 //            if (todayFromCompare < 0) {
 //                courseStepStatus = CourseStepStatus.periodWait; // 신청이후 교육 대기 : 교육대기
@@ -247,6 +250,8 @@ public class CourseScheduler {
 //            } else if (todayToCompare > 0) {
 //                courseStepStatus = CourseStepStatus.periodEnd; // 교육기간 종료
 //            }
+
+            }
 
         }
     }
