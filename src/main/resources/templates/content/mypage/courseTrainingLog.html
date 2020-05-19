@@ -128,9 +128,9 @@
 
     <script>
         $(document).ready(function() {
-            $.ajaxSetup({
-                timeout: 1800000 //Time in milliseconds
-            });
+            // $.ajaxSetup({
+            //     timeout: 1800000 //Time in milliseconds
+            // });
 
             $("#publishBtn").click(function(e) {
                 // $(this).attr("disabled", true);
@@ -141,16 +141,20 @@
                     url: url,
                     data: {r:Math.random()},
                     dataType: 'JSON',
-                    async: true,
-                    // timeout: 1800000,//30분
+                    timeout: 1800000,//30분
                     success: function (res) {
                         if (res) {
                             alert(res.message)
                         }
                         btn.button('reset');
                     },
-                    error: function (e) {
-                        alert('배포가 정상적으로 처리되지 않았습니다.');
+                    error: function (e, textStatus, errorThrown) {
+                        if(textStatus == "timeout") {
+                            alert("시간이 초과 되었습니다.[배포 진행중]");
+                        } else {
+                            alert('배포가 정상적으로 처리되지 않았습니다.');
+                        }
+
                         btn.button('reset');
                     }
                 });
