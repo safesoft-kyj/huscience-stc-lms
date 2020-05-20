@@ -68,6 +68,7 @@ public class CourseSurveyAdminController {
         model.addAttribute("borders", courseSurveyService.getAllByCourseId(courseId));
         model.addAttribute("isAdd", isAdd);
         model.addAttribute("typeId", course.getCourseMaster().getId());
+        model.addAttribute("courseName", course.getTitle());
 
         return "admin/course/survey/list";
     }

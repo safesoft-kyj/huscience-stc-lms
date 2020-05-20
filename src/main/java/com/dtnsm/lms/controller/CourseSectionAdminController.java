@@ -82,6 +82,7 @@ public class CourseSectionAdminController {
         model.addAttribute("gubunId", course.getCourseMaster().getCourseGubun().getMinorCd());
         model.addAttribute("typeId", typeId);
         model.addAttribute("courseId", courseId);
+        model.addAttribute("courseName", course.getTitle());
 
         return "admin/course/section/list";
     }

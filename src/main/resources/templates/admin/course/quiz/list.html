@@ -44,10 +44,10 @@
                         <div th:case="null">No customer yet!</div>
                         <div th:case="*">
                             <div class="row" style="margin-bottom: 5px;" >
-<!--                                <div class="col-sm-6">-->
-<!--                                    <span th:text="#{label.list.title(${borders.getTotalElements()})}"></span>-->
-<!--                                </div>-->
-                                <div class="col-sm-12 text-right">
+                                <div class="col-sm-8">
+                                    <b class="text-info"><span th:text="#{label.course.name}"></span> : <span th:text="${courseName}"></span></b>
+                                </div>
+                                <div class="col-sm-4 text-right">
                                     <th:block th:if="${#strings.equalsIgnoreCase(isAdd, 'Y')}">
                                         <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/quiz/add(typeId=${typeId}, courseId=${courseId})}"><i class="demo-pli-add"></i> Add</a>
                                         <a class="btn btn-primary" th:href="@{/admin/course/{typeId}(typeId=${typeId}, page=${param.page})}"><i class="demo-pli-back"></i> Back</a>

@@ -81,6 +81,7 @@ public class CourseQuizAdminController {
         model.addAttribute("borders", quizService.getAllByCourseId(courseId));
         model.addAttribute("isAdd", isAdd);
         model.addAttribute("typeId", course.getCourseMaster().getId());
+        model.addAttribute("courseName", course.getTitle());
 
         return "admin/course/quiz/list";
     }

@@ -225,8 +225,8 @@ public class CourseScheduler {
 
         for(CourseAccount courseAccount : courseAccounts) {
 
-            // Self 교육만 처리한다.
-            if(courseAccount.getCourse().getCourseMaster().getId().equals("BC0101")) {
+            // Self 교육중 완료되지 않은 과정만 처리한다.
+            if(courseAccount.getCourse().getCourseMaster().getId().equals("BC0101") && courseAccount.getIsCommit().equals('0')) {
 
                 CourseStepStatus courseStepStatus;
 

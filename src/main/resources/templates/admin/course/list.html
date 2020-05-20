@@ -67,7 +67,7 @@
                                     <thead>
                                     <tr style="background: #FAFAFA;">
                                         <th class="text-center" th:text="#{label.no}">번호</th>
-                                        <th class="text-center col-sm-2" th:text="#{label.subject}">제목</th>
+                                        <th class="text-center col-sm-2" th:text="#{label.course.name}">과정명</th>
                                         <th:block th:if="${#strings.equalsIgnoreCase(typeId, 'BC0101') or #strings.equalsIgnoreCase(typeId, 'BC0102')}">
                                             <th class="text-center col-sm-1" th:text="#{label.status}">상태</th>
                                             <th class="text-center col-sm-1">신청기간</th>
