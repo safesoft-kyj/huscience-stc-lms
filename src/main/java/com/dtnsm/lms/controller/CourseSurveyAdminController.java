@@ -87,6 +87,7 @@ public class CourseSurveyAdminController {
         model.addAttribute("courseSurvey", courseSurvey);
         model.addAttribute("surveyList", surveyService.getList());
         model.addAttribute("id", courseId);
+        model.addAttribute("courseName", course.getTitle());
 
         return "admin/course/survey/add";
     }
@@ -131,6 +132,7 @@ public class CourseSurveyAdminController {
         model.addAttribute("courseSurvey", courseSurvey);
         model.addAttribute("surveyList", surveyService.getList());
         model.addAttribute("id", courseSurvey.getId());
+        model.addAttribute("courseName", course.getTitle());
 
         return "admin/course/survey/edit";
     }
@@ -202,6 +204,7 @@ public class CourseSurveyAdminController {
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courseSurvey.getQuestions());
         model.addAttribute("courseId", courseSurvey.getCourse().getId());
+        model.addAttribute("courseName", courseSurvey.getCourse().getTitle());
 
         return "admin/course/survey/view";
     }
@@ -243,6 +246,7 @@ public class CourseSurveyAdminController {
         model.addAttribute("courseId", courseId);
         model.addAttribute("courseTitle", courseSurvey.getName().isEmpty() ? courseSurvey.getCourse().getTitle() : courseSurvey.getName());
         model.addAttribute("isSelf", isSelf);
+        model.addAttribute("courseName", courseSurvey.getCourse().getTitle());
 
         return "admin/course/survey/report";
     }

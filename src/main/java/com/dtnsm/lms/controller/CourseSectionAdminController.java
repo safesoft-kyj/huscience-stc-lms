@@ -103,6 +103,7 @@ public class CourseSectionAdminController {
         model.addAttribute("id", courseId);
         model.addAttribute("typeId", typeId);
         model.addAttribute("courseId", courseId);
+        model.addAttribute("courseName", course.getTitle());
 
         return "admin/course/section/add";
     }
@@ -162,6 +163,7 @@ public class CourseSectionAdminController {
         model.addAttribute("typeId", typeId);
         model.addAttribute("courseId", courseId);
         model.addAttribute("id", courseSection.getId());
+        model.addAttribute("courseName", course.getTitle());
 
         return "admin/course/section/edit";
     }
@@ -221,6 +223,7 @@ public class CourseSectionAdminController {
         model.addAttribute("courseId", courseSection.getCourse().getId());
         model.addAttribute("typeId", typeId);
         model.addAttribute("courseId", courseId);
+        model.addAttribute("courseName", courseSection.getCourse().getTitle());
 
         return "admin/course/section/view";
     }

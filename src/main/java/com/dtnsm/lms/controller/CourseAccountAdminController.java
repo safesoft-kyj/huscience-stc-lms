@@ -98,6 +98,7 @@ public class CourseAccountAdminController {
         model.addAttribute("courseId", courseId);
         model.addAttribute("userId", SessionUtil.getUserId());
         model.addAttribute("mailList", userService.getAccountList());
+        model.addAttribute("courseName", course.getTitle());
 
         return "admin/course/account/add";
     }

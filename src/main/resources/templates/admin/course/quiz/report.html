@@ -84,7 +84,10 @@
             <div class="panel" id="exportReport">
                 <div class="panel-body">
                     <div class="row text-left">
-                        <div class="col-sm-12">
+                        <div class="col-sm-8">
+                            <b class="text-info"><span th:text="#{label.course.name}"></span> : <span th:text="${courseName}"></span></b>
+                        </div>
+                        <div class="col-sm-4 text-right">
                             <p class="text-right">
 <!--                                <button class="btn btn-primary" onclick="saveAsPdf();">PDF저장</button>-->
                                 <a class="btn btn-primary" th:href="@{/admin/course/{typeId}/{courseId}/quiz(typeId=${typeId}, courseId=${courseId}, page=${param.page})}"><i class="demo-pli-back"></i> Back</a>

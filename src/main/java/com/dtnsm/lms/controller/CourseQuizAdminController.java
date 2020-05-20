@@ -101,7 +101,7 @@ public class CourseQuizAdminController {
 //        model.addAttribute("codeList", codeService.getMinorList(majorCode));
         model.addAttribute("typeId", typeId);
         model.addAttribute("courseId", courseId);
-
+        model.addAttribute("courseName", course.getTitle());
 
         return "admin/course/quiz/add";
     }
@@ -168,6 +168,7 @@ public class CourseQuizAdminController {
         model.addAttribute("id", courseQuiz.getId());
         model.addAttribute("typeId", typeId);
         model.addAttribute("courseId", courseId);
+        model.addAttribute("courseName", courseQuiz.getCourse().getTitle());
 
         return "admin/course/quiz/edit";
     }
@@ -297,6 +298,7 @@ public class CourseQuizAdminController {
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courseQuiz.getQuizQuestions());
         model.addAttribute("courseId", courseId);
+        model.addAttribute("courseName", courseQuiz.getCourse().getTitle());
 
         return "admin/course/quiz/view";
     }
@@ -352,6 +354,7 @@ public class CourseQuizAdminController {
         model.addAttribute("courseQuiz", courseQuiz);
         model.addAttribute("questionList", questionList);
         model.addAttribute("courseTitle", courseQuiz.getCourse().getTitle());
+        model.addAttribute("courseName", courseQuiz.getCourse().getTitle());
 
         return "admin/course/quiz/report";
     }
