@@ -3,6 +3,7 @@ package com.dtnsm.lms.service;
 import com.dtnsm.lms.auth.UserService;
 import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.CourseStepStatus;
+import com.dtnsm.lms.domain.constant.LmsAlarmType;
 import com.dtnsm.lms.repository.CourseAccountOrderRepository;
 import com.dtnsm.lms.repository.CourseAccountRepository;
 import com.dtnsm.lms.repository.CourseCertificateInfoRepository;
@@ -44,6 +45,9 @@ public class CourseAccountService {
 
     @Autowired
     CourseCertificateService courseCertificateService;
+
+    @Autowired
+    LmsNotificationService lmsNotificationService;
 
     public CourseAccount save(CourseAccount courseAccount){
         return courseAccountRepository.save(courseAccount);
@@ -316,16 +320,49 @@ public class CourseAccountService {
         if(account == null) return 0;
 
         // 상위결재권자가 지정되지 않았으면
-        if (account.getParentUserId().trim().isEmpty()) return 1;
+        if (account.getParentUserId().trim().isEmpty()) {
+            lmsNotificationService.sendAlarm(LmsAlarmType.ParentUser, account);
+            return 1;
+        }
 
         // 과정 관리자가 등록되어 있지 않은 경우
-        if (courseManagerService.getCourseManager() == null || courseManagerService.getCourseManager().getUserId().isEmpty()) return 2;
+        if (courseManagerService.getCourseManager() == null || courseManagerService.getCourseManager().getUserId().isEmpty()) {
+            lmsNotificationService.sendAlarm(LmsAlarmType.Manager, account);
+            return 2;
+        }
 
         //  수료증 기준정보가 등록되지 않은 경우
         if (courseCertificateInfoRepository.findByIsActive(1) == null) return 3;
 
         return 9;
     }
+
+    public int accountVerification(String userId, Course coures) {
+
+        Account account = userService.findByUserId(userId);
+
+        // 계정이 존재하지 않으면
+        if(account == null) return 0;
+
+        // 상위결재권자가 지정되지 않았으면
+        // 사용자가 신청시 체크하므로 주석 처리
+//        if (account.getParentUserId().trim().isEmpty()) {
+//            lmsNotificationService.sendAlarm(LmsAlarmType.ParentUser, account, coures);
+//            return 1;
+//        }
+
+        // 과정 관리자가 등록되어 있지 않은 경우
+        if (courseManagerService.getCourseManager() == null || courseManagerService.getCourseManager().getUserId().isEmpty()) {
+            lmsNotificationService.sendAlarm(LmsAlarmType.Manager, account, coures);
+            return 2;
+        }
+
+        //  수료증 기준정보가 등록되지 않은 경우
+        if (courseCertificateInfoRepository.findByIsActive(1) == null) return 3;
+
+        return 9;
+    }
+
 
 
     /**
