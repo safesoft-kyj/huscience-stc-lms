@@ -91,7 +91,11 @@ public class CourseAccountRestController {
         if (courseAccount == null) return 3;
 
         // 정원을 초과했는지 체크한다.
-        if (course.getCnt() > 0 && course.getCnt() <= course.getCourseAccountList().size()) return 11;
+        if (course.getCnt() > 0) {
+            if ((course.getCourseAccountList().size()+1) > course.getCnt()) {
+                return 11;
+            }
+        }
 
         return courseAccountService.accountVerification(userId);
     }
@@ -122,8 +126,12 @@ public class CourseAccountRestController {
         // 이미 신청정보가 있는 경우는 리턴한다.
         if (courseAccount != null) return 4;
 
-        // 정원을 초과했는지 체크한다.
-        if (course.getCnt() > 0 && course.getCnt() <= course.getCourseAccountList().size()) return 11;
+        // 정원을 초과했는지 체크한다.(0인경우는 교육정원이 없으므로 체크하지 않는다)
+        if (course.getCnt() > 0) {
+            if ((course.getCourseAccountList().size()+1) > course.getCnt()) {
+              return 11;
+            }
+        }
 
         return courseAccountService.accountVerification(userId);
     }
