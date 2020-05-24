@@ -191,6 +191,43 @@
             todayHighlight: true
         });
 
+        //전송버튼
+        $("#boardFrm").submit(function(e){
+
+            if(!isSubmit()) {
+                e.preventDefault();
+                return;
+            }
+
+        });
+
+        function isSubmit() {
+
+            var name = $("#name").val();
+            if(!name) {
+                alert('강의명을 입력하세요');
+                return false;
+            }
+
+            var hour = $("#hour").val();
+            if(!hour || hour == 0) {
+                alert('강의 시간을 입력하세요');
+                return false;
+            }
+
+            var sectionFile = $('#files').val();
+
+            if(sectionFile) {
+                fileExt = sectionFile.slice(sectionFile.indexOf(".")+1).toLocaleLowerCase();
+                if(fileExt != "pdf") {
+                    alert("강의파일은 PDF만 가능합니다.");
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
     </script>
 
 

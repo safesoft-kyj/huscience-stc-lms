@@ -84,6 +84,7 @@ public class CourseAccountAdminController {
         model.addAttribute("borders", course.getCourseAccountList());
         model.addAttribute("typeId", course.getCourseMaster().getId());
         model.addAttribute("courseName", course.getTitle());
+        model.addAttribute("course", course);
 
 
         return "admin/course/account/list";

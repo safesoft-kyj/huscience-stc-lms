@@ -27,6 +27,9 @@
             font-size: 18px;
         }
 
+        /* Important part */
+        .modal-dialog{ overflow-y: initial !important } .modal-body{ height: 100%; overflow-y: auto; }
+
     </style>
 
 </th:block>
@@ -244,10 +247,10 @@
     <!--강의 Modal-->
     <!--===================================================-->
     <div class="modal fade" id="demo-default-modal" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
-        <div class="modal-dialog " style="max-width: 100%; width: auto;">
+        <div class="modal-dialog" style="max-width: 100%; width: 50%;">
 <!--        <div class="modal-dialog modal-fullsize" style="max-width: 100%; width: auto;">-->
 
-            <div class="modal-content" id="modal-content">
+            <div class="modal-content modal-fullsize" id="modal-content">
 
                 <!--Modal header-->
                 <div class="modal-header">
@@ -256,7 +259,7 @@
                 </div>
 
                 <!--Modal body-->
-                <div class="modal-body text-center">
+                <div class="modal-body text-center" id="modal-body">
                     <img src="" style="width:90%;" id="pdfImage" />
                 </div>
 
@@ -282,10 +285,6 @@
 
                     </div>
 
-
-
-
-
                     <!--                            <button class="btn btn-primary">Save changes</button>-->
                 </div>
             </div>
@@ -298,6 +297,15 @@
 
 <th:block layout:fragment="custom_js">
     <script th:inline="javascript">
+        /*<![CDATA[*/
+        var setupTargetWidth = '[[${courseSectionSetup.getTargetWidth()}]]'
+        var setupSmallWidthRate = '[[${courseSectionSetup.getSmallWidthRate()}]]'
+        var setupBigWidthRate = '[[${courseSectionSetup.getBigWidthRate()}]]'
+
+        /*]]>*/
+
+
+        var pdfImage = document.querySelector("#pdfImage");
 
         var gTotalUseSecond = 0;
 
@@ -315,15 +323,40 @@
         var gCurrDate = new Date();
         var gCurrSecond = 0;
 
+
+
         $(function() {
 
+            // $('#pdfImage').attr('src',  url + '77/20');
+            // var image = new Image();
+            // //pdfImage.src = url + '77/20';
+            // alert(pdfImage.src);
+            // alert(pdfImage.naturalWidth);
+
+
+            $('head').append('<style type="text/css">.modal .modal-body {max-height: ' + ($('body').height() * .8) + 'px;overflow-y: auto;}.modal-open .modal{overflow-y: hidden !important;}</style>');
+
+            // $('#pdfImage').attr('src', url + $('#fileId').val() + '/' +  1); // 클릭한 버튼의 이미지 보여주기
+            // alert($('#pdfImage').width())
+            // resizeImage();
+
+            // 모달창 닫기 이벤트
             $("#demo-default-modal").on('hidden.bs.modal', function() {
                 saveSectionSecond();
                 location.reload();
             });
 
 
+            // 모달창 오픈 이벤트
+            $('#demo-default-modal').on('shown.bs.modal', function () {
+                // $('#myInput').trigger('focus')
+                // console.log("모달창 오픈");
+                resizeImage();
+            })
+
+
             $('#prev').click(function(){
+
                 var prevUrl = url + $('#fileId').val() + '/';
                 var prevSrc = $('#pdfImage').attr( 'src' );
 
@@ -338,11 +371,15 @@
                 }
 
                 $('#pdfImage').attr('src', prevUrl +  imageNo); // 클릭한 버튼의 이미지 보여주기
+                // 페이지별 크기가 다른 경우 주석 제거
+                // resizeImage();
                 $('#pageNo').val(imageNo);
-                $("#demo-default-modal").scrollTop(0);
+                $("#modal-body").scrollTop(0);
+
             });
 
             $('#next').click(function(){
+
                 var totalPage  = $('#totalPage').val();
                 var nextUrl = url + $('#fileId').val() + '/';
                 var prevSrc = $('#pdfImage').attr( 'src' );
@@ -350,20 +387,25 @@
                 var prevSplit = prevSrc.split('/');
                 var imageNo = Number(prevSplit[prevSplit.length-1]);
 
+
+
                 if (imageNo < totalPage) {
+
                     imageNo++;
 
                     // db에 있는 마지막 페이지 보다 현재 페이지가 큰경우 임시 저장한다.
                     if (gCurrentNo < imageNo) gCurrentNo = imageNo;
                     $('#pdfImage').attr('src', nextUrl +  imageNo); // 클릭한 버튼의 이미지 보여주기
+                    // 페이지별 크기가 다른 경우 주석 제거
+                    // resizeImage();
                     $('#pageNo').val(imageNo);
-                    $("#demo-default-modal").scrollTop(0);
+                    $("#modal-body").scrollTop(0);
+
                 } else {
                     imageNo = totalPage;
                     alert('마지막 페이지 입니다.');
                     $('#demo-default-modal').modal("hide"); //닫기
                 }
-
             });
         });
 
@@ -388,6 +430,29 @@
 
             gCurrSecond += 1;
         }
+
+        /**
+         * 이미지의 너비*높이 구하기
+         */
+        function resizeImage() {
+            // pdfImage = document.querySelector("#pdfImage");
+
+            showMessage();
+
+            // 강의파일 이미지의 width가 3000보다 작으면 종, 3000 보다 크면 횡으로 판단함
+            if(pdfImage.naturalWidth < setupTargetWidth) {
+                $('.modal-dialog').css("width", setupSmallWidthRate + "%");
+            } else {
+                $('.modal-dialog').css("width", setupBigWidthRate + "%");
+            }
+        }
+
+        function showMessage() {
+            console.log("fileId : " +  $('#fileId').val());
+            console.log("이미지 URL : " + pdfImage.src);
+            console.log("이미지 Wdith : " + pdfImage.naturalWidth);
+        }
+
 
         function openModal(total_use_second, actionId, fileId, currentPageNo, totalPage, modalTitle) {
             gCurrDate = new Date();

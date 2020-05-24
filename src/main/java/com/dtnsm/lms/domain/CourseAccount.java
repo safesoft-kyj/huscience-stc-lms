@@ -3,6 +3,8 @@ package com.dtnsm.lms.domain;
 import com.dtnsm.lms.auth.AuditorEntity;
 import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
@@ -11,7 +13,8 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Data
+@Setter
+@Getter
 @Table(name="el_course_account")
 //@IdClass(CourseAccountId.class)
 public class CourseAccount extends AuditorEntity<String> {

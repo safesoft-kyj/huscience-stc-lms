@@ -46,14 +46,24 @@
                         <div th:case="*">
                             <div class="row" style="margin-bottom: 5px;" >
                                 <div class="col-sm-8">
-                                    <b class="text-info"><span th:text="#{label.course.name}"></span> : <span th:text="${courseName}"></span></b>
+                                    <b class="text-info"><span th:text="#{label.course.name}"></span> : <span th:text="${courseName}"></span></b><br>
+                                        수강생 : <span th:text="${borders.size()}"></span>명
+                                    <th:block th:if="${course.getCnt() > 0}">
+                                        , 교육정원 : <span th:text="${course.getCourseAccountList().size()}"></span>명
+                                    </th:block>
                                 </div>
                                 <div class="col-sm-4 text-right">
 
 <!--                                    <th:block th:if="${#strings.equalsIgnoreCase(typeId, 'BC0104')}">-->
 <!--                                        <a class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/account/sendmail(typeId=${typeId}, courseId=${courseId})}"><i class="demo-pli-mail-send"></i> 참석보고서 미작성자 메일 발송</a>-->
 <!--                                    </th:block>-->
-                                    <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/account/add(typeId=${typeId}, courseId=${courseId})}"><i class="demo-pli-add"></i> Add</a>
+                                    <th:block th:if="${course.getCnt() == 0 || course.getCnt() > course.getCourseAccountList().size()}">
+                                        <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/account/add(typeId=${typeId}, courseId=${courseId})}"><i class="demo-pli-add"></i> Add</a>
+                                    </th:block>
+                                    <th:block th:unless="${course.getCnt() == 0 || course.getCnt() > course.getCourseAccountList().size()}">
+                                        <button type="button" onclick="showCntMessage();" class="btn btn-purple" ><i class="demo-pli-add"></i> Add</button>
+                                    </th:block>
+
                                     <a class="btn btn-primary" th:href="@{/admin/course/{typeId}(typeId=${typeId}, page=${param.page})}"><i class="demo-pli-back"></i> Back</a>
                                 </div>
                             </div>
@@ -173,7 +183,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js"></script>
 
-    <script>
+    <script th:inline="javascript">
+        var courseCnt = /*[[${course.getCnt()}]]*/;
 
         $(document).ready(function() {
             $('#demo-dt-basic1').DataTable({
@@ -184,6 +195,10 @@
                 paging: false
             });
         });
+
+        function showCntMessage() {
+            alert('교육 수강생 정원(' + courseCnt + '명)이 마감되었습니다.');
+        }
 
         // Self 상시 교육이면서 기간이 만료된 경우 기간 연장
         function executeCoursePeriodExtend(docId) {

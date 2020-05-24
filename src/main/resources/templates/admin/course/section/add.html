@@ -127,7 +127,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label"><i class="fa fa-file-pdf-o text-info"></i> <span th:text="#{label.course.section.file}">강의파일</span></label>
                             <div class="col-sm-10">
-                                <input type="file" name="files" accept=".pdf">
+                                <input type="file" name="files" id="files" accept=".pdf">
                             </div>
                         </div>
                         </th:block>
@@ -175,6 +175,46 @@
             autoclose: true,
             todayHighlight: true
         });
+
+        //전송버튼
+        $("#boardFrm").submit(function(e){
+
+            if(!isSubmit()) {
+                e.preventDefault();
+                return;
+            }
+
+        });
+
+        function isSubmit() {
+
+            var name = $("#name").val();
+            if(!name) {
+                alert('강의명을 입력하세요');
+                return false;
+            }
+
+            var hour = $("#hour").val();
+            if(!hour || hour == 0) {
+                alert('강의 시간을 입력하세요');
+                return false;
+            }
+
+            var sectionFile = $('#files').val();
+
+            if(!sectionFile) {
+                alert("강의 파일을 선택하세요.");
+                return false;
+            } else {
+                fileExt = sectionFile.slice(sectionFile.indexOf(".")+1).toLocaleLowerCase();
+                if(fileExt != "pdf") {
+                    alert("강의파일은 PDF만 가능합니다.");
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
     </script>
 

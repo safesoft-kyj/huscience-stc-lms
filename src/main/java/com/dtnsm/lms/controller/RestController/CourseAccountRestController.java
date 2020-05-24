@@ -90,16 +90,21 @@ public class CourseAccountRestController {
         // 신청대기중인 과정정보가 없는 경우 리턴한다.
         if (courseAccount == null) return 3;
 
-        // 정원을 초과했는지 체크한다.
-        if (course.getCnt() > 0) {
-            if ((course.getCourseAccountList().size()+1) > course.getCnt()) {
-                return 11;
-            }
+        // 교육정원 관련 신청할 수 있는지 체크(신청할 수 있는 경우 true 반환)
+        if (!courseAccountService.isCourseRequestCapacity(courseId, userId)) {
+            return 11;
         }
 
         return courseAccountService.accountVerification(userId);
     }
 
+    /**
+     * 교육안내>교육신청 사용자가 교육신청시 체크
+     * @param
+     * @return
+     * @exception
+     * @see
+     */
     @PostMapping("/isVerification")
     public int accountVerification(@RequestParam("courseId") long courseId
             , @RequestParam String userId){
@@ -121,15 +126,22 @@ public class CourseAccountRestController {
                 return 10;
         }
 
-        CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserIdAndRequestType(courseId, userId, "1");
+//        CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserIdAndRequestType(courseId, userId, "1");
 
-        // 이미 신청정보가 있는 경우는 리턴한다.
-        if (courseAccount != null) return 4;
+        CourseAccount courseAccount = courseAccountService.getByCourseIdAndUserId(courseId, userId);
 
-        // 정원을 초과했는지 체크한다.(0인경우는 교육정원이 없으므로 체크하지 않는다)
-        if (course.getCnt() > 0) {
-            if ((course.getCourseAccountList().size()+1) > course.getCnt()) {
-              return 11;
+
+        // 교육과정에 내가 지정되었거나 신청한 내역이 없으면
+        if(courseAccount == null) {
+
+            // 교육정원 관련 신청할 수 있는지 체크(신청할 수 있는 경우 true 반환)
+            if (!courseAccountService.isCourseRequestCapacity(courseId, userId)) {
+                return 11;
+            }
+        } else {
+            // 이미 신청정보가 있는 경우는 리턴한다.
+            if (courseAccount.getRequestType().equals("1")) {
+                return 4;
             }
         }
 

@@ -2,13 +2,16 @@ package com.dtnsm.lms.domain;
 
 import com.dtnsm.lms.auth.AuditorEntity;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Data
+@Setter
+@Getter
 @Table(name="el_course_account_order")
 public class CourseAccountOrder extends AuditorEntity<String> {
 

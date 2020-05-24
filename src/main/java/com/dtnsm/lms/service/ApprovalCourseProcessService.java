@@ -536,6 +536,8 @@ public class ApprovalCourseProcessService {
 
         // 교육신청
         CourseAccount courseAccount = new CourseAccount();
+        courseAccount.setIsTeamMangerApproval(isAppr1);
+        courseAccount.setIsCourseMangerApproval(isAppr2);
         courseAccount.setCourse(course);
         courseAccount.setAccount(account);
         courseAccount.setRequestDate(DateUtil.getTodayString());
@@ -675,6 +677,8 @@ public class ApprovalCourseProcessService {
 
             courseAccount.setFromDate(fromDate);
             courseAccount.setToDate(toDate);
+
+            course.addCourseAccount(courseAccount);
 
             // 부서별 교육은 교육신청 및 교육과정 프로세스가 없음으로 바로 관리자 교육참석등록 상태로 변경한다.
             if(courseType.equals("BC0103")) {
