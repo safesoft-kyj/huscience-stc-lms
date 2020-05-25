@@ -17,6 +17,7 @@ public class DocumentAccountOrder extends AuditorEntity<String> {
     private long id;
 
     // 컴멘트
+    @Column(length = 500)
     private String fnComment;
 
     // 0:초기, 1:결재, 2. 합의, 3:확인

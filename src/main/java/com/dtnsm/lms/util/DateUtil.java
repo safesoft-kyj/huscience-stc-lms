@@ -169,4 +169,13 @@ public  class DateUtil {
 
         return ( ! localdate.isBefore( startLocalDate ) ) && ( localdate.isBefore( endLocalDate ) );
     }
+
+    // work day
+
+    public static boolean isWorkingDay(Calendar cal) {
+        int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+        if (dayOfWeek == Calendar.SUNDAY || dayOfWeek == Calendar.SATURDAY) return false;
+
+        return true;
+    }
 }

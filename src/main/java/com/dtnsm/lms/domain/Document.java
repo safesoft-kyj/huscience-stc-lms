@@ -18,7 +18,7 @@ public class Document extends AuditorCreateEntity<String> {
     private long id;
 
     //@NotEmpty(message = "No title")
-    @Column(length = 100, nullable = false)
+    @Column(length = 500, nullable = false)
     private String title;
 
     // 교육 대상자
