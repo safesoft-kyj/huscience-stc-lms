@@ -21,7 +21,7 @@ public class DocumentTemplate extends AuditorCreateEntity<String> {
     private String title;
 
     @NotEmpty(message = "No content")
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "ntext")
     private String content;
 
     // 팀장/부서장 승인 여부

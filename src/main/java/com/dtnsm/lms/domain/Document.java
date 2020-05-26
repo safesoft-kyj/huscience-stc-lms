@@ -26,7 +26,7 @@ public class Document extends AuditorCreateEntity<String> {
     private String mailSender;
 
     //@NotEmpty(message = "No content")
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "ntext")
     private String content;
 
     @Column(length = 1)

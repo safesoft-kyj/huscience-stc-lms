@@ -14,8 +14,7 @@
                 on a.id = c.course_doc_id
         where b.type_id = #{typeId}
         and a.to_date = convert(varchar(10), getdate()
-            + convert(int, #{day} + (CASE WHEN DATEPART(dw, convert(varchar(10), getdate() + convert(int, -1), 121)) = 1 THEN -2 ELSE 0 END)
-		                   + (CASE WHEN DATEPART(dw,convert(varchar(10), getdate() + convert(int, -1), 121)) = 7 THEN -1 ELSE 0 END)), 121)
+            + convert(int, #{day} + (dbo.fn_GetTotalHolidays(getdate() + #{day}, getdate())*-1)), 121)
         and c.id is null
     </select>
 
