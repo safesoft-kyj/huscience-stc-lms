@@ -172,7 +172,7 @@ public class InfoController {
 
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courses);
-        model.addAttribute("courseMasterList", courseMasterService.getList());
+        model.addAttribute("courseMasterList", courseMasterService.getListBySelfAndClass());
         model.addAttribute("courseTypeList", codeService.getMinorList("BC01")); // onLine, offLine 구분
 
         return "content/info/request";

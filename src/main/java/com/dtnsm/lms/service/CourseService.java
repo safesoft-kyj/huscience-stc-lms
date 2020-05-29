@@ -283,12 +283,24 @@ public class CourseService {
         return courseRepository.findAll(builder, pageable);
     }
 
+    private Page<Course> findAllByUserRequest2(String gubunId, String typeId, String title, int active, Pageable pageable) {
+        QCourse qCourse = QCourse.course;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qCourse.courseMaster.courseGubun.minorCd.like(gubunId));
+        builder.and(qCourse.courseMaster.id.notIn("BC0103", "BC0104"));
+        builder.and(qCourse.courseMaster.id.like(typeId));
+        builder.and(qCourse.active.eq(active));
+        builder.and(qCourse.title.like(title));
+        return courseRepository.findAll(builder, pageable);
+    }
+
     public Page<Course> getAllByUserRequest(String gubunId, String typeId, String title, int active, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 
         pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
 
-        return findAllByUserRequest(gubunId + "%", typeId + "%", "%" + title + "%", active, pageable);
+//        return findAllByUserRequest(gubunId + "%", typeId + "%", "%" + title + "%", active, pageable);
+        return findAllByUserRequest2(gubunId + "%", typeId + "%", "%" + title + "%", active, pageable);
     }
 
 

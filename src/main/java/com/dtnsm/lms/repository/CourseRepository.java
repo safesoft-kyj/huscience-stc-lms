@@ -1,12 +1,9 @@
 package com.dtnsm.lms.repository;
 
-import com.dtnsm.common.entity.JobDescription;
 import com.dtnsm.lms.domain.Course;
-import com.dtnsm.lms.domain.CourseMaster;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import java.util.List;
