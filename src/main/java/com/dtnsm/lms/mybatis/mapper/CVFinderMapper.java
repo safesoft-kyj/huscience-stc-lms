@@ -14,4 +14,6 @@ public interface CVFinderMapper {
     List<Account> findUpdateBinderUsers();
 
     List<Account> findBinderRegistUsers();
+
+    List<String> findByParentUserId(String parentUserId);
 }

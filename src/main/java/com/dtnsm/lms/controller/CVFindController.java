@@ -100,12 +100,14 @@ public class CVFindController {
         }
 
         if(!StringUtils.isEmpty(employees)) {
-            Optional<List<Account>> optionalAccounts = userRepository.findByParentUserId(SessionUtil.getUserId());
-            if (optionalAccounts.isPresent()) {
-                List<Account> accounts = optionalAccounts.get();
-                List<String> usernameList = accounts.stream().map(u -> u.getUserId()).collect(Collectors.toList());
-                param.setUsernameList(usernameList);
-            }
+            List<String> usernameList = cvFinderMapper.findByParentUserId(SessionUtil.getUserId());
+            param.setUsernameList(usernameList);
+//            Optional<List<Account>> optionalAccounts = userRepository.findByParentUserId(SessionUtil.getUserId());
+//            if (optionalAccounts.isPresent()) {
+//                List<Account> accounts = optionalAccounts.get();
+//                List<String> usernameList = accounts.stream().map(u -> u.getUserId()).collect(Collectors.toList());
+//
+//            }
         }
 
         List<CVFindResult> resultList = cvFinderMapper.findCV(param);
