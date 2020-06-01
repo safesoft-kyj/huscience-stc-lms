@@ -17,11 +17,11 @@ public class DocumentTemplate extends AuditorCreateEntity<String> {
     private int id;
 
     @NotEmpty(message = "No title")
-    @Column(length = 100, nullable = false)
+    @Column(length = 500, nullable = false)
     private String title;
 
     @NotEmpty(message = "No content")
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "ntext")
     private String content;
 
     // 팀장/부서장 승인 여부

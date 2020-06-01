@@ -10,6 +10,7 @@
 </th:block>
 
 <th:block layout:fragment="custom_css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.1/css/buttons.dataTables.min.css" />
     <style>
         .table-head {
             background: #3A444E;
@@ -44,23 +45,35 @@
                         <div th:case="null">No customer yet!</div>
                         <div th:case="*">
                             <div class="row" style="margin-bottom: 5px;" >
-<!--                                <div class="col-sm-6">-->
-<!--                                    <span th:text="#{label.list.title(${borders.getTotalElements()})}"></span>-->
-<!--                                </div>-->
-                                <div class="col-sm-12 text-right">
+                                <div class="col-sm-8">
+                                    <b class="text-info"><span th:text="#{label.course.name}"></span> : <span th:text="${courseName}"></span></b><br>
+                                        수강생 : <span th:text="${borders.size()}"></span>명
+                                    <th:block th:if="${course.getCnt() > 0}">
+                                        , 교육정원 : <span th:text="${course.getCourseAccountList().size()}"></span>명
+                                    </th:block>
+                                </div>
+                                <div class="col-sm-4 text-right">
+
 <!--                                    <th:block th:if="${#strings.equalsIgnoreCase(typeId, 'BC0104')}">-->
 <!--                                        <a class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/account/sendmail(typeId=${typeId}, courseId=${courseId})}"><i class="demo-pli-mail-send"></i> 참석보고서 미작성자 메일 발송</a>-->
 <!--                                    </th:block>-->
-                                    <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/account/add(typeId=${typeId}, courseId=${courseId})}"><i class="demo-pli-add"></i> Add</a>
+                                    <th:block th:if="${course.getCnt() == 0 || course.getCnt() > course.getCourseAccountList().size()}">
+                                        <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/account/add(typeId=${typeId}, courseId=${courseId})}"><i class="demo-pli-add"></i> Add</a>
+                                    </th:block>
+                                    <th:block th:unless="${course.getCnt() == 0 || course.getCnt() > course.getCourseAccountList().size()}">
+                                        <button type="button" onclick="showCntMessage();" class="btn btn-purple" ><i class="demo-pli-add"></i> Add</button>
+                                    </th:block>
+
                                     <a class="btn btn-primary" th:href="@{/admin/course/{typeId}(typeId=${typeId}, page=${param.page})}"><i class="demo-pli-back"></i> Back</a>
                                 </div>
                             </div>
                             <div class="table-responsive">
-                                <hr class="table-head">
-                                <table id="demo-dt-basic1" class="table" cellspacing="0" width="100%" style="margin-top:0">
+<!--                                <hr class="table-head" style="margin-bottom: 10px;">-->
+                                <table id="demo-dt-basic1" class="table table-condensed" cellspacing="0" width="100%" style="margin-top:0">
                                     <thead>
                                     <tr style="background: #FAFAFA;">
                                         <th class="text-center" th:text="#{label.no}">번호</th>
+                                        <th class="text-center" th:text="#{label.depart}">이름</th>
                                         <th class="text-center" th:text="#{label.name}">이름</th>
                                         <th class="text-center">수강시작일</th>
                                         <th class="text-center">수강종료일</th>
@@ -77,6 +90,7 @@
                                     <tbody>
                                     <tr th:each="border, index : ${borders}">
                                         <td class="text-center" th:text="${index.count}"></td>
+                                        <td class="text-center" th:text="${border.getAccount().getOrgDepart()}"></td>
                                         <td class="text-center" th:text="${border.getAccount().getName()}"></td>
                                         <td class="text-center" th:text="${border.getFromDate()}"></td>
                                         <td class="text-center" th:text="${border.getToDate()}"></td>
@@ -101,7 +115,7 @@
                                                 <span th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).reject}" class="label label-danger" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).reject.getLabel()}"></span>
                                             </span>
                                             <!-- TODO: 과정상태가 기간연장이고 Self 트레이닝 이면서 상시 교육인 경우는 기간 연장이 가능함 -->
-                                            <th:block th:if="${#strings.equalsIgnoreCase(border.getCourseStatus(), T(com.dtnsm.lms.domain.constant.CourseStepStatus).periodEnd)}">
+                                            <th:block th:if="${#strings.equalsIgnoreCase(border.getCourseStatus(), T(com.dtnsm.lms.domain.constant.CourseStepStatus).periodEnd) && border.getIsCommit().equals('0')}">
                                                 <th:block th:if="${#strings.equalsIgnoreCase(border.getCourse().getCourseMaster().getId(), 'BC0101')}">
                                                     <th:block th:if="${#strings.equalsIgnoreCase(border.getCourse().getIsAlways(), '1')}">
                                                         <a class="btn btn-info" href="#" th:onclick="|javascript:executeCoursePeriodExtend('${border.getId()}')|"><i class="demo-pli-inbox-into"></i> 연장</a>
@@ -164,9 +178,28 @@
 
 <th:block layout:fragment="custom_js">
     <!--DataTables Sample [ SAMPLE ]-->
-    <script th:src="@{/default/js/demo/tables-datatables.js}"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js"></script>
 
-    <script>
+    <script th:inline="javascript">
+        var courseCnt = /*[[${course.getCnt()}]]*/;
+
+        $(document).ready(function() {
+            $('#demo-dt-basic1').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'excel'
+                ],
+                paging: false
+            });
+        });
+
+        function showCntMessage() {
+            alert('교육 수강생 정원(' + courseCnt + '명)이 마감되었습니다.');
+        }
+
         // Self 상시 교육이면서 기간이 만료된 경우 기간 연장
         function executeCoursePeriodExtend(docId) {
 

@@ -244,30 +244,53 @@
                 }
             });
 
-            //전송버튼
-            $("#boardFrm").submit(function(e){
+
+            function isSubmit() {
 
                 var title = $("#title").val();
 
+                var sectionFile = $('#section_file').val();
+
+                if(!sectionFile) {
+                    alert("강의 파일을 선택하세요.");
+                    return false;
+                } else {
+                    fileExt = sectionFile.slice(sectionFile.indexOf(".")+1).toLocaleLowerCase();
+                    if(fileExt != "pdf") {
+                        alert("강의파일은 PDF만 가능합니다.");
+                        return false;
+                    }
+                }
+
                 if(!title) {
                     alert('과정명을 입력하세요');
-                    return;
+                    return false;
                 }
 
                 var day = $("#day").val();
 
                 if(!day) {
                     alert('강의 일수를 입력하세요');
-                    return;
+                    return false;
                 }
 
                 var hour = $("#hour").val();
 
                 if(!hour) {
                     alert('강의 시간을 입력하세요');
-                    return;
+                    return false;
                 }
 
+                return true;
+            }
+
+            //전송버튼
+            $("#boardFrm").submit(function(e){
+
+                if(!isSubmit()) {
+                    e.preventDefault();
+                    return;
+                }
 
                 //id가 smarteditor인 textarea에 에디터에서 대입
                 obj.getById["editor"].exec("UPDATE_CONTENTS_FIELD", []);

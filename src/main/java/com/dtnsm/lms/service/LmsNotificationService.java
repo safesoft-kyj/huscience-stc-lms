@@ -82,6 +82,37 @@ public class LmsNotificationService {
         lmsNotificationRepository.save(lmsNotification);
     }
 
+    public void sendAlarm(LmsAlarmType lmsAlarmType, Account account, Course course) {
+
+        LmsNotification lmsNotification = new LmsNotification();
+
+        if (lmsAlarmType == LmsAlarmType.ParentUser) {
+            lmsNotification.setAlarmGubun(LmsAlarmGubun.WARNING);
+            lmsNotification.setTitle("<a class='text-info' href='http://lms.dtnsm.com/mypage/myInfo'>상위결재권자 미설정</a>");
+            lmsNotification.setContent("상위결재권자는 교육신청이나 전자결재 전 필히 지정하셔야 합니다.");
+
+        } else if (lmsAlarmType == LmsAlarmType.Sign) {
+            lmsNotification.setAlarmGubun(LmsAlarmGubun.INFO);
+            lmsNotification.setTitle("<a class='text-info' href='http://lms.dtnsm.com/mypage/myInfo'>사인 미등록<a>");
+            lmsNotification.setContent("사인이 미등록 되었습니다.");
+
+        } else if (lmsAlarmType == LmsAlarmType.Manager) {
+            lmsNotification.setAlarmGubun(LmsAlarmGubun.WARNING);
+            lmsNotification.setTitle("과정 관리자 미등록");
+            lmsNotification.setContent("과정 관리자는 필히 지정하셔야 합니다.");
+        } else if (lmsAlarmType == LmsAlarmType.DuplicateUser) {
+            lmsNotification.setAlarmGubun(LmsAlarmGubun.ERROR);
+            lmsNotification.setTitle("교육과정 지정 중복");
+            lmsNotification.setContent("교육과정 수강생을 중복 지정하였습니다.");
+        }
+
+        lmsNotification.setAccount(account);
+        lmsNotification.setCourse(course);
+        // C:과정, D:전자결재
+        lmsNotification.setGubun("C");
+        lmsNotificationRepository.save(lmsNotification);
+    }
+
     public void sendMessage(MessageSource messageSource) {
 
         LmsNotification lmsNotification = new LmsNotification();

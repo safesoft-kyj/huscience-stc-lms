@@ -13,7 +13,8 @@
             left outer join el_document c
                 on a.id = c.course_doc_id
         where b.type_id = #{typeId}
-        and a.to_date = convert(varchar(10), getdate() + convert(int, #{day}), 121)
+        and a.to_date = convert(varchar(10), getdate()
+            + convert(int, #{day} + (dbo.fn_GetTotalHolidays(getdate() + #{day}, getdate())*-1)), 121)
         and c.id is null
     </select>
 

@@ -54,6 +54,6 @@ public class LogoutCustomSuccessHandler implements LogoutSuccessHandler {
             }
         }
         response.setStatus(HttpServletResponse.SC_OK);
-        response.sendRedirect("/login");
+        response.sendRedirect("/login?logout");
     }
 }

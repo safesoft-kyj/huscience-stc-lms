@@ -11,6 +11,7 @@ import com.dtnsm.lms.domain.constant.QuizStatusType;
 import com.dtnsm.lms.domain.constant.SurveyStatusType;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.repository.CourseAccountRepository;
+import com.dtnsm.lms.repository.CourseSectionSetupRepository;
 import com.dtnsm.lms.repository.CourseTrainingLogRepository;
 import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.*;
@@ -94,6 +95,9 @@ public class MyPageController {
 
     @Autowired
     JPAQueryFactory queryFactory;
+
+    @Autowired
+    CourseSectionSetupRepository courseSectionSetupRepository;
 
     private MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
 
@@ -381,6 +385,23 @@ public class MyPageController {
         List<CourseQuizAction> courseQuizActions = courseAccount.getCourseQuizActions();
         List<CourseSurveyAction> courseSurveyActions = courseAccount.getCourseSurveyActions();
 
+        // PDF 자료를 보율줄 기본 설정을 셋팅한다.
+        // targetWidth =>종횡을 나눌 기준(단위:pixcel)
+        // smallWidthRate =>종일때 보여줄 %
+        // bigWidthRate =>횡일때 보여줄 %
+        Optional<CourseSectionSetup> optSetup = courseSectionSetupRepository.findById(1);
+        CourseSectionSetup courseSectionSetup = null;
+        if (optSetup.isPresent()) {
+            courseSectionSetup = optSetup.get();
+        } else {
+            courseSectionSetup = new CourseSectionSetup();
+            courseSectionSetup.setName("강의자료 PDF Width 설정");
+            courseSectionSetup.setTargetWidth(3000);
+            courseSectionSetup.setSmallWidthRate(50);
+            courseSectionSetup.setBigWidthRate(75);
+            courseSectionSetup = courseSectionSetupRepository.save(courseSectionSetup);
+        }
+
         List<CourseQuizAction> newCourseQuizActionList = new ArrayList<>();
         for(CourseQuizAction  courseQuizAction : courseQuizActions) {
             if (courseQuizAction.getStatus() == QuizStatusType.COMPLETE) {
@@ -393,6 +414,7 @@ public class MyPageController {
         model.addAttribute("courseSectionActions", courseSectionActions);
         model.addAttribute("quizActions", newCourseQuizActionList.size() > 0 ? newCourseQuizActionList : courseQuizActions);
         model.addAttribute("surveyActions", courseSurveyActions);
+        model.addAttribute("courseSectionSetup", courseSectionSetup);
 
         return "content/mypage/classroom/view";
     }

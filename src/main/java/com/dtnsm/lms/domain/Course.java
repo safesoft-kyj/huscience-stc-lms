@@ -3,6 +3,8 @@ package com.dtnsm.lms.domain;
 
 import com.dtnsm.lms.auth.AuditorCreateEntity;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -12,9 +14,10 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Data
+@Setter
+@Getter
 @Table(name="el_course")
-@ToString
+//@ToString
 public class Course extends AuditorCreateEntity<String> {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dt&SanoMedics LMS System</title>
+
+    <!-- Font Icon -->
+    <link rel="stylesheet" href="/default/login/fonts/material-icon/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <!-- Main css -->
+    <link rel="stylesheet" href="/default/login/css/style.css">
+
+
+    <style>
+        h1 {
+            font-size: 2em;
+            text-align: justify;
+        }
+        .title-head{
+            /*font-size: 35px;*/
+            color: #2783D8;
+        }
+    </style>
+</head>
+<body>
+    <div class="main" style="background-color: white">
+<!--        <div class="main" style="background-color: RGBA(109,171,228, 0.47)">    -->
+        <!-- Sign up form -->
+        <section class="signup">
+            <div class="container">
+                <div class="signup-content">
+                    <div class="signup-form" style="padding: 0">
+                        <a href="http://dtnsm.com/" target="_blank"><img src="/default/login/images/logo.jpg" style="height: 40px; padding-bottom: 10px" alt="Dt&SanoMedics"></a>
+                        <h2 class="form-title" style="padding-bottom: 5px">
+<!--                            Learning-->
+<!--                            Management-->
+<!--                            System-->
+
+<!--                            <hr style="border:1px solid #999999; margin: 5px 0 0 0;">-->
+                            <span class="title-head" style="padding-top: 5px;">L</span>earning
+                            <span class="title-head">M</span>anagement
+                            <span class="title-head">S</span>ystem
+                        </h2>
+                        <form th:action="@{/login}" method="POST" class="register-form" id="register-form" style="padding: 0">
+                            <div th:if="${param.error}">
+                                <div class="alert alert-danger">Invalid username or
+                                    password.</div>
+                            </div>
+                            <div th:if="${param.logout}">
+                                <div class="alert alert-info">You have been logged out.</div>
+                            </div>
+                            <div th:if="${param.invalid}">
+                                <div class="alert alert-info">invalid session.</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="username"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                                <input type="text" name="username" id="username" placeholder="User ID"/>
+                            </div>
+<!--                            <div class="form-group">-->
+<!--                                <label for="email"><i class="zmdi zmdi-email"></i></label>-->
+<!--                                <input type="email" name="email" id="email" placeholder="Your Email"/>-->
+<!--                            </div>-->
+                            <div class="form-group">
+                                <label for="password"><i class="zmdi zmdi-lock"></i></label>
+                                <input type="password" name="password" id="password" placeholder="Password"/>
+                            </div>
+<!--                            <div class="form-group">-->
+<!--                                <label for="re-pass"><i class="zmdi zmdi-lock-outline"></i></label>-->
+<!--                                <input type="password" name="re_pass" id="re_pass" placeholder="Repeat your password"/>-->
+<!--                            </div>-->
+                            <div class="form-group">
+                                <input type="checkbox" name="agree-term" id="form-checkbox" class="agree-term" />
+                                <label for="form-checkbox" class="label-agree-term"><span><span></span></span>Saved ID</label>
+                            </div>
+                            <div class="form-group form-button">
+                                <input type="submit" name="signup" id="signup" class="form-submit" value="Login"/>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="signup-image">
+                        <figure><img src="/default/login/images/signup-image.jpg" alt="sing up image"></figure>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- JS -->
+    <script src="/default/login/vendor/jquery/jquery.min.js"></script>
+    <script src="/default/login/js/main.js"></script>
+    <script>
+        $(document).ready(function(){
+            // 저장된 쿠키값을 가져와서 ID 칸에 넣어준다. 없으면 공백으로 들어감.
+            var userInputId = getCookie("userInputId");
+            $("input[name='username']").val(userInputId);
+
+            if($("input[name='username']").val() != ""){ // 그 전에 ID를 저장해서 처음 페이지 로딩 시, 입력 칸에 저장된 ID가 표시된 상태라면,
+                $("#form-checkbox").attr("checked", true); // ID 저장하기를 체크 상태로 두기.
+            }
+
+            $("#form-checkbox").change(function(){ // 체크박스에 변화가 있다면,
+
+                if($("#form-checkbox").is(":checked")){ // ID 저장하기 체크했을 때,
+                    var userInputId = $("input[name='username']").val();
+                    setCookie("userInputId", userInputId, 7); // 7일 동안 쿠키 보관
+                }else{ // ID 저장하기 체크 해제 시,
+                    deleteCookie("userInputId");
+                }
+            });
+
+            // ID 저장하기를 체크한 상태에서 ID를 입력하는 경우, 이럴 때도 쿠키 저장.
+            $("input[name='username']").keyup(function(){ // ID 입력 칸에 ID를 입력할 때,
+                if($("#form-checkbox").is(":checked")){ // ID 저장하기를 체크한 상태라면,
+                    var userInputId = $("input[name='username']").val();
+                    setCookie("userInputId", userInputId, 7); // 7일 동안 쿠키 보관
+                }
+            });
+
+            $('#username').focus();
+        });
+
+        function setCookie(cookieName, value, exdays){
+            var exdate = new Date();
+            exdate.setDate(exdate.getDate() + exdays);
+            var cookieValue = escape(value) + ((exdays==null) ? "" : "; expires=" + exdate.toGMTString());
+            document.cookie = cookieName + "=" + cookieValue;
+        }
+
+        function deleteCookie(cookieName){
+            var expireDate = new Date();
+            expireDate.setDate(expireDate.getDate() - 1);
+            document.cookie = cookieName + "= " + "; expires=" + expireDate.toGMTString();
+        }
+
+        function getCookie(cookieName) {
+            cookieName = cookieName + '=';
+            var cookieData = document.cookie;
+            var start = cookieData.indexOf(cookieName);
+            var cookieValue = '';
+            if(start != -1){
+                start += cookieName.length;
+                var end = cookieData.indexOf(';', start);
+                if(end == -1)end = cookieData.length;
+                cookieValue = cookieData.substring(start, end);
+            }
+            return unescape(cookieValue);
+        }
+    </script>
+</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+</html>

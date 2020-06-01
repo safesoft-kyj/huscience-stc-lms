@@ -6,6 +6,7 @@ import com.dtnsm.lms.domain.Account;
 import com.dtnsm.lms.domain.Course;
 import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.domain.constant.CourseStepStatus;
+import com.dtnsm.lms.domain.constant.LmsAlarmType;
 import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.PageInfo;
@@ -82,6 +83,9 @@ public class CourseAccountAdminController {
         model.addAttribute(pageInfo);
         model.addAttribute("borders", course.getCourseAccountList());
         model.addAttribute("typeId", course.getCourseMaster().getId());
+        model.addAttribute("courseName", course.getTitle());
+        model.addAttribute("course", course);
+
 
         return "admin/course/account/list";
     }
@@ -96,6 +100,7 @@ public class CourseAccountAdminController {
         model.addAttribute("courseId", courseId);
         model.addAttribute("userId", SessionUtil.getUserId());
         model.addAttribute("mailList", userService.getAccountList());
+        model.addAttribute("courseName", course.getTitle());
 
         return "admin/course/account/add";
     }
@@ -120,10 +125,10 @@ public class CourseAccountAdminController {
                 // 1: 상위결재권자가 지정되지 않음
                 // 2: 관리자가 지정되지 않음
                 // 9: 과정 신청 가능
-                int result = courseAccountService.accountVerification(userId);
+                int result = courseAccountService.accountVerification(userId, course);
                 Account account = userService.findByUserId(userId);
 
-                List<Account> accountList = new ArrayList<>();
+//                List<Account> accountList = new ArrayList<>();
 
                 // 과정 신청이 가능하면
                 if (result == 9) {
@@ -134,12 +139,16 @@ public class CourseAccountAdminController {
 
                     // 교육수강생으로 등록되 사용자에게 메일 및 알림 서비스 실행
 
-
                 } else {
                     // TODO : 과정신청 실패시 메세지 처리 필요
                     // 실패된 사용자에 대한 처리
-                    accountList.add(account);
+//                    accountList.add(account);
+
                 }
+            } else {
+                // 이미 등록된 경우 중복 메세지를 남긴다.
+                Account account = userService.findByUserId(userId);
+                lmsNotificationService.sendAlarm(LmsAlarmType.DuplicateUser, account, course);
             }
         }
 

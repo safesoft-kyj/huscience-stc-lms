@@ -1,8 +1,8 @@
 package com.dtnsm.lms.service;
 
-import com.dtnsm.lms.domain.ElMinor;
-import com.dtnsm.lms.domain.CourseMaster;
+import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.repository.CourseMasterRepository;
+import com.querydsl.core.BooleanBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +32,14 @@ public class CourseMasterService {
     public List<CourseMaster> getList() {
         return courseMasterRepository.findAll();
     }
+
+    public Iterable<CourseMaster> getListBySelfAndClass() {
+        QCourseMaster qCourseMaster = QCourseMaster.courseMaster;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qCourseMaster.id.in("BC0101", "BC0102"));
+        return courseMasterRepository.findAll(builder);
+    }
+
 
     public Page<CourseMaster> getPageList(Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);

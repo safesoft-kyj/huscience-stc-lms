@@ -18,7 +18,7 @@ public class Document extends AuditorCreateEntity<String> {
     private long id;
 
     //@NotEmpty(message = "No title")
-    @Column(length = 100, nullable = false)
+    @Column(length = 500, nullable = false)
     private String title;
 
     // 교육 대상자
@@ -26,7 +26,7 @@ public class Document extends AuditorCreateEntity<String> {
     private String mailSender;
 
     //@NotEmpty(message = "No content")
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "ntext")
     private String content;
 
     @Column(length = 1)

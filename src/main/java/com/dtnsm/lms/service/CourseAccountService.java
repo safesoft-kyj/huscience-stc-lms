@@ -3,6 +3,7 @@ package com.dtnsm.lms.service;
 import com.dtnsm.lms.auth.UserService;
 import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.CourseStepStatus;
+import com.dtnsm.lms.domain.constant.LmsAlarmType;
 import com.dtnsm.lms.repository.CourseAccountOrderRepository;
 import com.dtnsm.lms.repository.CourseAccountRepository;
 import com.dtnsm.lms.repository.CourseCertificateInfoRepository;
@@ -20,6 +21,9 @@ import java.util.Optional;
 
 @Service
 public class CourseAccountService {
+
+    @Autowired
+    CourseService courseService;
 
     @Autowired
     CourseAccountRepository courseAccountRepository;
@@ -44,6 +48,9 @@ public class CourseAccountService {
 
     @Autowired
     CourseCertificateService courseCertificateService;
+
+    @Autowired
+    LmsNotificationService lmsNotificationService;
 
     public CourseAccount save(CourseAccount courseAccount){
         return courseAccountRepository.save(courseAccount);
@@ -316,16 +323,61 @@ public class CourseAccountService {
         if(account == null) return 0;
 
         // 상위결재권자가 지정되지 않았으면
-        if (account.getParentUserId().trim().isEmpty()) return 1;
+        if (account.getParentUserId().trim().isEmpty()) {
+            lmsNotificationService.sendAlarm(LmsAlarmType.ParentUser, account);
+            return 1;
+        }
 
         // 과정 관리자가 등록되어 있지 않은 경우
-        if (courseManagerService.getCourseManager() == null || courseManagerService.getCourseManager().getUserId().isEmpty()) return 2;
+        if (courseManagerService.getCourseManager() == null || courseManagerService.getCourseManager().getUserId().isEmpty()) {
+            lmsNotificationService.sendAlarm(LmsAlarmType.Manager, account);
+            return 2;
+        }
 
         //  수료증 기준정보가 등록되지 않은 경우
         if (courseCertificateInfoRepository.findByIsActive(1) == null) return 3;
 
         return 9;
     }
+
+    /**
+     * 관리자가 교육수강생 지정시 체크 루틴
+     * @param
+     * @return
+     * @exception
+     * @see
+     */
+    public int accountVerification(String userId, Course coures) {
+
+        Account account = userService.findByUserId(userId);
+
+        // 계정이 존재하지 않으면
+        if(account == null) return 0;
+
+        // 정원 체크
+        if(!isCourseAssignCapacity(coures.getId(), userId)){
+            return 11;
+        }
+
+        // 상위결재권자가 지정되지 않았으면
+        // 사용자가 신청시 체크하므로 주석 처리
+//        if (account.getParentUserId().trim().isEmpty()) {
+//            lmsNotificationService.sendAlarm(LmsAlarmType.ParentUser, account, coures);
+//            return 1;
+//        }
+
+        // 과정 관리자가 등록되어 있지 않은 경우
+//        if (courseManagerService.getCourseManager() == null || courseManagerService.getCourseManager().getUserId().isEmpty()) {
+//            lmsNotificationService.sendAlarm(LmsAlarmType.Manager, account, coures);
+//            return 2;
+//        }
+
+        //  수료증 기준정보가 등록되지 않은 경우
+//        if (courseCertificateInfoRepository.findByIsActive(1) == null) return 3;
+
+        return 9;
+    }
+
 
 
     /**
@@ -354,6 +406,75 @@ public class CourseAccountService {
         this.save(courseAccount);
     }
 
+    /**
+     * 교육 수강생 신청시 정원수 체크 : true 면 신청 가능
+     * @param courseId, userId
+     * @return boolean
+     * @exception
+     * @see
+     */
+    public boolean isCourseRequestCapacity(Long courseId, String userId) {
+        boolean isBool = false;
+
+        Course course = courseService.getCourseById(courseId);
+        int cnt = course.getCnt();
+
+        // cnt가 0이면 정원이 없으므로 신청할 수 있다.
+        if (cnt == 0) {
+            isBool = true;
+        } else {    // cnt가 0이 아니면 교육정원 체크를 해야 한다.
+
+            CourseAccount courseAccount = getByCourseIdAndUserId(courseId, userId);
+
+            // 교육과정에 내가 지정되었거나 신청한 내역이 없으면
+            if (courseAccount == null) {
+                // 교육관리자의 지정 없이 바로 신청하는 것이므로 정원수보다 작아야 한다.
+                if (course.getCourseAccountList().size() < course.getCnt()) {
+                    isBool = true;
+                }
+            } else {
+                // 교육수강생으로 지정된 경우 true 린턴
+                if (courseAccount.getRequestType().equals("0")) {
+                    isBool = true;
+                }
+            }
+        }
+
+        return isBool;
+    }
+
+    /**
+     * 교육 수강생 지정시 정원수 체크 : true 면 지정 가능
+     * @param courseId, userId
+     * @return boolean
+     * @exception
+     * @see
+     */
+    public boolean isCourseAssignCapacity(Long courseId, String userId) {
+        boolean isBool = false;
+        Course course = courseService.getCourseById(courseId);
+        int cnt = course.getCnt();
+
+        // cnt가 0이면 정원이 지정할 수 있다.
+        if (cnt == 0) {
+            isBool = true;
+        } else {    // cnt가 0이 아니면 교육정원 체크를 해야 한다.
+
+            // 지정한 교육자가 이미 포함 되어 있는지 체크
+            CourseAccount courseAccount = getByCourseIdAndUserId(courseId, userId);
+
+            // 내가 수강자 명단에 없으면
+            if(courseAccount == null) {
+                // 정원수 체크한다.
+                if (course.getCourseAccountList().size() < course.getCnt()) {
+                    isBool = true;
+                }
+            }
+        }
+
+        return isBool;
+
+    }
 
 
     //    public CourseAccount getByCourseIdAndApprUserId1(long courseId, String userId) {

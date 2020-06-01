@@ -50,6 +50,7 @@ public class CourseSection extends AuditorCreateEntity<String> {
     @ColumnDefault("0")
     private int second;
 
+    // 강의파일 총장수
     @Column(name="image_size")
     @ColumnDefault("0")
     private int imageSize=0;

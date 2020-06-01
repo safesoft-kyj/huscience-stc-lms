@@ -197,7 +197,7 @@ public class MainController {
 
     @GetMapping("/login")
     public String login(Model model) {
-        return "login";
+        return "login-new";
     }
 
     @PostMapping("/logout")
@@ -223,7 +223,7 @@ public class MainController {
             }
         }
 
-        return "redirect:/login";
+        return "redirect:/login?logout";
     }
 
     @GetMapping("/user")

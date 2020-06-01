@@ -31,12 +31,12 @@
             <!--===================================================-->
             <div class="panel">
                 <div class="panel-heading">
-<!--                    <h3 class="panel-title">교육 등록</h3>-->
+                    <h3 class="panel-title" th:text="#{label.course.name} + ' : ' + ${courseName}"></h3>
                 </div>
                 <div class="panel-body">
                     <!--===================================================-->
                     <!--End Horizontal Form-->
-                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/{typeId}/{courseId}/account/add-post(typeId=${typeId}, courseId=${courseId}, page=${param.page})}" method="post" enctype="multipart/form-data" >
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/{typeId}/{courseId}/account/add-post(typeId=${typeId}, courseId=${courseId}, page=${param.page})}" method="post">
                         <input hidden name="courseId" th:value="${courseId}">
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="mailList">교육대상자</label>
@@ -79,7 +79,8 @@
             $('#mailList').change(function() {
 
                 $('#mailList > option:selected').each(function() {
-                    checkRequest($(this).val());
+                    // 저장전에 체크하므로 주석처리
+                    // checkRequest($(this).val());
                 });
             });
 
@@ -98,12 +99,22 @@
 
         });
 
+        // 교육대상자 저장
         function btnSubmit() {
-            checkRequest('');
-
-            if(saveStatus) {
+            let userListString = $('#mailList').val();
+            if (userListString.length == 0 ) {
+                alert('교육대상자가 지정되지 않았습니다.');
+                return;
+            } else {
                 $('#boardFrm').submit();
             }
+            // alert('test');
+            // checkRequest('');
+
+            // 저장전에 체크하므로 주석처리
+            // if(saveStatus) {
+                // $('#boardFrm').submit();
+            // }
         }
 
         // 조직도에서 사용자 ID를 받아 온다(배열로 받아옴)
@@ -111,9 +122,9 @@
             // alert(selectOptionArray.length);
             // var userList = selectOptionArray.split(',');
 
-            $.each(selectOptionArray, function(index, item){
-                checkRequest(item);
-            });
+            // $.each(selectOptionArray, function(index, item){
+            //     checkRequest(item);
+            // });
 
             // 싱글값 변경
             // $('#select-id').val("22").trigger('chosen:updated');
@@ -124,6 +135,8 @@
 
         // 사용자 지정이 가능한지에 대한 조건 검색
         function checkRequest(userId) {
+
+            alert(userId);
 
                 $.ajax({
                 type : 'POST',

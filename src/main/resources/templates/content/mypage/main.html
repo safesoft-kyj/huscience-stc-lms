@@ -424,46 +424,46 @@
             return;
         }
 
-        function checkRequest(courseId, userId) {
-
-            $.ajax({
-                type : 'POST',
-                url : '/api/courseAccount/isVerificationRequestWait',
-                dataType : 'json',
-                data : {
-                    'courseId': courseId,
-                    'userId': userId
-                },
-                error: function(xhr, status, error){
-                    alert(error);
-                },
-                success : function(data){
-
-                    if (data == 1) {
-                        alert('상위결재권자가 지정되지 않았습니다.');
-                        return false;
-                    }
-
-                    if (data == 2) {
-                        alert('교육과정 관리자가 지정되지 않았습니다.');
-                        return false;
-                    }
-
-                    if (data == 3) {
-                        alert('신청대기중인 과정이 없습니다..');
-                        return false;
-                    }
-
-                    if (data == 9) {
-                        $('#submit_form').submit();
-                        alert('교육 신청되었습니다.');
-                        return false;
-                    }
-                },
-            });
-
-            return;
-        }
+        // function checkRequest(courseId, userId) {
+        //
+        //     $.ajax({
+        //         type : 'POST',
+        //         url : '/api/courseAccount/isVerificationRequestWait',
+        //         dataType : 'json',
+        //         data : {
+        //             'courseId': courseId,
+        //             'userId': userId
+        //         },
+        //         error: function(xhr, status, error){
+        //             alert(error);
+        //         },
+        //         success : function(data){
+        //
+        //             if (data == 1) {
+        //                 alert('상위결재권자가 지정되지 않았습니다.');
+        //                 return false;
+        //             }
+        //
+        //             if (data == 2) {
+        //                 alert('교육과정 관리자가 지정되지 않았습니다.');
+        //                 return false;
+        //             }
+        //
+        //             if (data == 3) {
+        //                 alert('신청대기중인 과정이 없습니다..');
+        //                 return false;
+        //             }
+        //
+        //             if (data == 9) {
+        //                 $('#submit_form').submit();
+        //                 alert('교육 신청되었습니다.');
+        //                 return false;
+        //             }
+        //         },
+        //     });
+        //
+        //     return;
+        // }
     </script>
 
 </th:block>

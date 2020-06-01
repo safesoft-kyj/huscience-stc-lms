@@ -3,6 +3,8 @@ package com.dtnsm.lms.domain;
 import com.dtnsm.lms.auth.AuditorEntity;
 import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
@@ -11,7 +13,8 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Data
+@Setter
+@Getter
 @Table(name="el_course_account")
 //@IdClass(CourseAccountId.class)
 public class CourseAccount extends AuditorEntity<String> {
@@ -72,6 +75,14 @@ public class CourseAccount extends AuditorEntity<String> {
     @Column(length = 1)
     @ColumnDefault("'0'")
     private String isApproval = "0";
+
+    // 팀장/부서장 승인 여부(Y, N)
+    @ColumnDefault("''")
+    private String isTeamMangerApproval;
+
+    // 과정 관리자 승인 여부(Y, N)
+    @ColumnDefault("''")
+    private String isCourseMangerApproval;
 
     // 전자 결재 상태 : 0: 진행중, 1: 승인, 2:기각, 9:미진행
     @Column(length = 1)

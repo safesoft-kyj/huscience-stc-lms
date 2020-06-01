@@ -40,7 +40,7 @@
             <!--===================================================-->
             <div class="panel">
                 <div class="panel-heading">
-<!--                    <h3 class="panel-title">교육 등록</h3>-->
+                    <h3 class="panel-title" th:text="#{label.course.name} + ' : ' + ${courseName}"></h3>
                 </div>
                 <div class="panel-body">
                     <!--===================================================-->
@@ -181,7 +181,10 @@
 
 <!--    <script th:src="@{/default/js/demo/form-component.js}"></script>-->
 
-    <script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var typeId = /*[[${typeId}]]*/;
+        /*]]>*/
 
         $('#demo-dp-component .input-group.date').datepicker({
             // format: "MM dd, yyyy",
@@ -190,6 +193,48 @@
             autoclose: true,
             todayHighlight: true
         });
+
+        //전송버튼
+        $("#boardFrm").submit(function(e){
+
+            if(!isSubmit()) {
+                e.preventDefault();
+                return;
+            }
+
+        });
+
+        function isSubmit() {
+
+            var name = $("#name").val();
+            if(!name) {
+                alert('강의명을 입력하세요');
+                return false;
+            }
+
+            var hour = $("#hour").val();
+            if(!hour || hour == 0) {
+                alert('강의 시간을 입력하세요');
+                return false;
+            }
+
+            if (typeId == "BC0101") {
+                var sectionFile = $('#files').val();
+
+                if (!sectionFile) {
+                    alert("강의 파일을 선택하세요.");
+                    return false;
+                } else {
+                    fileExt = sectionFile.slice(sectionFile.indexOf(".") + 1).toLocaleLowerCase();
+                    if (fileExt != "pdf") {
+                        alert("강의파일은 PDF만 가능합니다.");
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
 
     </script>
 
