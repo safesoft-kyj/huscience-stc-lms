@@ -90,7 +90,7 @@
                     </div>
                     <hr class="bg-gray"/>
                     <div class="input-group pull-right">
-                        <a th:href="@{/border/{typeId}(typeId=${border.getBorderMaster().getId()})}"
+                        <a th:href="@{/border/{typeId}(typeId=${border.getBorderMaster().getId()}, page=${param.page}, searchType=${param.searchType}, searchText=${param.searchText})}"
                            class="btn btn-primary" th:text="#{label.list}">목록</a>
                     </div>
                 </div><!--panel-body End -->

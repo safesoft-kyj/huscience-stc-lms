@@ -37,7 +37,7 @@
                     <!--===================================================-->
                     <!--End Horizontal Form-->
                     <br>
-                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/border/add-post}" th:object="${border}" method="post" enctype="multipart/form-data" >
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/border/add-post(page=${param.page})}" th:object="${border}" method="post" enctype="multipart/form-data" >
                         <input type="hidden" th:field="*{id}" id="id" name="id">
                         <input type="hidden" th:field="*{borderMaster.id}" id="type-id" name="type-id">
                         <div class="form-group">
@@ -148,7 +148,7 @@
 <!--                            </button>-->
 
                             <button class="btn btn-primary" type="submit"><i class="fa fa-upload-cloud"></i> <span th:text="#{label.save}"></span></button>
-                            <a th:href="@{/admin/border/{typeId}(typeId=${typeId})}" class="btn btn-success">
+                            <a th:href="@{/admin/border/{typeId}(typeId=${typeId}, page=${param.page})}" class="btn btn-success">
                                 <i class="fa fa-upload-cloud"></i> 목록
                             </a>
                         </div>

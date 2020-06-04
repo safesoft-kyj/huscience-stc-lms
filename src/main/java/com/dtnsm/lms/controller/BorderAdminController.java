@@ -149,7 +149,8 @@ public class BorderAdminController {
 
 
     @GetMapping("/{typeId}/view/{id}")
-    public String noticeView(@PathVariable("typeId") String typeId, @PathVariable("id") long id, Model model) {
+    public String noticeView(@PathVariable("typeId") String typeId
+            , @PathVariable("id") long id, Model model) {
 
         Border border = borderService.getBorderById(id);
 
@@ -182,7 +183,12 @@ public class BorderAdminController {
 
     @PostMapping("/add-post")
     @Transactional
-    public String noticeAddPost(@Valid Border border, @RequestParam("files") MultipartFile[] files, BindingResult result) {
+    public String noticeAddPost(@Valid Border border
+            , @RequestParam(value = "searchType", defaultValue = "all") String searchType
+            , @RequestParam(value = "searchText", defaultValue = "") String searchText
+            , @RequestParam(value = "page", defaultValue = "") String page
+            , @RequestParam("files") MultipartFile[] files, BindingResult result
+            , HttpServletRequest request) {
         if(result.hasErrors()) {
             return "admin/border/add";
         }
@@ -214,7 +220,12 @@ public class BorderAdminController {
             mailService.sendBorder(mail);
         }
 
-        return "redirect:/admin/border/" + border1.getBorderMaster().getId();
+        return String.format("redirect:/admin/border/%s?page=%s&searchType=%s&searchText=%s"
+                , border1.getBorderMaster().getId()
+                , page
+                , searchType
+                , searchText);
+
     }
 
     // 첨부파일 업로드
@@ -244,7 +255,12 @@ public class BorderAdminController {
     }
 
     @PostMapping("/edit-post/{id}")
-    public String noticeEditPost(@PathVariable("id") long id, @Valid Border border, @RequestParam("files") MultipartFile[] files, BindingResult result) {
+    public String noticeEditPost(@PathVariable("id") long id, @Valid Border border
+            , @RequestParam(value = "searchType", defaultValue = "all") String searchType
+            , @RequestParam(value = "searchText", defaultValue = "") String searchText
+            , @RequestParam(value = "page", defaultValue = "") String page
+            , @RequestParam("files") MultipartFile[] files, BindingResult result
+            , HttpServletRequest request) {
         if(result.hasErrors()) {
             border.setId(id);
             return "/admin/border/" + border.getBorderMaster().getId();
@@ -272,11 +288,18 @@ public class BorderAdminController {
                 .map(file -> borderFileService.storeFile(file, border1))
                 .collect(Collectors.toList());
 
-        return "redirect:/admin/border/" + border1.getBorderMaster().getId();
+        return String.format("redirect:/admin/border/%s?page=%s&searchType=%s&searchText=%s"
+                , border1.getBorderMaster().getId()
+                , page
+                , searchType
+                , searchText);
     }
 
     @GetMapping("/delete/{id}")
-    public String noticeDelete(@PathVariable("id") long id) {
+    public String noticeDelete(@PathVariable("id") long id
+            , @RequestParam(value = "searchType", defaultValue = "all") String searchType
+            , @RequestParam(value = "searchText", defaultValue = "") String searchText
+            , @RequestParam(value = "page", defaultValue = "") String page) {
 
         List<BorderViewAccount> borderViewAccounts = borderService.getAllBorderAccountByBorderId(id);
 
@@ -290,19 +313,32 @@ public class BorderAdminController {
 
         borderService.delete(border);
 
-        return "redirect:/admin/border/" + borderMastId;
+        return String.format("redirect:/admin/border/%s?page=%s&searchType=%s&searchText=%s"
+                , borderMastId
+                , page
+                , searchType
+                , searchText);
     }
 
 
     @GetMapping("/delete-file/{border_id}/{file_id}")
-    public String noticeDeleteFile(@PathVariable long border_id, @PathVariable int file_id, HttpServletRequest request){
+    public String noticeDeleteFile(@PathVariable long border_id, @PathVariable int file_id
+            , @RequestParam(value = "searchType", defaultValue = "all") String searchType
+            , @RequestParam(value = "searchText", defaultValue = "") String searchText
+            , @RequestParam(value = "page", defaultValue = "") String page
+            , HttpServletRequest request){
 
         // db및 파일 삭제
         borderFileService.deleteFile(file_id);
 
         Border border = borderService.getBorderById(border_id);
 
-        return "redirect:/admin/border/" + border.getBorderMaster().getId() +  "/edit/" + border_id;
+        return String.format("redirect:/admin/border/%s/edit/%s?page=%s&searchType=%s&searchText=%s"
+                , border.getBorderMaster().getId()
+                , border_id
+                , page
+                , searchType
+                , searchText);
 
     }
 
