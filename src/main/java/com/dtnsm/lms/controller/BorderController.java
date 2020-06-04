@@ -110,7 +110,8 @@ public class BorderController {
 
 
     @GetMapping("/{typeId}/view/{id}")
-    public String viewPage(@PathVariable("id") long id, Model model) {
+    public String viewPage(@PathVariable("id") long id
+            , Model model) {
 
         Border border = borderService.getBorderById(id);
         borderService.updateViewCnt(id, SessionUtil.getUserId());

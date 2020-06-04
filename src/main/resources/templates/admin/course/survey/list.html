@@ -49,7 +49,7 @@
                                 </div>
                                 <div class="col-sm-4 text-right">
                                     <th:block th:if="${#strings.equalsIgnoreCase(isAdd, 'Y')}">
-                                        <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/survey/add(typeId=${typeId}, courseId=${courseId})}"><i class="demo-pli-add"></i> Add</a>
+                                        <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/survey/add(typeId=${typeId}, courseId=${courseId}, page=${param.page})}"><i class="demo-pli-add"></i> Add</a>
                                         <a class="btn btn-primary" th:href="@{/admin/course/{typeId}(typeId=${typeId}, page=${param.page})}"><i class="demo-pli-back"></i> Back</a>
                                     </th:block>
                                 </div>

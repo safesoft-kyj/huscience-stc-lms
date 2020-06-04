@@ -62,14 +62,16 @@ public class CourseAccountAdminController {
 
     // 외부교육참석보고서 메일 발송
     @GetMapping("/{typeId}/{courseId}/account/sendmail")
-    public String courseAccountSendMail(@PathVariable("typeId") String typeId, @PathVariable("courseId") Long courseId, Model model) {
+    public String courseAccountSendMail(@PathVariable("typeId") String typeId
+            , @RequestParam(value = "page", defaultValue = "") String page
+            , @PathVariable("courseId") Long courseId, Model model) {
 
         // 외부교육 참석보고서 메일 발송
         courseScheduler.sendCourseToDateAlarm();
 
         return String.format("redirect:/admin/course/%s/%s/account"
-            , typeId
-            , courseId);
+                , typeId
+                , page);
     }
 
     @GetMapping("/{typeId}/{courseId}/account")
@@ -108,6 +110,7 @@ public class CourseAccountAdminController {
     @PostMapping("/{typeId}/{courseId}/account/add-post")
     public String courseAccountAddPost(@PathVariable("typeId") String typeId
             , @PathVariable("courseId") Long courseId
+            , @RequestParam(value = "page", required = false, defaultValue = "") String page
             , @RequestParam(value = "mailList", required = false, defaultValue = "0") String[] mails) {
 
         Course course = courseService.getCourseById(courseId);
@@ -152,9 +155,10 @@ public class CourseAccountAdminController {
             }
         }
 
-        return String.format("redirect:/admin/course/%s/%s/account"
+        return String.format("redirect:/admin/course/%s/%s/account?page=%s"
                 , typeId
-                , courseId);
+                , courseId
+                , page);
     }
 
 

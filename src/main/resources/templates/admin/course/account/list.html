@@ -58,7 +58,7 @@
 <!--                                        <a class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/account/sendmail(typeId=${typeId}, courseId=${courseId})}"><i class="demo-pli-mail-send"></i> 참석보고서 미작성자 메일 발송</a>-->
 <!--                                    </th:block>-->
                                     <th:block th:if="${course.getCnt() == 0 || course.getCnt() > course.getCourseAccountList().size()}">
-                                        <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/account/add(typeId=${typeId}, courseId=${courseId})}"><i class="demo-pli-add"></i> Add</a>
+                                        <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/account/add(typeId=${typeId}, courseId=${courseId}, page=${param.page})}"><i class="demo-pli-add"></i> Add</a>
                                     </th:block>
                                     <th:block th:unless="${course.getCnt() == 0 || course.getCnt() > course.getCourseAccountList().size()}">
                                         <button type="button" onclick="showCntMessage();" class="btn btn-purple" ><i class="demo-pli-add"></i> Add</button>
