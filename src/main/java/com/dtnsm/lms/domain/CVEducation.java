@@ -40,13 +40,13 @@ public class CVEducation extends AuditorEntity<String> implements Serializable {
     @Column(name = "name_of_university")
     private String nameOfUniversity;
 
-    @Column(name = "name_of_university_other")
+    @Column(name = "name_of_university_other", columnDefinition = "nvarchar(255)")
     private String nameOfUniversityOther;
 
     @Column(name = "city_country")
     private String cityCountry;
 
-    @Column(name = "city_country_other")
+    @Column(name = "city_country_other", columnDefinition = "nvarchar(255)")
     private String cityCountryOther;
 
     @Column(name = "degree_type")
