@@ -164,6 +164,34 @@ public class CourseQuizQuestion extends AuditorCreateEntity<String> {
         this.answer = answer;
     }
 
+    public CourseQuizQuestion(String question, String answer, String ex1, String ex2, String ex3) {
+        this.question = question;
+        this.ex1 = ex1;
+        this.ex2 = ex2;
+        this.ex3 = ex3;
+        this.ex4 = "";
+        this.ex5 = "";
+        this.ex6 = "";
+        this.ex7 = "";
+        this.ex8 = "";
+        this.ex9 = "";
+        this.answer = answer;
+    }
+
+    public CourseQuizQuestion(String question, String answer, String ex1, String ex2) {
+        this.question = question;
+        this.ex1 = ex1;
+        this.ex2 = ex2;
+        this.ex3 = "";
+        this.ex4 = "";
+        this.ex5 = "";
+        this.ex6 = "";
+        this.ex7 = "";
+        this.ex8 = "";
+        this.ex9 = "";
+        this.answer = answer;
+    }
+
 
     // 엑셀 파일업로드(시험문제)
     public static CourseQuizQuestion fromQuiz(Row  row) {
@@ -178,7 +206,11 @@ public class CourseQuizQuestion extends AuditorCreateEntity<String> {
         }
 
         System.out.println(cellValues.size());
-        if (cellValues.size() <= 6) {
+        if (cellValues.size() <= 4) {
+            return new CourseQuizQuestion(cellValues.get(0), cellValues.get(1), cellValues.get(2), cellValues.get(3));
+        } else if (cellValues.size() == 5) {
+            return new CourseQuizQuestion(cellValues.get(0), cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(4));
+        } else if (cellValues.size() == 6) {
             return new CourseQuizQuestion(cellValues.get(0), cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(4), cellValues.get(5));
         } else if (cellValues.size() == 7) {
             return new CourseQuizQuestion(cellValues.get(0), cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(4), cellValues.get(5), cellValues.get(6));
