@@ -18,7 +18,7 @@ public class Border extends AuditorEntity<String> {
     private long id;
 
     //@NotEmpty(message = "No title")
-    @Column(length = 100, nullable = false)
+    @Column(length = 500, nullable = false)
     private String title;
 
     //@NotEmpty(message = "No content")
