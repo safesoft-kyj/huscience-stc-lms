@@ -166,6 +166,8 @@ public class CurriculumVitaeService {
         for(CVExperience experience : cv.getExperiences()) {
             experience.setCurriculumVitae(cv);
             if(isNew) experience.setId(null);
+            log.info("Role Other : {}", experience.getRoleOther());
+            log.info("Working Details : {}", experience.getWorkingDetails());
             cvExperienceRepository.save(experience);
         }
 
