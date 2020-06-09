@@ -62,6 +62,21 @@
                         </div>
 
                         <!-- 부서별교육 : BC0103, 외부교육: BC0104 은 신청기간이 없어 보이지 않게 처리 -->
+                        <th:block th:if="${#strings.equalsIgnoreCase(course.getCourseMaster().getId(), 'BC0104')}">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"></label>
+                            <div class="checkbox col-sm-2">
+                                &nbsp;<input id="isAlways" name="isAlways" class="magic-checkbox" type="checkbox" value="1" th:checked="${#strings.equalsIgnoreCase(course.getIsAlways(), '1')}">
+                                <label for="isAlways">상시교육</label>
+                            </div>
+                            <div class="checkbox col-sm-2">
+                                &nbsp;&nbsp;<input id="isNewEmpCourse" name="isNewEmpCourse" class="magic-checkbox" type="checkbox" value="1">
+                                <label for="isNewEmpCourse">신입사원 필수교육</label>
+                            </div>
+                        </div>
+                        </th:block>
+
+                        <!-- 부서별교육 : BC0103, 외부교육: BC0104 은 신청기간이 없어 보이지 않게 처리 -->
                         <th:block th:if="${#strings.equalsIgnoreCase(course.getCourseMaster().getId(), 'BC0102')}">
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="title" th:text="#{label.course.requesperiod}">신청기간</label>
@@ -79,15 +94,15 @@
                         </div>
                         </th:block>
 
-                        <div class="form-group">
+                        <div class="form-group" id="always-detail2">
                             <label class="col-sm-2 control-label" for="title" th:text="#{label.course.period}">교육기간</label>
                             <div class="col-sm-10">
                                 <div id="demo-dp-range2">
                                     <div class="input-daterange input-group" id="datepicker2">
-                                        <input type="text" th:field="*{fromDate}" id="fromDate" placeholder="From" class="form-control" required="required">
+                                        <input type="text" th:field="*{fromDate}" id="fromDate" placeholder="From" class="form-control">
                                         <span th:if="${#fields.hasErrors('fromDate')}" th:errors="*{fromDate}"></span>
                                         <span class="input-group-addon">to</span>
-                                        <input type="text" th:field="*{toDate}" id="toDate" placeholder="To" class="form-control" required="required">
+                                        <input type="text" th:field="*{toDate}" id="toDate" placeholder="To" class="form-control">
                                         <span th:if="${#fields.hasErrors('toDate')}" th:errors="*{toDate}"></span>
                                     </div>
                                 </div>
@@ -241,6 +256,10 @@
 <!--    <script th:src="@{/default/js/demo/form-component.js}"></script>-->
 
     <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        var typeId = /*[[ ${course.getCourseMaster().getId()} ]]*/;
+        /*]]>*/
+
 
         $(function(){
             //전역변수
@@ -293,6 +312,12 @@
                 //폼 submit
                 // $("#boardFrm").submit();
             });
+
+            // 외부교육에 한해서 상시를 활성화시키고 기간을 숨긴다.
+            if (typeId == 'BC0104') {
+                $("#isAlways").prop("checked", true);
+                $('#always-detail2').hide();
+            }
         });
 
 
@@ -313,18 +338,31 @@
             todayHighlight: true
         });
 
-        $('#fromDate').change(function(){
+        $('#fromDate').change(function () {
             var gap1 = dateDiff($('#fromDate').val(), $('#toDate').val());
 
             $('#day').val(gap1);
         });
 
-        $('#toDate').change(function(){
+        $('#toDate').change(function () {
             var gap2 = dateDiff($('#fromDate').val(), $('#toDate').val());
             $('#day').val(gap2);
         });
 
+        // 상시여부
+        $("#isAlways").change(function () {
+            if ($("#isAlways").is(":checked")) {
+                // $('#fromDate').val('');
+                // $('#toDate').val('');
+                // $('#day').val('0');
 
+                $('#always-detail2').hide();
+
+            } else {
+                $('#always-detail2').show();
+
+            }
+        });
 
         // 설문
         $('#isSurvey').change(function() {
