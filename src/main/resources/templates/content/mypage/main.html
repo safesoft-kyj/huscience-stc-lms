@@ -176,6 +176,18 @@
                                         <a th:href="@{/info/request/add/{id}(id=${courseAccount.getCourse().getId()})}">
                                             <span th:text="${courseAccount.getCourse().getTitle()}"}></span>
                                         </a>
+                                        <!-- self 교육 완료후 자료 보기 -->
+                                        <span th:if="${#strings.equalsIgnoreCase(courseAccount.getIsCommit(), '1')}">
+                                            <th:block th:if="${#strings.equalsIgnoreCase(courseAccount.getCourse().getCourseMaster().getId(), 'BC0101')}">
+                                                <th:block th:each="section, index : ${courseAccount.getCourse().getSections()}">
+                                                    <th:block th:each="file, index : ${section.getSectionFiles()}">
+                                                        <a class="label label-primary" th:onclick="|javascript:popupSectionPdfView('${file.getId()}');return false;|" target="_blank">
+                                                            <i class="fa fa-file-pdf-o"></i> <span th:text="${'강의자료'}"></span>
+                                                        </a>
+                                                    </th:block>
+                                                </th:block>
+                                            </th:block>
+                                        </span>
                                     </td>
                                     <td class="text-center">
                                         <th:block th:if="${#strings.equalsIgnoreCase(courseAccount.getFromDate(), courseAccount.getToDate())}">
@@ -243,7 +255,6 @@
                                             </th:block>
                                             <th:block th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).complete}">
 
-
                                                 <th:block th:if="${courseAccount.getCourse().getIsCerti().equals('Y')}">
 <!--                                                    <th:block th:if="${courseAccount.getCertificateBindDate() == null}">-->
 <!--                                                        <a href="#" class="btn btn-info" id="popupBtn10"-->
@@ -262,7 +273,6 @@
                                             </th:block>
                                             <th:block th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).reject}"></th:block>
                                         </div>
-
 
                                     </td>
                                 </tr>
@@ -322,6 +332,28 @@
 
             $('#testForm').submit();
             $('#title').focus();
+        }
+
+        function popupSectionPdfView(id) {
+            var popWidth = 1000;
+            var popHeight = 800;
+
+            var title = "강의 자료";
+            var url = "/mypage/pdfview/" + id;
+
+            var mtWidth = document.body.clientWidth; //현재 브라우저가 있는 모니터의 화면 폭 사이즈
+            var mtHeight = document.body.clientHeight; //현재 브라우저가 있는 모니터의 화면 높이 사이즈
+
+            var scX = window.screenLeft; //현재 브라우저의 x 좌표(모니터 두 대를 합한 총 위치 기준)
+            var scY = window.screenTop; //현재 브라우저의 y 좌표(모니터 두 대를 합한 총 위치 기준)
+
+            var popX = scX + (mtWidth - popWidth) / 2 - 50; //팝업 창을 띄울 x 위치 지정(모니터 두 대를 합한 총 위치 기준)
+            var popY = scY + (mtHeight - popHeight) / 2 - 50; //팝업 창을 띄울 y 위치 지정(모니터 두 대를 합한 총 위치 기준)
+
+            var popupSizeOption = "width=" + popWidth + ", height=" + popHeight + ", left=" + popX + ", top=" + popY;
+            var popupOption = popupSizeOption +  ', toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, copyhistory=yes, resizable=yes';
+
+            window.open(url, title, popupOption);
         }
 
         // 수료증 발급

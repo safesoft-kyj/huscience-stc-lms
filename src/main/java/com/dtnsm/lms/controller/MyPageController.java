@@ -8,6 +8,7 @@ import com.dtnsm.lms.component.CourseScheduler;
 import com.dtnsm.lms.domain.*;
 import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import com.dtnsm.lms.domain.constant.QuizStatusType;
+import com.dtnsm.lms.domain.constant.ScheduleType;
 import com.dtnsm.lms.domain.constant.SurveyStatusType;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.repository.CourseAccountRepository;
@@ -760,7 +761,23 @@ public class MyPageController {
                 .body(resource);
     }
 
+    // employee metrix 보기
+    @GetMapping("/pdfview/{id}")
+    public String pdfView(@PathVariable("id") Long fileId, Model model) {
 
+//        Schedule schedule =  scheduleService.getTop1BySctypeOrderByCreatedDateDesc(ScheduleType.MATRIX);
+
+        CourseSectionFile courseSectionFile =  courseSectionFileService.getUploadFile(fileId);
+
+        pageInfo.setPageId("m-mypage-myinfo");
+        pageInfo.setPageTitle(courseSectionFile.getCourseSection().getName());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("title", courseSectionFile.getFileName());
+        model.addAttribute("fileId", courseSectionFile.getId());
+
+        return "content/mypage/sectionPdfView";
+    }
 
 
 }
