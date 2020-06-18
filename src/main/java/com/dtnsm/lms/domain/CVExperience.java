@@ -51,10 +51,10 @@ public class CVExperience extends AuditorEntity<String> implements Serializable 
     @Column(name = "role")
     private String[] role;
 
-    @Column(name = "role_other")
+    @Column(name = "role_other", columnDefinition = "nvarchar(255)")
     private String roleOther;
 
-    @Column(name = "workingDetails", columnDefinition = "nvarchar(1000)")
+    @Column(name = "workingDetails", columnDefinition = "nvarchar(4000)")
     private String workingDetails;
 
     @Column(name = "readonly")
