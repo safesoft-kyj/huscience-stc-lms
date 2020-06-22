@@ -177,17 +177,17 @@
                                             <span th:text="${courseAccount.getCourse().getTitle()}"}></span>
                                         </a>
                                         <!-- self 교육 완료후 자료 보기 -->
-                                        <span th:if="${#strings.equalsIgnoreCase(courseAccount.getIsCommit(), '1')}">
-                                            <th:block th:if="${#strings.equalsIgnoreCase(courseAccount.getCourse().getCourseMaster().getId(), 'BC0101')}">
-                                                <th:block th:each="section, index : ${courseAccount.getCourse().getSections()}">
-                                                    <th:block th:each="file, index : ${section.getSectionFiles()}">
-                                                        <a class="label label-primary" th:onclick="|javascript:popupSectionPdfView('${file.getId()}');return false;|" target="_blank">
-                                                            <i class="fa fa-file-pdf-o"></i> <span th:text="${'강의자료'}"></span>
-                                                        </a>
-                                                    </th:block>
-                                                </th:block>
-                                            </th:block>
-                                        </span>
+<!--                                        <span th:if="${#strings.equalsIgnoreCase(courseAccount.getIsCommit(), '1')}">-->
+<!--                                            <th:block th:if="${#strings.equalsIgnoreCase(courseAccount.getCourse().getCourseMaster().getId(), 'BC0101')}">-->
+<!--                                                <th:block th:each="section, index : ${courseAccount.getCourse().getSections()}">-->
+<!--                                                    <th:block th:each="file, index : ${section.getSectionFiles()}">-->
+<!--                                                        <a class="label label-primary" th:onclick="|javascript:popupSectionPdfView('${file.getId()}');return false;|" target="_blank">-->
+<!--                                                            <i class="fa fa-file-pdf-o"></i> <span th:text="${'강의자료'}"></span>-->
+<!--                                                        </a>-->
+<!--                                                    </th:block>-->
+<!--                                                </th:block>-->
+<!--                                            </th:block>-->
+<!--                                        </span>-->
                                     </td>
                                     <td class="text-center">
                                         <th:block th:if="${#strings.equalsIgnoreCase(courseAccount.getFromDate(), courseAccount.getToDate())}">
