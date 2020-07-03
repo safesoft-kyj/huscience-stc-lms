@@ -176,7 +176,6 @@ public class CurriculumVitaeService {
     }
 
     public CV toCV(CurriculumVitae savedCV, boolean name, boolean company) {
-        List<CVExperience> experienceList = cvExperienceRepository.findAllByCurriculumVitaeOrderByIdDesc(savedCV);
         CV dto = new CV();
         if(name) {
             dto.setEngName(savedCV.getInitialName());
@@ -257,17 +256,7 @@ public class CurriculumVitaeService {
                         .build()
         ).collect(Collectors.toList()));
 
-        dto.setExperiences(experienceList.stream().map(i ->
-                ExperienceDTO.builder()
-                        .ta("Others".equals(i.getTa()) ? i.getTaOther() : i.getTa())
-                        .indication("Others".equals(i.getIndication()) ? i.getIndicationOther() : i.getIndication())
-                        .phase("Others".equals(i.getPhase()) ? i.getPhaseOther() : appendPhase(i.getPhase()))
-                        .roles(Stream.of(i.getRole()).map(r -> r.equals("Others") ? i.getRoleOther() : r).collect(Collectors.toList()))
-                        .globalOrLocal(i.getGlobalOrLocal().getLabel())
-                        .workingDetails(i.getWorkingDetails())
-                        .build()
-        ).collect(Collectors.toList()));
-//        dto.setExperiences(savedCV.getExperiences().stream().map(i ->
+//        dto.setExperiences(experienceList.stream().map(i ->
 //                ExperienceDTO.builder()
 //                        .ta("Others".equals(i.getTa()) ? i.getTaOther() : i.getTa())
 //                        .indication("Others".equals(i.getIndication()) ? i.getIndicationOther() : i.getIndication())
@@ -277,6 +266,16 @@ public class CurriculumVitaeService {
 //                        .workingDetails(i.getWorkingDetails())
 //                        .build()
 //        ).collect(Collectors.toList()));
+        dto.setExperiences(savedCV.getExperiences().stream().map(i ->
+                ExperienceDTO.builder()
+                        .ta("Others".equals(i.getTa()) ? i.getTaOther() : i.getTa())
+                        .indication("Others".equals(i.getIndication()) ? i.getIndicationOther() : i.getIndication())
+                        .phase("Others".equals(i.getPhase()) ? i.getPhaseOther() : appendPhase(i.getPhase()))
+                        .roles(Stream.of(i.getRole()).map(r -> r.equals("Others") ? i.getRoleOther() : r).collect(Collectors.toList()))
+                        .globalOrLocal(i.getGlobalOrLocal().getLabel())
+                        .workingDetails(i.getWorkingDetails())
+                        .build()
+        ).collect(Collectors.toList()));
 
         return dto;
     }
