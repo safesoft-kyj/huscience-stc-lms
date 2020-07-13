@@ -28,4 +28,14 @@ public class CourseTraingLogService {
         return courseTrainingLogs;
     }
 
+    public Page<CourseTrainingLog> getAll(Pageable pageable) {
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
+
+        Page<CourseTrainingLog> courseTrainingLogs = courseTrainingLogRepository.findAll(pageable);
+
+        return courseTrainingLogs;
+    }
+
 }

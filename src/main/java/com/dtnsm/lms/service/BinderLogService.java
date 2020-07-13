@@ -221,10 +221,17 @@ public class BinderLogService {
                 if (courseAccount.getCourse().getCourseMaster().getId().equals("BC0102")) {
 
                     StringBuilder sb = new StringBuilder();
-                    if (!courseSection.getCourse().getTitle().trim().isEmpty()) sb.append(courseSection.getCourse().getTitle().trim());
-                    if (!courseSection.getName().trim().isEmpty()) sb.append("\r\n" + courseSection.getName().trim());
-                    if (!courseSection.getDescription().isEmpty()) sb.append("\r\n" + courseSection.getDescription().trim());
 
+                    // class training이면서 강의가 1개이고 과정명과 강의명이 같은경우는 강의면으로만 등록한다.
+                    if (courseSection.getCourse().getSections().size() == 1
+                            && courseSection.getCourse().getTitle().trim().equals(courseSection.getName().trim())) {
+                        if (!courseSection.getName().trim().isEmpty()) sb.append(courseSection.getName().trim());
+                        if (!courseSection.getDescription().isEmpty()) sb.append("\r\n" + courseSection.getDescription().trim());
+                    } else {
+                        if (!courseSection.getCourse().getTitle().trim().isEmpty()) sb.append(courseSection.getCourse().getTitle().trim());
+                        if (!courseSection.getName().trim().isEmpty()) sb.append("\r\n" + courseSection.getName().trim());
+                        if (!courseSection.getDescription().isEmpty()) sb.append("\r\n" + courseSection.getDescription().trim());
+                    }
                     courseTrainingLog.setTrainingCourse(sb.toString());
                 } else {
                     StringBuilder sb = new StringBuilder();

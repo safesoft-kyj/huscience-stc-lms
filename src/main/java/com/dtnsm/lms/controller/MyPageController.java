@@ -243,6 +243,21 @@ public class MyPageController {
         return "content/mypage/courseTrainingLog";
     }
 
+    // Lms Traing Log 조회
+//    @GetMapping("/courseTraingLogAll")
+//    public String lmsTraingLogAll(Model model, Pageable pageable) {
+//
+//        pageInfo.setPageId("m-training-log");
+//        pageInfo.setPageTitle("Employee Training Log");
+//
+//        Page<CourseTrainingLog> courseTrainingLogs = courseTraingLogService.getAll(pageable);
+//
+//        model.addAttribute(pageInfo);
+//        model.addAttribute("borders", courseTrainingLogs);
+//
+//        return "content/mypage/courseTrainingLog";
+//    }
+
 
     // 초기 교육 자료를 업로드 한다.
     @GetMapping("/uploadTrainingLog")
