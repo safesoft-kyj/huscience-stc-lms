@@ -48,7 +48,7 @@
                             `<table id="customer-list-page" class="table table-bordered" cellspacing="0" width="100%">
                                 <thead>
                                 <tr class="bg-gray-light">
-<!--                                    <th class="col-sm-1" style="vertical-align: middle">#</th>-->
+                                    <th class="col-sm-1" style="vertical-align: middle" th:text="#{label.no}">No.</th>
                                     <th class="col-sm-2" style="vertical-align: middle">Completion Date<br>(DD-MMM-YYYY)</th>
                                     <th class="col-sm-6" style="vertical-align: middle">Description of Training Course</th>
                                     <th class="col-sm-1" style="vertical-align: middle">Training<br>Hr.</th>
@@ -65,7 +65,7 @@
                                     <div th:case="*">
                                         <tbody>
                                         <tr th:each="border, index : ${borders}">
-<!--                                            <td th:text="${index.count}" class="text-center"></td>-->
+                                            <td th:text="${(borders.getTotalElements() - index.index) - (borders.number * 10)}" class="text-center"></td>
                                             <td  class="text-center">
                                                 <span th:if="${border.getCompleteDate()} != null" th:text="${T(com.dtnsm.lms.util.DateUtil).getDateToString(border.getCompleteDate(), 'dd-MMM-yyyy')}"></span>
                                             </td>

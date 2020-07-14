@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -25,6 +26,10 @@ public class JdbcReportController {
 
     @Autowired
     CourseAccountService courseAccountService;
+
+    @Autowired
+    CourseReportRepository courseReportRepository;
+
 
     @Autowired
     private TrainingLogReportRepository trainingLogReportRepository;
@@ -107,6 +112,30 @@ public class JdbcReportController {
         courseAccountService.courseAccountManualCommit(courseAccount);
 
         return "redirect:/admin/report/bind/target";
+    }
+
+    /**
+     * 부서별 사용자별 Self Training 상태를 확인한다.
+     * @param
+     * @return
+     * @exception
+     * @see
+     */
+    @RequestMapping({"/course/self"})
+    public String courseList(Model model
+            , @RequestParam(value = "courseTitle", defaultValue = "%") String courseTitle
+            , @RequestParam(value = "orgDepart", defaultValue = "%") String ordDepart
+            , @RequestParam(value = "orgTeam", defaultValue = "%") String orgTeam
+            , @RequestParam(value = "status", defaultValue = "0") String status
+            , @RequestParam(value = "userName", defaultValue = "%") String userName) {
+
+        List<Map<String, Object>> mapList = courseReportRepository.findBySelfTraining(courseTitle, ordDepart, orgTeam, userName, status);
+        pageInfo.setPageTitle("Self Training 교육현황");
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("borders", mapList);
+
+        return "admin/report/course-self";
     }
 
 }

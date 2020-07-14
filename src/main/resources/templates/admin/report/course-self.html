@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+
+    <style>
+        .body-wrap {background-color: #ecf0f5;width: 100%;}
+        .container { display: block !important; max-width: 600px !important; margin: 0 auto !important; clear: both !important;}
+        .content {max-width: 600px; margin: 0 auto; display: block; padding: 20px; }
+        th{color: white;}
+        th, td {text-align: center;}
+    </style>
+
+</th:block>
+
+<th:block layout:fragment="content_body">
+
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-body">
+                    <hr class="table-head">
+                    <table id="customer-list-page1" class="table" cellspacing="0" width="100%">
+                        <form name="testForm" id="testForm" th:action="@{/admin/report/course/self}" method="post">
+                            <tbody>
+                            <tr>
+                                <td class="text-right col-lg-2" style="vertical-align: middle; background: #FAFAFA;">상태</td>
+                                <td class="col-lg-4">
+                                    <div>
+                                        <select name="status" class="form-control">
+                                            <option value="0" th:selected="${#strings.equalsIgnoreCase(param.status, '0')}">진행중</option>
+                                            <option value="1" th:selected="${#strings.equalsIgnoreCase(param.status, '1')}">완료</option>
+                                            <option value="" th:selected="${#strings.equalsIgnoreCase(param.status, '')}">전체</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td class="text-right col-lg-2" style="vertical-align: middle; background: #FAFAFA;">사용자</td>
+                                <td class="col-lg-4">
+                                    <input class="form-control" type="text" th:value="${param.userName}" id="userName" name="userName" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-right col-lg-2" style="vertical-align: middle; background: #FAFAFA;">부서명</td>
+                                <td class="col-lg-4">
+                                    <input class="form-control" type="text" th:value="${param.orgDepart}" id="orgDepart" name="orgDepart" />
+                                </td>
+                                <td class="text-right col-lg-2" style="vertical-align: middle; background: #FAFAFA;">팀명</td>
+                                <td class="col-lg-4">
+                                    <input class="form-control" type="text" th:value="${param.orgTeam}" id="orgTeam" name="orgTeam" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-right col-lg-2" style="vertical-align: middle; background: #FAFAFA;">과정명</td>
+                                <td class="col-lg-4">
+                                    <input class="form-control" type="text" th:value="${param.courseTitle}" id="courseTitle" name="courseTitle" />
+                                </td>
+                                <td class="text-right col-lg-2" style="vertical-align: middle; background: #FAFAFA;">&nbsp;</td>
+                                <td class="col-lg-4">
+                                    &nbsp;
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="text-center">
+                                    <br>
+                                    <button type="submit" class="btn btn-lg btn-info">
+                                        <div class="demo-icon">
+                                            <i class="fa fa-search"></i> <span th:text="#{label.search}">fa fa-search</span>
+                                        </div>
+                                    </button>
+                                    <a class="btn btn-lg btn-default" th:href="@{/admin/report/course/self}" th:text="#{label.init}">초기화</a>
+                                </td>
+                            </tr>
+
+                            </tbody>
+                        </form>
+                    </table>
+
+
+                    <div th:switch="${borders}">
+                        <div class="table-responsive">
+                            `<table id="demo-dt-basic" class="table" cellspacing="0" width="100%">
+                                <colgroup>
+                                    <col width="3%">
+                                    <col width="20%">
+                                    <col width="8%">
+                                    <col width="8%">
+                                    <col width="15%">
+                                    <col width="8%">
+                                    <col width="5%">
+                                    <col width="5%">
+                                </colgroup>
+                                <thead>
+                                <tr class="bg-gray-light">
+                                    <th class="text-center col-md-1" th:text="#{label.no}">#</th>
+                                    <th style="vertical-align: middle">과정명</th>
+<!--                                    <th style="vertical-align: middle">시험/설문/수료증 여부</th>-->
+                                    <th style="vertical-align: middle">부서</th>
+<!--                                    <th style="vertical-align: middle">사용자ID</th>-->
+                                    <th style="vertical-align: middle">사용자</th>
+                                    <th style="vertical-align: middle">교육기간</th>
+                                    <th style="vertical-align: middle">교육완료일</th>
+<!--                                    <th style="vertical-align: middle">과정상태</th>-->
+                                    <th style="vertical-align: middle">진행상태</th>
+                                    <th style="vertical-align: middle">상태</th>
+<!--                                    <th class="col-sm-2" style="vertical-align: middle">작성일</th>-->
+                                </tr>
+                                </thead>
+                                    <h2 th:case="0">
+                                        <tr>
+                                            <td class="text-center" colspan="5">
+                                                <h4 class="text-warning">Training Log 가 존재하지 않습니다.</h4>
+                                            </td>
+                                        </tr>
+                                    </h2>
+                                    <div th:case="*">
+                                        <tbody>
+                                        <tr th:each="border, index : ${borders}">
+                                            <td th:text="${index.count}"></td>
+                                            <td  class="text-left">
+                                                <span th:text="${border.title}"></span>
+                                            </td>
+<!--                                            <td  class="text-center">-->
+<!--                                                <span th:text="${border.is_quiz + '/' + border.is_survey + '/' + border.is_certi}"></span>-->
+<!--                                            </td>-->
+                                            <td  class="text-center">
+                                                <span th:unless="${#strings.equalsIgnoreCase(border.org_team, '')}" th:text="${border.org_depart + '/' + border.org_team}"></span>
+                                                <span th:if="${#strings.equalsIgnoreCase(border.org_team, '')}" th:text="${border.org_depart}"></span>
+                                            </td>
+<!--                                            <td  class="text-center">-->
+<!--                                                <span th:text="${border.user_id}"></span>-->
+<!--                                            </td>-->
+                                            <td  class="text-center">
+                                                <span th:text="${border.name}"></span>
+                                            </td>
+                                            <td  class="text-center">
+                                                <span th:unless="${#strings.equalsIgnoreCase(border.from_date, border.to_date)}" th:text="${border.from_date + '~' + border.to_date}"></span>
+                                                <span th:if="${#strings.equalsIgnoreCase(border.from_date, border.to_date)}" th:text="${border.from_date}"></span>
+                                            </td>
+                                            <td  class="text-center">
+                                                <span th:text="${border.log_apply_date}"></span>
+                                            </td>
+<!--                                            <td th:switch="${border.status}" class="text-center">-->
+<!--                                                <span th:case="0" class="label label-primary">초기</span>-->
+<!--                                                <span th:case="1" class="label label-primary">신청대기</span>-->
+<!--                                                <span th:case="2" class="label label-warning">교육신청</span>-->
+<!--                                                <span th:case="3" class="label label-purple">교육대기</span>-->
+<!--                                                <span th:case="4" class="label label-mint">교육중</span>-->
+<!--                                                <span th:case="5" class="label label-dark">교육종료</span>-->
+<!--                                            </td>-->
+                                            <td  class="text-center">
+                                                <div th:switch="${border.course_status}">
+                                                    <span th:case="${'none'}" class="label label-warning" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).none.getLabel()}"></span>
+                                                    <span th:case="${'request'}" class="label label-mint" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).request.getLabel()}"></span>
+                                                    <span th:case="${'process'}" class="label label-warning" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).process.getLabel()}"></span>
+                                                    <span th:case="${'periodEnd'}" class="label label-danger" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).periodEnd.getLabel()}"></span>
+                                                    <span th:case="${'wait'}" class="label label-mint" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).wait.getLabel()}"></span>
+                                                    <span th:case="${'complete'}" class="label label-mint" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).complete.getLabel()}"></span>
+                                                    <span th:case="${'reject'}" class="label label-danger" th:text="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).reject.getLabel()}"></span>
+                                                </div>
+                                            </td>
+                                            <td  class="text-center">
+                                                <div th:switch="${border.is_commit}">
+                                                    <span th:case="${'0'}" class="label label-info" th:text="${'진행중'}"></span>
+                                                    <span th:case="${'1'}" class="label label-success" th:text="${'완료'}"></span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </div>
+                            </table>
+                        </div>
+                    </div><!--switch End -->
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+
+</th:block>
+
+<th:block layout:fragment="custom_js">
+
+    <script th:src="@{/default/plugins/html2canvas/bluebird.min.js}"></script>
+
+    <script type = "text/javascript" src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+    <script type = "text/javascript" src = "https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+    <script src="https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js"></script>
+
+    <script>
+        $('#demo-dt-basic').dataTable( {
+            dom: 'Bfrtip',
+            buttons: [
+                'excel'
+            ],
+            paging: false
+        } );
+    </script>
+</th:block>
+
+</html>
+

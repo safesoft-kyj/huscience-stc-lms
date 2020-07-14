@@ -101,6 +101,7 @@
                             <hr class="table-head">
                             <h3 class="title text-info"><span th:text="${courseTitle + ' 시험결과분석 - 오답(1:오답, 0:정답)'}"></span></h3>
 <!--                            <table id="demo-dt-basic1" class="table" cellspacing="0" width="100%" style="margin-top:0">-->
+                            <div class="table-responsive">
                                 <table id="demo-dt-basic1" class="table table-bordered table-condensed" cellspacing="0" width="100%">
                                     <colgroup>
                                         <col width="3%">
@@ -146,8 +147,51 @@
                                             <td class="text-center" th:text="${quiz.getFailCount() + ' / ' + quiz.getCnt()}" style="vertical-align: middle"></td>
                                             <td class="text-center" th:text="${quiz.getFailRate() + '%'}" style="vertical-align: middle"></td>
                                         </tr>
+                                        <!-- 정답수 -->
+                                        <tr class="bg-primary">
+                                            <td class="text-center"></td>
+                                            <td class="text-center">정답 문항수</td>
+                                            <td th:each="courseAccount, index : ${courseQuiz.getCourse().getCourseAccountList()}" class="text-center" style="vertical-align: middle">
+                                                <div>
+                                                    <th:block th:each="quizAction, index : ${courseAccount.getCourseQuizActions()}">
+                                                        <span th:text="${quizAction.getScore()}"></span>
+                                                    </th:block>
+                                                </div>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <!-- 오답수 -->
+                                        <tr class="bg-primary">
+                                            <td class="text-center"></td>
+                                            <td class="text-center">오답 문항수</td>
+                                            <td th:each="courseAccount, index : ${courseQuiz.getCourse().getCourseAccountList()}" class="text-center" style="vertical-align: middle">
+                                                <div>
+                                                    <th:block th:each="quizAction, index : ${courseAccount.getCourseQuizActions()}">
+                                                        <span th:text="${quizAction.getQuestionCount() - quizAction.getScore()}"></span>
+                                                    </th:block>
+                                                </div>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <!-- 오답수 -->
+                                        <tr class="bg-primary">
+                                            <td class="text-center"></td>
+                                            <td class="text-center">100점 기준 환산점수</td>
+                                            <td th:each="courseAccount, index : ${courseQuiz.getCourse().getCourseAccountList()}" class="text-center" style="vertical-align: middle">
+                                                <div>
+                                                    <th:block th:each="quizAction, index : ${courseAccount.getCourseQuizActions()}">
+                                                        <span th:text="${#numbers.formatDecimal(quizAction.getScore()*1.0/quizAction.getQuestionCount()*100, 0, 0)}"></span>
+                                                    </th:block>
+                                                </div>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
                                     </tbody>
                             </table>
+                            </div>
                         </div>
                     </div><!--switch End -->
 
@@ -185,7 +229,8 @@
                 buttons: [
                     'excel'
                 ],
-                paging: false
+                paging: false,
+                ordering: false
             });
         });
 
