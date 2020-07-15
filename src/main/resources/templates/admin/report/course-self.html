@@ -49,7 +49,7 @@
                                         <select name="status" class="form-control">
                                             <option value="0" th:selected="${#strings.equalsIgnoreCase(param.status, '0')}">진행중</option>
                                             <option value="1" th:selected="${#strings.equalsIgnoreCase(param.status, '1')}">완료</option>
-                                            <option value="" th:selected="${#strings.equalsIgnoreCase(param.status, '')}">전체</option>
+                                            <option value="%" th:selected="${#strings.equalsIgnoreCase(param.status, '%')}">전체</option>
                                         </select>
                                     </div>
                                 </td>
