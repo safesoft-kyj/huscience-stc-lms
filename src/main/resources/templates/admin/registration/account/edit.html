@@ -34,8 +34,8 @@
                     <!--===================================================-->
                     <!--End Horizontal Form-->
                     <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/registration/account/edit-post/{id}(id=${account.userId})}" th:object="${account}" method="post">
-                        <input type="hidden" th:field="*{engName}" value="">
-                        <input type="hidden" th:field="*{comJob}" value="">
+<!--                        <input type="hidden" th:field="*{engName}" value="">-->
+<!--                        <input type="hidden" th:field="*{comJob}" value="">-->
                         <input type="hidden" th:field="*{comPosition}" value="">
                         <input type="hidden" th:field="*{orgTeam}" value="">
                         <input type="hidden" th:field="*{comNum}" value="">
@@ -45,6 +45,14 @@
                                 <input type="text" th:field="*{userId}" id="userId" placeholder="User ID" class="form-control" readonly>
                             </div>
                             <span th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="col-sm-2 control-label">Password</label>
+                            <div class="col-sm-10">
+                                <input id="password" class="form-control" th:type="password" th:field="*{password}" required="required"/>
+                            </div>
+                            <span class="error-message"
+                                  th:each="error : ${#fields.errors('password')}"  th:text="${error}">Validation error</span>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="userType">사용자 유형</label>
@@ -70,21 +78,14 @@
                             </div>
                             <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
                         </div>
+
                         <div class="form-group">
-                            <label for="password" class="col-sm-2 control-label">Password</label>
+                            <label class="col-sm-2 control-label" for="engName">영문명</label>
                             <div class="col-sm-10">
-                                <input id="password" class="form-control" th:type="password" th:field="*{password}" required="required"/>
+                                <input type="text" th:field="*{engName}" id="engName" placeholder="영문명" class="form-control" required="required">
                             </div>
-                            <span class="error-message"
-                                  th:each="error : ${#fields.errors('password')}"  th:text="${error}">Validation error</span>
+                            <span th:if="${#fields.hasErrors('engName')}" th:errors="*{engName}"></span>
                         </div>
-<!--                        <div class="form-group">-->
-<!--                            <label class="col-sm-2 control-label" for="engName">영어이름</label>-->
-<!--                            <div class="col-sm-10">-->
-<!--                                <input type="text" th:field="*{engName}" id="engName" placeholder="영어이름" class="form-control" required="required">-->
-<!--                            </div>-->
-<!--                            <span th:if="${#fields.hasErrors('engName')}" th:errors="*{engName}"></span>-->
-<!--                        </div>-->
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="email">이메일</label>
                             <div class="col-sm-10">
@@ -92,14 +93,20 @@
                             </div>
                             <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
                         </div>
-
-<!--                        <div class="form-group">-->
-<!--                            <label class="col-sm-2 control-label" for="comJob">Job</label>-->
-<!--                            <div class="col-sm-10">-->
-<!--                                <input type="text" th:field="*{comJob}" id="comJob" placeholder="Job" class="form-control" required="required">-->
-<!--                            </div>-->
-<!--                            <span th:if="${#fields.hasErrors('comJob')}" th:errors="*{comJob}"></span>-->
-<!--                        </div>-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="orgDepart">소속</label>
+                            <div class="col-sm-10">
+                                <input type="text" th:field="*{orgDepart}" id="orgDepart" placeholder="소속" class="form-control" required="required">
+                            </div>
+                            <span th:if="${#fields.hasErrors('orgDepart')}" th:errors="*{orgDepart}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="comJob">업무</label>
+                            <div class="col-sm-10">
+                                <input type="text" th:field="*{comJob}" id="comJob" placeholder="업무" class="form-control">
+                            </div>
+                            <span th:if="${#fields.hasErrors('comJob')}" th:errors="*{comJob}"></span>
+                        </div>
 
 <!--                        <div class="form-group">-->
 <!--                            <label class="col-sm-2 control-label" for="comPosition">Position</label>-->
@@ -121,13 +128,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="orgDepart">소속</label>
-                            <div class="col-sm-10">
-                                <input type="text" th:field="*{orgDepart}" id="orgDepart" placeholder="소속" class="form-control" required="required">
-                            </div>
-                            <span th:if="${#fields.hasErrors('orgDepart')}" th:errors="*{orgDepart}"></span>
-                        </div>
+
 <!--                        <div class="form-group">-->
 <!--                            <label class="col-sm-2 control-label" for="orgTeam">팀</label>-->
 <!--                            <div class="col-sm-10">-->
