@@ -277,6 +277,9 @@ public class CourseScheduler {
         for(UserVO userVO : userMapperService.getUserAll()) {
             userService.updateAccountByGroupwareInfo(userVO.getUserId());
         }
+
+        // 내부직원인 퇴사자 enabled를 false로 처리 한다.(true:사용, false:사용불가)
+        userService.updateAccountEnabled();
     }
 
     // 매일 2시 30분에 실행

@@ -201,7 +201,26 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    // 내부직원인 경우만 enabled 처리를 한다.(true:사용, false:사용불가)
+    public void updateAccountEnabled() {
+        List<Account> accountList = userRepository.findAll();
 
+        for(Account account : accountList) {
+
+            // 내부 직원이면서 사용상태가 true 인경우만 처리한다.
+            if(account.getEnabled() && account.getUserType().equals("U")) {
+
+                UserVO userVO = userMapperService.getUserById(account.getUserId());
+
+                // 그룹웨어 현재 사용자에 없으면 enable을 false로 처리한다.
+                if (userVO == null) {
+
+                    account.setEnabled(false);
+                    userRepository.save(account);
+                }
+            }
+        }
+    }
 
     // 그룹웨어 사용자 정보로 Account 계정의 정보를 생성하거나 업데이트 한다.
     public void updateAccountByGroupwareInfo(String userId) {
