@@ -18,8 +18,11 @@
             on cv.id = ca.cv_id
             left join el_cv_experience ex
             on cv.id = ex.cv_id
+            left join account acc
+            on cv.account_user_id = acc.user_id
             where cv.status = 'CURRENT'
             and ca.clinical_trial_experience = 1
+            and acc.enabled = 1
             <if test="usernameList != null">
                 <foreach collection="usernameList" item="username" open="and cv.account_user_id in(" close=")" separator=",">
                     #{username}
@@ -68,7 +71,7 @@
     </select>
     <select id="findByParentUserId" parameterType="string" resultType="string">
         with temp as (
-        select user_id, parent_user_id from account where parent_user_id = #{parentUserid} and user_id <![CDATA[<>]]> 'khkim'
+        select user_id, parent_user_id from account where parent_user_id = #{parentUserid} and user_id <![CDATA[<>]]> 'khkim' and enabled = 1
         union all
         select b.user_id, b.parent_user_id from temp a
         inner join account b on b.parent_user_id = a.user_id
