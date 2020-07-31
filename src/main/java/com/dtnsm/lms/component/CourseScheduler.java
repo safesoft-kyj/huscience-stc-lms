@@ -302,49 +302,84 @@ public class CourseScheduler {
         }
     }
 
-
     // 매일 2시 40분에 실행
     // 외부교육 ToDate 익일 새벽에 외부교육참석보고서 작성 Alarm 발송 대상자 조회
     // Self-Training 교육이수를 안했을 경우 만료일 다음날 새벽에 만료메일을 발송
     @Scheduled(cron = "0 40 2 * * *")
     public void sendCourseToDateAlarm() {
 
-        GregorianCalendar cal = new GregorianCalendar();
+        // DB 쿼리에도 Working day 적용(2020/07/31)
+        List<CourseAccount> courseAccounts;
 
-        // 토요일 및 일요일에는 외부교육참석보고서 Alarm 을 발생시키지 않는다.
-        // Working Day 에만 실행한다.
-        // DB 쿼리에도 Working day 적용(2020/05/25)
-        if (DateUtil.isWorkingDay(cal)) {
+        // 교육일이 종료되고 교육완료보고서를 작성해야하는 사용자에게 3일전 알림 발송(외부교육만) 2020/07/31
+        courseAccounts = courseAccountMapperService.getCourseReportAlarm3(DateUtil.getTodayString());
+        for (CourseAccount courseAccountVO : courseAccounts) {
+            CourseAccount courseAccount = courseAccountService.getById(courseAccountVO.getId());
+            // 교육보고서 미진행된 건에 대해 알람을 발송한다.
+            if (courseAccount.getFnStatus().equals("1")                 // 교육신청 승인된것
+                    && courseAccount.getIsReport().equals("1")          // 교육보고서를 작성해야 할 경우
+                    && courseAccount.getReportStatus().equals("9")) {   // 미작성 상태일때
+                MessageSource messageSource = MessageSource.builder()
+                        .courseAccount(courseAccount)
+                        .alarmGubun(LmsAlarmGubun.INFO)
+                        .lmsAlarmCourseType(LmsAlarmCourseType.CourseReportApproach)
+                        .sender(courseAccount.getAccount()) // 승인자
+                        .receive(courseAccount.getAccount())
+                        .course(courseAccount.getCourse())
+                        .title(String.format("%s에 대한 교육참석보고서 기한 %s일 전입니다.", courseAccount.getCourse().getTitle(), 3))
+                        .subject(String.format("[LMS/외부교육] 교육참석보고서 %s일 전", 3))
+                        .content("")
+                        .build();
 
-            List<CourseAccount> courseAccounts;
-            for (int i = 1; i <= 3; i++) {
+                MessageUtil.sendNotificationMessage(messageSource, true);
+            }
+        }
 
-                courseAccounts = courseAccountMapperService.getCourseReportAlarm("BC0104", String.valueOf(i * -1));
+        // 교육일이 종료되고 교육완료보고서를 작성해야하는 사용자에게 2일전 알림 발송(외부교육만) 2020/07/31
+        courseAccounts = courseAccountMapperService.getCourseReportAlarm2(DateUtil.getTodayString());
+        for (CourseAccount courseAccountVO : courseAccounts) {
+            CourseAccount courseAccount = courseAccountService.getById(courseAccountVO.getId());
+            // 교육보고서 미진행된 건에 대해 알람을 발송한다.
+            if (courseAccount.getFnStatus().equals("1")                 // 교육신청 승인된것
+                    && courseAccount.getIsReport().equals("1")          // 교육보고서를 작성해야 할 경우
+                    && courseAccount.getReportStatus().equals("9")) {   // 미작성 상태일때
+                MessageSource messageSource = MessageSource.builder()
+                        .courseAccount(courseAccount)
+                        .alarmGubun(LmsAlarmGubun.INFO)
+                        .lmsAlarmCourseType(LmsAlarmCourseType.CourseReportApproach)
+                        .sender(courseAccount.getAccount()) // 승인자
+                        .receive(courseAccount.getAccount())
+                        .course(courseAccount.getCourse())
+                        .title(String.format("%s에 대한 교육참석보고서 기한 %s일 전입니다.", courseAccount.getCourse().getTitle(), 2))
+                        .subject(String.format("[LMS/외부교육] 교육참석보고서 %s일 전", 2))
+                        .content("")
+                        .build();
 
-                // 교육일이 종료되고 교육완료보고서를 작성해야하는 사용자에게 알림 발송(외부교육만)
-                for (CourseAccount courseAccountVO : courseAccounts) {
+                MessageUtil.sendNotificationMessage(messageSource, true);
+            }
+        }
 
-                    CourseAccount courseAccount = courseAccountService.getById(courseAccountVO.getId());
+        // 교육일이 종료되고 교육완료보고서를 작성해야하는 사용자에게 1일전 알림 발송(외부교육만) 2020/07/31
+        courseAccounts = courseAccountMapperService.getCourseReportAlarm1(DateUtil.getTodayString());
+        for (CourseAccount courseAccountVO : courseAccounts) {
+            CourseAccount courseAccount = courseAccountService.getById(courseAccountVO.getId());
+            // 교육보고서 미진행된 건에 대해 알람을 발송한다.
+            if (courseAccount.getFnStatus().equals("1")                 // 교육신청 승인된것
+                    && courseAccount.getIsReport().equals("1")          // 교육보고서를 작성해야 할 경우
+                    && courseAccount.getReportStatus().equals("9")) {   // 미작성 상태일때
+                MessageSource messageSource = MessageSource.builder()
+                        .courseAccount(courseAccount)
+                        .alarmGubun(LmsAlarmGubun.INFO)
+                        .lmsAlarmCourseType(LmsAlarmCourseType.CourseReportApproach)
+                        .sender(courseAccount.getAccount()) // 승인자
+                        .receive(courseAccount.getAccount())
+                        .course(courseAccount.getCourse())
+                        .title(String.format("%s에 대한 교육참석보고서 기한 %s일 전입니다.", courseAccount.getCourse().getTitle(), 1))
+                        .subject(String.format("[LMS/외부교육] 교육참석보고서 %s일 전", 1))
+                        .content("")
+                        .build();
 
-                    // 교육보고서 미진행된 건에 대해 알람을 발송한다.
-                    if (courseAccount.getFnStatus().equals("1")                 // 교육신청 승인된것
-                            && courseAccount.getIsReport().equals("1")          // 교육보고서를 작성해야 할 경우
-                            && courseAccount.getReportStatus().equals("9")) {   // 미작성 상태일때
-                        MessageSource messageSource = MessageSource.builder()
-                                .courseAccount(courseAccount)
-                                .alarmGubun(LmsAlarmGubun.INFO)
-                                .lmsAlarmCourseType(LmsAlarmCourseType.CourseReportApproach)
-                                .sender(courseAccount.getAccount()) // 승인자
-                                .receive(courseAccount.getAccount())
-                                .course(courseAccount.getCourse())
-                                .title(String.format("%s에 대한 교육참석보고서 기한 %s일 전입니다.", courseAccount.getCourse().getTitle(), 4 + (i * -1)))
-                                .subject(String.format("[LMS/외부교육] 교육참석보고서 %s일 전", 4 + (i * -1)))
-                                .content("")
-                                .build();
-
-                        MessageUtil.sendNotificationMessage(messageSource, true);
-                    }
-                }
+                MessageUtil.sendNotificationMessage(messageSource, true);
             }
         }
 
