@@ -60,7 +60,7 @@
                                 <tbody>
                                 <tr th:each="notification, index : ${borders}">
                                     <td th:text="${(borders.getTotalElements() - index.index) - (borders.number * 10)}" class="text-center"></td>
-                                    <td><a th:href="@{/admin/notification/view/{id}(id=${notification.getId()}, page=${param.page})}" th:text="${notification.getTitle()}"></a></td>
+                                    <td><a th:href="@{/notification/view/{id}(id=${notification.getId()}, page=${param.page})}" th:text="${notification.getTitle()}"></a></td>
                                     <td class="text-center" th:text="${notification.getAlarmGubun().getLabel()}"></td>
 <!--                                    <td class="text-center">-->
 <!--                                        <span th:if="${#strings.equalsIgnoreCase(notification.getGubun(), 'C')}">교육과정</span>-->
