@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/notification")
-public class LmsNotificationController {
+@RequestMapping("/admin/notification")
+public class LmsNotificationAdminController {
 
     @Autowired
     LmsNotificationRepository lmsNotificationRepository;
@@ -34,19 +34,22 @@ public class LmsNotificationController {
 
     private PageInfo pageInfo = new PageInfo();
 
-    public LmsNotificationController() {
+    public LmsNotificationAdminController() {
         pageInfo.setParentId("m-customer");
-        pageInfo.setParentTitle("알림사항");
+        pageInfo.setParentTitle("Report");
     }
 
     @GetMapping("")
-    public String listPage(@PageableDefault Pageable pageable, Model model) {
+    public String listPage(@PageableDefault Pageable pageable
+            , @RequestParam(value = "searchType", defaultValue = "all") String searchType
+            , @RequestParam(value = "searchText", defaultValue = "") String searchText
+            , Model model) {
 
         String userId = SessionUtil.getUserId();
 
         QLmsNotification qLmsNotification = QLmsNotification.lmsNotification;
         BooleanBuilder builder = new BooleanBuilder();
-        builder.and(qLmsNotification.account.userId.eq(userId));
+        //builder.and(qLmsNotification.account.userId.eq(userId));
 
         Page<LmsNotification> borders;
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
@@ -56,6 +59,14 @@ public class LmsNotificationController {
 //        pageable = PageRequest.of(page, 10, Sort.by(order));
         pageable = PageRequest.of(page, 10, Sort.by("id").descending());
 
+        if (searchType.equals("all")) {
+            builder.and(qLmsNotification.title.contains(searchText).or(qLmsNotification.account.name.contains(searchText)));
+        } else if (searchType.equals("title")) {
+            builder.and(qLmsNotification.title.contains(searchText));
+        } else if (searchType.equals("receive")) {
+            builder.and(qLmsNotification.account.name.contains(searchText));
+        }
+
         borders = lmsNotificationRepository.findAll(builder, pageable);
 
         pageInfo.setPageId("m-customer-list-page");
@@ -63,7 +74,7 @@ public class LmsNotificationController {
         model.addAttribute(pageInfo);
         model.addAttribute("borders", borders);
 
-        return "content/notification/list";
+        return "admin/notification/list";
     }
 
     @GetMapping("/view/{id}")
@@ -93,6 +104,6 @@ public class LmsNotificationController {
         model.addAttribute("notification", lmsNotification1);
         model.addAttribute("sendUserName", sendUserName);
 
-        return "content/notification/view";
+        return "admin/notification/view";
     }
 }

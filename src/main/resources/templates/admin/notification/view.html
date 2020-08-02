@@ -55,6 +55,10 @@
                             <td th:text="${sendUserName}"></td>
                         </tr>
                         <tr>
+                            <th class="text-center">수신자</th>
+                            <td th:text="${notification.getAccount().getName()}"></td>
+                        </tr>
+                        <tr>
                             <th class="text-center">발생일</th>
                             <td th:text="${notification.getCreatedDate()} ? ${#dates.format(notification.getCreatedDate(), 'yyyy-MM-dd HH:mm:ss')} : ${notification.getCreatedDate()}"></td>
                         </tr>
@@ -64,7 +68,7 @@
                     </table>
 <!--                    <hr class="bg-gray"/>-->
                     <div class="input-group pull-right">
-                        <a th:href="@{/notification(page=${param.page})}" class="btn btn-primary"><i class="demo-pli-back"></i> 목록</a>
+                        <a th:href="@{/admin/notification(page=${param.page}, searchType=${param.searchType}, searchText=${param.searchText})}" class="btn btn-primary"><i class="demo-pli-back"></i> 목록</a>
                     </div>
                 </div><!--panel-body End -->
             </div><!-- panel End -->

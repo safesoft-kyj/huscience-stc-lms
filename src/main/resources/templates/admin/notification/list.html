@@ -41,36 +41,55 @@
 
                 <div class="panel-body">
                     <br>
+                    <form class="form-horizontal" th:action="@{/admin/notification(page=${param.page})}" method="get">
+                        <div class="row" style="margin-bottom: 2px;">
+                            <div class="col-sm-8" style="padding-left: 15px; margin : 0">
+                                <span th:text="#{label.list.title(${borders.getTotalElements()})}"></span>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <select id="selectOption" class="selectpicker" name="searchType">
+                                        <option value="all" th:selected="${#strings.equalsIgnoreCase(param.searchType,'all')}">&nbsp;&nbsp;All&nbsp;&nbsp;</option>
+                                        <option value="title" th:selected="${#strings.equalsIgnoreCase(param.searchType,'title')}">&nbsp;&nbsp;제목&nbsp;&nbsp;</option>
+                                        <option value="receive" th:selected="${#strings.equalsIgnoreCase(param.searchType,'receive')}">&nbsp;&nbsp;수신자&nbsp;&nbsp;</option>
+                                    </select>
+                                    <input type="text" name="searchText" placeholder="Search" class="form-control" th:value="${param.searchText}">
+                                    <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="submit">Search</button>
+                                </span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                     <div th:switch="${borders}">
                         <h2 th:case="null">No customer yet!</h2>
                         <div th:case="*">
                             <hr class="table-head">
                             <table id="customer-list-page" class="table " cellspacing="0" width="100%">
+                                <colgroup>
+                                    <col width="5%">
+                                    <col width="60%">
+                                    <col width="10%">
+                                    <col width="10%">
+                                    <col width="10%">
+                                </colgroup>
                                 <thead>
                                 <tr style="background: #FAFAFA;">
-
                                     <th class="text-center">#</th>
                                     <th class="text-center">제목</th>
                                     <th class="text-center">알림구분</th>
-<!--                                    <th class="text-center">업무</th>-->
-                                    <th class="text-center">발신자</th>
+                                    <th class="text-center">수신자</th>
                                     <th class="text-center">발생일</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="notification, index : ${borders}">
                                     <td th:text="${(borders.getTotalElements() - index.index) - (borders.number * 10)}" class="text-center"></td>
-                                    <td><a th:href="@{/admin/notification/view/{id}(id=${notification.getId()}, page=${param.page})}" th:text="${notification.getTitle()}"></a></td>
+                                    <td><a th:href="@{/admin/notification/view/{id}(id=${notification.getId()}, page=${param.page}, searchType=${param.searchType}, searchText=${param.searchText})}" th:text="${notification.getTitle()}"></a></td>
                                     <td class="text-center" th:text="${notification.getAlarmGubun().getLabel()}"></td>
-<!--                                    <td class="text-center">-->
-<!--                                        <span th:if="${#strings.equalsIgnoreCase(notification.getGubun(), 'C')}">교육과정</span>-->
-<!--                                        <span th:if="${#strings.equalsIgnoreCase(notification.getGubun(), 'D')}">교육보고서</span>-->
-<!--                                    </td>-->
                                     <td class="text-center">
-                                        <span th:if="${notification.getCreatedBy()} == null" th:text="${'LMS'}"></span>
-                                        <span th:if="${notification.getCreatedBy()} != null" th:text="${notification.getCreatedBy()}"></span>
+                                        <span th:text="${notification.getAccount().name}"></span>
                                     </td>
-<!--                                    <td th:text="${notification.getCreatedDate()}"></td>-->
                                     <td class="text-center" th:text="${notification.getCreatedDate()} ? ${#dates.format(notification.getCreatedDate(), 'yyyy-MM-dd HH:mm:ss')} : ${notification.getCreatedDate()}"></td>
                                 </tr>
                                 </tbody>
@@ -78,7 +97,7 @@
                             <nav style="text-align: center;" th:with="start=${T(Math).floor(borders.number/10)*10 + 1}">
                                 <ul class="pagination" th:with="last=(${start + 9 < borders.totalPages ? start + 9 : (borders.totalPages == 0 ? 1 : borders.totalPages)})">
                                     <li>
-                                        <a th:href="@{/notification(page=1)}" aria-label="First">
+                                        <a th:href="@{/admin/notification(page=1, searchType=${param.searchType}, searchText=${param.searchText})}" aria-label="First">
                                             <span aria-hidden="true">First</span>
                                         </a>
                                     </li>
@@ -87,25 +106,25 @@
                                         <a th:if="${borders.first}" th:href="${'#'}" aria-label="Previous">
                                             <span aria-hidden="true">&lt;</span>
                                         </a>
-                                        <a th:unless="${borders.first}" th:href="@{/notification(page=${borders.number})}" aria-label="Previous">
+                                        <a th:unless="${borders.first}" th:href="@{/admin/notification(page=${borders.number}, searchType=${param.searchType}, searchText=${param.searchText})}" aria-label="Previous">
                                             <span aria-hidden="true">&lt;</span>
                                         </a>
                                     </li>
 
                                     <li th:each="page: ${#numbers.sequence(start, last)}" th:class="${page == borders.number + 1} ? 'active'">
-                                        <a th:text="${page}" th:href="@{/notification(page=${page})}"></a>
+                                        <a th:text="${page}" th:href="@{/admin/notification(page=${page}, searchType=${param.searchType}, searchText=${param.searchText})}"></a>
                                     </li>
 
                                     <li th:class="${borders.last} ? 'disabled'">
                                         <a th:if="${borders.last}" th:href="${'#'}" aria-label="Next">
                                             <span aria-hidden="true">&gt;</span>
                                         </a>
-                                        <a th:unless="${borders.last}" th:href="@{/notification(page=${borders.number + 2})}" aria-label="Next">
+                                        <a th:unless="${borders.last}" th:href="@{/admin/notification(page=${borders.number + 2}, searchType=${param.searchType}, searchText=${param.searchText})}" aria-label="Next">
                                             <span aria-hidden="true">&gt;</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a th:href="@{/notification(page=${borders.totalPages})}" aria-label="Last">
+                                        <a th:href="@{/admin/notification(page=${borders.totalPages}, searchType=${param.searchType}, searchText=${param.searchText})}" aria-label="Last">
                                             <span aria-hidden="true">Last</span>
                                         </a>
                                     </li>
