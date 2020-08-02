@@ -13,8 +13,19 @@ public class CourseAccountMapperService {
     @Autowired
     private CourseAccountMapper courseAccountMapper;
 
-    public List<CourseAccount> getCourseReportAlarm(String typeId, String day) {
-        return courseAccountMapper.selectBeforeCourseReportAlarm(typeId, day);
+    // 외부교육 ToDate 익일 새벽에 외부교육참석보고서 작성 Alarm 발송 3일전 대상자 조회
+    public List<CourseAccount> getCourseReportAlarm3(String day) {
+        return courseAccountMapper.selectBeforeCourseReportAlarm3(day);
+    }
+
+    // 외부교육 ToDate 익일 새벽에 외부교육참석보고서 작성 Alarm 발송 2일전 대상자 조회
+    public List<CourseAccount> getCourseReportAlarm2(String day) {
+        return courseAccountMapper.selectBeforeCourseReportAlarm2(day);
+    }
+
+    // 외부교육 ToDate 익일 새벽에 외부교육참석보고서 작성 Alarm 발송 1일전 대상자 조회
+    public List<CourseAccount> getCourseReportAlarm1(String day) {
+        return courseAccountMapper.selectBeforeCourseReportAlarm1(day);
     }
 
     // self 교육일때 종료 7일전 알람 발송

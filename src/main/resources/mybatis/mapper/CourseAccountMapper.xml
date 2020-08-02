@@ -5,19 +5,29 @@
 
 <mapper namespace="com.dtnsm.lms.mybatis.mapper.CourseAccountMapper">
 
-    <select id="selectBeforeCourseReportAlarm" parameterType="String" resultType="com.dtnsm.lms.domain.CourseAccount">
+    <select id="selectBeforeCourseReportAlarm3" parameterType="String" resultType="com.dtnsm.lms.domain.CourseAccount">
         select a.*
         from el_course_account a
-            inner join el_course b
-                on a.course_id = b.id
-            left outer join el_document c
-                on a.id = c.course_doc_id
-        where b.type_id = #{typeId}
-        and a.to_date = convert(varchar(10), getdate()
-            + convert(int, #{day} + (dbo.fn_GetTotalHolidays(getdate() + #{day}, getdate())*-1)), 121)
-        and c.id is null
+            inner join vw_course_bc0104_alram b
+                on a.id = b.id
+        where b.day3 = #{day}
     </select>
 
+    <select id="selectBeforeCourseReportAlarm2" parameterType="String" resultType="com.dtnsm.lms.domain.CourseAccount">
+        select a.*
+        from el_course_account a
+            inner join vw_course_bc0104_alram b
+                on a.id = b.id
+        where b.day2 = #{day}
+    </select>
+
+    <select id="selectBeforeCourseReportAlarm1" parameterType="String" resultType="com.dtnsm.lms.domain.CourseAccount">
+        select a.*
+        from el_course_account a
+            inner join vw_course_bc0104_alram b
+                on a.id = b.id
+        where b.day1 = #{day}
+    </select>
 
     <select id="selectBeforeCourseToDateAlarm" parameterType="String" resultType="com.dtnsm.lms.domain.CourseAccount">
         select a.*

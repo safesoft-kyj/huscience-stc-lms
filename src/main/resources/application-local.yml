@@ -95,28 +95,30 @@ logging:
 
 
 file:
-  default-base: D://elearning//
-  border-upload-dir: D://elearning//upload//border//
-  border-photo-upload-dir: D://elearning//upload//border//PhotoUpload//
-  course-upload-dir: D://elearning//upload//course//
-  course-section-upload-dir: D://elearning//upload//course//section//
-  course-photo-upload-dir: D://elearning//upload//course//PhotoUpload//
-  schedule-upload-dir: D://elearning//upload//schedule//
-  course-quiz-upload-dir: D://elearning//upload//course//quiz//
-  document-upload-dir: D://elearning//upload//document//
-  survey-upload-dir: D://elearning//upload//survey//
-  binder-jd-upload-dir: D://elearning//upload//binder//jd//
-  xdoc-upload-dir: D://elearning//upload//xdoc//
-  certificate-upload-dir: D://elearning//upload//certificate//
-#  cv-upload-dir: D://elearning//CV//
-  training-log-upload-dir: D://elearning//trainingLog//
-  binder-dir: D://elearning//binder//
+  default-base: C://UploadFiles//lms//
+  cv-upload-dir: C://UploadFiles//lms//CV//
+  border-upload-dir: C://UploadFiles//lms//upload//border//
+  border-photo-upload-dir: C://UploadFiles//lms//upload//border//PhotoUpload//
+  course-upload-dir: C://UploadFiles//lms//upload//course//
+  course-section-upload-dir: C://UploadFiles//lms//upload//course//section//
+  course-photo-upload-dir: C://UploadFiles//lms//upload//course//PhotoUpload//
+  schedule-upload-dir: C://UploadFiles//lms//upload//schedule//
+  course-quiz-upload-dir: C://UploadFiles//lms//upload//course//quiz//
+  document-upload-dir: C://UploadFiles//lms//upload//document//
+  survey-upload-dir: C://UploadFiles//lms//upload//survey//
+  binder-jd-upload-dir: C://UploadFiles//lms//upload//binder//jd//
+  xdoc-upload-dir: C://UploadFiles//lms//upload//xdoc//
+  certificate-upload-dir: C://UploadFiles/lms//upload//certificate//
+  training-log-upload-dir: C:\UploadFiles\trainingLog
+  binder-dir: C://UploadFiles//binder//
 
 
 image-file:
-  matric: D://elearning//images//matrix//
-  course: D://elearning//images//course//
-  pdf: D://elearning//images//pdf//
+  matric: C://UploadFiles//lms//images//matrix//
+  course: C://UploadFiles//lms//images//course//
+  pdf: C://UploadFiles//lms//images//pdf//
+
 
 groupdocs:
-  license: C:\\Servers\\deploy\\GroupDocs.Total.Java.lic
+  license: C://Servers//deploy//GroupDocs.Total.Java.lic
+#  license: C:\\Servers\\deploy\\GroupDocs.Total.Java.lic
