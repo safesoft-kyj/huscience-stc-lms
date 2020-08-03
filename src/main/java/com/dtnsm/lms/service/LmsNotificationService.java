@@ -117,7 +117,7 @@ public class LmsNotificationService {
 
         LmsNotification lmsNotification = new LmsNotification();
         lmsNotification.setAlarmGubun(messageSource.getAlarmGubun());
-        lmsNotification.setTitle(messageSource.getTitle());
+        lmsNotification.setTitle(messageSource.getSubject());
         lmsNotification.setContent(messageSource.getContent());
         lmsNotification.setAccount(messageSource.getReceive());
 

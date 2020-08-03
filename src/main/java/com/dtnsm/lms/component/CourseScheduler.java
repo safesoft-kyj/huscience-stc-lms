@@ -327,7 +327,7 @@ public class CourseScheduler {
                         .receive(courseAccount.getAccount())
                         .course(courseAccount.getCourse())
                         .title(String.format("%s에 대한 교육참석보고서 기한 %s일 전입니다.", courseAccount.getCourse().getTitle(), 3))
-                        .subject(String.format("[LMS/외부교육] 교육참석보고서 %s일 전", 3))
+                        .subject(String.format("[LMS/외부교육] %s에 대한 교육참석보고서 %s일 전", courseAccount.getCourse().getTitle(), 3))
                         .content("")
                         .build();
 
@@ -351,7 +351,7 @@ public class CourseScheduler {
                         .receive(courseAccount.getAccount())
                         .course(courseAccount.getCourse())
                         .title(String.format("%s에 대한 교육참석보고서 기한 %s일 전입니다.", courseAccount.getCourse().getTitle(), 2))
-                        .subject(String.format("[LMS/외부교육] 교육참석보고서 %s일 전", 2))
+                        .subject(String.format("[LMS/외부교육] %s에 대한 교육참석보고서 %s일 전", courseAccount.getCourse().getTitle(), 2))
                         .content("")
                         .build();
 
@@ -375,7 +375,7 @@ public class CourseScheduler {
                         .receive(courseAccount.getAccount())
                         .course(courseAccount.getCourse())
                         .title(String.format("%s에 대한 교육참석보고서 기한 %s일 전입니다.", courseAccount.getCourse().getTitle(), 1))
-                        .subject(String.format("[LMS/외부교육] 교육참석보고서 %s일 전", 1))
+                        .subject(String.format("[LMS/외부교육] %s에 대한 교육참석보고서 %s일 전", courseAccount.getCourse().getTitle(), 1))
                         .content("")
                         .build();
 
