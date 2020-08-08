@@ -225,6 +225,9 @@ public class UserServiceImpl implements UserService {
     // 그룹웨어 사용자 정보로 Account 계정의 정보를 생성하거나 업데이트 한다.
     public void updateAccountByGroupwareInfo(String userId) {
 
+        // admin 계정인 경우는 업데이트 하지 않는다.
+        if (userId.equals("admin")) return;
+
         // 기존에 Account가 존재하는 확인
         Account account = userRepository.findByUserId(userId);
 

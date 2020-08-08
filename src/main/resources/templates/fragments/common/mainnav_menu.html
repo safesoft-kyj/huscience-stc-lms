@@ -37,12 +37,20 @@
             </a>
 
             <!--Submenu-->
+<!--            <ul class="collapse">-->
+<!--                <li><a href="#" data-th-href="@{/border/{typeId}(typeId='BA0101')}" th:text="#{label.title.notice}">공지사항</a></li>-->
+<!--                <li><a href="#" data-th-href="@{/border/{typeId}(typeId='BA0102')}" th:text="#{label.title.news}">법령정보</a></li>-->
+<!--                <li><a href="#" data-th-href="@{/border/{typeId}(typeId='BA0103')}" th:text="#{label.title.guide}">가이드라인</a></li>-->
+<!--                <li><a href="#" data-th-href="@{/border/{typeId}(typeId='BA0104')}" th:text="#{label.title.pds}">자료실</a></li>-->
+<!--            </ul>-->
+
+            <!-- 2020/08/08 동적 메뉴로 수정 -->
             <ul class="collapse">
-                <li><a href="#" data-th-href="@{/border/{typeId}(typeId='BA0101')}" th:text="#{label.title.notice}">공지사항</a></li>
-                <li><a href="#" data-th-href="@{/border/{typeId}(typeId='BA0102')}" th:text="#{label.title.news}">법령정보</a></li>
-                <li><a href="#" data-th-href="@{/border/{typeId}(typeId='BA0103')}" th:text="#{label.title.guide}">가이드라인</a></li>
-                <li><a href="#" data-th-href="@{/border/{typeId}(typeId='BA0104')}" th:text="#{label.title.pds}">자료실</a></li>
+                <li th:each="border, index : ${T(com.dtnsm.lms.util.MenuUtil).getBorderMaster()}">
+                    <a href="#" data-th-href="@{/border/{typeId}(typeId=${border.getId()})}" th:text="${border.getBorderName()}"></a>
+                </li>
             </ul>
+
         </li>
 
         <!--Menu list item-->
@@ -177,13 +185,20 @@
             </a>
 
             <!--Submenu-->
-            <ul class="collapse">
+<!--            <ul class="collapse">-->
+<!--                <li><a href="#" data-th-href="@{/admin/course/{typeId}(typeId='BC0101')}">Self training</a></li>-->
+<!--                <li><a href="#" data-th-href="@{/admin/course/{typeId}(typeId='BC0102')}">Class training</a></li>-->
+<!--                <li><a href="#" data-th-href="@{/admin/course/{typeId}(typeId='BC0103')}">부서별 교육</a></li>-->
+<!--                <li><a href="#" data-th-href="@{/admin/course/{typeId}(typeId='BC0104')}">외부 교육</a></li>-->
+<!--            </ul>-->
 
-                <li><a href="#" data-th-href="@{/admin/course/{typeId}(typeId='BC0101')}">Self training</a></li>
-                <li><a href="#" data-th-href="@{/admin/course/{typeId}(typeId='BC0102')}">Class training</a></li>
-                <li><a href="#" data-th-href="@{/admin/course/{typeId}(typeId='BC0103')}">부서별 교육</a></li>
-                <li><a href="#" data-th-href="@{/admin/course/{typeId}(typeId='BC0104')}">외부 교육</a></li>
+            <!-- 2020/08/08 동적 메뉴로 수정 -->
+            <ul class="collapse">
+                <li th:each="border, index : ${T(com.dtnsm.lms.util.MenuUtil).getCourseMaster()}">
+                    <a href="#" data-th-href="@{/admin/course/{typeId}(typeId=${border.getId()})}" th:text="${border.getCourseName()}"></a>
+                </li>
             </ul>
+
         </li>
 
         <li>
@@ -249,12 +264,20 @@
             </a>
 
             <!--Submenu-->
+<!--            <ul class="collapse">-->
+<!--                <li><a href="#" data-th-href="@{/admin/border/{typeId}(typeId='BA0101')}" th:text="#{label.title.notice}">공지사항</a></li>-->
+<!--                <li><a href="#" data-th-href="@{/admin/border/{typeId}(typeId='BA0102')}" th:text="#{label.title.news}">법령정보</a></li>-->
+<!--                <li><a href="#" data-th-href="@{/admin/border/{typeId}(typeId='BA0103')}" th:text="#{label.title.guide}">가이드라인</a></li>-->
+<!--                <li><a href="#" data-th-href="@{/admin/border/{typeId}(typeId='BA0104')}" th:text="#{label.title.pds}">자료실</a></li>-->
+<!--            </ul>-->
+
+            <!-- 2020/08/08 동적 메뉴로 수정 -->
             <ul class="collapse">
-                <li><a href="#" data-th-href="@{/admin/border/{typeId}(typeId='BA0101')}" th:text="#{label.title.notice}">공지사항</a></li>
-                <li><a href="#" data-th-href="@{/admin/border/{typeId}(typeId='BA0102')}" th:text="#{label.title.news}">법령정보</a></li>
-                <li><a href="#" data-th-href="@{/admin/border/{typeId}(typeId='BA0103')}" th:text="#{label.title.guide}">가이드라인</a></li>
-                <li><a href="#" data-th-href="@{/admin/border/{typeId}(typeId='BA0104')}" th:text="#{label.title.pds}">자료실</a></li>
+                <li th:each="border, index : ${T(com.dtnsm.lms.util.MenuUtil).getBorderMaster()}">
+                    <a href="#" data-th-href="@{/admin/border/{typeId}(typeId=${border.getId()})}" th:text="${border.getBorderName()}"></a>
+                </li>
             </ul>
+
         </li>
 
         <li>
