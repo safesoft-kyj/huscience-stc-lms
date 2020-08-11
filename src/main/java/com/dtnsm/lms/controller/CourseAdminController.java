@@ -2,10 +2,15 @@ package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.*;
+import com.dtnsm.lms.domain.DTO.CourseSimple;
+import com.dtnsm.lms.report.CourseReportRepository;
+import com.dtnsm.lms.report.JdbcReportController;
+import com.dtnsm.lms.repository.CourseRepository;
 import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
+import com.querydsl.core.BooleanBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -50,6 +55,9 @@ public class CourseAdminController {
     CourseService courseService;
 
     @Autowired
+    CourseRepository courseRepository;
+
+    @Autowired
     CourseSectionService courseSectionService;
 
     @Autowired
@@ -69,6 +77,9 @@ public class CourseAdminController {
 
     @Autowired
     LmsNotificationService lmsNotificationService;
+
+    @Autowired
+    CourseReportRepository courseReportRepository;
 
     @Autowired
     private DocumentService documentAccountService;
@@ -100,22 +111,38 @@ public class CourseAdminController {
         String courseName = courseMasterService.getById(typeId).getCourseName();
         pageInfo.setPageTitle(courseName);
 
-        Page<Course> courses;
-        if(searchType.equals("all") && searchText.equals("")) {
-            courses = courseService.getPageList(typeId, -1, pageable);
-        } else if(searchType.equals("all") && !searchText.equals("")) {
-            courses = courseService.getPageListByTitleLikeOrContentLike(typeId, searchText, searchText, -1, pageable);
-        } else if (searchType.equals("subject")) {
-            courses = courseService.getPageListByTitleLike(typeId, searchText, -1, pageable);
-        } else {
-            courses = courseService.getPageListByContentLike(typeId, searchText, -1, pageable);
-        }
+//        Page<Course> courses;
+//        if(searchType.equals("all") && searchText.equals("")) {
+//            courses = courseService.getPageList(typeId, -1, pageable);
+//        } else if(searchType.equals("all") && !searchText.equals("")) {
+//            courses = courseService.getPageListByTitleLikeOrContentLike(typeId, searchText, searchText, -1, pageable);
+//        } else if (searchType.equals("subject")) {
+//            courses = courseService.getPageListByTitleLike(typeId, searchText, -1, pageable);
+//        } else {
+//            courses = courseService.getPageListByContentLike(typeId, searchText, -1, pageable);
+//        }
+
+//        BooleanBuilder builder = new BooleanBuilder();
+//        QCourse course = QCourse.course;
+//        builder.and(course.courseMaster.id.like("%"));
+//        builder.and(course.active.gt(-1));
+//
+//        if(searchType.equals("all")) {
+//            builder.and(course.title.contains(searchText).or(course.content.contains(searchText)));
+//        } else if (searchType.equals("subject")) {
+//            builder.and(course.title.contains(searchText));
+//        } else if (searchType.equals("content")) {
+//            builder.and(course.content.contains(searchText));
+//        }
+//
+//        Page<Course> courses = courseRepository.findAll(builder, pageable);
+
+
+        Page<CourseSimple> courses = courseReportRepository.findCourseSimpleByPage(typeId, pageable);
 
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courses);
         model.addAttribute("typeId", typeId);
-
-
 
         return "admin/course/list";
     }

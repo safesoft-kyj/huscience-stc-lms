@@ -66,7 +66,7 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
 
         if(savedRequest == null){
 //            log.info("메인페이지로 이동");
-            response.sendRedirect("/");   //로그인 하기 전의 페이지가 없었다면 이주소로 이동
+            response.sendRedirect("/");
         }else{
 //            log.info("로그인 하기전의 접속 주소로 이동");
             super.onAuthenticationSuccess(request, response, authentication);    //로그인 하기 전의 접속한 주소로 다시 돌아갑니다.

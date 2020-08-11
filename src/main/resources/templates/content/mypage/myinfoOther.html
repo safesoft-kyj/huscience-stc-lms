@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default_layout">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <style>
+        #signature-pad {
+            min-height: 345px;
+        }
+        .table-head {
+            background: #3A444E;
+            margin: 0;
+            padding: 0;
+        }
+
+        .sign {
+            width: 300px;
+            height: 300px;
+        }
+    </style>
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-body">
+                    <h5><strong class="text-mint"><i class="demo-pli-add-user-star"></i> 사용자 정보</strong></h5>
+                    <div th:switch="${account}">
+                        <h2 th:case="null">사용자가 아닙니다.</h2>
+                        <div th:case="*">
+                            <div class="row">
+                                <div class="col-sm-12 user-info">
+                                    <hr class="table-head">
+                                    <table class="table table-bordered">
+                                        <tr>
+                                            <td th:text="#{label.id}" class="col-sm-2 text-center" style="background: #FAFAFA;">아이디</td>
+                                            <td th:text="${account.getUserId()}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td th:text="#{label.name}" class="text-center" style="background: #FAFAFA;">이름</td>
+                                            <td>
+                                                <span th:unless="${#strings.isEmpty(account.getName())}" th:text="${account.getName()}"></span>
+                                            </td>
+                                        </tr>
+<!--                                        <tr>-->
+<!--                                            <td th:text="#{label.comNum}" class="text-center" style="background: #FAFAFA;">사번</td>-->
+<!--                                            <td>-->
+<!--                                                <span th:unless="${#strings.isEmpty(account.getComNum())}" th:text="${account.getComNum()}"></span>-->
+<!--                                            </td>-->
+<!--                                        </tr>-->
+                                        <tr>
+                                            <td th:text="#{label.engName}" class="text-center" style="background: #FAFAFA;">영문명</td>
+                                            <td>
+                                                <span th:unless="${#strings.isEmpty(account.getEngName())}" th:text="${account.getEngName()}"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-center" style="background: #FAFAFA;">등록일</td>
+                                            <td th:text="${account.getIndate()}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td th:text="#{label.email}" class="text-center" style="background: #FAFAFA;">이메일</td>
+                                            <td th:text="${account.getEmail()}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-center" style="background: #FAFAFA;">소속</td>
+                                            <td>
+                                                <span th:text="${account.getOrgDepart()}"></span>
+                                                <span th:unless="${#strings.isEmpty(account.getOrgTeam())}" th:text="${' / '}"></span>
+                                                <span th:unless="${#strings.isEmpty(account.getOrgTeam())}" th:text="${account.getOrgTeam()}"></span>
+                                            </td>
+                                        </tr>
+<!--                                        <tr>-->
+<!--                                            <td th:text="#{label.job}" class="text-center" style="background: #FAFAFA;">업무</td>-->
+<!--                                            <td th:text="${account.getComJob()}"></td>-->
+<!--                                        </tr>-->
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+
+    <script>
+
+        $('#parentUserId').chosen({width:'100%'});
+
+
+        function popupSignView() {
+            var width = 600;
+            var height = 620;
+
+            var title = "전자서명 변경";
+            var url = "/mypage/signPopup";
+            // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+            var popupX = (window.screen.width / 2) - (width / 2);
+            // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
+            var popupY= (window.screen.height / 2) - (height / 2);
+
+            var option = "width =" + width + ", height =" + height + ", menubar=no, directories=no, location = no, scrollbars=yes, resizable=yes";
+            option += ", left=" + popupX + ", top=" + popupY;
+
+            window.open(url, title, option);
+        }
+
+    </script>
+
+</th:block>
+
+</html>

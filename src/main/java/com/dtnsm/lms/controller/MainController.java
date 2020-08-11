@@ -71,7 +71,6 @@ public class MainController {
     @Autowired
     LoginHistoryRepository loginHistoryRepository;
 
-
     private PageInfo pageInfo = new PageInfo();
 
     public MainController() {
@@ -81,6 +80,28 @@ public class MainController {
 
     @GetMapping("/")
     public String root(Model model) {
+        String userId = SessionUtil.getUserId();
+        String userType = SessionUtil.getUserDetail().getUser().getUserType();
+        String redirectURL = "/";
+
+        if (userType.equals("U") || userId.equals("admin")) {
+            redirectURL = "/home";
+        } else {
+            redirectURL = "/homeOther";
+        }
+
+        return String.format("redirect:%s", redirectURL);
+    }
+
+    /**
+     * 내부직원 메인 화면
+     * @param
+     * @return
+     * @exception
+     * @see
+     */
+    @GetMapping("/home")
+    public String home(Model model) {
 
         model.addAttribute(pageInfo);
         model.addAttribute("customers", customerService.getCustomerList());
@@ -180,18 +201,41 @@ public class MainController {
 //        // 과정그룹별 과정 수
 //        model.addAttribute("courseCountVO", courseMapperService.getCourseCount());
 
-        model.addAttribute(pageInfo);
-
-        model.addAttribute("alarmList", lmsNotificationService.getTop5ByUserNotification(SessionUtil.getUserId()));
+        model.addAttribute("alarmList", lmsNotificationService.getTop5ByUserNotification(userId));
 
 
         return "content/home";
     }
 
-    @GetMapping("/home")
-    public String home(Model model) {
+    /**
+     * 외부사용자 메인 화면
+     * @param
+     * @return
+     * @exception
+     * @see
+     */
+    @GetMapping("/homeOther")
+    public String homeOhter(Model model) {
 
-        return "redirect:/";
+        String userId = SessionUtil.getUserId();
+
+        // 알림사항
+        model.addAttribute(pageInfo);
+        model.addAttribute("alarmList", lmsNotificationService.getTop5ByUserNotification(userId));
+
+        // 공지사항
+        model.addAttribute("borders1", borderService.getListTop5ByBorderMasterId("BA0101"));
+        model.addAttribute("borders1_name", borderMasterService.getById("BA0101").getBorderName());
+
+        // 법령정보
+        model.addAttribute("borders2", borderService.getListTop5ByBorderMasterId("BA0102"));
+        model.addAttribute("borders2_name", borderMasterService.getById("BA0102").getBorderName());
+
+        // 가이드라인
+        model.addAttribute("borders3", borderService.getListTop5ByBorderMasterId("BA0103"));
+        model.addAttribute("borders3_name", borderMasterService.getById("BA0103").getBorderName());
+
+        return "content/homeOther";
     }
 
 

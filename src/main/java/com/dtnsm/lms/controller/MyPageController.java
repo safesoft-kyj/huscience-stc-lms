@@ -145,8 +145,43 @@ public class MyPageController {
 //        return "content/mypage/main";
 //    }
 
+    /**
+     *  2020/08/11 교육현황 사용자 Type에 따른 분기 (U 내부직원: /mypage/myInfoStd, O 외부사용자:/mypage/myInfoOther)
+     * @param
+     * @return
+     * @exception
+     * @see
+     */
     @GetMapping("/main")
-    public String main(Model model
+    public String main(Model model) {
+        // 사용자의 타입에 따른 메이페이지 변경
+        if (SessionUtil.getUserDetail().getUser().getUserType().equals("U") || SessionUtil.getUserId().equals("admin")) {
+            return "redirect:/mypage/mainStd";
+        } else {
+            return "redirect:/mypage/mainOther";
+        }
+    }
+
+    /**
+     * 2020/08/11 사용자정보 사용자 Type에 따른 분기 (U 내부직원: /mypage/myInfoStd, O 외부사용자:/mypage/myInfoOther)
+     * @param
+     * @return
+     * @exception
+     * @see
+     */
+    @GetMapping("/myInfo")
+    public String myInfo() {
+
+        // 사용자의 타입에 따른 메이페이지 변경
+        if (SessionUtil.getUserDetail().getUser().getUserType().equals("U") || SessionUtil.getUserId().equals("admin")) {
+            return "redirect:/mypage/myInfoStd";
+        } else {
+            return "redirect:/mypage/myInfoOther";
+        }
+    }
+
+    @GetMapping("/mainStd")
+    public String mainStd(Model model
             , @RequestParam(value="typeId",  defaultValue = "%") String typeId
             , @RequestParam(value="courseStepStatusId",  defaultValue = "%") String courseStepStatusId
             , @RequestParam(value="title",  defaultValue = "%") String title
@@ -194,16 +229,64 @@ public class MyPageController {
         return "content/mypage/main";
     }
 
-    @GetMapping("/myInfo")
-    public String myInfo(Model model) {
+    @GetMapping("/mainOther")
+    public String mainOther(Model model
+            , @RequestParam(value="typeId",  defaultValue = "%") String typeId
+            , @RequestParam(value="courseStepStatusId",  defaultValue = "%") String courseStepStatusId
+            , @RequestParam(value="title",  defaultValue = "%") String title
+            , Pageable pageable) {
+
+        pageInfo.setPageId("m-mypage-main");
+        pageInfo.setPageTitle("교육현황");
+
+        //CustomUserDetails userDetails = SessionUtil.getUserDetail();
+//        Account account = userService.getAccountByUserId(SessionUtil.getUserId());
+
+        Page<CourseAccount> courseAccountList;
+//        QCourseAccount account = QCourseAccount.courseAccount;
+//        BooleanBuilder builder = new BooleanBuilder();
+//        builder.and(account.account.userId.contains(SessionUtil.getUserId()));
+
+        if (courseStepStatusId.equals("%")) {
+            courseAccountList = courseAccountService.getListUserId(SessionUtil.getUserId(), typeId + "%", "%" + title + "%", pageable);
+
+        } else {
+            courseAccountList = courseAccountService.getListUserId(SessionUtil.getUserId(), typeId + "%", "%" + title + "%", CourseStepStatus.valueOf(courseStepStatusId), pageable);
+
+//            builder.and(account.course.courseMaster.id.contains(typeId));
+//            builder.and(account.course.title.contains(title));
+//            builder.and(account.courseStatus.eq(CourseStepStatus.valueOf(courseStepStatusId)));
+        }
+
+//        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+//        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "fromDate", "isCommit"));
+//        courseAccountList = courseAccountRepository.findAll(builder, pageable);
+
+//        Account parentAccount = userService.getAccountByUserId(account.getParentUserId());
+
+//        UserVO userVO = userMapperService.getUserById(account.getUserId());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("courseAccountList", courseAccountList);
+//        model.addAttribute("account", account);
+//        model.addAttribute("parentAccount", parentAccount);
+//        model.addAttribute("accountList", userService.getAccountList());
+        model.addAttribute("courseMasterList", courseMasterService.getList());
+//        model.addAttribute("courseTypeList", codeService.getMinorList("BC01")); // onLine, offLine 구분
+        model.addAttribute("courseStepStatus", CourseStepStatus.class.getEnumConstants()); // 교육상태
+
+        return "content/mypage/main";
+    }
+
+
+
+    @GetMapping("/myInfoStd")
+    public String myInfoStd(Model model) {
 
         pageInfo.setPageId("m-mypage-main");
         pageInfo.setPageTitle("사용자정보");
 
         Account account = userService.getAccountByUserId(SessionUtil.getUserId());
-//        List<CourseAccount> courseAccountList = courseAccountService.getCourseAccountByUserId(SessionUtil.getUserId());
-
-//        Account parentAccount = userService.getAccountByUserId(account.getParentUserId());
 
         // 나의 서명을 가지고 온다.
         Optional<Signature> optionalSignature = signatureRepository.findById(SessionUtil.getUserId());
@@ -218,6 +301,21 @@ public class MyPageController {
 
         return "content/mypage/myinfo";
     }
+
+    @GetMapping("/myInfoOther")
+    public String myInfoOther(Model model) {
+
+        pageInfo.setPageId("m-mypage-main");
+        pageInfo.setPageTitle("사용자정보");
+
+        Account account = userService.getAccountByUserId(SessionUtil.getUserId());
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("account", account);
+
+        return "content/mypage/myinfoOther";
+    }
+
 
     @GetMapping("/signPopup")
     public String signPopup(Model model) {

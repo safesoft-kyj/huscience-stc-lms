@@ -1,5 +1,7 @@
 package com.dtnsm.lms.controller;
 
+import com.dtnsm.common.entity.Signature;
+import com.dtnsm.common.repository.SignatureRepository;
 import com.dtnsm.lms.auth.PasswordEncoding;
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.component.CourseScheduler;
@@ -17,6 +19,7 @@ import com.dtnsm.lms.service.MailService;
 import com.dtnsm.lms.service.RoleService;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.PageInfo;
+import com.dtnsm.lms.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/registration")
@@ -51,6 +55,9 @@ public class RegistrationController {
 
     @Autowired
     RoleRepository roleRepository;
+
+    @Autowired
+    private SignatureRepository signatureRepository;
 
     @Autowired
     private PasswordEncoding passwordEncoder;
@@ -92,11 +99,22 @@ public class RegistrationController {
         if (result.hasErrors()) {
             return "admin/registration/account/add";
         }
-
         String originPassword = account.getPassword();
+
+        // 1.외부 사용자는 교육관리자를 상위결재권자로 지정한다.
+        account.setParentUserId(courseManagerService.getCourseManager().getAccount().getUserId());
 
         // 초기 패스워드는 저장시 암호화 되며 Role은 사용자 타입에따라 자동 저장 됨
         Account account1 = userService.save(account);
+
+        // 2. 외부 사용자 빈이미지로 사인 등록
+        Optional<Signature> optionalSignature = signatureRepository.findById(account1.getUserId());
+        if(!optionalSignature.isPresent()) {
+            Signature signature = new Signature();
+            signature.setId(account1.getUserId());
+            signature.setBase64signature("");
+            signatureRepository.save(signature);
+        }
 
         // 메일보내기(서비스 전까지는 메일 보내지 않음
         Mail mail = new Mail();
@@ -184,10 +202,16 @@ public class RegistrationController {
         pageInfo.setPageTitle("사용자");
         List<Role> roleList = roleService.getList();
 
+        // 나의 서명을 가지고 온다.
+//        Optional<Signature> optionalSignature = signatureRepository.findById(SessionUtil.getUserId());
+//        String sign = optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "";
+
         model.addAttribute(pageInfo);
         model.addAttribute("roleList", roleList);
         model.addAttribute("account", account);
         model.addAttribute("typeList", userService.getTypeList());
+//        model.addAttribute("accountList", userService.getAccountList());
+//        model.addAttribute("sign", sign);
 
         return "admin/registration/account/edit";
     }
@@ -209,7 +233,21 @@ public class RegistrationController {
         account.setRoles(oldAccount.getRoles());
         account.setParentUserId(oldAccount.getParentUserId());
 
+        // 1.외부 사용자 상위결재권자가 지정되어 있지 않은 경우 교육관리자로 지정한다.
+        if (account.getParentUserId() == null ||  account.getParentUserId().isEmpty()) {
+            account.setParentUserId(courseManagerService.getCourseManager().getAccount().getUserId());
+        }
+        // 저장한다.
         Account saveAccount = userRepository.save(account);
+
+        // 2. 외부 사용자 사인이 등록되어 있지 않으면 사인 등록
+        Optional<Signature> optionalSignature = signatureRepository.findById(saveAccount.getUserId());
+        if(!optionalSignature.isPresent()) {
+            Signature signature = new Signature();
+            signature.setId(saveAccount.getUserId());
+            signature.setBase64signature("");
+            signatureRepository.save(signature);
+        }
 
         // 내부직원인 경우 그룹웨어 정보를 업데이트 한다.
         if (saveAccount.getUserType().equals("U")) {

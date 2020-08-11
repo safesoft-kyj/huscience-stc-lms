@@ -5,6 +5,39 @@
 
 <ul id="mainnav-menu" class="list-group" th:fragment="menu">
 
+    <th:block sec:authorize="hasRole('ROLE_OTHER')">
+        <li>
+            <a href="#">
+                <i class="demo-pli-home"></i>
+                <span class="menu-title">학습지원</span>
+                <i class="arrow"></i>
+            </a>
+
+            <!-- 2020/08/08 동적 메뉴로 수정 -->
+            <ul class="collapse">
+                <li th:each="border, index : ${T(com.dtnsm.lms.util.MenuUtil).getBorderMaster()}">
+                    <a href="#" data-th-href="@{/border/{typeId}(typeId=${border.getId()})}" th:text="${border.getBorderName()}"></a>
+                </li>
+            </ul>
+
+        </li>
+        <li>
+            <a href="#">
+                <i class="demo-pli-home"></i>
+                <span class="menu-title">마이페이지</span>
+                <i class="arrow"></i>
+            </a>
+
+            <!--Submenu-->
+            <ul class="collapse">
+                <li><a data-th-href="@{/mypage/mainOther}">교육현황</a></li>
+                <li><a data-th-href="@{/notification}">알림사항</a></li>
+                <li><a data-th-href="@{/mypage/myInfoOther}">사용자정보</a></li>
+            </ul>
+        </li>
+        <li class="list-divider"></li>
+    </th:block>
+
     <th:block sec:authorize="hasRole('ROLE_USER')">
         <!--Category name-->
         <li class="list-header">User Menu</li>
@@ -126,7 +159,7 @@
 
             <!--Submenu-->
             <ul class="collapse">
-                <li><a data-th-href="@{/mypage/main}">교육현황</a></li>
+                <li><a data-th-href="@{/mypage/mainStd}">교육현황</a></li>
 <!--                <li><a data-th-href="@{/info/monthUser}">나의월간일정</a></li>-->
                 <li><a data-th-href="@{/mypage/uploadTrainingLog}">Training Log Upload</a></li>
                 <li><a data-th-href="@{/mypage/courseTraingLog}">Employee Training Log</a></li>
@@ -136,7 +169,7 @@
                 <li><a data-th-href="@{/mypage/certificate/file}">수료증 Upload</a></li>
 <!--                <li><a data-th-href="@{/mypage/certificate/view}">수료증발급</a></li>-->
                 <li class="list-divider"></li>
-                <li><a data-th-href="@{/mypage/myInfo}">사용자정보</a></li>
+                <li><a data-th-href="@{/mypage/myInfoStd}">사용자정보</a></li>
 <!--                <li><a data-th-href="@{/mypage/quiz}">시험/시험결과/수료증발급</a></li>-->
 <!--                <li><a data-th-href="@{/mypage/myinfo}">사용자정보</a></li>-->
             </ul>

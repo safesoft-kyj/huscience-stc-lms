@@ -36,7 +36,7 @@ public class LmsNotificationController {
 
     public LmsNotificationController() {
         pageInfo.setParentId("m-customer");
-        pageInfo.setParentTitle("알림사항");
+        pageInfo.setParentTitle("마이페이지");
     }
 
     @GetMapping("")

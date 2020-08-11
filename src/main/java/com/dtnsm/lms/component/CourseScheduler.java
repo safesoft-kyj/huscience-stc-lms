@@ -289,15 +289,19 @@ public class CourseScheduler {
 
         for (Account account : userService.getAccountList()) {
 
-            if (account.getParentUserId() == null || account.getParentUserId().trim().isEmpty()) {
+            // 내부 직원인 경우만 메세지를 보낸다.
+            if (account.getUserType().equals("U")) {
 
-                // 상위결재권자 미지정
-                lmsNotificationService.sendAlarm(LmsAlarmType.ParentUser, account);
-            }
+                if (account.getParentUserId() == null || account.getParentUserId().trim().isEmpty()) {
 
-            if (signatureService.getSign(account.getUserId()).trim().isEmpty()) {
-                // 상위결재권자 미지정
-                lmsNotificationService.sendAlarm(LmsAlarmType.Sign, account);
+                    // 상위결재권자 미지정
+                    lmsNotificationService.sendAlarm(LmsAlarmType.ParentUser, account);
+                }
+
+                if (signatureService.getSign(account.getUserId()).trim().isEmpty()) {
+                    // 상위결재권자 미지정
+                    lmsNotificationService.sendAlarm(LmsAlarmType.Sign, account);
+                }
             }
         }
     }
