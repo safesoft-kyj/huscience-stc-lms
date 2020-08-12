@@ -21,7 +21,7 @@ group by user_id, name, org_depart, org_team
 
 GO
 
-create view vw_training_log_detail
+CREATE OR ALTER view vw_training_log_detail
 as
 select a.*, b.name, b.org_depart, b.org_team
 from el_course_training_log a with(nolock)
@@ -30,7 +30,7 @@ from el_course_training_log a with(nolock)
 
 GO
 
-create view [dbo].[vw_certificate_file_summary]
+CREATE OR ALTER view [dbo].[vw_certificate_file_summary]
 as
 with raw_data as (
 	select a.user_id, a.name
@@ -56,7 +56,7 @@ group by user_id, name, org_depart, org_team
 
 GO
 
-create view [dbo].[vw_certificate_file_detail]
+CREATE OR ALTER view [dbo].[vw_certificate_file_detail]
 as
 select a.*, b.name, b.org_depart, b.org_team
 , case when a.doc_id is null then '1' else '0' end as is_upload

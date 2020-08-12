@@ -29,7 +29,7 @@ from (	select a.user_id
 
 GO
 
-CREATE view [dbo].[vw_depart]
+CREATE OR ALTER view [dbo].[vw_depart]
 as
 select org_code
 	, isnull(p_org_code, '') as p_org_code
@@ -41,7 +41,7 @@ from ​gw.GWareNet10_Dtnc.dbo.tblDepart_1
 GO
 
 
-CREATE view [dbo].[vw_depart_tree]
+CREATE OR ALTER view [dbo].[vw_depart_tree]
 as
 select org_code as id
 , p_org_code as pId
