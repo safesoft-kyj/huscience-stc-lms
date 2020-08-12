@@ -258,9 +258,6 @@ public class CourseAdminController {
             , @RequestParam(value = "section_file", required = false) MultipartFile section_file
             , @RequestParam(value = "quiz_file", required = false) MultipartFile quiz_file
             , @RequestParam(value = "page", required = false, defaultValue = "") String page
-            , @RequestParam(value = "active", required = false, defaultValue = "") String active
-            , @RequestParam(value = "status", required = false, defaultValue = "") String status
-            , @RequestParam(value = "title", required = false, defaultValue = "") String title
             , BindingResult result) {
         if(result.hasErrors()) {
             return "redirect:/admin/course/list/" + typeId;
@@ -367,7 +364,7 @@ public class CourseAdminController {
 //            }
 //        }
 
-        return String.format("redirect:/admin/course/%s?page=%s&active=%s&status=%s&title=%s", course1.getCourseMaster().getId(), page, active, status, title);
+        return String.format("redirect:/admin/course/%s?page=%s", course1.getCourseMaster().getId(), page);
     }
 
     // 첨부파일 업로드
@@ -429,9 +426,6 @@ public class CourseAdminController {
             , @RequestParam(value = "documentId", required = false, defaultValue = "0") long documentId
             , @RequestParam("files") MultipartFile[] files
             , @RequestParam(value = "page", required = false) String page
-            , @RequestParam(value = "active", required = false, defaultValue = "") String active
-            , @RequestParam(value = "status", required = false, defaultValue = "") String status
-            , @RequestParam(value = "title", required = false, defaultValue = "") String title
             , BindingResult result) {
         if(result.hasErrors()) {
             course.setId(id);
@@ -559,7 +553,7 @@ public class CourseAdminController {
                 .map(file -> courseFileService.storeFile(file, course1))
                 .collect(Collectors.toList());
 
-        return String.format("redirect:/admin/course/%s?page=%s&active=%s&status=%s&title=%s", typeId, page, active, status, title);
+        return String.format("redirect:/admin/course/%s?page=%s", typeId, page);
     }
 
 

@@ -62,7 +62,7 @@
                                     <th>사원ID</th>
                                     <th>사원명</th>
                                     <th>메일주소</th>
-                                    <th>사용유무</th>
+<!--                                    <th>사용유무</th>-->
                                     <th>사용자유형</th>
                                     <th>사용유무</th>
                                     <th>Role</th>
@@ -74,7 +74,7 @@
                                     <td th:text="${account.getUserId()}"></td>
                                     <td th:text="${account.getName()}"></td>
                                     <td th:text="${account.getEmail()}"></td>
-                                    <td th:text="${account.getEnabled() ? 'Yes' : 'No'}" class="text-center"></td>
+<!--                                    <td th:text="${account.getEnabled() ? 'Yes' : 'No'}" class="text-center"></td>-->
                                     <td th:text="${account.getUserType().equals('U') ? '내부직원' : '외부사용자'}"></td>
                                     <td>
                                         <span th:if="${account.getEnabled() == true}" class="text-success">사용</span>

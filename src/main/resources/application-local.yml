@@ -16,8 +16,8 @@ spring:
     servlet:
       content-type: text/html
   datasource:
-    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=dtnsm_prod
-#    url: jdbc:sqlserver://localhost:1433;DatabaseName=lms_manual
+#    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=dtnsm_prod
+    url: jdbc:sqlserver://localhost:1433;DatabaseName=lms_manual
 #    url: jdbc:sqlserver://220.117.192.209:20170;DatabaseName=dtnsm_prod
 #    url: jdbc:sqlserver://220.117.192.209:20170;DatabaseName=dtnsm_prod
     username: sa

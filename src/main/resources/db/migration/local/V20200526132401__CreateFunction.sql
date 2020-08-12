@@ -1,5 +1,5 @@
 -- 교육완료보고서 알림 발송시 주말 일수 구하는 함수
-CREATE FUNCTION [dbo].[fn_GetTotalHolidays]
+CREATE OR ALTER FUNCTION [dbo].[fn_GetTotalHolidays]
 (
     @startdate Date,
     @enddate Date

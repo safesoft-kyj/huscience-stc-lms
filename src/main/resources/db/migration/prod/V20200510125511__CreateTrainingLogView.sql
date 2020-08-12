@@ -1,4 +1,4 @@
-create view vw_training_log_summary
+CREATE OR ALTER view vw_training_log_summary
 as
 with raw_data as (
 	select a.user_id, a.name, a.org_depart, a.org_team, b.is_upload

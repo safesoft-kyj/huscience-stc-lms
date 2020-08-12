@@ -35,7 +35,7 @@
                 <div class="panel-body">
                     <!--===================================================-->
                     <!--End Horizontal Form-->
-                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/{typeId}/edit-post/{id}(typeId=${typeId}, id=${course.getId()}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}" th:object="${course}" method="post" enctype="multipart/form-data">
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/{typeId}/edit-post/{id}(typeId=${typeId}, id=${course.getId()}, page=${param.page})}" th:object="${course}" method="post" enctype="multipart/form-data">
                         <input type="hidden" th:field="*{id}" id="id" name="id">
                         <input type="hidden" th:field="*{courseMaster.id}" id="type-id" name="type-id">
                         <div class="form-group">

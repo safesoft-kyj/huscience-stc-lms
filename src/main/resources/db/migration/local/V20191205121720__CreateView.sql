@@ -1,4 +1,4 @@
-CREATE view [dbo].[vw_user]
+CREATE OR ALTER view [dbo].[vw_user]
 as
 select a.*, isnull(b.org_depart, '') as org_depart
 from (	select a.user_id
