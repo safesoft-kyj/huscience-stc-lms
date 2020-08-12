@@ -35,7 +35,7 @@
                 <div class="panel-body">
                     <!--===================================================-->
                     <!--End Horizontal Form-->
-                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/{typeId}/edit-post/{id}(typeId=${typeId}, id=${course.getId()}, page=${param.page})}" th:object="${course}" method="post" enctype="multipart/form-data">
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/{typeId}/edit-post/{id}(typeId=${typeId}, id=${course.getId()}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}" th:object="${course}" method="post" enctype="multipart/form-data">
                         <input type="hidden" th:field="*{id}" id="id" name="id">
                         <input type="hidden" th:field="*{courseMaster.id}" id="type-id" name="type-id">
                         <div class="form-group">
@@ -189,7 +189,7 @@
                                                 </td>
                                                 <td th:text="${uploadFile.getSize()}" class="text-center"></td>
                                                 <td class="text-center col-sm-2">
-                                                   <a class="btn btn-xs btn-danger" th:href="@{/admin/course/{typeId}/delete-file/{course_id}/{file_id}(typeId=${typeId}, course_id=${course.getId()}, file_id=${uploadFile.getId()})}"><i class="demo-psi-trash"></i></a>
+                                                   <a class="btn btn-xs btn-danger" th:href="@{/admin/course/{typeId}/delete-file/{course_id}/{file_id}(typeId=${typeId}, course_id=${course.getId()}, file_id=${uploadFile.getId()}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}"><i class="demo-psi-trash"></i></a>
                                                 </td>
                                             </tr>
                                             </tbody>

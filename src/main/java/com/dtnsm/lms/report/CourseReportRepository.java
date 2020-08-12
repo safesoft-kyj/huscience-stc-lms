@@ -1,6 +1,9 @@
 package com.dtnsm.lms.report;
 
+import com.dtnsm.lms.domain.CourseAccount;
+import com.dtnsm.lms.domain.DTO.CourseAccountSimple;
 import com.dtnsm.lms.domain.DTO.CourseSimple;
+import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.*;
@@ -50,56 +53,111 @@ public class CourseReportRepository {
                     });
     }
 
-    public Page<CourseSimple> findCourseSimpleByPage(String typeId, Pageable pageable) {
+    public Page<CourseSimple> findCourseSimpleByPage(String typeId, String title, String active, String status, Pageable pageable) {
 
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
         pageable = PageRequest.of(page, 10);
 
 
-        String rowCountSql = "SELECT count(1) AS row_count " +
-                "FROM vw_course_simple " +
-                "WHERE type_id = ? ";
+        String rowCountSql = "select count(1) as row_count" +
+                " from vw_course_simple" +
+                " where type_id = ?" +
+                " and title like ?" +
+                " and active like ?" +
+                " and status like ?";
+
         int total =
                 jdbcTemplate.queryForObject(
                         rowCountSql,
-                        new Object[]{typeId}, (rs, rowNum) -> rs.getInt(1)
+                        new Object[]{typeId
+                                , '%' + title + '%'
+                                , active + '%'
+                                , status + '%'
+                        }
+                        , (rs, rowNum) -> rs.getInt(1)
                 );
 
-        String querySql = "select * \n" +
-                "from vw_course_simple \n" +
-                "WHERE type_id = ? \n" +
-                "order by insert_dt desc \n" +
-//                "offset " + pageable.getOffset() + " row \n" +
-                "offset " + page + " * " + pageable.getPageSize() + " row\n" +
-                "fetch next " + pageable.getPageSize() + " row only\n";
+        String querySql = "select * " +
+                " from vw_course_simple" +
+                " where type_id = ?" +
+                " and title like ?" +
+                " and active like ?" +
+                " and status like ?" +
+                " order by insert_dt desc" +
+                " offset " + page + " * " + pageable.getPageSize() + " row" +
+                " fetch next " + pageable.getPageSize() + " row only";
 
         List<CourseSimple> demos = jdbcTemplate.query(
                 querySql,
-                new Object[]{typeId}, (rs, rowNum) -> CourseSimple.builder()
-                        .id(rs.getString("id"))
-                        .title(rs.getString("title"))
-                        .status(rs.getInt("status"))
-                        .requestFromDate(rs.getString("request_from_date"))
-                        .requestToDate(rs.getString("request_to_date"))
-                        .fromDate(rs.getString("from_date"))
-                        .toDate(rs.getString("to_date"))
-                        .requestDatePrior(rs.getString("request_date_prior"))
-                        .accountCnt(rs.getInt("account_cnt"))
-                        .sectionCnt(rs.getInt("section_cnt"))
-                        .quizCnt(rs.getInt("quiz_cnt"))
-                        .surveyCnt(rs.getInt("survey_cnt"))
-                        .active(rs.getInt("active"))
-                        .isAlways(rs.getString("is_always"))
-                        .typeId(rs.getString("type_id"))
-                        .typeName(rs.getString("type_name"))
-                        .courseType(rs.getString("course_type"))
-                        .isCerti(rs.getString("is_certi"))
-                        .isQuiz(rs.getString("is_quiz"))
-                        .isSurvey(rs.getString("is_survey"))
-                        .build()
+                new Object[]{typeId
+                        , '%' + title + '%'
+                        , active + '%'
+                        , status + '%'
+                    }
+                        , (rs, rowNum) -> CourseSimple.builder()
+                            .id(rs.getString("id"))
+                            .title(rs.getString("title"))
+                            .status(rs.getInt("status"))
+                            .requestFromDate(rs.getString("request_from_date"))
+                            .requestToDate(rs.getString("request_to_date"))
+                            .fromDate(rs.getString("from_date"))
+                            .toDate(rs.getString("to_date"))
+                            .requestDatePrior(rs.getString("request_date_prior"))
+                            .accountCnt(rs.getInt("account_cnt"))
+                            .sectionCnt(rs.getInt("section_cnt"))
+                            .quizCnt(rs.getInt("quiz_cnt"))
+                            .surveyCnt(rs.getInt("survey_cnt"))
+                            .active(rs.getInt("active"))
+                            .isAlways(rs.getString("is_always"))
+                            .typeId(rs.getString("type_id"))
+                            .typeName(rs.getString("type_name"))
+                            .courseType(rs.getString("course_type"))
+                            .isCerti(rs.getString("is_certi"))
+                            .isQuiz(rs.getString("is_quiz"))
+                            .isSurvey(rs.getString("is_survey"))
+                            .build()
         );
 
         return new PageImpl<>(demos, pageable, total);
+    }
+
+    /**
+     *
+     * @param
+     * @return
+     * @exception
+     * @see
+     */
+    public List<CourseAccountSimple> findCourseAccountSimpleByPage(Long courseId) {
+
+        String querySql = "select * \n" +
+                "from vw_course_account_simple \n" +
+                "WHERE course_id = ? \n" +
+                "order by org_depart, name \n";
+
+
+
+        List<CourseAccountSimple> courseAccounts = jdbcTemplate.query(
+                querySql,
+                new Object[]{courseId}, (rs, rowNum) -> CourseAccountSimple.builder()
+                        .id(rs.getString("id"))
+                        .orgDepart(rs.getString("org_depart"))
+                        .name(rs.getString("name"))
+                        .fromDate(rs.getString("from_date"))
+                        .toDate(rs.getString("to_date"))
+                        .requestDate(rs.getString("request_date"))
+                        .requestType(rs.getString("request_type"))
+                        .fnStatus(rs.getString("fn_status"))
+                        .courseStatus(CourseStepStatus.valueOf(rs.getString("course_status")))
+                        .isCommit(rs.getString("is_commit"))
+                        .isAlways(rs.getString("is_always"))
+                        .typeId(rs.getString("type_id"))
+                        .isAttendance(rs.getString("is_attendance"))
+                        .certificateBindDate(rs.getString("certificate_bind_date"))
+                        .build()
+        );
+
+        return courseAccounts;
     }
 }
 

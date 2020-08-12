@@ -120,8 +120,8 @@ public class RegistrationController {
         Mail mail = new Mail();
 
         StringBuilder sb = new StringBuilder();
-        sb.append("ID:" + account1.getUserId() + "<br>");
-        sb.append("PW:" + originPassword + "<br>");
+        sb.append("ID : " + account1.getUserId() + "<br>");
+        sb.append("PW : " + originPassword + "<br>");
         sb.append("사용자 등록이 완료되었습니다.");
 //        sb.append("로그인후 패스워드를 변경하세요.<br>");
 //        sb.append("<a href='http://lms.dtnsm.com'>LMS</a><br>");

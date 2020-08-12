@@ -43,6 +43,58 @@
             <!--===================================================-->
             <div class="panel">
                 <div class="panel-body">
+                    <div>
+                        <hr class="table-head">
+                        <table id="customer-list-page1" class="table table-condensed" cellspacing="0" width="100%">
+                            <form name="testForm" id="testForm" th:action="@{/admin/course/{typeId}(typeId=${typeId})}">
+                                <tbody>
+                                <tr>
+                                    <td class="text-right" style="vertical-align: middle; background: #FAFAFA;">공개구분</td>
+                                    <td>
+                                        <div class="radio">
+                                            <input id="active01" class="magic-radio" type="radio" name="active" value="" checked>
+                                            <label for="active01">전체</label>
+                                            <input th:id="active02" class="magic-radio" type="radio" name="active" th:value="1" th:checked="${#strings.equalsIgnoreCase('1', param.active)}">
+                                            <label th:for="active02">공개</label>
+                                            <input th:id="active03" class="magic-radio" type="radio" name="active" th:value="0" th:checked="${#strings.equalsIgnoreCase('0', param.active)}">
+                                            <label th:for="active03">비공개</label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right" style="vertical-align: middle; background: #FAFAFA;">과정상태</td>
+                                    <td>
+                                        <div class="radio">
+                                            <input id="status01" class="magic-radio" type="radio" name="status" value="" checked>
+                                            <label for="status01">전체</label>
+                                            <input th:id="status02" class="magic-radio" type="radio" name="status" th:value="2" th:checked="${#strings.equalsIgnoreCase('2', param.status)}">
+                                            <label th:for="status02">교육신청</label>
+                                            <input th:id="status03" class="magic-radio" type="radio" name="status" th:value="5" th:checked="${#strings.equalsIgnoreCase('5', param.status)}">
+                                            <label th:for="status03">교육종료</label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right" style="vertical-align: middle; background: #FAFAFA;">과정명</td>
+                                    <td>
+                                        <input class="form-control" type="text" th:value="${param.title}" id="title" name="title" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="text-center">
+                                        <br>
+                                        <a class="btn btn-lg btn-info" onclick="form_subimt();return false;">
+                                            <div class="demo-icon">
+                                                <i class="fa fa-search"></i> <span th:text="#{label.search}">fa fa-search</span>
+                                            </div>
+                                        </a>
+                                        <a class="btn btn-lg btn-default" th:href="@{/admin/course/{typeId}(typeId=${typeId})}" th:text="#{label.init}">초기화</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </form>
+                        </table>
+                    </div>
                     <div th:switch="${borders}">
                         <div th:case="null">No customer yet!</div>
                         <div th:case="*">
@@ -67,18 +119,18 @@
                                     <thead>
                                     <tr style="background: #FAFAFA;">
                                         <th class="text-center" th:text="#{label.no}">번호</th>
-                                        <th class="text-center col-sm-2" th:text="#{label.course.name}">과정명</th>
+                                        <th class="text-center col-lg-2" th:text="#{label.course.name}">과정명</th>
                                         <th:block th:if="${#strings.equalsIgnoreCase(typeId, 'BC0101') or #strings.equalsIgnoreCase(typeId, 'BC0102')}">
-                                            <th class="text-center col-sm-1" th:text="#{label.status}">상태</th>
-                                            <th class="text-center col-sm-1">신청기간</th>
+                                            <th class="text-center col-lg-1" th:text="#{label.status}">상태</th>
+                                            <th class="text-center col-lg-1">신청기간</th>
                                         </th:block>
-                                        <th class="text-center col-sm-1">교육기간</th>
-                                        <th class="text-center col-sm-1" th:text="#{label.title.section}">강의</th>
-                                        <th class="text-center col-sm-1" th:text="#{label.title.quiz}">시험</th>
-                                        <th class="text-center col-sm-1" th:text="#{label.title.survey}">설문</th>
-                                        <th class="text-center col-sm-1" th:text="#{label.course.accountlist}">수강생</th>
-                                        <th class="text-center col-sm-1" th:text="#{label.course.iscerti}">수료증발급</th>
-                                        <th class="text-center col-sm-3" th:text="#{label.actions}">Edit</th>
+                                        <th class="text-center col-lg-1">교육기간</th>
+                                        <th class="text-center col-lg-1" th:text="#{label.title.section}">강의</th>
+                                        <th class="text-center col-lg-1" th:text="#{label.title.quiz}">시험</th>
+                                        <th class="text-center col-lg-1" th:text="#{label.title.survey}">설문</th>
+                                        <th class="text-center col-lg-1" th:text="#{label.course.accountlist}">수강생</th>
+                                        <th class="text-center col-lg-1" th:text="#{label.course.iscerti}">수료증발급</th>
+                                        <th class="text-center col-lg-3" th:text="#{label.actions}">Edit</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -88,7 +140,7 @@
                                             <th:block th:if="${border.getActive() == 1}">
                                                 <span class="badge badge-info" th:text="#{label.active}"></span>
                                             </th:block>
-                                            <a th:href="@{/admin/course/{typeId}/view/{id}(typeId=${typeId}, id=${border.getId()})}" th:text="${border.getTitle()}"></a>
+                                            <a th:href="@{/admin/course/{typeId}/view/{id}(typeId=${typeId}, id=${border.getId()}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}" th:text="${border.getTitle()}"></a>
                                         </td>
 
                                         <!-- 신청기간은 Self와 Class 교육만 있음 -->
@@ -134,19 +186,19 @@
                                         </td>
 
                                         <td class="text-center">
-                                            <a th:href="@{/admin/course/{typeId}/{courseId}/section(typeId=${typeId}, courseId=${border.getId()}, page=${param.page})}"><span class="badge badge-mint" th:text="${border.getSectionCnt()}"></span></a>
+                                            <a th:href="@{/admin/course/{typeId}/{courseId}/section(typeId=${typeId}, courseId=${border.getId()}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}"><span class="badge badge-mint" th:text="${border.getSectionCnt()}"></span></a>
 <!--                                            <a class="label label-warning" th:href="@{/admin/course/section/add/{id}(id=${border.getId()})}" th:text="#{label.course.add}">강의등록</a>-->
                                         </td>
                                         <td class="text-center">
-                                            <a  th:if="${border.getIsQuiz().equals('Y')}"  th:href="@{/admin/course/{typeId}/{courseId}/quiz(typeId=${typeId}, courseId=${border.getId()}, page=${param.page})}"><span class="badge badge-success" th:text="${border.getQuizCnt()}"></span></a>
+                                            <a  th:if="${border.getIsQuiz().equals('Y')}"  th:href="@{/admin/course/{typeId}/{courseId}/quiz(typeId=${typeId}, courseId=${border.getId()}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}"><span class="badge badge-success" th:text="${border.getQuizCnt()}"></span></a>
 <!--                                            <a class="label label-purple" th:if="${border.getIsQuiz().equals('Y')}" th:href="@{/admin/course/quiz/add/{id}(id=${border.getId()})}" th:text="#{label.course.add}">시험등록</a>-->
                                         </td>
                                         <td class="text-center">
-                                            <a th:if="${border.getIsSurvey().equals('Y')}" th:href="@{/admin/course/{typeId}/{courseId}/survey(typeId=${typeId}, courseId=${border.getId()}, page=${param.page})}"><span class="badge badge-purple" th:text="${border.getSurveyCnt()}"></span></a>
+                                            <a th:if="${border.getIsSurvey().equals('Y')}" th:href="@{/admin/course/{typeId}/{courseId}/survey(typeId=${typeId}, courseId=${border.getId()}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}"><span class="badge badge-purple" th:text="${border.getSurveyCnt()}"></span></a>
 <!--                                            <a class="label label-mint" th:if="${border.getIsSurvey().equals('Y')}" th:href="@{/admin/course/survey/add/{id}(id=${border.getId()})}" th:text="#{label.course.add}">설문등록</a>-->
                                         </td>
                                         <td class="text-center">
-                                            <a th:href="@{/admin/course/{typeId}/{courseId}/account(typeId=${typeId}, courseId=${border.getId()}, page=${param.page})}"><span class="badge badge-warning" th:text="${border.getAccountCnt()}"></span></a>
+                                            <a th:href="@{/admin/course/{typeId}/{courseId}/account(typeId=${typeId}, courseId=${border.getId()}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}"><span class="badge badge-warning" th:text="${border.getAccountCnt()}"></span></a>
                                             <!--                                            <a class="label label-mint" th:if="${border.getIsSurvey().equals('Y')}" th:href="@{/admin/course/survey/add/{id}(id=${border.getId()})}" th:text="#{label.course.add}">설문등록</a>-->
                                         </td>
                                         <!-- 수료증 발급 -->
@@ -156,18 +208,18 @@
                                         </td>
                                         <td class="text-center">
                                             <th:block th:if="${border.getActive() == 1}">
-                                                <a th:text="#{label.noActive}" th:href="@{/admin/course/{typeId}/updateActive/{id}(typeId=${typeId}, id=${border.getId()}, page=${param.page})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Active" data-container="body"></a>
+                                                <a th:text="#{label.noActive}" th:href="@{/admin/course/{typeId}/updateActive/{id}(typeId=${typeId}, id=${border.getId()}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Active" data-container="body"></a>
                                             </th:block>
                                             <th:block th:if="${border.getActive() == 0}">
-                                                <a th:text="#{label.active}" th:href="@{/admin/course/{typeId}/updateActive/{id}(typeId=${typeId}, id=${border.getId()}, page=${param.page})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Active" data-container="body"></a>
+                                                <a th:text="#{label.active}" th:href="@{/admin/course/{typeId}/updateActive/{id}(typeId=${typeId}, id=${border.getId()}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Active" data-container="body"></a>
                                             </th:block>
                                             <th:block th:if="${#strings.equalsIgnoreCase(typeId, 'BC0101')}">
-                                                <a th:text="#{label.edit}" th:href="@{/admin/course/{typeId}/editOnLine/{id}(typeId=${typeId}, id=${border.getId()}, page=${param.page})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                                <a th:text="#{label.edit}" th:href="@{/admin/course/{typeId}/editOnLine/{id}(typeId=${typeId}, id=${border.getId()}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
                                             </th:block>
                                             <th:block th:unless="${#strings.equalsIgnoreCase(typeId, 'BC0101')}">
-                                                <a th:text="#{label.edit}" th:href="@{/admin/course/{typeId}/editOffLine/{id}(typeId=${typeId}, id=${border.getId()}, page=${param.page})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                                <a th:text="#{label.edit}" th:href="@{/admin/course/{typeId}/editOffLine/{id}(typeId=${typeId}, id=${border.getId()}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
                                             </th:block>
-                                            <a th:text="#{label.delete}" th:href="@{/admin/course/{typeId}/delete/{id}(typeId=${typeId}, id=${border.getId()}, page=${param.page})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                            <a th:text="#{label.delete}" th:href="@{/admin/course/{typeId}/delete/{id}(typeId=${typeId}, id=${border.getId()}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -177,29 +229,29 @@
                                         th:with="start=${T(Math).floor(borders.number/10)*10 + 1},
                 last=(${start + 9 < borders.totalPages ? start + 9 : borders.totalPages})">
                                         <li>
-                                            <a th:href="@{/admin/course/{typeId}(typeId=${typeId}, page=1)}" aria-label="First">
+                                            <a th:href="@{/admin/course/{typeId}(typeId=${typeId}, page=1, title=${param.title}, active=${param.active}, status=${param.status})}" aria-label="First">
                                                 <span aria-hidden="true">First</span>
                                             </a>
                                         </li>
 
                                         <li th:class="${borders.first} ? 'disabled'">
-                                            <a th:href="${borders.first} ? '#' :@{/admin/course/{typeId}(typeId=${typeId}, page=${borders.number})}" aria-label="Previous">
+                                            <a th:href="${borders.first} ? '#' :@{/admin/course/{typeId}(typeId=${typeId}, page=${borders.number}, title=${param.title}, active=${param.active}, status=${param.status})}" aria-label="Previous">
                                                 <span aria-hidden="true">&lt;</span>
                                             </a>
                                         </li>
 
                                         <li th:each="page: ${#numbers.sequence(start, last)}" th:class="${page == borders.number + 1} ? 'active'">
-                                            <a th:text="${page}" th:href="@{/admin/course/{typeId}(typeId=${typeId}, page=${page})}"></a>
+                                            <a th:text="${page}" th:href="@{/admin/course/{typeId}(typeId=${typeId}, page=${page}, title=${param.title}, active=${param.active}, status=${param.status})}"></a>
                                         </li>
 
                                         <li th:class="${borders.last} ? 'disabled'">
-                                            <a th:href="${borders.last} ? '#' : @{/admin/course/{typeId}(typeId=${typeId}, page=${borders.number + 2})}" aria-label="Next">
+                                            <a th:href="${borders.last} ? '#' : @{/admin/course/{typeId}(typeId=${typeId}, page=${borders.number + 2}, title=${param.title}, active=${param.active}, status=${param.status})}" aria-label="Next">
                                                 <span aria-hidden="true">&gt;</span>
                                             </a>
                                         </li>
 
                                         <li>
-                                            <a th:href="@{/admin/course/{typeId}(typeId=${typeId}, page=${borders.totalPages})}" aria-label="Last">
+                                            <a th:href="@{/admin/course/{typeId}(typeId=${typeId}, page=${borders.totalPages}, title=${param.title}, active=${param.active}, status=${param.status})}" aria-label="Last">
                                                 <span aria-hidden="true">Last</span>
                                             </a>
                                         </li>
@@ -220,6 +272,15 @@
 <th:block layout:fragment="custom_js">
     <!--DataTables Sample [ SAMPLE ]-->
     <script th:src="@{/default/js/demo/tables-datatables.js}"></script>
+
+    <script>
+        function form_subimt() {
+            $('#testForm').submit();
+            $('#title').focus();
+        }
+
+    </script>
+
 </th:block>
 
 </html>

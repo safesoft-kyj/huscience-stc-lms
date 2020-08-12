@@ -48,9 +48,9 @@
                                     <b class="text-info"><span th:text="#{label.course.name}"></span> : <span th:text="${courseName}"></span></b>
                                 </div>
                                 <div class="col-sm-4 text-right">
-                                    <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/section/add(typeId=${typeId}, courseId=${courseId}, page=${param.page})}"><i class="demo-pli-add"></i> Add</a>
+                                    <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/section/add(typeId=${typeId}, courseId=${courseId}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}"><i class="demo-pli-add"></i> Add</a>
 <!--                                    <a class="btn btn-primary" href="javascript:history.back();"><i class="demo-pli-back"></i> Back</a>-->
-                                    <a class="btn btn-primary" th:href="@{/admin/course/{typeId}(typeId=${typeId}, page=${param.page})}"><i class="demo-pli-back"></i> Back</a>
+                                    <a class="btn btn-primary" th:href="@{/admin/course/{typeId}(typeId=${typeId}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}"><i class="demo-pli-back"></i> Back</a>
                                 </div>
                             </div>
                             <div class="table-responsive">

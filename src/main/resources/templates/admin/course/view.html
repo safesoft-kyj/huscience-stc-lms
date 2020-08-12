@@ -233,7 +233,7 @@
                         <div class="col-sm-12 input-group pull-right">
                             <p class="text-right">
 <!--                                <a th:href="@{/admin/course/edit/{id}(id=${course.getId()})}" class="btn btn-success" th:text="#{label.edit}">수정</a>-->
-                                <a th:href="@{/admin/course/{typeId}(typeId=${typeId})}" class="btn btn-success" th:text="#{label.list}">목록</a>
+                                <a th:href="@{/admin/course/{typeId}(typeId=${typeId}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}" class="btn btn-success" th:text="#{label.list}">목록</a>
                             </p>
                         </div>
                     </div>

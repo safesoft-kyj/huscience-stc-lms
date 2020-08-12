@@ -5,8 +5,10 @@ import com.dtnsm.lms.component.CourseScheduler;
 import com.dtnsm.lms.domain.Account;
 import com.dtnsm.lms.domain.Course;
 import com.dtnsm.lms.domain.CourseAccount;
+import com.dtnsm.lms.domain.DTO.CourseAccountSimple;
 import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import com.dtnsm.lms.domain.constant.LmsAlarmType;
+import com.dtnsm.lms.report.CourseReportRepository;
 import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.PageInfo;
@@ -51,6 +53,9 @@ public class CourseAccountAdminController {
     @Autowired
     LmsNotificationService lmsNotificationService;
 
+    @Autowired
+    CourseReportRepository courseReportRepository;
+
     private PageInfo pageInfo = new PageInfo();
 
     public CourseAccountAdminController() {
@@ -82,12 +87,14 @@ public class CourseAccountAdminController {
         pageInfo.setPageId("m-course-list-page");
         pageInfo.setPageTitle(String.format("<a href='/admin/course/%s/'>%s</a> > %s", typeId, course.getCourseMaster().getCourseName(), "수강생"));
 
+        List<CourseAccountSimple> courseAccounts = courseReportRepository.findCourseAccountSimpleByPage(courseId);
+
         model.addAttribute(pageInfo);
-        model.addAttribute("borders", course.getCourseAccountList());
+        model.addAttribute("borders", courseAccounts);
+//        model.addAttribute("borders", course.getCourseAccountList());
         model.addAttribute("typeId", course.getCourseMaster().getId());
         model.addAttribute("courseName", course.getTitle());
         model.addAttribute("course", course);
-
 
         return "admin/course/account/list";
     }
@@ -111,6 +118,9 @@ public class CourseAccountAdminController {
     public String courseAccountAddPost(@PathVariable("typeId") String typeId
             , @PathVariable("courseId") Long courseId
             , @RequestParam(value = "page", required = false, defaultValue = "") String page
+            , @RequestParam(value = "active", required = false, defaultValue = "") String active
+            , @RequestParam(value = "status", required = false, defaultValue = "") String status
+            , @RequestParam(value = "title", required = false, defaultValue = "") String title
             , @RequestParam(value = "mailList", required = false, defaultValue = "0") String[] mails) {
 
         Course course = courseService.getCourseById(courseId);
@@ -155,10 +165,10 @@ public class CourseAccountAdminController {
             }
         }
 
-        return String.format("redirect:/admin/course/%s/%s/account?page=%s"
+        return String.format("redirect:/admin/course/%s/%s/account?page=%s&active=%s&status=%s&title=%s"
                 , typeId
                 , courseId
-                , page);
+                , page, active, status, title);
     }
 
 

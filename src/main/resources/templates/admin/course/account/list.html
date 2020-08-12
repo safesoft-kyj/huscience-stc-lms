@@ -58,13 +58,13 @@
 <!--                                        <a class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/account/sendmail(typeId=${typeId}, courseId=${courseId})}"><i class="demo-pli-mail-send"></i> 참석보고서 미작성자 메일 발송</a>-->
 <!--                                    </th:block>-->
                                     <th:block th:if="${course.getCnt() == 0 || course.getCnt() > course.getCourseAccountList().size()}">
-                                        <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/account/add(typeId=${typeId}, courseId=${courseId}, page=${param.page})}"><i class="demo-pli-add"></i> Add</a>
+                                        <a id="demo-btn-addrow" class="btn btn-purple" th:href="@{/admin/course/{typeId}/{courseId}/account/add(typeId=${typeId}, courseId=${courseId}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}"><i class="demo-pli-add"></i> Add</a>
                                     </th:block>
                                     <th:block th:unless="${course.getCnt() == 0 || course.getCnt() > course.getCourseAccountList().size()}">
                                         <button type="button" onclick="showCntMessage();" class="btn btn-purple" ><i class="demo-pli-add"></i> Add</button>
                                     </th:block>
 
-                                    <a class="btn btn-primary" th:href="@{/admin/course/{typeId}(typeId=${typeId}, page=${param.page})}"><i class="demo-pli-back"></i> Back</a>
+                                    <a class="btn btn-primary" th:href="@{/admin/course/{typeId}(typeId=${typeId}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}"><i class="demo-pli-back"></i> Back</a>
                                 </div>
                             </div>
                             <div class="table-responsive">
@@ -90,8 +90,8 @@
                                     <tbody>
                                     <tr th:each="border, index : ${borders}">
                                         <td class="text-center" th:text="${index.count}"></td>
-                                        <td class="text-center" th:text="${border.getAccount().getOrgDepart()}"></td>
-                                        <td class="text-center" th:text="${border.getAccount().getName()}"></td>
+                                        <td class="text-center" th:text="${border.getOrgDepart()}"></td>
+                                        <td class="text-center" th:text="${border.getName()}"></td>
                                         <td class="text-center" th:text="${border.getFromDate()}"></td>
                                         <td class="text-center" th:text="${border.getToDate()}"></td>
                                         <td class="text-center" th:text="${border.getRequestDate()}"></td>
@@ -139,12 +139,12 @@
                                                 <th:block th:if="${#strings.equalsIgnoreCase(typeId, 'BC0102')}">
                                                     <!-- 전자결재가 완료된 경우만 참석처리를 할 수 있다. -->
                                                     <th:block th:if="${#strings.equalsIgnoreCase(border.getFnStatus(), '1')}">
-                                                        <a th:href="@{/admin/course/{typeId}/{courseId}/account/updateAttendance/{id}(typeId=${typeId}, courseId=${courseId}, id=${border.getId()})}"><span class="badge badge-mint">참석처리</span></a>
+                                                        <a th:href="@{/admin/course/{typeId}/{courseId}/account/updateAttendance/{id}(typeId=${typeId}, courseId=${courseId}, id=${border.getId()}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}"><span class="badge badge-mint">참석처리</span></a>
                                                     </th:block>
                                                 </th:block>
                                                 <!-- 부서별교육인 경우 -->
                                                 <th:block th:if="${#strings.equalsIgnoreCase(typeId, 'BC0103')}">
-                                                    <a th:href="@{/admin/course/{typeId}/{courseId}/account/updateAttendance/{id}(typeId=${typeId}, courseId=${courseId}, id=${border.getId()})}"><span class="badge badge-mint">참석처리</span></a>
+                                                    <a th:href="@{/admin/course/{typeId}/{courseId}/account/updateAttendance/{id}(typeId=${typeId}, courseId=${courseId}, id=${border.getId()}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}"><span class="badge badge-mint">참석처리</span></a>
                                                 </th:block>
                                                 <!--                                                </th:block>-->
                                             </th:block>
@@ -160,7 +160,7 @@
                                             </th:block>
                                         </td>
                                         <td class="text-center">
-                                            <a th:text="#{label.delete}" th:href="@{/admin/course/{typeId}/{courseId}/account/delete/{id}(typeId=${typeId}, courseId=${courseId}, id=${border.getId()}, page=${param.page})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                            <a th:text="#{label.delete}" th:href="@{/admin/course/{typeId}/{courseId}/account/delete/{id}(typeId=${typeId}, courseId=${courseId}, id=${border.getId()}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -192,7 +192,8 @@
                 buttons: [
                     'excel'
                 ],
-                paging: false
+                paging: false,
+                // ordering: false
             });
         });
 

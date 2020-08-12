@@ -35,7 +35,7 @@
                 <div class="panel-body">
                     <!--===================================================-->
                     <!--End Horizontal Form-->
-                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/{typeId}/{courseId}/quiz/edit-post/{id}(typeId=${typeId}, courseId=${courseId}, id=${courseQuiz.getId()}, page=${param.page})}" th:object="${courseQuiz}" method="post" enctype="multipart/form-data">
+                    <form class="form-horizontal" id="boardFrm" action="#" th:action="@{/admin/course/{typeId}/{courseId}/quiz/edit-post/{id}(typeId=${typeId}, courseId=${courseId}, id=${courseQuiz.getId()}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}" th:object="${courseQuiz}" method="post" enctype="multipart/form-data">
                         <input type="hidden" th:field="*{id}" id="id" name="id">
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="name" th:text="#{label.course.quiz.name}">시험명</label>

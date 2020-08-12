@@ -54,7 +54,7 @@
                             <p class="text-right">
 <!--                                <button class="btn btn-primary" id="pdfsave">PDF저장</button>-->
                                 <button class="btn btn-primary" onclick="saveAsPdf();">PDF저장</button>
-                                <a class="btn btn-primary" th:href="@{/admin/course/{typeId}/{courseId}/survey(typeId=${typeId}, courseId=${courseId}, page=${param.page})}"><i class="demo-pli-back"></i> Back</a>
+                                <a class="btn btn-primary" th:href="@{/admin/course/{typeId}/{courseId}/survey(typeId=${typeId}, courseId=${courseId}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}"><i class="demo-pli-back"></i> Back</a>
                             </p>
                         </div>
                     </div>
