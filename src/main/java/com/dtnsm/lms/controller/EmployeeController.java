@@ -10,19 +10,19 @@ import com.dtnsm.common.repository.UserJobDescriptionRepository;
 import com.dtnsm.common.utils.Base64Utils;
 import com.dtnsm.lms.auth.UserService;
 import com.dtnsm.lms.domain.*;
+import com.dtnsm.lms.domain.DTO.ReviewHist;
+import com.dtnsm.lms.domain.DTO.ReviewHistDTO;
 import com.dtnsm.lms.domain.constant.BinderAlarmType;
 import com.dtnsm.lms.domain.constant.CurriculumVitaeStatus;
 import com.dtnsm.lms.domain.constant.TrainingRecordReviewStatus;
 import com.dtnsm.lms.properties.FileUploadProperties;
 import com.dtnsm.lms.repository.CurriculumVitaeRepository;
+import com.dtnsm.lms.repository.TrainingRecordReviewJdRepository;
 import com.dtnsm.lms.repository.TrainingRecordReviewRepository;
 import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.JobDescriptionFileService;
 import com.dtnsm.lms.service.MailService;
-import com.dtnsm.lms.util.DateUtil;
-import com.dtnsm.lms.util.DocumentConverter;
-import com.dtnsm.lms.util.PageInfo;
-import com.dtnsm.lms.util.SessionUtil;
+import com.dtnsm.lms.util.*;
 import com.dtnsm.lms.xdocreport.CurriculumVitaeReportService;
 import com.dtnsm.lms.xdocreport.JobDescriptionReportService;
 import com.dtnsm.lms.xdocreport.dto.JobDescriptionSign;
@@ -34,6 +34,7 @@ import com.querydsl.core.BooleanBuilder;
 import fr.opensagres.xdocreport.document.images.ByteArrayImageProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.docx4j.openpackaging.Base;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,9 +50,7 @@ import org.thymeleaf.context.Context;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -67,6 +66,7 @@ public class EmployeeController {
     private final UserJobDescriptionRepository userJobDescriptionRepository;
     private final SignatureRepository signatureRepository;
     private final JobDescriptionFileService jobDescriptionFileService;
+    private final TrainingRecordReviewJdRepository trainingRecordReviewJdRepository;
     private final TrainingRecordReviewRepository trainingRecordReviewRepository;
     private final TrainingRecordRepository trainingRecordRepository;
     private final CurriculumVitaeRepository curriculumVitaeRepository;
@@ -74,6 +74,7 @@ public class EmployeeController {
     private final FileUploadProperties prop;
     private final MailService mailService;
     private final DocumentConverter documentConverter;
+
     private PageInfo pageInfo = new PageInfo();
 
 
@@ -284,12 +285,56 @@ public class EmployeeController {
         return merger;
     }
 
+    private ReviewHistDTO getReviewHistory(Account account) {
+        List<TrainingRecordReview> reviews = trainingRecordReviewRepository.findAllByAccountAndStatusOrderByDateOfReviewDesc(account, TrainingRecordReviewStatus.REVIEWED);
+        List<ReviewHist> reviewHists = new ArrayList<>();
+        boolean init = true;
+        for(TrainingRecordReview review : reviews) {
+            ReviewHist hist = new ReviewHist();
+            hist.setDateOfReview(DateUtil.getDateToString(review.getDateOfReview(), "dd-MMM-yyyy").toUpperCase());
+            hist.setRevName(review.getReviewerName());
+
+            boolean isJobD = trainingRecordReviewJdRepository.findAllByTrainingRecordReview(review).isPresent();
+            hist.setCvLabel((ObjectUtils.isEmpty(review.getCurriculumVitae()) ? "□" : "■") + " CV (" + (init ? "initial" : "Update") +")");
+            hist.setJdLabel((isJobD == false ? "□" : "■") + " JD (" + (init ? "initial" : "Update") +")");
+            hist.setTrLabel((ObjectUtils.isEmpty(review.getTrainingRecord()) ? "□" : "■") + " Employee Training Log");
+
+            hist.setRevSign(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(review.getSignature())));
+            hist.setEmpSign(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(signatureRepository.findById(account.getUserId()).get().getBase64signature())));
+            reviewHists.add(hist);
+
+            init = false;
+        }
+
+        ReviewHistDTO reviewHistDTO = new ReviewHistDTO();
+        reviewHistDTO.setDisplayName(account.getEngName());
+        reviewHistDTO.setReviewHistList(reviewHists);
+        reviewHistDTO.setDateStarted(DateUtil.getDateToString(DateUtil.getStringToDate(account.getIndate(), "yyyy-mm-dd"), "dd-MMM-yyyy").toUpperCase());
+        reviewHistDTO.setEmployeeNo(account.getComNum());
+        reviewHistDTO.setDeptTeam(StringUtils.isEmpty(account.getOrgDepart()) ? (StringUtils.isEmpty(account.getOrgTeam()) ? "" : account.getOrgTeam())
+                : account.getOrgDepart() + (StringUtils.isEmpty(account.getOrgTeam()) ? "" : "/" + account.getOrgTeam()) );
+
+        String jobTitle = StreamSupport.stream(GlobalUtil.getJobDescriptionList(account.getUserId(), Arrays.asList(JobDescriptionStatus.APPROVED))
+                .spliterator(), false)
+                .map(u -> {
+                    JobDescription jd = u.getJobDescriptionVersion().getJobDescription();
+                    return jd.getTitle() + "(" + jd.getShortName() + ")";
+                })
+                .collect(Collectors.joining(","));
+        reviewHistDTO.setJobTitle(jobTitle);
+
+        return reviewHistDTO;
+
+    }
+
     private void createBinderPDF(Account account, TrainingRecordReview trainingRecordReview) {
         try {
             String binderPath = prop.getBinderDir();
             String binderPdf = account.getUserId() + "_db_"+trainingRecordReview.getId()+".pdf";
             String coverDocx = account.getUserId() + "_cover_"+trainingRecordReview.getId()+".docx";
             String coverPdf = account.getUserId() + "_cover_"+trainingRecordReview.getId()+".pdf";
+            String revHistDocx = account.getUserId() + "_tr_rev_hist_"+trainingRecordReview.getId()+".docx";
+            String revHistPdf = account.getUserId() + "_tr_rev_hist_"+trainingRecordReview.getId()+".pdf";
 
             Merger merger = null;
 
@@ -310,6 +355,17 @@ public class EmployeeController {
             }
 
             //TODO (Review History 추가 필요!)
+            //reviewHistory
+            InputStream trReviewHistIs = CurriculumVitaeReportService.class.getResourceAsStream("tr_review_hist.docx");
+            DataSourceInfo trDataSource = new DataSourceInfo(getReviewHistory(account), "");
+            FileOutputStream revOs = new FileOutputStream(new File(binderPath + revHistDocx));
+            created = documentConverter.assembleDocument(trReviewHistIs, revOs, trDataSource);
+//            log.info("@Cover created : {}", created);
+            if(created) {
+                log.info("@TR Review History 생성");
+                documentConverter.word2pdf(new FileInputStream(binderPath + revHistDocx), new FileOutputStream(binderPath + revHistPdf));
+                merger = createOrJoin(merger, new FileInputStream(binderPath + revHistPdf));
+            }
 
             //cv
             Optional<CurriculumVitae> optionalCurriculumVitae = curriculumVitaeRepository.findTop1ByAccountAndStatusOrderByIdDesc(account, CurriculumVitaeStatus.CURRENT);

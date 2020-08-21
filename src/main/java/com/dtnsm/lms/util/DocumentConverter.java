@@ -2,24 +2,22 @@ package com.dtnsm.lms.util;
 
 import com.groupdocs.assembly.DataSourceInfo;
 import com.groupdocs.assembly.DocumentAssembler;
-import com.groupdocs.assembly.LoadSaveOptions;
 import com.groupdocs.conversion.config.ConversionConfig;
 import com.groupdocs.conversion.handler.ConversionHandler;
 import com.groupdocs.conversion.handler.ConvertedDocument;
-import com.groupdocs.conversion.options.load.LoadOptions;
 import com.groupdocs.conversion.options.load.WordsLoadOptions;
 import com.groupdocs.conversion.options.save.MarkupSaveOptions;
 import com.groupdocs.conversion.options.save.PdfSaveOptions;
 import com.groupdocs.conversion.options.save.SaveOptions;
-import com.groupdocs.conversion.options.save.WatermarkOptions;
 import com.groupdocs.conversion.utils.wrapper.stream.GroupDocsOutputStream;
-import com.groupdocs.merger.Merger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 @Component
 @Slf4j
@@ -81,6 +79,7 @@ public class DocumentConverter {
             }
         }
     }
+
     public String word2html(String source) {
         try(ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             SaveOptions saveOption = new MarkupSaveOptions();
