@@ -116,11 +116,14 @@ public class DigitalBinderController {
         Account account = SessionUtil.getUserDetail().getUser();
         trainingRecordReview.setAccount(account);
 
+        boolean isCV = false;
+        boolean isTR = false;
 
         Optional<CurriculumVitae> optionalCV = getCurrentCurriculumVitae(userId);
         if(optionalCV.isPresent()) {
             CurriculumVitae cv = optionalCV.get();
             if(!cv.isReviewed()) {
+                isCV = true;
                 trainingRecordReview.setCurriculumVitae(cv);
             }
         }
@@ -132,6 +135,7 @@ public class DigitalBinderController {
         builder.and(qTrainingRecord.status.eq(TrainingRecordStatus.PUBLISHED));
         Optional<TrainingRecord> optionalTrainingRecord = trainingRecordRepository.findOne(builder);
         if(optionalTrainingRecord.isPresent()) {
+            isTR = true;
             TrainingRecord trainingRecord = optionalTrainingRecord.get();
             trainingRecordReview.setTrainingRecord(trainingRecord);
 
@@ -140,45 +144,47 @@ public class DigitalBinderController {
             trainingRecordRepository.save(trainingRecord);
         }
 
-        trainingRecordReview.setRequestDate(new Date());
-        trainingRecordReview.setStatus(TrainingRecordReviewStatus.REQUEST);
-        TrainingRecordReview savedTrainingRecordReview = trainingRecordReviewRepository.save(trainingRecordReview);
-        Iterable<UserJobDescription> jobDescriptions = getJobDescriptionList(userId, Arrays.asList(JobDescriptionStatus.APPROVED));
-        if(!ObjectUtils.isEmpty(jobDescriptions)) {
-            List<UserJobDescription> jobDescriptionList = StreamSupport.stream(jobDescriptions.spliterator(), false)
-                    .filter(jd -> !jd.isReviewed())
-                    .collect(Collectors.toList());
+        if(isCV == false && isTR == false) {
+            attributes.addFlashAttribute("returnMessage", "변경 된 이력이 존재하지 않습니다. 배포 후 검토 요청 해주세요.");
+        } else {
+            trainingRecordReview.setRequestDate(new Date());
+            trainingRecordReview.setStatus(TrainingRecordReviewStatus.REQUEST);
+            TrainingRecordReview savedTrainingRecordReview = trainingRecordReviewRepository.save(trainingRecordReview);
+            Iterable<UserJobDescription> jobDescriptions = getJobDescriptionList(userId, Arrays.asList(JobDescriptionStatus.APPROVED));
+            if(!ObjectUtils.isEmpty(jobDescriptions)) {
+                List<UserJobDescription> jobDescriptionList = StreamSupport.stream(jobDescriptions.spliterator(), false)
+                        .filter(jd -> !jd.isReviewed())
+                        .collect(Collectors.toList());
 
-            for(UserJobDescription userJobDescription : jobDescriptionList) {
-                QTrainingRecordReviewJd qTrainingRecordReviewJd = QTrainingRecordReviewJd.trainingRecordReviewJd;
-                BooleanBuilder jdBuilder = new BooleanBuilder();
-                jdBuilder.and(qTrainingRecordReviewJd.userJobDescription.id.eq(userJobDescription.getId()));
-                Optional<TrainingRecordReviewJd> optionalTrainingRecordReviewJd = trainingRecordReviewJdRepository.findOne(jdBuilder);
-                if(optionalTrainingRecordReviewJd.isPresent() == false) {
-                    TrainingRecordReviewJd trainingRecordReviewJd = new TrainingRecordReviewJd();
-                    trainingRecordReviewJd.setTrainingRecordReview(savedTrainingRecordReview);
-                    trainingRecordReviewJd.setUserJobDescription(userJobDescription);
+                for(UserJobDescription userJobDescription : jobDescriptionList) {
+                    QTrainingRecordReviewJd qTrainingRecordReviewJd = QTrainingRecordReviewJd.trainingRecordReviewJd;
+                    BooleanBuilder jdBuilder = new BooleanBuilder();
+                    jdBuilder.and(qTrainingRecordReviewJd.userJobDescription.id.eq(userJobDescription.getId()));
+                    Optional<TrainingRecordReviewJd> optionalTrainingRecordReviewJd = trainingRecordReviewJdRepository.findOne(jdBuilder);
+                    if(optionalTrainingRecordReviewJd.isPresent() == false) {
+                        TrainingRecordReviewJd trainingRecordReviewJd = new TrainingRecordReviewJd();
+                        trainingRecordReviewJd.setTrainingRecordReview(savedTrainingRecordReview);
+                        trainingRecordReviewJd.setUserJobDescription(userJobDescription);
 
-                    trainingRecordReviewJdRepository.save(trainingRecordReviewJd);
+                        trainingRecordReviewJdRepository.save(trainingRecordReviewJd);
+                    }
                 }
             }
-        }
-        attributes.addFlashAttribute("returnMessage", "매니저에게 검토를 요청하였습니다.");
 
-        //TODO 알림 전송!!! 매니저에게!!
-
-        if(!StringUtils.isEmpty(account.getParentUserId())) {
-            String toEmail = userRepository.findByUserId(account.getParentUserId()).getEmail();
-//            log.info("매니저에게 Binder 검토 요청 : {}", toEmail);
-//            Mail mail = new Mail();
-//            mail.setEmail(toEmail);
-            Context context = new Context();
-            context.setVariable("empName", account.getName());
-            context.setVariable("inDate", StringUtils.isEmpty(account.getIndate()) ? "N/A" : DateUtil.getDateToString(DateUtil.getStringToDate(account.getIndate()), "yyyy-MM-dd"));
-            mailService.send(toEmail, String.format(BinderAlarmType.BINDER_REVIEW.getTitle(), account.getName()), BinderAlarmType.BINDER_REVIEW, context);
-        } else {
-            log.error("매니저 지정이 되어 있지 않습니다.");
+            if(!StringUtils.isEmpty(account.getParentUserId())) {
+                attributes.addFlashAttribute("returnMessage", "매니저에게 검토를 요청하였습니다.");
+                String toEmail = userRepository.findByUserId(account.getParentUserId()).getEmail();
+                Context context = new Context();
+                context.setVariable("empName", account.getName());
+                context.setVariable("inDate", StringUtils.isEmpty(account.getIndate()) ? "N/A" : DateUtil.getDateToString(DateUtil.getStringToDate(account.getIndate()), "yyyy-MM-dd"));
+                mailService.send(toEmail, String.format(BinderAlarmType.BINDER_REVIEW.getTitle(), account.getName()), BinderAlarmType.BINDER_REVIEW, context);
+            } else {
+                log.error("매니저 지정이 되어 있지 않습니다.");
+                attributes.addFlashAttribute("returnMessage", "매니저 지정이 되어 있지 않습니다.");
+            }
         }
+
+
         return "redirect:/binder";
     }
 
