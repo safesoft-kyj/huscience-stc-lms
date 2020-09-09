@@ -159,12 +159,11 @@ public class CourseCertificateService {
 
 
         // 파일 기본 경로
-//        String sourceRootFoloer = prop.getXdocUploadDir() + "Data//Storage//";
+        String sourceRootFoloer = prop.getXdocUploadDir() + "Data//Storage//";
         String outputRootFoloer = prop.getCertificateUploadDir();
 
         // 수료증 Full Path
-        String srcCertificationFilePath = CurriculumVitaeReportService.class.getResource(srcCertificationTemplateFileName).getPath();
-//        String srcCertificationFilePath = sourceRootFoloer + srcCertificationTemplateFileName;
+        String srcCertificationFilePath = sourceRootFoloer + srcCertificationTemplateFileName;
 //        String srcCertificationFilePath = CurriculumVitaeReportService.class.getResource(srcCertificationTemplateFileName).getPath();
 //        InputStream is = CurriculumVitaeReportService.class.getResourceAsStream(srcCertificationTemplateFileName);
 
