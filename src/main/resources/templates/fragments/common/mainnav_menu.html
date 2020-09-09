@@ -6,6 +6,8 @@
 <ul id="mainnav-menu" class="list-group" th:fragment="menu">
 
     <th:block sec:authorize="hasRole('ROLE_OTHER')">
+<!--        &lt;!&ndash;Category name&ndash;&gt;-->
+<!--        <li class="list-header">Other Menu</li>-->
         <li>
             <a href="#">
                 <i class="demo-pli-home"></i>
@@ -162,7 +164,7 @@
             </a>
 
             <!--Submenu-->
-            <ul class="collapse">m
+            <ul class="collapse">
                 <li><a data-th-href="@{/mypage/main}">교육현황</a></li>
 <!--                <li><a data-th-href="@{/info/monthUser}">나의월간일정</a></li>-->
                 <li><a data-th-href="@{/mypage/uploadTrainingLog}">Training Log Upload</a></li>

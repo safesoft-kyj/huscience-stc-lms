@@ -157,6 +157,8 @@
                                             <!-- 수료증 버튼 -->
                                             <th:block th:unless="${border.getCertificateBindDate() == null}">
                                                 <a class="btn btn-mint" th:href="@{/mypage/certificate/file/downloadFile2/{docId}(docId=${border.getId()})}" target="_blank"><i class="fa fa-print"></i> 수료증</a>
+                                                <!-- 2020-09-03 수료증 문제 있을경우 처리 -->
+                                                <!--<a class="btn btn-warning" th:href="@{/api/admin/certificate/create(docId=${border.getId()})}" target="_blank"><i class="fa fa-print"></i> 수료증 재생성</a>-->
                                             </th:block>
                                         </td>
                                         <td class="text-center">

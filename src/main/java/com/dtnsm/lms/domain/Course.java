@@ -54,7 +54,7 @@ public class Course extends AuditorCreateEntity<String> {
     private String toDate;
 
     // 교육장소
-    @Column(length = 50)
+    @Column(length = 500)
     @ColumnDefault("''")
     private String place;
 
@@ -81,7 +81,7 @@ public class Course extends AuditorCreateEntity<String> {
     private int amount ;
 
     // 참석대상 부서/팀
-    @Column(length = 30)
+    @Column(length = 500)
     @ColumnDefault("''")
     private String team ;
 

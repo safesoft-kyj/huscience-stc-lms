@@ -146,7 +146,8 @@ public class CourseCertificateService {
         // GroupDoc 라이센스
 //        CommonUtilities.applyLicense();
 
-        String userId = SessionUtil.getUserId();
+//        String userId = SessionUtil.getUserId();
+        String userId = courseAccount.getAccount().getUserId();
         long timestamp = System.currentTimeMillis();
 
 
@@ -155,12 +156,15 @@ public class CourseCertificateService {
 
         String outputCertificationFileName = String.format("%s_%s_certi.pdf", timestamp, userId);
 
+
+
         // 파일 기본 경로
-        String sourceRootFoloer = prop.getXdocUploadDir() + "Data//Storage//";
+//        String sourceRootFoloer = prop.getXdocUploadDir() + "Data//Storage//";
         String outputRootFoloer = prop.getCertificateUploadDir();
 
         // 수료증 Full Path
-        String srcCertificationFilePath = sourceRootFoloer + srcCertificationTemplateFileName;
+        String srcCertificationFilePath = CurriculumVitaeReportService.class.getResource(srcCertificationTemplateFileName).getPath();
+//        String srcCertificationFilePath = sourceRootFoloer + srcCertificationTemplateFileName;
 //        String srcCertificationFilePath = CurriculumVitaeReportService.class.getResource(srcCertificationTemplateFileName).getPath();
 //        InputStream is = CurriculumVitaeReportService.class.getResourceAsStream(srcCertificationTemplateFileName);
 
@@ -249,15 +253,24 @@ public class CourseCertificateService {
         }
 
         // TODO :수료증 교육기간 설정(사용자별 교육시작일 ~ 교육종료일로 설정)
-        // Self Training인 경우는
+
         String prior = "";
-        // 과정 시작일과 종료일이 같은 경우
-        if (courseAccount.getFromDate().equals(courseAccount.getToDate())) {
-            prior = String.format("On %s", courseAccount.getFromDate());
-        } else {
-            prior = String.format("From %s to %s"
-                    , DateUtil.getDateToString(DateUtil.getStringToDate(courseAccount.getFromDate()), "dd MMM yyyy")
-                    , DateUtil.getDateToString(DateUtil.getStringToDate(courseAccount.getToDate()), "dd MMM yyyy"));
+
+        // 2020-09-08 Self Training 인 경우는 교육완료일(Complete Date)를 수료증에 기록한다.
+        if(courseAccount.getCourse().getCourseMaster().getId().equals("BC0101")) {
+
+            prior = String.format("On %s"
+                    , DateUtil.getDateToString(courseAccount.getCertificateBindDate(), "dd MMM yyyy"));
+
+        } else{     // 2020-09-08 Self Training 이 아닌 경우는 개인별 교육기간을 수료증에 기록한다.
+            // 과정 시작일과 종료일이 같은 경우
+            if (courseAccount.getFromDate().equals(courseAccount.getToDate())) {
+                prior = String.format("On %s", courseAccount.getFromDate());
+            } else {
+                prior = String.format("From %s to %s"
+                        , DateUtil.getDateToString(DateUtil.getStringToDate(courseAccount.getFromDate()), "dd MMM yyyy")
+                        , DateUtil.getDateToString(DateUtil.getStringToDate(courseAccount.getToDate()), "dd MMM yyyy"));
+            }
         }
 
         // TODO : Job Title 로 변경
