@@ -542,7 +542,7 @@ public class EmployeeController {
             /**
              *  같은 JD의 이전 버전을 Superseded 상태로 변경한다.
              */
-            superseded(userJobDescription.getUsername(), userJobDescription.getJobDescriptionVersion().getJobDescription().getId());
+            superseded(userJobDescription.getUsername(), userJobDescription.getJobDescriptionVersion());
             log.info("@userJobDescription save. id : {}", id);
             userJobDescriptionRepository.save(userJobDescription);
 
@@ -592,12 +592,14 @@ public class EmployeeController {
         return "redirect:/employees/jd/approved";
     }
 
-    private void superseded(String username, Integer jobDescriptionId) {
+    private void superseded(String username, JobDescriptionVersion jobDescriptionVersion) {
         QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qUserJobDescription.username.eq(username));
-        builder.and(qUserJobDescription.jobDescriptionVersion.jobDescription.id.eq(jobDescriptionId));
+        builder.and(qUserJobDescription.jobDescriptionVersion.jobDescription.id.eq(jobDescriptionVersion.getJobDescription().getId()));
+        builder.and(qUserJobDescription.jobDescriptionVersion.id.ne(jobDescriptionVersion.getId()));
         builder.and(qUserJobDescription.status.eq(JobDescriptionStatus.APPROVED));
+
         Optional<UserJobDescription> optionalUserJobDescription = userJobDescriptionRepository.findOne(builder);
         if(optionalUserJobDescription.isPresent()) {
             UserJobDescription userJobDescription = optionalUserJobDescription.get();
