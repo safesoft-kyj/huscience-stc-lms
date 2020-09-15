@@ -219,7 +219,7 @@ public class CVCodeList {
                 "Emphysema",
                 "Idiopathic Pulmonary Fibrosis",
                 "Interstitial Lung Disease (ILD)", "Others"));
-        indicationMap.put("Rhematology", Arrays.asList("Ankylosing Spondylitis",
+        indicationMap.put("Rheumatology", Arrays.asList("Ankylosing Spondylitis",
                 "Chronic GVHD",
                 "Immune function improvement",
                 "Lupus Nephritis",
@@ -272,7 +272,7 @@ public class CVCodeList {
             "Pharmacology/Toxicology",
             "Psychiatry/Psychology",
             "Pulmonary/Respiratory Diseases",
-            "Rhematology",
+            "Rheumatology",
             "Trauma",
             "Urology",
             "Vaccines",
