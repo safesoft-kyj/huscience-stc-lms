@@ -528,7 +528,7 @@ public class MyPageCvJdController {
     public String published(@PathVariable("id") Integer id) throws Exception {
         CurriculumVitae cv = curriculumVitaeRepository.findById(id).get();
 
-        CV dto = curriculumVitaeService.toCV(cv, false, false);
+        CV dto = curriculumVitaeService.toCV(cv, false);
             String outputFileName = SessionUtil.getUserId() + "_CV_"+id+ ".pdf";
             Files.createDirectories(Paths.get(prop.getBinderDir()).toAbsolutePath().normalize());
         ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -588,7 +588,7 @@ public class MyPageCvJdController {
     public void generate(@PathVariable("id") Integer id, HttpServletResponse response) {
         try {
             CurriculumVitae cv = curriculumVitaeRepository.findById(id).get();
-            CV dto = curriculumVitaeService.toCV(cv, false, false);
+            CV dto = curriculumVitaeService.toCV(cv, false);
 //                    response.setHeader("Content-Disposition", "attachment; filename=\"cv.pdf\"");
 //                    response.setContentType("application/pdf");
 //            String outputFileName = "CV_"+savedCV.getId()+"_" + SessionUtil.getUserId() + ".docx";
