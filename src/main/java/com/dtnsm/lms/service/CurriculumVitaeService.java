@@ -175,9 +175,9 @@ public class CurriculumVitaeService {
         return savedCV;
     }
 
-    public CV toCV(CurriculumVitae savedCV, boolean name, boolean company) {
+    public CV toCV(CurriculumVitae savedCV, boolean blind) {
         CV dto = new CV();
-        if(name) {
+        if(blind) {
             dto.setEngName(savedCV.getInitialName());
         } else {
             dto.setEngName(savedCV.getAccount().getEngName());
@@ -203,7 +203,7 @@ public class CurriculumVitaeService {
 
         dto.setCareerHistories(savedCV.getCareerHistories().stream().map(c ->
                 CareerHistoryDTO.builder()
-                        .companyName(company ? "***" : c.getCompanyName())
+                        .companyName(blind ? "***" : c.getCompanyName())
                         .cityCountry("Others".equals(c.getCityCountry()) ? c.getCityCountryOther() : c.getCityCountry())
                         .startDate(DateUtil.getDateToString(c.getStartDate(), "MMM yyyy"))
                         .endDate(c.isPresent() ? "Present" : DateUtil.getDateToString(c.getEndDate(), "MMM yyyy"))

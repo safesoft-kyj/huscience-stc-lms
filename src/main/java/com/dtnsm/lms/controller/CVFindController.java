@@ -127,15 +127,15 @@ public class CVFindController {
 
     @PostMapping({"/finder/blindcv", "/employees/finder/blindcv"})
     public void getBlindCV(@RequestParam("username") String username,
-                           @RequestParam(value = "initial", defaultValue = "true") boolean name,
-                           @RequestParam(value = "company", defaultValue = "true") boolean company,
+                           @RequestParam(value = "blind", defaultValue = "true") boolean blind,
                            HttpServletResponse httpServletResponse) throws Exception {
-        httpServletResponse.setHeader("Content-Disposition", "attachment; filename=\"BlindCV(" + username + ").pdf\"");
+
         Account account = userRepository.findByUserId(username);
+        httpServletResponse.setHeader("Content-Disposition", "attachment; filename=\""+(blind ? "Blind" : account.getEngName())+"_CV(" + username + ").pdf\"");
         Optional<CurriculumVitae> optionalCurriculumVitae = curriculumVitaeRepository.findTop1ByAccountAndStatusOrderByIdDesc(account, CurriculumVitaeStatus.CURRENT);
         if(optionalCurriculumVitae.isPresent()) {
             CurriculumVitae curriculumVitae = optionalCurriculumVitae.get();
-            CV cv = curriculumVitaeService.toCV(curriculumVitae, name, company);
+            CV cv = curriculumVitaeService.toCV(curriculumVitae, blind);
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             boolean result = curriculumVitaeReportService.assembleDocument(cv, os);
 //            log.info("Generate Result : {}", result);
