@@ -82,8 +82,8 @@ file:
   survey-upload-dir: D://UploadFiles//lms//upload//survey//
   binder-jd-upload-dir: D://UploadFiles//lms//upload//binder//jd//
   xdoc-upload-dir: D://UploadFiles//lms//upload//xdoc//
-  certificate-upload-dir: D://UploadFiles/lms//upload//certificate//
-  training-log-upload-dir: D:\UploadFiles\trainingLog
+  certificate-upload-dir: D://UploadFiles//lms//upload//certificate//
+  training-log-upload-dir: D://UploadFiles//trainingLog
   binder-dir: D://UploadFiles//binder//
 
 
