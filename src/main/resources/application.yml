@@ -5,7 +5,6 @@ spring:
     open-in-view: true
   profiles:
     active: prod
-
 logging:
   level:
     root: INFO
