@@ -235,11 +235,11 @@
                                             <th:block th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).request}"></th:block>
                                             <th:block th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).process}">
                                                 <form th:id="${'submit_form2' + index.count}" th:action="@{/mypage/classroom/view/{id}(id=${courseAccount.getId()})}" method="get">
-                                                    <!-- class 교육인 경우는 참석처리가 완료되어야 시험이나 설문을 진행할 수 있다. -->
+                                                    <!-- class 교육인 경우는 교육기간과 상관없이 참석처리가 된 경우는 시험이나 설문을 진행할 수 있다. -->
                                                     <th:block th:if="${#strings.equalsIgnoreCase(courseAccount.getCourse().getCourseMaster().getId(), 'BC0102') and #strings.equalsIgnoreCase(courseAccount.getIsAttendance(), '1')}">
-                                                        <a class="btn btn-info" th:onclick="|javascript:checkCoursePeriod('${courseAccount.getId()}','${index.count}')|"><i class="demo-pli-inbox-into"></i> 입장</a>
+                                                        <a class="btn btn-info" th:onclick="|javascript:submitForm2('${courseAccount.getId()}','${index.count}')|"><i class="demo-pli-inbox-into"></i> 입장</a>
                                                     </th:block>
-                                                    <!-- class 교육인 경우는 참석처리가 완료되어야 시험이나 설문을 진행할 수 있다. -->
+                                                    <!-- class 교육이 아닌경우(Self training)는 교육기간을 체크한다. -->
                                                     <th:block th:unless="${#strings.equalsIgnoreCase(courseAccount.getCourse().getCourseMaster().getId(), 'BC0102')}">
                                                         <a class="btn btn-info" th:onclick="|javascript:checkCoursePeriod('${courseAccount.getId()}','${index.count}')|"><i class="demo-pli-inbox-into"></i> 입장</a>
                                                     </th:block>
@@ -433,6 +433,7 @@
             }
         }
 
+        // 교육기간인 경우만 강의실로 입장한다.
         function checkCoursePeriod(docId, formId) {
 
             $.ajax({
@@ -454,6 +455,11 @@
                 },
             });
             return;
+        }
+
+        // Class 교육은 교육기간과 상관없이 교육 참석처리만 되면 강의실로 입장한다.
+        function submitForm2(docId, formId) {
+            $('#submit_form2' + formId).submit();
         }
 
         // function checkRequest(courseId, userId) {
