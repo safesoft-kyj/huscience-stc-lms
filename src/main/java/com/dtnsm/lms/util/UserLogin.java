@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 
 @Slf4j
@@ -23,6 +24,12 @@ public class UserLogin {
         String domainNum = "4";
 
         String myURL =  "http://gw.dtnsm.com/checker9_new.aspx?txtDomainNum=%s&txtUserid=%s&txtpassword=%s&sType=LOGIN";
+
+        try {
+            userPw = URLEncoder.encode(userPw, "UTF-8");
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         // 법인코드/사용자아이디/패스워드
         myURL = String.format(myURL, domainNum, userId, userPw);
