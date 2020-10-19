@@ -42,7 +42,7 @@
                             <label class="col-sm-2 control-label" for="mailList">교육대상자</label>
                             <div class="col-sm-9">
                                 <select class="form-control" name="mailList" id="mailList" multiple="multiple">
-                                    <option th:each="user : ${mailList}" th:value="${user.getUserId()}" th:text="${user.getName()}"></option>
+                                    <option th:each="user : ${mailList}" th:value="${user.getUserId()}" th:text="${user.getName() + ' (' + user.getUserId() + ')'}"></option>
                                 </select>
                             </div>
                             <div class="col-sm-1 pull-right">

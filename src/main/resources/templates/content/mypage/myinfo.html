@@ -148,7 +148,7 @@
                                                             <option value="">팀장/부서장을 지정하세요</option>
                                                             <option th:each="optAccount : ${accountList}"
                                                                     th:value="${optAccount.getUserId()}"
-                                                                    th:text="${optAccount.getName()}">
+                                                                    th:text="${optAccount.getName() + ' (' + optAccount.getUserId() + ')'}">
                                                             </option>
                                                         </select>
                                                     </div>

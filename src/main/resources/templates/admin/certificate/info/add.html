@@ -66,7 +66,7 @@
                             <label class="col-sm-2 control-label" for="cerManager1" th:text="#{label.certiInfo.cermanager1}">강사</label>
                             <div class="col-sm-9">
                                 <select class="form-control"  th:field="*{cerManager1}" id="cerManager1">
-                                    <option th:each="user : ${managerList}" th:value="${user.getUserId()}" th:text="${user.getName()}"></option>
+                                    <option th:each="user : ${managerList}" th:value="${user.getUserId()}" th:text="${user.getName() + ' (' + user.getUserId() + ')'}"></option>
                                 </select>
                             </div>
                             <span th:if="${#fields.hasErrors('cerManager1')}" th:errors="*{cerManager1}"></span>
@@ -82,7 +82,7 @@
                             <label class="col-sm-2 control-label" for="cerManager2"  th:text="#{label.certiInfo.cermanager2}">대표자</label>
                             <div class="col-sm-9">
                                 <select class="form-control"  th:field="*{cerManager2}" id="cerManager2">
-                                    <option th:each="user : ${managerList}" th:value="${user.getUserId()}" th:text="${user.getName()}"></option>
+                                    <option th:each="user : ${managerList}" th:value="${user.getUserId()}" th:text="${user.getName() + ' (' + user.getUserId() + ')'}"></option>
                                 </select>
                             </div>
                             <span th:if="${#fields.hasErrors('cerManager2')}" th:errors="*{cerManager2}"></span>
