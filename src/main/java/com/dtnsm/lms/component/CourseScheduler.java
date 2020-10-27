@@ -25,7 +25,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.meta.TypeQualifierNickname;
 import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -216,6 +218,7 @@ public class CourseScheduler {
 
     // 개인별 교육과정 교육중인 상태 업데이트
     @Scheduled(cron = "0 15 2 * * *")
+    @Transactional
     public void updateCourseStepStatus() {
 
         log.info("================================================");
@@ -229,7 +232,15 @@ public class CourseScheduler {
             // Self 교육중 상시교육이면서 교육상태가 process이면서 완료되지 않은 과정만 처리한다.
             if(courseAccount.getCourse().getCourseMaster().getId().equals("BC0101")
                     && courseAccount.getCourse().getIsAlways().equals("1")
-                    && courseAccount.getIsCommit().equals('0')) {
+                    && courseAccount.getIsCommit().equals("0")) {
+
+                log.info("Status Update : {}, {}, {}, {}, {}, {}", courseAccount.getAccount().getUserId()
+                        , courseAccount.getAccount().getName()
+                        , courseAccount.getCourse().getCourseMaster().getId()
+                        , courseAccount.getCourse().getIsAlways()
+                        , courseAccount.getIsCommit()
+                        , courseAccount.getCourseStatus().name()
+                );
 
                 CourseStepStatus courseStepStatus;
 
@@ -243,7 +254,7 @@ public class CourseScheduler {
                 if (todayToCompare > 0) {
                     courseStepStatus = CourseStepStatus.periodEnd; // 교육기간 종료
                     courseAccount.setCourseStatus(courseStepStatus);
-                    courseAccountService.save(courseAccount);
+//                    courseAccountService.save(courseAccount);
                 }
 
 //            if (todayFromCompare < 0) {
