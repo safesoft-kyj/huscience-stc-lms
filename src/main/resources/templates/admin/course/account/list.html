@@ -116,9 +116,9 @@
                                             </span>
                                             <!-- TODO: 과정상태가 기간연장이고 Self 트레이닝 이면서 상시 교육인 경우는 기간 연장이 가능함 -->
                                             <th:block th:if="${#strings.equalsIgnoreCase(border.getCourseStatus(), T(com.dtnsm.lms.domain.constant.CourseStepStatus).periodEnd) && border.getIsCommit().equals('0')}">
-                                                <th:block th:if="${#strings.equalsIgnoreCase(border.getCourse().getCourseMaster().getId(), 'BC0101')}">
-                                                    <th:block th:if="${#strings.equalsIgnoreCase(border.getCourse().getIsAlways(), '1')}">
-                                                        <a class="btn btn-info" href="#" th:onclick="|javascript:executeCoursePeriodExtend('${border.getId()}')|"><i class="demo-pli-inbox-into"></i> 연장</a>
+                                                <th:block th:if="${#strings.equalsIgnoreCase(border.getTypeId(), 'BC0101')}">
+                                                    <th:block th:if="${#strings.equalsIgnoreCase(border.getIsAlways(), '1')}">
+                                                        <a class="btn btn-info" th:href="|javascript:executeCoursePeriodExtend('${border.getId()}')|"><i class="demo-pli-inbox-into"></i> 연장</a>
                                                     </th:block>
                                                 </th:block>
                                             </th:block>
