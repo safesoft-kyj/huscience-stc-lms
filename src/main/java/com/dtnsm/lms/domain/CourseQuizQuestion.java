@@ -4,6 +4,7 @@ import com.dtnsm.lms.auth.AuditorCreateEntity;
 import com.dtnsm.lms.util.ExcelUtil;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 
 import javax.persistence.*;
@@ -17,6 +18,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Slf4j
 @Table(name="el_course_quiz_question")
 public class CourseQuizQuestion extends AuditorCreateEntity<String> {
 
@@ -198,10 +200,14 @@ public class CourseQuizQuestion extends AuditorCreateEntity<String> {
 
         short lastNum = row.getLastCellNum();
 
+
+
+        log.info("Cell Count: {}, {}", lastNum, row.getPhysicalNumberOfCells());
+
         List<String> cellValues = new ArrayList<>();
         for(int i = 0; i < lastNum; i++) {
             Cell cell = row.getCell(i);
-            if(row.getCell(i) == null || row.getCell(i).equals("")) break;
+            if(row.getCell(i) == null || row.getCell(i).equals("") || cell.getCellType() == CellType.BLANK) break;
             cellValues.add(ExcelUtil.getStringByCellValue(row.getCell(i)));
         }
 

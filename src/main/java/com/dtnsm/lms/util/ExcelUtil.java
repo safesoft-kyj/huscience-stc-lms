@@ -1,5 +1,6 @@
 package com.dtnsm.lms.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -7,6 +8,7 @@ import org.apache.poi.ss.usermodel.DateUtil;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@Slf4j
 public  class ExcelUtil {
 
     // 문자열 날짜에 하루 더하기
@@ -15,8 +17,13 @@ public  class ExcelUtil {
         DataFormatter formatter = new DataFormatter();
 
         String cellString = "";
+
+        log.info("Cell Type: {}, Cell Text: {}", cell.getCellType(), cell.toString());
+
         if(cell.getCellType() == CellType.STRING) {
             cellString = cell.getStringCellValue();
+        } else if (cell.getCellType() == CellType.BOOLEAN) {
+                cellString = cell.toString();
         } else if (cell.getCellType() == CellType.NUMERIC) {
             if (DateUtil.isValidExcelDate(cell.getNumericCellValue()) && cell.getNumericCellValue() > 100) {
                 Date date = cell.getDateCellValue();
