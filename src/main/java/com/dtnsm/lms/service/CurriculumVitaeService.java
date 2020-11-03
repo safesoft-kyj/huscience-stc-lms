@@ -50,9 +50,23 @@ public class CurriculumVitaeService {
                 cvEducationRepository.deleteAll(cv.getRemoveEducations());
             }
 
+            //삭제할 Career History 삭제
             if(!ObjectUtils.isEmpty(cv.getRemoveCareerHistories())) {
+                for(CVCareerHistory cvCareerHistory : cv.getRemoveCareerHistories()) {
+                    cvTeamDeptRepository.deleteAll(cvCareerHistory.getCvTeamDepts());
+                }
                 cvCareerHistoryRepository.deleteAll(cv.getRemoveCareerHistories());
             }
+
+            //있는 Career History중 지울 Dept 삭제.
+            if(!ObjectUtils.isEmpty(cv.getCareerHistories())) {
+                for(CVCareerHistory cvCareerHistory : cv.getCareerHistories()) {
+                    if(!ObjectUtils.isEmpty(cvCareerHistory.getRemoveCvTeamDepts())) {
+                        cvTeamDeptRepository.deleteAll(cvCareerHistory.getRemoveCvTeamDepts());
+                    }
+                }
+            }
+
 
             if(!ObjectUtils.isEmpty(cv.getRemoveLicenses())) {
                 cvLicenseRepository.deleteAll(cv.getRemoveLicenses());
