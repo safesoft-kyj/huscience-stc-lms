@@ -22,8 +22,8 @@ spring:
 #    url: jdbc:sqlserver://220.117.192.209:20170;DatabaseName=dtnsm_prod
 #    url: jdbc:sqlserver://220.117.192.209:20170;DatabaseName=dtnsm_prod
     username: sa
-    password: safe123!@#
-#    password: qwe123!@#
+    password: Test1234!
+#    password: safe123!@#
 #    url: jdbc:sqlserver://localhost:1433;DatabaseName=lms_test_20191118
 #    username: sa
 #    password: qwe123!@#
