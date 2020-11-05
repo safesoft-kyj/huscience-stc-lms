@@ -3,6 +3,7 @@ package com.dtnsm.lms.domain;
 import com.dtnsm.lms.auth.AuditorEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -61,6 +62,9 @@ public class CVCareerHistory extends AuditorEntity<String> implements Serializab
 
     @OneToMany(mappedBy = "careerHistory")
     private List<CVTeamDept> cvTeamDepts = new ArrayList<>();
+
+    @Transient
+    private List<CVTeamDept> removeCvTeamDepts = new ArrayList<>();
 
     @Column(name = "readonly")
     private boolean readOnly;

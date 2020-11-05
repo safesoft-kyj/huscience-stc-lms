@@ -3,6 +3,7 @@ package com.dtnsm.lms.domain;
 import com.dtnsm.lms.auth.AuditorEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.io.Serializable;
 @Data
 @Entity
 @Table(name = "el_cv_team_dept")
+@ToString(exclude = "careerHistory")
 @NoArgsConstructor
 public class CVTeamDept extends AuditorEntity<String> implements Serializable {
     private static final long serialVersionUID = 3231735123894893487L;

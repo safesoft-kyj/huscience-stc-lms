@@ -167,6 +167,10 @@ public class MyPageCvJdController {
                 cv.setHtmlContent(null);
             }
         } else {
+            //TEST
+            log.info("Department add");
+
+
             cv = new CurriculumVitae();
             cv.setInitial(true);
             cv.getEducations().add(new CVEducation());
@@ -269,6 +273,8 @@ public class MyPageCvJdController {
         boolean isRemove = WebUtils.hasSubmitParameter(request, "remove");
         boolean isPrev = WebUtils.hasSubmitParameter(request, "prev");
         boolean isNext = WebUtils.hasSubmitParameter(request, "next");
+
+        log.info("CV Info : {}", cv.getCareerHistories());
 
         if(!ObjectUtils.isEmpty(goIndex)) {
             int pos = currentPos.intValue();
@@ -407,6 +413,13 @@ public class MyPageCvJdController {
                     cv.getCareerHistories().remove(index);
                     break;
                 case "teamDept":
+                    if(isSaved) {
+                        if(!ObjectUtils.isEmpty(cv.getCareerHistories().get(index).getCvTeamDepts().get(Integer.parseInt(sindex[1])))) {
+                            cv.getCareerHistories().get(index).getRemoveCvTeamDepts().add(
+                                    cv.getCareerHistories().get(index).getCvTeamDepts().get(Integer.parseInt(sindex[1])
+                            ));
+                        }
+                    }
                     cv.getCareerHistories().get(index).getCvTeamDepts().remove(Integer.parseInt(sindex[1]));
                     break;
                 case "license":
@@ -484,6 +497,7 @@ public class MyPageCvJdController {
 
         boolean isSubmit = WebUtils.hasSubmitParameter(request, "_submit");
 
+        //Registration 했을 때 값,
         if(isSubmit) {
             experienceValidator.validate(cv, result);
             if(result.hasErrors()) {
@@ -501,7 +515,6 @@ public class MyPageCvJdController {
                 cv.setBase64sign(optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "");
 //                cv.setSignDate(new Date());
 //            }
-
 
             CurriculumVitae savedCV = curriculumVitaeService.save(cv);
             log.info("=> UserId : {}, CV가 저장 되었습니다. CV ID : {}", SessionUtil.getUserId(), savedCV.getId());
