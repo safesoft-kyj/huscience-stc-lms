@@ -5,10 +5,12 @@ import com.dtnsm.lms.domain.CourseSurveyActionAnswer;
 import com.dtnsm.lms.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class CourseSurveyActionService {
 
     @Autowired
@@ -24,10 +26,12 @@ public class CourseSurveyActionService {
         Survey
      */
 
+    @Transactional
     public CourseSurveyAction saveSurveyAction(CourseSurveyAction surveyAction){
         return actionRepository.save(surveyAction);
     }
 
+    @Transactional
     public void deleteActionSurvey(CourseSurveyAction surveyAction) {
 
         actionRepository.delete(surveyAction);
@@ -54,14 +58,17 @@ public class CourseSurveyActionService {
         Question Answer
      */
 
+    @Transactional
     public CourseSurveyActionAnswer saveSurveyActionAnswer(CourseSurveyActionAnswer surveyAnswer){
         return surveyActionAnswerRepository.save(surveyAnswer);
     }
 
+    @Transactional
     public void deleteSurveyActionAnswer(CourseSurveyActionAnswer surveyAnswer) {
         surveyActionAnswerRepository.delete(surveyAnswer);
     }
 
+    @Transactional
     public void deleteSurveyActionAnswer(Long id) {
         surveyActionAnswerRepository.delete(getCourseSurveyActionAnswerById(id));
     }

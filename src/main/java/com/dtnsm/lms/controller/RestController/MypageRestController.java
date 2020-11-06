@@ -142,26 +142,28 @@ public class MypageRestController {
                 }
             } else {  // CourseAccount 의 상태값을 완료로 변경하고 디지털 바인더 로그를 발생시킨다.
 
-                courseAccount.setCourseStatus(CourseStepStatus.complete);
-                courseAccount.setIsCommit("1");
+                if (courseAccount.getCourseStatus() != CourseStepStatus.complete) {
 
-                // 수료증 처리
-                if(courseAccount.getCourse().getIsCerti().equals("Y") && !courseAccount.getCourse().getCertiHead().equals("")){
-                    String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
-                    courseAccount.setCertificateNo(certificateNo);
-                }
+                    courseAccount.setCourseStatus(CourseStepStatus.complete);
+                    courseAccount.setIsCommit("1");
 
-                //
-                // TODO: 2019/11/12 Digital Binder Employee Training Log 처리 -ks Hwang
-                // 강의별로 로그를 생성시킨다.
-                binderLogService.createTrainingLog(courseAccountService.save(courseAccount));
+                    // 수료증 처리
+                    if (courseAccount.getCourse().getIsCerti().equals("Y") && !courseAccount.getCourse().getCertiHead().equals("")) {
+                        String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
+                        courseAccount.setCertificateNo(certificateNo);
+                    }
 
-                // binderLogService.createTrainingLog 에서 처리
+                    //
+                    // TODO: 2019/11/12 Digital Binder Employee Training Log 처리 -ks Hwang
+                    // 강의별로 로그를 생성시킨다.
+                    binderLogService.createTrainingLog(courseAccountService.save(courseAccount));
+
+                    // binderLogService.createTrainingLog 에서 처리
 //                courseSectionAction1 = courseSectionActionService.getById(sectionActionId);
 //                courseSectionAction1.setLogApplyDate(DateUtil.getTodayDate());
 //                courseSectionAction1.setIsLogApply("1");
 //                courseSectionAction1 = courseSectionActionService.save(courseSectionAction1);
-
+                }
             }
         }
 

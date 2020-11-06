@@ -634,7 +634,8 @@ public class MyPageController {
     @PostMapping("/classroom/quizview-post/{quizActionId}")
     public String quizPost(@PathVariable("quizActionId") Long quizActionId
             , HttpServletRequest request
-            , Model model) {
+            , Model model
+            , RedirectAttributes attributes) {
 
 
         // 사용자 시험 정보 가져오기
@@ -711,17 +712,22 @@ public class MyPageController {
 //                }
             } else {  // 설문 여부가 N인 경우 CourseAccount 의 상태값을 완료로 변경하고 디지털 바인더 로그를 발생시킨다.
 
-                courseAccount.setCourseStatus(CourseStepStatus.complete);
-                courseAccount.setIsAttendance("1");
-                courseAccount.setIsCommit("1");
+                if(courseAccount.getCourseStatus() != CourseStepStatus.complete) {
 
-                if (courseAccount.getCourse().getIsCerti().equals("Y")) {
-                    String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
-                    courseAccount.setCertificateNo(certificateNo);
+                    courseAccount.setCourseStatus(CourseStepStatus.complete);
+                    courseAccount.setIsAttendance("1");
+                    courseAccount.setIsCommit("1");
+
+                    if (courseAccount.getCourse().getIsCerti().equals("Y")) {
+                        String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
+                        courseAccount.setCertificateNo(certificateNo);
+                    }
+
+                    // TODO: 2019/11/12 Digital Binder Employee Training Log 처리 -ks Hwang
+                    binderLogService.createTrainingLog(courseAccountService.save(courseAccount));
+                } else {
+                    attributes.addFlashAttribute("message", "이미 교육과정 상태가 Complete 처리되었습니다. 처리되지 않았습니다.");
                 }
-
-                // TODO: 2019/11/12 Digital Binder Employee Training Log 처리 -ks Hwang
-                binderLogService.createTrainingLog(courseAccountService.save(courseAccount));
             }
         }
 
@@ -753,65 +759,52 @@ public class MyPageController {
     @PostMapping("/classroom/surveyview-post/{surveyActionId}")
     public String surveyPost(@PathVariable("surveyActionId") Long surveyActionId
             , HttpServletRequest request
-            , Model model) {
+            , Model model
+            , RedirectAttributes attributes) {
 
 
         // 사용자 설문 정보 가져오기
         CourseSurveyAction courseSurveyAction = courseSurveyActionService.getCourseSurveyActionById(surveyActionId);
 
-        // 이전 설문 삭제
-        for(CourseSurveyActionAnswer tmpAnswer : courseSurveyAction.getActionAnswers()) {
-            courseSurveyActionService.deleteSurveyActionAnswer(tmpAnswer);
-        }
+        // 교육과정이 완료가 아닌 경우만 처리한다.
+        if (courseSurveyAction.getCourseAccount().getCourseStatus() != CourseStepStatus.complete) {
+            // 이전 설문 삭제
+            for(CourseSurveyActionAnswer tmpAnswer : courseSurveyAction.getActionAnswers()) {
+                courseSurveyActionService.deleteSurveyActionAnswer(tmpAnswer);
+            }
 
-        // 사용자 설문 객체 생성
-        CourseSurveyActionAnswer questionAnswer;
-        CourseSurveyActionAnswer resultAnswer = null;
-        String question_id, userAnswer;
-        int iUserAnswerSum = 0;
-        for(CourseSurveyQuestion question : courseSurveyAction.getCourseSurvey().getQuestions()) {
+            // 사용자 설문 객체 생성
+            CourseSurveyActionAnswer questionAnswer;
+            CourseSurveyActionAnswer resultAnswer = null;
+            String question_id, userAnswer;
+            int iUserAnswerSum = 0;
+            for(CourseSurveyQuestion question : courseSurveyAction.getCourseSurvey().getQuestions()) {
 
-            question_id = Long.toString(question.getId());
-            userAnswer = request.getParameter("question-" + question_id.toString());
+                question_id = Long.toString(question.getId());
+                userAnswer = request.getParameter("question-" + question_id.toString());
 
-            if (question.getSurveyGubun().equals("S")) {
+                if (question.getSurveyGubun().equals("S")) {
 
-                if(userAnswer == null) userAnswer = "";
+                    if(userAnswer == null) userAnswer = "";
 
-            } else {
+                } else {
 
-                if(userAnswer == null) userAnswer = "0";
+                    if(userAnswer == null) userAnswer = "0";
 
-                iUserAnswerSum += Integer.parseInt(userAnswer);
+                    iUserAnswerSum += Integer.parseInt(userAnswer);
 
 //                userAnswer = String.valueOf(Integer.parseInt(userAnswer));
 
-            }
+                }
 //            log.info(String.valueOf(iUserAnswerSum));
-            questionAnswer = new CourseSurveyActionAnswer();
-            questionAnswer.setUserAnswer(userAnswer);
-            questionAnswer.setQuestion(question);
-            questionAnswer.setSurveyGubun(question.getSurveyGubun());
-            questionAnswer.setSurveyAction(courseSurveyAction);
+                questionAnswer = new CourseSurveyActionAnswer();
+                questionAnswer.setUserAnswer(userAnswer);
+                questionAnswer.setQuestion(question);
+                questionAnswer.setSurveyGubun(question.getSurveyGubun());
+                questionAnswer.setSurveyAction(courseSurveyAction);
 
-             resultAnswer = courseSurveyActionService.saveSurveyActionAnswer(questionAnswer);
-        }
-
-//        // 설문 결과를 저장한다.
-//        if (resultAnswer != null) {
-
-
-//            for(CourseSurveyActionAnswer answer : courseSurveyAction.getActionAnswers()) {
-//                if(answer.getQuestion().getSurveyGubun().equals("M")) {
-//
-//                    if(answer.getUserAnswer().isEmpty()) {
-//
-//                        answer_count += Integer.parseInt(answer.getUserAnswer());
-//
-//                        logger.info(String.valueOf(answer_count));
-//                    }
-//                }
-//            }
+                resultAnswer = courseSurveyActionService.saveSurveyActionAnswer(questionAnswer);
+            }
 
             courseSurveyAction.setScore(iUserAnswerSum);
             courseSurveyAction.setExecuteDate(DateUtil.getTodayString());
@@ -831,25 +824,11 @@ public class MyPageController {
             }
 
             // TODO: 2019/11/12 Digital Binder Employee Training Log 처리 -ks Hwang
-//            courseAccount1 = courseAccountService.save(courseAccount1);
             binderLogService.createTrainingLog(courseAccountService.save(courseAccount1));
+        } else {
+            attributes.addFlashAttribute("message", "이미 교육과정 상태가 Complete 처리되었습니다. 처리되지 않았습니다.");
+        }
 
-            // binderLogService.createTrainingLog 에서 처리
-//            for(CourseSectionAction courseSectionAction : courseAccount1.getCourseSectionActions()) {
-//                CourseSectionAction courseSectionAction1 = courseSectionActionService.getById(courseSectionAction.getId());
-//                courseSectionAction1.setLogApplyDate(DateUtil.getTodayDate());
-//                courseSectionAction1.setIsLogApply("1");
-//                courseSectionActionService.save(courseSectionAction1);
-//            }
-//        }
-
-//        pageInfo.setPageId("m-mypage-myinfo");
-//        pageInfo.setPageTitle(courseSurveyAction.getCourseSurvey().getName());
-
-//        model.addAttribute(pageInfo);
-//        model.addAttribute("quizAction", courseQuizActionService.getCourseQuizActionById(surveyActionId));
-
-        //return "redirect:/mypage/classroom/view/" + courseSurveyAction.getCourseSurvey().getCourse().getId();
         return "redirect:/mypage/classroom/surveyCommitMessage/" + surveyActionId;
     }
 

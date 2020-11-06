@@ -128,7 +128,7 @@
 <!--                                                            <a href="#" class="label label-table label-info" id="popupBtn"-->
 <!--                                                               th:onclick="|javascript:popupPdfView('${sectionFile.getId()}', '${sectionAction.getId()}');return false;|" target="_blank" th:text="#{label.course.section.request}">학습하기</a>-->
 
-                                                            <a href="#" class="label label-table label-info" th:text="#{label.course.section.request}"
+                                                            <a href="#" class="label label-table label-info" id="btnSection" th:text="#{label.course.section.request}"
                                                                th:onclick="openModal([[${sectionAction.getTotalUseSecond()}]], [[${sectionAction.getId()}]], [[${sectionFile.getId()}]], [[${sectionAction.getImageCurrent()}]], [[${sectionAction.getImageSize()}]], [[${sectionAction.getCourseSection().getName()}]])">학습</a>
 
 <!--                                                            <a href="#" class="" data-toggle="modal" data-target="#demo-default-modal"-->
@@ -322,6 +322,11 @@
         var gTid;
         var gCurrDate = new Date();
         var gCurrSecond = 0;
+
+        // setTimeout(function(){
+        //     location.reload();
+        // },1000); // 3000밀리초 = 3초
+
 
 
 
@@ -551,6 +556,7 @@
         }
 
         function popupQuizView(quizActionId, isNew) {
+
             var width = 1000;
             var height = 720;
 
@@ -567,21 +573,61 @@
             window.open(url, title, option);
         }
 
+        var setCookie = function(name, value, exp) {
+            var date = new Date();
+            date.setTime(date.getTime() + exp*24*60*60*1000);
+            document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/';
+        };
+
+        var getCookie = function(name) {
+            var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+            return value? value[2] : null;
+        };
+
+        var deleteCookie = function(name) {
+            document.cookie = name + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+        }
+
+        // var winPop = 0;
+
+
         function popupSurveyView(quizActionId) {
-            var width = 1000;
-            var height = 720;
 
-            var title = "디티앤사노메딕스";
-            var url = "/mypage/classroom/surveyview/" + quizActionId;
+            // 참여 버튼 비활성화
+            $("#popupSurvey2").css({ 'pointer-events': 'none' });
+
+            let width = 1000;
+            let height = 720;
+
+            let title = "디티앤사노메딕스";
+            let url = "/mypage/classroom/surveyview/" + quizActionId;
             // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
-            var popupX = (window.screen.width / 2) - (width / 2);
+            let popupX = (window.screen.width / 2) - (width / 2);
             // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
-            var popupY= (window.screen.height / 2) - (height / 2);
+            let popupY= (window.screen.height / 2) - (height / 2);
 
-            var option = "width =" + width + ", height =" + height + ", menubar=no, directories=no, location = no, scrollbars=yes, resizable=no";
+            let option = "width =" + width + ", height =" + height + ", menubar=no, directories=no, location = no, scrollbars=yes, resizable=no";
             option += ", left=" + popupX + ", top=" + popupY;
 
-            window.open(url, title, option);
+
+            var win = window.open(url, title, option);
+            win.focus();
+
+            // if (getCookie('pop') != '1') {
+            //     alert(getCookie('pop'));
+            //     setCookie('pop', '1', 1);
+            //
+            //     win = window.open(url, title, option);
+            //     win.focus();
+            //
+            //     deleteCookie('pop')
+            // }
+
+            // if(!winPop || (winPop && winPop.closed) ) {
+            //     winPop = window.open(url, title, option);
+            // }else {
+            //     winPop.location.href = url;
+            // }
         }
 
         // 새로고침 방지

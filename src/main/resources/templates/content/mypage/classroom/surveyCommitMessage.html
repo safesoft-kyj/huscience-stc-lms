@@ -49,11 +49,18 @@
         <!--Panel body-->
         <div class="panel-body">
             <div class="text-center">
-
                 <br><br>
                 <div class="col-sm-12" style="vertical-align: middle">
                     <h3 class="modal-title">
-                        설문에 응해 주셔서 감사합니다.
+                        <!-- Message Area Start -->
+                        <div class="alert alert-danger" th:if="${message != null}">
+                            <button class="close" data-dismiss="alert"><i class="pci-cross pci-circle"></i></button>
+                            <span th:text="${message}"></span>
+                        </div>
+                        <!-- Message Area End -->
+                        <div th:if="${message == null}">
+                            설문에 응해 주셔서 감사합니다.
+                        </div>
                     </h3>
                     <button class="btn btn-primary mar-ver" onclick="closeWindow();">확인</button>
 
