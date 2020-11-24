@@ -172,7 +172,9 @@ public class EmployeeController {
         List<JobDescriptionVersion> jobDescriptionVersions = jobDescriptionVersionRepository.getCurrentJobDescriptionVersions();
         model.addAttribute("jdVersions", jobDescriptionVersions);
 
-        Optional<List<Account>> optionalAccounts = userService.findByParentUserId(SessionUtil.getUserId());
+        //Optional<List<Account>> optionalAccounts = userService.findByParentUserId(SessionUtil.getUserId());
+        Optional<List<Account>> optionalAccounts = userService.findAllByParentUserIdAndEnabled(SessionUtil.getUserId(), true);
+
         if(optionalAccounts.isPresent()) {
             model.addAttribute("users", optionalAccounts.get());
             model.addAttribute("userId", userId);
@@ -183,17 +185,20 @@ public class EmployeeController {
 
     @PostMapping("/employees/jd/revoke")
     public String revokeJd(@RequestParam(value = "id") Integer id, RedirectAttributes attributes) {
-
         Optional<UserJobDescription> optionalUserJobDescription = userJobDescriptionRepository.findById(id);
         if(optionalUserJobDescription.isPresent()) {
             UserJobDescription userJobDescription = optionalUserJobDescription.get();
             userJobDescription.setStatus(JobDescriptionStatus.SUPERSEDED);
+
+            log.info("@Remoke Job Description : {}", userJobDescription);
+
 //            log.info("@UserJobDescription Id : {}, Superseded 상태로 변경(직무 배정 해제)", id);
             userJobDescriptionRepository.save(userJobDescription);
-            attributes.addFlashAttribute("message", "직무 배정 해제 처리가 정상적으로 처리 되었습니다.");
+            attributes.addFlashAttribute("type", "success");
+            attributes.addFlashAttribute("msg", "직무 배정 해제 처리가 정상적으로 처리 되었습니다.");
         } else {
-            attributes.addFlashAttribute("message", "데이터 조회에 실패 하였습니다.(사용자의 JD 정보 찾지 못함.)");
-
+            attributes.addFlashAttribute("type", "error");
+            attributes.addFlashAttribute("msg", "데이터 조회에 실패 하였습니다.(사용자의 JD 정보 찾지 못함.)");
         }
         return "redirect:/employees/jd/approved";
     }
@@ -204,7 +209,8 @@ public class EmployeeController {
     public String removeJd(@RequestParam(value = "id") Integer id, RedirectAttributes attributes) {
 
         userJobDescriptionRepository.deleteById(id);
-        attributes.addFlashAttribute("message", "선택하신 사용자의 직무가 삭제 되었습니다.");
+        attributes.addFlashAttribute("type", "info");
+        attributes.addFlashAttribute("msg", "선택하신 사용자의 직무가 삭제 되었습니다.");
         return "redirect:/employees/jd/approved";
     }
 

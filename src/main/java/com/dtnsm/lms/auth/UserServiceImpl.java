@@ -173,6 +173,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByParentUserId(userId);
     }
 
+    public Optional<List<Account>> findAllByParentUserIdAndEnabled(String userId, Boolean enabled){
+        return userRepository.findAllByParentUserIdAndEnabled(userId, enabled);
+    }
+
     /*
         Account
      */
@@ -218,6 +222,8 @@ public class UserServiceImpl implements UserService {
                     account.setEnabled(false);
                     userRepository.save(account);
                 }
+
+                //퇴사자 Job Description 배정 해제.
             }
         }
     }
@@ -280,6 +286,11 @@ public class UserServiceImpl implements UserService {
             }
         }
     }
+
+//    //Job Description에 대한 배정 상태를 갱신한다.
+//    public void updateJobDescriptions(){
+//
+//    }
 
 
     /*

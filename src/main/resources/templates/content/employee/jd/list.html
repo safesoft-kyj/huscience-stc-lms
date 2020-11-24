@@ -316,14 +316,14 @@
                 $("#preview_jd_cont").html($("#user_jd_cont_"+id).val());
             });
 
-            $("#revokeBtn").click(function() {
+            $(document).on("click", "#revokeBtn", function() {
                if(confirm('배정 해제 처리 하시겠습니까?')) {
                     $("#revokeId").val($(this).data("id"));
                     $("#revokeForm").submit();
                }
             });
 
-            $("#cancelBtn").click(function() {
+            $(document).on("click", "#cancelBtn", function() {
                 if(confirm('직무 배정을 취소 하시겠습니까?\n해당 정보는 삭제 됩니다.')) {
                     $("#deleteId").val($(this).data("id"));
                     $("#deleteForm").submit();

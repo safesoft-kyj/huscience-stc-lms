@@ -13,4 +13,6 @@ public interface UserService extends UserDetailsService {
     Account save(Account registration);
 
     Optional<List<Account>> findByParentUserId(String userId);
+
+    Optional<List<Account>> findAllByParentUserIdAndEnabled(String userId, Boolean enabled);
 }

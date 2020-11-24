@@ -305,12 +305,15 @@ public class MyPageController {
                 // 신규 암호 저장
                 user.setPassword(passwordEncoder.encode(npassword));
                 userRepository.save(user);
-                attributes.addFlashAttribute("message", "비밀번호가 변경 되었습니다.");
+                attributes.addFlashAttribute("type", "success");
+                attributes.addFlashAttribute("msg", "비밀번호가 변경 되었습니다.");
             } else {
-                attributes.addFlashAttribute("message", "현재 비밀번호가 맞지 않습니다.");
+                attributes.addFlashAttribute("type", "error");
+                attributes.addFlashAttribute("msg", "현재 비밀번호가 맞지 않습니다.");
             }
         } else {
-            attributes.addFlashAttribute("message", "비밀번호를 변경 하지 못했습니다..");
+            attributes.addFlashAttribute("type", "error");
+            attributes.addFlashAttribute("msg", "비밀번호를 변경 하지 못했습니다..");
         }
 
         return "redirect:/mypage/changepwd";
@@ -726,7 +729,8 @@ public class MyPageController {
                     // TODO: 2019/11/12 Digital Binder Employee Training Log 처리 -ks Hwang
                     binderLogService.createTrainingLog(courseAccountService.save(courseAccount));
                 } else {
-                    attributes.addFlashAttribute("message", "이미 교육과정 상태가 Complete 처리되었습니다. 처리되지 않았습니다.");
+                    attributes.addFlashAttribute("type", "error");
+                    attributes.addFlashAttribute("msg", "이미 교육과정 상태가 Complete 처리되었습니다. 처리되지 않았습니다.");
                 }
             }
         }
@@ -821,12 +825,13 @@ public class MyPageController {
             if (courseAccount1.getCourse().getIsCerti().equals("Y")) {
                 String certificateNo = courseCertificateService.newCertificateNumber(courseAccount1.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount1).getFullNumber();
                 courseAccount1.setCertificateNo(certificateNo);
-            }
-
+            }        
+            // TODO: YSH - 설문 진행 시 교육 완료 진행 여부 체킹 로직 추가 필요
             // TODO: 2019/11/12 Digital Binder Employee Training Log 처리 -ks Hwang
             binderLogService.createTrainingLog(courseAccountService.save(courseAccount1));
         } else {
-            attributes.addFlashAttribute("message", "이미 교육과정 상태가 Complete 처리되었습니다. 처리되지 않았습니다.");
+            attributes.addFlashAttribute("type", "error");
+            attributes.addFlashAttribute("msg", "이미 교육과정 상태가 Complete 처리되었습니다. 처리되지 않았습니다.");
         }
 
         return "redirect:/mypage/classroom/surveyCommitMessage/" + surveyActionId;

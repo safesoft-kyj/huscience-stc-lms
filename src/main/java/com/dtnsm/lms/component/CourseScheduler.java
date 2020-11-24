@@ -95,12 +95,10 @@ public class CourseScheduler {
         List<Course> courseList = courseService.getList();
 
         for(Course course : courseList) {
-
             int status = 0;
 
             // 부서별 교육(BC0103), 외부교육(BC0104) 은 신청기간이 없음으로 처리하지 않는다.
             if(course.getCourseMaster().getId().equals("BC0101") || course.getCourseMaster().getId().equals("BC0102")) {
-
                 Date requestFromDate = DateUtil.getStringToDate(course.getRequestFromDate());
                 Date requestToDate = DateUtil.getStringToDate(course.getRequestToDate());
                 Date fromDate = DateUtil.getStringToDate(course.getFromDate());
@@ -136,7 +134,6 @@ public class CourseScheduler {
                     course = courseService.save(course);
                 }
             } else if(course.getCourseMaster().getId().equals("BC0103")) {  // 부서별 교육(BC0103)
-
                 status = 0; // 상태값이 없음
                 if (course.getStatus() != status) {
 
@@ -145,7 +142,6 @@ public class CourseScheduler {
                 }
 
             } else if(course.getCourseMaster().getId().equals("BC0104")) {  // 외부교육(BC0104)
-
                 status = 2; //교육신청상태
                 if (course.getStatus() != status) {
 
@@ -291,6 +287,9 @@ public class CourseScheduler {
 
         // 내부직원인 퇴사자 enabled를 false로 처리 한다.(true:사용, false:사용불가)
         userService.updateAccountEnabled();
+
+//        // 내부직원인 퇴사자의 Job Description 배정을 해제한다.
+//        userService.updateJobDescriptions();
     }
 
     // 매일 2시 30분에 실행

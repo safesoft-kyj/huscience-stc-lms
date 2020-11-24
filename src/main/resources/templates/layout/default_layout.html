@@ -72,6 +72,9 @@
         <!--Bootstrap Datepicker [ OPTIONAL ]-->
         <link th:href="@{/default/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css}" rel="stylesheet">
 
+        <!--jquery toast master-->
+        <link th:href="@{/default/plugins/toast-master/css/jquery.toast.css}" rel="stylesheet" >
+
         <!--Themify Icons [ OPTIONAL ]-->
         <link th:href="@{/default/plugins/themify-icons/themify-icons.min.css}" rel="stylesheet">
 
@@ -188,8 +191,64 @@
         <!--Bootstrap Datepicker [ OPTIONAL ]-->
         <script th:src="@{/default/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js}"></script>
 
+        <!--jquery toast master-->
+        <script th:src="@{/default/plugins/toast-master/js/jquery.toast.js}"></script>
+
 
         <th:block layout:fragment="custom_js"></th:block>
+
+        <script>
+            //Message Alert
+            $(function(){
+                if("[[${msg}]]" != "") {
+                    console.log("[[${msg}]]");
+                    createToast("[[${type}]]", "[[${msg}]]");
+                }
+            });
+
+            //Toast Message
+            function createToast(t, msg) {
+                switch (t) {
+                    case 'error':
+                        $.toast({
+                            heading: 'Error',
+                            icon: 'error',
+                            text: msg,
+                            position: 'bottom-right',
+                            showHideTransition: 'fade'
+                        });
+                        return;
+                    case 'info':
+                        $.toast({
+                            heading: 'Information',
+                            icon: 'info',
+                            text: msg,
+                            position: 'bottom-right',
+                            showHideTransition: 'fade'
+                        });
+                        return;
+                    case 'success':
+                        $.toast({
+                            heading: 'Success',
+                            icon: 'success',
+                            text: msg,
+                            position: 'bottom-right',
+                            showHideTransition: 'fade'
+                        });
+                        return;
+                    case 'warning':
+                        $.toast({
+                            heading: 'Warning',
+                            icon: 'warning',
+                            text: msg,
+                            position: 'bottom-right',
+                            showHideTransition: 'fade'
+                        });
+                        return;
+                }
+            }
+        </script>
+
 
         <!-- menu select -->
         <script th:src="@{/default/js/custom/menu-select.js}"></script>
