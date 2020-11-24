@@ -323,12 +323,6 @@
         var gCurrDate = new Date();
         var gCurrSecond = 0;
 
-        // setTimeout(function(){
-        //     location.reload();
-        // },1000); // 3000밀리초 = 3초
-
-
-
 
         $(function() {
 
@@ -555,6 +549,7 @@
             window.open(url, title, option);
         }
 
+        // 퀴즈 팦업
         function popupQuizView(quizActionId, isNew) {
 
             var width = 1000;
@@ -573,24 +568,7 @@
             window.open(url, title, option);
         }
 
-        var setCookie = function(name, value, exp) {
-            var date = new Date();
-            date.setTime(date.getTime() + exp*24*60*60*1000);
-            document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/';
-        };
-
-        var getCookie = function(name) {
-            var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
-            return value? value[2] : null;
-        };
-
-        var deleteCookie = function(name) {
-            document.cookie = name + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
-        }
-
-        // var winPop = 0;
-
-
+        // 설문 팦업
         function popupSurveyView(quizActionId) {
 
             // 참여 버튼 비활성화
@@ -609,25 +587,7 @@
             let option = "width =" + width + ", height =" + height + ", menubar=no, directories=no, location = no, scrollbars=yes, resizable=no";
             option += ", left=" + popupX + ", top=" + popupY;
 
-
-            var win = window.open(url, title, option);
-            win.focus();
-
-            // if (getCookie('pop') != '1') {
-            //     alert(getCookie('pop'));
-            //     setCookie('pop', '1', 1);
-            //
-            //     win = window.open(url, title, option);
-            //     win.focus();
-            //
-            //     deleteCookie('pop')
-            // }
-
-            // if(!winPop || (winPop && winPop.closed) ) {
-            //     winPop = window.open(url, title, option);
-            // }else {
-            //     winPop.location.href = url;
-            // }
+            window.open(url, title, option);
         }
 
         // 새로고침 방지
