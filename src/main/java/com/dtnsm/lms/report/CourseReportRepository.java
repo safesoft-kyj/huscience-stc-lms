@@ -136,16 +136,17 @@ public class CourseReportRepository {
                 "order by org_depart, name \n";
 
 
-
         List<CourseAccountSimple> courseAccounts = jdbcTemplate.query(
                 querySql,
                 new Object[]{courseId}, (rs, rowNum) -> CourseAccountSimple.builder()
                         .id(rs.getString("id"))
                         .orgDepart(rs.getString("org_depart"))
                         .name(rs.getString("name"))
+                        .engName(rs.getString("eng_name"))
                         .fromDate(rs.getString("from_date"))
                         .toDate(rs.getString("to_date"))
                         .requestDate(rs.getString("request_date"))
+                        .completeDate(rs.getString("complete_date"))
                         .requestType(rs.getString("request_type"))
                         .fnStatus(rs.getString("fn_status"))
                         .courseStatus(CourseStepStatus.valueOf(rs.getString("course_status")))
@@ -156,7 +157,6 @@ public class CourseReportRepository {
                         .certificateBindDate(rs.getString("certificate_bind_date"))
                         .build()
         );
-
         return courseAccounts;
     }
 }
