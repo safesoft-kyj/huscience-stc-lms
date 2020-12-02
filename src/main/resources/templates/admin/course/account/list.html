@@ -98,7 +98,7 @@
                                         <td class="text-center" th:text="${border.getFromDate()}"></td>
                                         <td class="text-center" th:text="${border.getToDate()}"></td>
                                         <td class="text-center" th:text="${border.getRequestDate()}"></td>
-                                        <td class="text-center" th:text="${border.get}"></td>
+                                        <td class="text-center" th:text="${border.getCompleteDate()}"></td>
                                         <td class="text-center">
                                             <span th:if="${#strings.equalsIgnoreCase(border.getRequestType(), '0')}">지정</span>
                                             <span th:if="${#strings.equalsIgnoreCase(border.getRequestType(), '1')}">신청</span>
