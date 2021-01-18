@@ -18,9 +18,11 @@ public class CourseAccountSimple {
     private String id;
     private String orgDepart;
     private String name;
+    private String engName;
     private String fromDate;
     private String toDate;
     private String requestDate;
+    private String completeDate;
     private String requestType;
     private String fnStatus;
     private CourseStepStatus courseStatus;
