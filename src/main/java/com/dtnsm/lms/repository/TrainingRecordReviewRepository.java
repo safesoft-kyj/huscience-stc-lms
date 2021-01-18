@@ -13,4 +13,6 @@ public interface TrainingRecordReviewRepository extends JpaRepository<TrainingRe
     Optional<TrainingRecordReview> findTop1ByAccountOrderByIdDesc(Account account);
 
     List<TrainingRecordReview> findAllByAccountAndStatusOrderByDateOfReviewDesc(Account account, TrainingRecordReviewStatus status);
+
+    List<TrainingRecordReview> findAllByAccountAndStatusOrderByDateOfReviewAsc(Account account, TrainingRecordReviewStatus status);
 }

@@ -229,6 +229,7 @@ public class EmployeeController {
 
         TrainingRecordReview savedTrainingRecordReview = trainingRecordReviewRepository.save(trainingRecordReview);
 
+
         if(!ObjectUtils.isEmpty(trainingRecordReview.getCurriculumVitae()) && status == TrainingRecordReviewStatus.REVIEWED) {
             CurriculumVitae cv = trainingRecordReview.getCurriculumVitae();
             cv.setReviewed(true);
@@ -292,7 +293,9 @@ public class EmployeeController {
     }
 
     private ReviewHistDTO getReviewHistory(Account account) {
-        List<TrainingRecordReview> reviews = trainingRecordReviewRepository.findAllByAccountAndStatusOrderByDateOfReviewDesc(account, TrainingRecordReviewStatus.REVIEWED);
+//        List<TrainingRecordReview> reviews = trainingRecordReviewRepository.findAllByAccountAndStatusOrderByDateOfReviewDesc(account, TrainingRecordReviewStatus.REVIEWED);
+        List<TrainingRecordReview> reviews = trainingRecordReviewRepository.findAllByAccountAndStatusOrderByDateOfReviewAsc(account, TrainingRecordReviewStatus.REVIEWED);
+
         List<ReviewHist> reviewHists = new ArrayList<>();
         boolean init = true;
         for(TrainingRecordReview review : reviews) {
@@ -315,7 +318,7 @@ public class EmployeeController {
         ReviewHistDTO reviewHistDTO = new ReviewHistDTO();
         reviewHistDTO.setDisplayName(account.getEngName());
         reviewHistDTO.setReviewHistList(reviewHists);
-        reviewHistDTO.setDateStarted(DateUtil.getDateToString(DateUtil.getStringToDate(account.getIndate(), "yyyy-mm-dd"), "dd-MMM-yyyy").toUpperCase());
+        reviewHistDTO.setDateStarted(DateUtil.getDateToString(DateUtil.getStringToDate(account.getIndate(), "yyyy-MM-dd"), "dd-MMM-yyyy").toUpperCase());
         reviewHistDTO.setEmployeeNo(account.getComNum());
         reviewHistDTO.setDeptTeam(StringUtils.isEmpty(account.getOrgDepart()) ? (StringUtils.isEmpty(account.getOrgTeam()) ? "" : account.getOrgTeam())
                 : account.getOrgDepart() + (StringUtils.isEmpty(account.getOrgTeam()) ? "" : "/" + account.getOrgTeam()) );
@@ -360,7 +363,6 @@ public class EmployeeController {
 //                 log.info("@merger 객체 생성 {}{}", binderPath, coverPdf);
             }
 
-            //TODO (Review History 추가 필요!)
             //reviewHistory
             InputStream trReviewHistIs = CurriculumVitaeReportService.class.getResourceAsStream("tr_review_hist.docx");
             DataSourceInfo trDataSource = new DataSourceInfo(getReviewHistory(account), "");

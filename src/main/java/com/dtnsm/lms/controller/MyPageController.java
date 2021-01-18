@@ -730,7 +730,7 @@ public class MyPageController {
                     binderLogService.createTrainingLog(courseAccountService.save(courseAccount));
                 } else {
                     attributes.addFlashAttribute("type", "error");
-                    attributes.addFlashAttribute("msg", "이미 교육과정 상태가 Complete 처리되었습니다. 처리되지 않았습니다.");
+                    attributes.addFlashAttribute("msg", "이미 교육과정 상태가 Complete 처리되어, 작업이 수행되지 않았습니다.");
                 }
             }
         }

@@ -146,20 +146,20 @@
 
 
                                         <p th:if="${border.getIsAlways().equals('1')}">
-                                            <th:block th:if="${#strings.equalsIgnoreCase(border.getCourseMaster().getId(), 'BC0101') or #strings.equalsIgnoreCase(border.getCourseMaster().getId(), 'BC0102')}">
+                                            <th:block th:unless="${#strings.equalsIgnoreCase(border.getCourseMaster().getId(), 'BC0101')}">
                                                 <i class="ti-calendar"></i>&nbsp;
                                                 <span th:text="${'신청기간: 상시 | '}"></span>&nbsp;&nbsp;
+                                                <i class="ti-calendar"></i>&nbsp;
+                                                <span th:text="${'교육기간: 상시'}"></span>
                                             </th:block>
-                                            <i class="ti-calendar"></i>&nbsp;
-                                            <span th:text="${'교육기간: 상시'}"></span>
                                         </p>
                                         <p th:unless="${border.getIsAlways().equals('1')}">
-                                            <th:block th:if="${#strings.equalsIgnoreCase(border.getCourseMaster().getId(), 'BC0101') or #strings.equalsIgnoreCase(border.getCourseMaster().getId(), 'BC0102')}">
+                                            <th:block th:unless="${#strings.equalsIgnoreCase(border.getCourseMaster().getId(), 'BC0101')}">
                                                 <i class="ti-calendar"></i>&nbsp;
                                                 <span th:text="${'신청기간: '+border.getRequestFromDate()+'~'+border.getRequestToDate()+' | '}"></span>&nbsp;&nbsp;
+                                                <i class="ti-calendar"></i>&nbsp;
+                                                <span th:text="${'교육기간: '+border.getFromDate()+'~'+border.getToDate()}"></span>
                                             </th:block>
-                                            <i class="ti-calendar"></i>&nbsp;
-                                            <span th:text="${'교육기간: '+border.getFromDate()+'~'+border.getToDate()}"></span>
                                         </p>
                                     </td>
                                     <td class="col-sm-4 text-center" style="vertical-align: middle;">

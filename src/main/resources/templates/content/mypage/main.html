@@ -154,7 +154,7 @@
                         <table class="table" cellspacing="0" width="100%">
                             <thead>
                             <tr style="background: #FAFAFA;">
-                                <th class="text-center" th:text="#{label.no}">교육유형</th>
+                                <th class="text-center" th:text="#{label.no}">No.</th>
                                 <th class="text-center col-md-1" th:text="#{label.course.type}">교육유형</th>
                                 <th class="text-center col-md-3" th:text="#{label.course.name}">과정명</th>
                                 <th class="text-center col-md-2" th:text="#{label.course.period}">기간</th>
@@ -190,11 +190,16 @@
 <!--                                        </span>-->
                                     </td>
                                     <td class="text-center">
-                                        <th:block th:if="${#strings.equalsIgnoreCase(courseAccount.getFromDate(), courseAccount.getToDate())}">
-                                            <span th:text="${courseAccount.getFromDate()}"></span>
+                                        <th:block th:unless="${#strings.equalsIgnoreCase(courseAccount.getCourse().getCourseMaster().getCourseName(), 'self-training')}">
+                                            <th:block th:if="${#strings.equalsIgnoreCase(courseAccount.getFromDate(), courseAccount.getToDate())}">
+                                                <span th:text="${courseAccount.getFromDate()}"></span>
+                                            </th:block>
+                                            <th:block th:unless="${#strings.equalsIgnoreCase(courseAccount.getFromDate(), courseAccount.getToDate())}">
+                                                <span th:text="${courseAccount.getFromDate() + '~' + courseAccount.getToDate()}"></span>
+                                            </th:block>
                                         </th:block>
-                                        <th:block th:unless="${#strings.equalsIgnoreCase(courseAccount.getFromDate(), courseAccount.getToDate())}">
-                                            <span th:text="${courseAccount.getFromDate() + '~' + courseAccount.getToDate()}"></span>
+                                        <th:block th:if="${#strings.equalsIgnoreCase(courseAccount.getCourse().getCourseMaster().getCourseName(), 'self-training')}">
+                                            -
                                         </th:block>
                                     </td>
                                     <td class="text-center">

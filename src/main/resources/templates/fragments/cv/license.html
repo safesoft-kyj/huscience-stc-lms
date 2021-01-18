@@ -42,7 +42,8 @@
                                 </div>
                             </td>
                             <td>
-                                <button th:if="${license.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|license:${stat.index}|"><i class="fa fa-trash-o"></i></button>
+<!--                                <button th:if="${license.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|license:${stat.index}|"><i class="fa fa-trash-o"></i></button>-->
+                                <button class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|license:${stat.index}|"><i class="fa fa-trash-o"></i></button>
                             </td>
                         </tr>
                         <tr>
@@ -85,7 +86,7 @@
                                 <input type="text" class="form-control issueDate" placeholder="Issue Date(MMM YYYY)" th:field="*{certifications[__${stat.index}__].issueDate}">
                             </td>
                             <td>
-                                <button th:if="${certification.readOnly eq false}" class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|certification:${stat.index}|"><i class="fa fa-trash-o"></i>
+                                <button class="btn btn-xs btn-danger" type="submit" name="remove" th:value="|certification:${stat.index}|"><i class="fa fa-trash-o"></i>
                                 </button>
                             </td>
                         </tr>

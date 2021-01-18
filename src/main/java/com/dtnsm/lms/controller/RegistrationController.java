@@ -8,18 +8,13 @@ import com.dtnsm.lms.component.CourseScheduler;
 import com.dtnsm.lms.domain.Account;
 import com.dtnsm.lms.domain.CourseManager;
 import com.dtnsm.lms.domain.Role;
-import com.dtnsm.lms.domain.Schedule;
-import com.dtnsm.lms.mybatis.mapper.UserMapper;
-import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.repository.RoleRepository;
 import com.dtnsm.lms.repository.UserRepository;
 import com.dtnsm.lms.service.CourseManagerService;
 import com.dtnsm.lms.service.Mail;
 import com.dtnsm.lms.service.MailService;
 import com.dtnsm.lms.service.RoleService;
-import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.PageInfo;
-import com.dtnsm.lms.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +22,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
