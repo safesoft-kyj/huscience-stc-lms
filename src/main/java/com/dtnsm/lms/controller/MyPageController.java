@@ -21,6 +21,7 @@ import com.dtnsm.lms.util.SessionUtil;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -98,6 +99,20 @@ public class MyPageController {
     @Autowired
     CourseSectionSetupRepository courseSectionSetupRepository;
 
+    @Value("${my.status}")
+    private String mypageStatus;
+
+    @Value("${my.log-update}")
+    private String mypageLogUpdate;
+
+    @Value("${my.log}")
+    private String mypageLog;
+
+
+
+    @Value("${my.user-info}")
+    private String mypageUserInfo;
+
     private MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
 
     private PageInfo pageInfo = new PageInfo();
@@ -115,7 +130,7 @@ public class MyPageController {
             , Pageable pageable) {
 
         pageInfo.setPageId("m-mypage-main");
-        pageInfo.setPageTitle("교육현황");
+        pageInfo.setPageTitle(mypageStatus);
 
         //CustomUserDetails userDetails = SessionUtil.getUserDetail();
         Account account = userService.getAccountByUserId(SessionUtil.getUserId());
@@ -323,7 +338,7 @@ public class MyPageController {
     public String myInfoStd(Model model) {
 
         pageInfo.setPageId("m-mypage-main");
-        pageInfo.setPageTitle("사용자정보");
+        pageInfo.setPageTitle(mypageUserInfo);
 
         Account account = userService.getAccountByUserId(SessionUtil.getUserId());
 
@@ -370,7 +385,7 @@ public class MyPageController {
     public String lmsTraingLog(Model model, Pageable pageable) {
 
         pageInfo.setPageId("m-training-log");
-        pageInfo.setPageTitle("Employee Training Log");
+        pageInfo.setPageTitle(mypageLog);
 
         Page<CourseTrainingLog> courseTrainingLogs = courseTraingLogService.getAllByAccount_UserId(SessionUtil.getUserId(), pageable);
 
@@ -401,7 +416,7 @@ public class MyPageController {
     public String uploadTraingLog(Model model) {
 
         pageInfo.setPageId("m-training-log-upload");
-        pageInfo.setPageTitle("Training Log Upload");
+        pageInfo.setPageTitle(mypageLogUpdate);
 
         List<CourseTrainingLog> courseTrainingLogs = courseTrainingLogRepository.findAllByAccount_UserIdAndIsUpload(SessionUtil.getUserId(), "1");
 

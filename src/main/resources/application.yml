@@ -1,5 +1,8 @@
 server:
   port: 8080
+  domain: lms.dtnsm.com
+  link: "http://lms.dtnsm.com"
+
 spring:
   jpa:
     open-in-view: true
@@ -19,3 +22,66 @@ logging:
           StatementCreatorUtils: TRACE
     com.dtnsm: DEBUG
     org.apache.tiles: DEBUG
+
+
+
+#Site별 설정.
+site:
+  code: "Dt&SanoMedics"
+  link: "http://dtnsm.com/"
+  #  iso-title: "ISO 14155"
+  company-title: "Dt&SanoMedics"
+  company-kor-title: "디티앤사노매딕스"
+  footer-msg: "COPYRIGHT© Dt&SanoMedics. CO. LTD. ALL RIGHTS RESERVED."
+  image-logo: "/default/img/logo.jpg"
+  login-image: "/default/img/signup-image.jpg"
+
+  #세션 타이머(초 단위)
+  session-timer: "1800"
+  session-minute: "30"
+  session-second: "00"
+
+meta:
+  description: "DT&Sanomedics e-LMS Management System"
+  keywords: "디티앤사노매틱스,e-LMS"
+
+employee:
+  number-count: 9
+
+mail:
+  notice:
+    name: SanoMedics(e-SOP)
+    address: no-reply@dtnsm.com
+
+
+#UserMenu 관련
+#mypage:
+#  status: "교육현황"
+#  log-update: "Training Log Upload"
+#  log: "Employee Training Log"
+#  cv: "Curriculum Vitae"
+#  jd: "job Description"
+#  cert-upload: "수료증 Upload"
+#  user-info: "사용자정보"
+#binder:
+#  cv: "Curriculum Vitae"
+#  jd: "job Description"
+#  log-sop: "Employee Training Log(SOP)"
+#  log-tm: "Employee Training Log(TM)"
+#  cert: "Certification"
+
+#UserMenu 관련
+my:
+  status: "교육현황"
+  log-update: "교육이력 업로드"
+  log: "교육이력"
+  cv: "개인이력"
+  jd: "Job Description"
+  cert-upload: "수료증 업로드"
+  user-info: "사용자정보"
+binder:
+  cv: "개인이력"
+  jd: "Job Description"
+  log-sop: "교육이력(SOP)"
+  log-tm: "교육이력(TM)"
+  cert: "Certification"

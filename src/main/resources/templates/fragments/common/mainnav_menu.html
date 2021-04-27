@@ -165,17 +165,17 @@
 
             <!--Submenu-->
             <ul class="collapse">
-                <li><a data-th-href="@{/mypage/main}">교육현황</a></li>
+                <li><a data-th-href="@{/mypage/main}" th:text="${@environment.getProperty('my.status')}">교육현황</a></li>
 <!--                <li><a data-th-href="@{/info/monthUser}">나의월간일정</a></li>-->
-                <li><a data-th-href="@{/mypage/uploadTrainingLog}">Training Log Upload</a></li>
-                <li><a data-th-href="@{/mypage/courseTraingLog}">Employee Training Log</a></li>
+                <li><a data-th-href="@{/mypage/uploadTrainingLog}" th:text="${@environment.getProperty('my.log-update')}">Training Log Upload</a></li>
+                <li><a data-th-href="@{/mypage/courseTraingLog}" th:text="${@environment.getProperty('my.log')}">Employee Training Log</a></li>
                 <li class="list-divider"></li>
-                <li><a data-th-href="@{/mypage/cv}">Curriculum Vitae</a></li>
-                <li><a data-th-href="@{/mypage/jd/approved}">Job Description</a></li>
-                <li><a data-th-href="@{/mypage/certificate/file}">수료증 Upload</a></li>
+                <li><a data-th-href="@{/mypage/cv}" th:text="${@environment.getProperty('my.cv')}">Curriculum Vitae</a></li>
+                <li><a data-th-href="@{/mypage/jd/approved}" th:text="${@environment.getProperty('my.jd')}">Job Description</a></li>
+                <li><a data-th-href="@{/mypage/certificate/file}" th:text="${@environment.getProperty('my.cert-upload')}">수료증 Upload</a></li>
 <!--                <li><a data-th-href="@{/mypage/certificate/view}">수료증발급</a></li>-->
                 <li class="list-divider"></li>
-                <li><a data-th-href="@{/mypage/myInfoStd}">사용자정보</a></li>
+                <li><a data-th-href="@{/mypage/myInfoStd}" th:text="${@environment.getProperty('my.user-info')}">사용자정보</a></li>
 <!--                <li><a data-th-href="@{/mypage/quiz}">시험/시험결과/수료증발급</a></li>-->
 <!--                <li><a data-th-href="@{/mypage/myinfo}">사용자정보</a></li>-->
             </ul>

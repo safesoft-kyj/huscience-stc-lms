@@ -5,6 +5,7 @@ import com.dtnsm.lms.domain.constant.LmsAlarmCourseType;
 import com.dtnsm.lms.domain.datasource.MessageSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -29,6 +30,12 @@ public class MailService {
 
     @Autowired
     private JavaMailSender javaMailSender;
+
+    @Value("${mail.notice.name}")
+    private String emailName;
+
+    @Value("${mail.notice.address}")
+    private String emailAddress;
 
 
     public ResponseEntity<?> sendMail(Mail mail){
@@ -170,7 +177,7 @@ public class MailService {
                 MimeMessage mail = javaMailSender.createMimeMessage();
                 MimeMessageHelper helper = new MimeMessageHelper(mail, true);
 //                helper.setFrom("SanoMedics(LMS)");
-                helper.setFrom(new InternetAddress("no-reply@dtnsm.com", "SanoMedics(LMS)"));
+                helper.setFrom(new InternetAddress(emailAddress, emailName));
 //                helper.setReplyTo("<no-reply@dtnsm.com>");
                 helper.setTo(to);
                 helper.setSubject(subject);

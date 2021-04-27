@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Billing e.g. invoices and receipts</title>
-    <link href="http://lms.dtnsm.com/default/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
+    <link th:href="|${@environment.getProperty('server.link')}/default/plugins/transactional-email-templates/templates/styles.css|" media="all" rel="stylesheet" type="text/css" />
 </head>
 
 <body itemscope itemtype="http://schema.org/EmailMessage">
@@ -31,12 +31,12 @@
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    (<a href="http://lms.dtnsm.com/mypage/jd/approved" target="_blank">마이페이지 &gt; Job Description 바로가기</a>)
+                                                    (<a th:href="|${@environment.getProperty('server.link')}/mypage/jd/approved|" target="_blank">마이페이지 &gt; Job Description 바로가기</a>)
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    (<a href="http://lms.dtnsm.com/binder" target="_blank">Digital Binder 바로가기</a>)
+                                                    (<a th:href="|${@environment.getProperty('server.link')}/binder|" target="_blank">Digital Binder 바로가기</a>)
                                                 </td>
                                             </tr>
                                         </table>
@@ -44,7 +44,7 @@
                                 </tr>
                                 <tr>
                                     <td class="content-block aligncenter">
-                                        <a href="http://lms.dtnsm.com" target="_blank">LMS 바로가기</a>
+                                        <a th:href="${@environment.getProperty('server.link')}" target="_blank">LMS 바로가기</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -61,7 +61,7 @@
                         <tr>
                             <td class="aligncenter content-block">
                                 본 이메일의 발신자 주소는 발신전용으로 회신 되지 않습니다.<br/>
-                                COPYRIGHT© Dt&SanoMedics. CO. LTD. ALL RIGHTS RESERVED.</td>
+                                <span th:text="${@environment.getProperty('site.footer-msg')}"></span></td>
                         </tr>
                     </table>
                 </div></div>

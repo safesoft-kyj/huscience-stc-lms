@@ -26,6 +26,7 @@ import com.dtnsm.lms.xdocreport.dto.CV;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -80,6 +81,15 @@ public class MyPageCvJdController {
 
     private PageInfo pageInfo = new PageInfo();
 
+    @Value("${site.code}")
+    private String siteCode;
+
+    @Value("${my.cv}")
+    private String mypageCv;
+
+    @Value("${my.jd}")
+    private String mypageJd;
+
     @PostConstruct
     public void init() {
         pageInfo.setParentId("m-mypage");
@@ -96,10 +106,11 @@ public class MyPageCvJdController {
             log.debug("<== CV({}) status : {}", userId, cv.getStatus());
             if(cv.getStatus() == CurriculumVitaeStatus.CURRENT) {
                 pageInfo.setPageId("m-mypage-cv");
-                pageInfo.setPageTitle("Curriculum Vitae");
+                pageInfo.setPageTitle(mypageCv);
 
                 model.addAttribute(pageInfo);
                 model.addAttribute("cv", cv);
+
                 return "content/mypage/cv/current";
             } else {
                 return "redirect:/mypage/cv/" + currentCV.get().getId() +"/preview";
@@ -112,7 +123,7 @@ public class MyPageCvJdController {
     @GetMapping("/cv/old")
     public String oldVersion(Model model) {
         pageInfo.setPageId("m-mypage-cv");
-        pageInfo.setPageTitle("Curriculum Vitae");
+        pageInfo.setPageTitle(mypageCv);
         Account account = SessionUtil.getUserDetail().getUser();
         model.addAttribute(pageInfo);
 
@@ -128,7 +139,7 @@ public class MyPageCvJdController {
     @GetMapping("/cv/{newOrEdit}")
     public String newCV(@PathVariable("newOrEdit") String newOrEdit, @RequestParam(value = "id", required = false) Integer id, Model model) throws Exception {
         pageInfo.setPageId("m-mypage-cv");
-        pageInfo.setPageTitle("Curriculum Vitae");
+        pageInfo.setPageTitle(mypageCv);
 
         Account account = SessionUtil.getUserDetail().getUser();
 
@@ -179,7 +190,7 @@ public class MyPageCvJdController {
             history.setPresent(true);
             history.setCityCountry("Seoul, Korea");
             history.setClinicalTrialExperience(true);
-            history.setCompanyName("Dt&SanoMedics");
+            history.setCompanyName(siteCode);
             if(!StringUtils.isEmpty(account.getIndate())) {
                 history.setStartDate(DateUtil.getStringToDate(account.getIndate(), "yyyy-MM-dd"));
             }
@@ -531,7 +542,7 @@ public class MyPageCvJdController {
     @GetMapping("/cv/{id}/preview")
     public String preview(@PathVariable("id") Integer id, Model model) {
         pageInfo.setPageId("m-mypage-cv");
-        pageInfo.setPageTitle("Curriculum Vitae");
+        pageInfo.setPageTitle(mypageCv);
         model.addAttribute(pageInfo);
         model.addAttribute("id", id);
         return "content/mypage/cv/preview";
@@ -680,7 +691,7 @@ public class MyPageCvJdController {
     @GetMapping("/jd/{status}")
     public String jd(@PathVariable(value = "status") String stringStatus, Model model) {
         pageInfo.setPageId("m-mypage-jd");
-        pageInfo.setPageTitle("Job Description");
+        pageInfo.setPageTitle(mypageJd);
 
         QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
         BooleanBuilder builder = new BooleanBuilder();

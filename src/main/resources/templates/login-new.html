@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Dt&SanoMedics LMS System</title>
+    <title th:text="|${@environment.getProperty('site.code')} LMS Email|"></title>
 
     <!-- Font Icon -->
     <link rel="stylesheet" href="/default/login/fonts/material-icon/css/material-design-iconic-font.min.css">
@@ -32,7 +32,7 @@
             <div class="container">
                 <div class="signup-content">
                     <div class="signup-form" style="padding: 0">
-                        <a href="http://dtnsm.com/" target="_blank"><img src="/default/login/images/logo.jpg" style="height: 40px; padding-bottom: 10px" alt="Dt&SanoMedics"></a>
+                        <a href="http://dtnsm.com/" target="_blank"><img th:src="@{/default/img/logo.jpg}" style="height: 40px; padding-bottom: 10px" th:alt="${@environment.getProperty('site.code')}"></a>
                         <h2 class="form-title" style="padding-bottom: 5px">
 <!--                            Learning-->
 <!--                            Management-->

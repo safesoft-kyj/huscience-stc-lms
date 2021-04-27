@@ -19,7 +19,7 @@
     <br>
     <div class="footer" style="text-align: center">
         <p>본 이메일의 발신자 주소는 발신전용으로 회신되지 않습니다.</p>
-        <p>COPYRIGHT© Dt&SanoMedics. CO. LTD. ALL RIGHTS RESERVED.</p>
+        <p><span th:text="${@environment.getProperty('site.footer-msg')}"></span></p>
         <br>
     </div>
 </body>

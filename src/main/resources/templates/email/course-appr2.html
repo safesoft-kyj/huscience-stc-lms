@@ -14,12 +14,12 @@
     </tr>
     <tr>
         <td class="content-block">
-            <a href="http://lms.dtnsm.com" class="btn-primary">Learning Management System</a>
+            <a th:href="${@environment.getProperty('server.link')}" class="btn-primary">Learning Management System</a>
         </td>
     </tr>
     <tr>
         <td class="content-block">
-            Dt&SanoMedics
+            <span th:text="${@environment.getProperty('site.code')}"/>
         </td>
     </tr>
     </tbody>

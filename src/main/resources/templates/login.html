@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Dt&amp;SanoMedics</title>
+    <title th:text="${@environment.getProperty('site.code')}"/>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
     <link th:href="@{/default/css/bootstrap.min.css}" rel="stylesheet">
     <!--Nifty Stylesheet [ REQUIRED ]-->
@@ -56,7 +56,7 @@
             <div class="panel-body">
                 <div class="login-form">
                     <div class="hide-fixed pull-left pad-rgt">
-                        <a href="http://dtnsm.com/" target="_blank"><img th:src="@{/default/img/logo.jpg}" alt="Dt&SanoMedics" class="brand-icon" style="margin-top:0px;padding-left:15px;padding-bottom:3px; width:150px;height:30px;"></a>
+                        <a href="http://dtnsm.com/" target="_blank"><img th:src="@{/default/img/logo.jpg}" th:alt="${@environment.getProperty('site.code')}" class="brand-icon" style="margin-top:0px;padding-left:15px;padding-bottom:3px; width:150px;height:30px;"></a>
                     </div>
                     <br><br>
                     <div class="mar-ver pad-btm">

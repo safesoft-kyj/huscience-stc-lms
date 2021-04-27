@@ -22,6 +22,7 @@ import com.dtnsm.lms.util.SessionUtil;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,6 +58,21 @@ public class DigitalBinderController {
     private final UserRepository userRepository;
     private final FileUploadProperties properties;
 
+    @Value("${binder.cv}")
+    private String digitalCv;
+
+    @Value("${binder.jd}")
+    private String digitalJd;
+
+    @Value("${binder.log-sop}")
+    private String digitalLogSop;
+
+    @Value("${binder.log-tm}")
+    private String digitalLogTm;
+
+    @Value("${binder.cert}")
+    private String digitalCert;
+
     @PostConstruct
     public void init() {
         pageInfo.setParentId("m-binder");
@@ -65,6 +81,9 @@ public class DigitalBinderController {
 
     @GetMapping("/binder")
     public String digitalBinder(Model model) {
+        pageInfo.setPageId("h-history");
+        pageInfo.setPageTitle("Training Recode Review History");
+
         model.addAttribute(pageInfo);
 
         String userId = SessionUtil.getUserId();
@@ -205,6 +224,9 @@ public class DigitalBinderController {
 
     @GetMapping("/binder/cv")
     public String cv(Model model) {
+        pageInfo.setPageId("d-cv");
+        pageInfo.setPageTitle(digitalCv);
+
         model.addAttribute(pageInfo);
 
         String userId = SessionUtil.getUserId();
@@ -214,6 +236,9 @@ public class DigitalBinderController {
 
     @GetMapping("/binder/jd")
     public String jd(Model model) {
+        pageInfo.setPageId("d-jd");
+        pageInfo.setPageTitle(digitalJd);
+
         model.addAttribute(pageInfo);
 
         String userId = SessionUtil.getUserId();
@@ -278,7 +303,9 @@ public class DigitalBinderController {
     @GetMapping("/binder/{type}/trainingLog")
     public String getSopTrainingLog(@PathVariable("type") String type, Model model) {
         pageInfo.setPageId("t-log");
-        pageInfo.setPageTitle("Training Log("+type.toUpperCase()+")");
+        if(type.toUpperCase().equals("SOP"))     pageInfo.setPageTitle(digitalLogSop);
+        else                                     pageInfo.setPageTitle(digitalLogTm);
+
         model.addAttribute(pageInfo);
 
         QTrainingRecord qTrainingRecord = QTrainingRecord.trainingRecord;
@@ -306,7 +333,7 @@ public class DigitalBinderController {
     @GetMapping("/binder/certification")
     public String getCertification(Model model) {
         pageInfo.setPageId("t-cert");
-        pageInfo.setPageTitle("Certification");
+        pageInfo.setPageTitle(digitalCert);
         model.addAttribute(pageInfo);
 
         QTrainingRecord qTrainingRecord = QTrainingRecord.trainingRecord;

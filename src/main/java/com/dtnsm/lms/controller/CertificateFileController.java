@@ -9,6 +9,7 @@ import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -45,6 +46,9 @@ public class CertificateFileController {
 
     private PageInfo pageInfo = new PageInfo();
 
+    @Value("${my.cert-upload}")
+    private String mypageCertUpload;
+
     public CertificateFileController() {
         pageInfo.setParentId("m-file");
         pageInfo.setParentTitle("마이페이지");
@@ -54,7 +58,7 @@ public class CertificateFileController {
     public String minorList(Model model) {
 
         pageInfo.setPageId("m-border-add");
-        pageInfo.setPageTitle("수료증 업로드");
+        pageInfo.setPageTitle(mypageCertUpload);
         model.addAttribute(pageInfo);
 
         List<CertificateFile> fileList = fileService.getAllByUserId(SessionUtil.getUserId());

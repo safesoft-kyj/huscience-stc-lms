@@ -9,7 +9,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Dt&amp;SanoMedics</title>
+        <title th:text="${@environment.getProperty('site.code')}"/>
         <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
         <link href="/css/bootstrap.min.css" rel="stylesheet">
         <!--Nifty Stylesheet [ REQUIRED ]-->
@@ -48,7 +48,7 @@
             <header id="navbar">
                 <div id="navbar-container" class="boxed">
                     <div class="navbar-header">
-                        <h1 class="navbar-brand"><a href="/"><span>Dt&amp;SanoMedics</span></a></h1>
+                        <h1 class="navbar-brand"><a href="/"><span th:text="${@environment.getProperty('site.code')}"/></a></h1>
                     </div>
                     <!--Navbar -->
                     <!--================================-->
@@ -388,7 +388,7 @@
                         </div>
                         <!-- copyright -->
                         <div class="copyright">
-                            Copyright © 2018 Dt&SanoMedics. All rights reserved.
+                            <span th:text="${@environment.getProperty('site.footer-msg')}"></span>
                             <div class="version">system v1.0</div>
                         </div>
                         <!-- END copyright -->

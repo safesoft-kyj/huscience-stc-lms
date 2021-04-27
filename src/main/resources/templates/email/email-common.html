@@ -20,6 +20,7 @@
 
 </head>
 <body style="border: 0px; background: white; margin: 0px; padding: 0px;">
+    ${@environment.getProperty('server.link')}
 
     <div class="container" th:with="homeurl='http://lms.dtnsm.com', mainurl='http://lms.dtnsm.com/mypage/main'
 , appurl='http://lms.dtnsm.com/approval/mainApproval', apprcommiturl='http://lms.dtnsm.com/approval/mainApproval?status=complete'
@@ -318,7 +319,7 @@
         <hr>
         <div class="footer" style="text-align: center">
             <p>본 이메일의 발신자 주소는 발신전용으로 회신되지 않습니다.</p>
-            <p>COPYRIGHT© Dt&SanoMedics. CO. LTD. ALL RIGHTS RESERVED.</p>
+            <p><span th:text="${@environment.getProperty('site.footer-msg')}"></span></p>
             <br>
         </div>
 
