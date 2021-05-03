@@ -37,6 +37,16 @@ public class MailService {
     @Value("${mail.notice.address}")
     private String emailAddress;
 
+    @Value("${site.footer-msg}")
+    private String footermsg;
+
+    @Value("${server.link}")
+    private String serverLink;
+
+    @Value("${site.code}")
+    private String siteCode;
+
+
 
     public ResponseEntity<?> sendMail(Mail mail){
         send(mail);
@@ -48,6 +58,10 @@ public class MailService {
         String templateUri = "email/email-common";
         final Context context = new Context();
         context.setVariable("messageSource", messageSource);
+        context.setVariable("footermsg", footermsg);
+        context.setVariable("serverLink", serverLink);
+        context.setVariable("siteCode", siteCode);
+
 
         String body = templateEngine.process(templateUri, context);
 
@@ -65,6 +79,10 @@ public class MailService {
         final Context context = new Context();
         context.setVariable("subject", mail.getObject());
         context.setVariable("message", mail.getMessage());
+        context.setVariable("footermsg", footermsg);
+        context.setVariable("serverLink", serverLink);
+        context.setVariable("siteCode", siteCode);
+
         String templateUri = "email/email-account";
 
         String body = templateEngine.process(templateUri, context);
@@ -79,6 +97,10 @@ public class MailService {
         final Context context = new Context();
         context.setVariable("subject", mail.getObject());
         context.setVariable("message", mail.getMessage());
+        context.setVariable("footermsg", footermsg);
+        context.setVariable("serverLink", serverLink);
+        context.setVariable("siteCode", siteCode);
+
         String templateUri = "email/email-border";
 
         String body = templateEngine.process(templateUri, context);
@@ -93,6 +115,10 @@ public class MailService {
         final Context context = new Context();
         context.setVariable("subject", mail.getObject());
         context.setVariable("message", mail.getMessage());
+        context.setVariable("footermsg", footermsg);
+        context.setVariable("serverLink", serverLink);
+        context.setVariable("siteCode", siteCode);
+
         String templateUri = "email/email-template";
 
         switch (lmsAlarmCourseType) {
@@ -128,6 +154,10 @@ public class MailService {
         final Context context = new Context();
         context.setVariable("subject", mail.getObject());
         context.setVariable("message", mail.getMessage());
+        context.setVariable("footermsg", footermsg);
+        context.setVariable("serverLink", serverLink);
+        context.setVariable("siteCode", siteCode);
+
         String templateUri = "email/email-template";
 
         switch (lmsAlarmCourseType) {
@@ -162,6 +192,10 @@ public class MailService {
      * Binder 관련 알람 처리
      */
     public void send(String to, String subject, BinderAlarmType binderAlarmType, Context context) {
+        context.setVariable("footermsg", footermsg);
+        context.setVariable("serverLink", serverLink);
+        context.setVariable("siteCode", siteCode);
+
         String body = templateEngine.process(binderAlarmType.getTemplate(), context);
 
 //        to = "jhseo@dtnsm.com";

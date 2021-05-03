@@ -17,18 +17,15 @@
         /*    padding: 30px;*/
         /*}*/
     </style>
-
 </head>
 <body style="border: 0px; background: white; margin: 0px; padding: 0px;">
-    ${@environment.getProperty('server.link')}
-
-    <div class="container" th:with="homeurl='http://lms.dtnsm.com', mainurl='http://lms.dtnsm.com/mypage/main'
-, appurl='http://lms.dtnsm.com/approval/mainApproval', apprcommiturl='http://lms.dtnsm.com/approval/mainApproval?status=complete'
-, rpturl='http://lms.dtnsm.com/approval/mainRequest2?status=report', certiurl='http://lms.dtnsm.com/mypage/certificate/file'
-, logurl = 'http://lms.dtnsm.com/mypage/courseTraingLog'
-, docurl1='http://lms.dtnsm.com/approval/mainRequest1'
-, docurl2='http://lms.dtnsm.com/approval/mainRequest2'
-, doccommiturl2='http://lms.dtnsm.com/approval/mainRequest2?status=complete'" style="width:100%; background: #fff">
+    <div class="container" th:with="homeurl=${serverLink}+'/', mainurl=${serverLink}+'/mypage/main'
+, appurl=${serverLink}+'/approval/mainApproval', apprcommiturl=${serverLink}+'/approval/mainApproval?status=complete'
+, rpturl=${serverLink}+'/approval/mainRequest2?status=report', certiurl=${serverLink}+'/mypage/certificate/file'
+, logurl = ${serverLink}+'/mypage/courseTraingLog'
+, docurl1=${serverLink}+'/approval/mainRequest1'
+, docurl2=${serverLink}+'/approval/mainRequest2'
+, doccommiturl2=${serverLink}+'/approval/mainRequest2?status=complete'" style="width:100%; background: #fff">
 
         <br>
         <div style="width:100%; height:70px; line-height: 70px;; background: #8BC34A; text-align: center; ">
@@ -314,12 +311,11 @@
                     </th:block>
                 </th:block>
             </th:block>
-
         </div>
         <hr>
         <div class="footer" style="text-align: center">
             <p>본 이메일의 발신자 주소는 발신전용으로 회신되지 않습니다.</p>
-            <p><span th:text="${@environment.getProperty('site.footer-msg')}"></span></p>
+            <p><span th:text="${footermsg}"></span></p>
             <br>
         </div>
 

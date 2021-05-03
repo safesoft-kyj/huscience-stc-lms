@@ -54,34 +54,34 @@ mail:
     address: no-reply@dtnsm.com
 
 
-#UserMenu 관련
-#mypage:
-#  status: "교육현황"
-#  log-update: "Training Log Upload"
-#  log: "Employee Training Log"
-#  cv: "Curriculum Vitae"
-#  jd: "job Description"
-#  cert-upload: "수료증 Upload"
-#  user-info: "사용자정보"
-#binder:
-#  cv: "Curriculum Vitae"
-#  jd: "job Description"
-#  log-sop: "Employee Training Log(SOP)"
-#  log-tm: "Employee Training Log(TM)"
-#  cert: "Certification"
-
-#UserMenu 관련
+#UserMenu 관련 sano
 my:
   status: "교육현황"
-  log-update: "교육이력 업로드"
-  log: "교육이력"
-  cv: "개인이력"
-  jd: "Job Description"
-  cert-upload: "수료증 업로드"
+  log-update: "Training Log Upload"
+  log: "Employee Training Log"
+  cv: "Curriculum Vitae"
+  jd: "job Description"
+  cert-upload: "수료증 Upload"
   user-info: "사용자정보"
 binder:
-  cv: "개인이력"
-  jd: "Job Description"
-  log-sop: "교육이력(SOP)"
-  log-tm: "교육이력(TM)"
+  cv: "Curriculum Vitae"
+  jd: "job Description"
+  log-sop: "Employee Training Log(SOP)"
+  log-tm: "Employee Training Log(TM)"
   cert: "Certification"
+
+#UserMenu 관련 비임상
+#my:
+#  status: "교육현황"
+#  log-update: "교육이력 업로드"
+#  log: "교육이력"
+#  cv: "개인이력"
+#  jd: "Job Description"
+#  cert-upload: "수료증 업로드"
+#  user-info: "사용자정보"
+#binder:
+#  cv: "개인이력"
+#  jd: "Job Description"
+#  log-sop: "교육이력(SOP)"
+#  log-tm: "교육이력(TM)"
+#  cert: "Certification"
