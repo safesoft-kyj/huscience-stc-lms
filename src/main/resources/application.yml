@@ -50,8 +50,8 @@ site:
   company-title: "Dt&SanoMedics"
   company-kor-title: "디티앤사노매딕스"
   footer-msg: "COPYRIGHT© Dt&SanoMedics. CO. LTD. ALL RIGHTS RESERVED."
-  footer-img: "/default/login/images/logo_sano1.gif"
-  image-logo: "/default/login/images/logo_sano1.gif"
+  footer-img: "/default/login/images/logo_sano1.jpg"
+  image-logo: "/default/login/images/logo_sano1.jpg"
   login-image: "/default/login/images/signup-image.jpg"
 
   #세션 타이머(초 단위)

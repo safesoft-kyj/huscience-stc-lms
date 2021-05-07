@@ -134,8 +134,9 @@ public class CVFindController {
     public void getBlindCV(@RequestParam("username") String username,
                            @RequestParam(value = "blind", defaultValue = "true") boolean blind,
                            HttpServletResponse httpServletResponse) throws Exception {
-		httpServletResponse.setHeader("Content-Disposition", "attachment; filename=\""+(blind ? "Blind" : account.getEngName())+"_CV(" + username + ").pdf\"");
         Account account = userRepository.findByUserId(username);
+        httpServletResponse.setHeader("Content-Disposition", "attachment; filename=\""+(blind ? "Blind" : account.getEngName())+"_CV(" + username + ").pdf\"");
+
         Optional<CurriculumVitae> optionalCurriculumVitae = curriculumVitaeRepository.findTop1ByAccountAndStatusOrderByIdDesc(account, CurriculumVitaeStatus.CURRENT);
         if(optionalCurriculumVitae.isPresent()) {
             CurriculumVitae curriculumVitae = optionalCurriculumVitae.get();
