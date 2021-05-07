@@ -9,5 +9,6 @@ public class CVFindParam {
     private int career;
     private String ta;
     private String indication;
+    private String name;
     private List<String> usernameList;
 }

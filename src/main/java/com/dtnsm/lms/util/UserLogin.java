@@ -2,6 +2,8 @@ package com.dtnsm.lms.util;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -15,13 +17,20 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 
+
+
 @Slf4j
+@Component
 public class UserLogin {
 
-    public static boolean isLogin(String userId, String userPw) throws MalformedURLException {
+    private static String domainNum;
 
-        // 법인코드(디티앤사노메딕스)
-        String domainNum = "4";
+    @Value("${gw.code}")
+    public void setDomainNum(String value) {
+        domainNum = value;
+    }
+
+    public static boolean isLogin(String userId, String userPw) throws MalformedURLException {
 
         String myURL =  "http://gw.dtnsm.com/checker9_new.aspx?txtDomainNum=%s&txtUserid=%s&txtpassword=%s&sType=LOGIN";
 

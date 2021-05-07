@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Billing e.g. invoices and receipts</title>
-    <link th:href="|${@environment.getProperty('server.link')}/default/plugins/transactional-email-templates/templates/styles.css|" media="all" rel="stylesheet" type="text/css" />
+    <link th:href="|${serverLink}/default/plugins/transactional-email-templates/templates/styles.css|" media="all" rel="stylesheet" type="text/css" />
 </head>
 
 <body itemscope itemtype="http://schema.org/EmailMessage">
@@ -39,7 +39,7 @@
                                 </tr>
                                 <tr>
                                     <td class="content-block aligncenter">
-                                        <a th:href="|${@environment.getProperty('server.link')}/mypage/jd/approved|" target="_blank">마이페이지 > Job Description 바로가기</a>
+                                        <a th:href="|${serverLink}/mypage/jd/approved|" target="_blank">마이페이지 > Job Description 바로가기</a>
                                     </td>
                                 </tr>
                                 <tr>

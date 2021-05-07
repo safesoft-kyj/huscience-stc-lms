@@ -24,7 +24,8 @@
             and ca.clinical_trial_experience = 1
             and acc.enabled = 1
             <if test="usernameList != null">
-                <foreach collection="usernameList" item="username" open="and cv.account_user_id in(" close=")" separator=",">
+                and cv.account_user_id in
+                <foreach collection="usernameList" item="username" index="index" separator="," open="(" close=")">
                     #{username}
                 </foreach>
             </if>

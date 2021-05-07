@@ -1,7 +1,8 @@
 package com.dtnsm.lms.controller;
 
-import com.dtnsm.lms.domain.CourseAccount;
-import com.dtnsm.lms.domain.Document;
+import com.dtnsm.lms.domain.*;
+import com.dtnsm.lms.domain.constant.QuizStatusType;
+import com.dtnsm.lms.repository.CourseSectionSetupRepository;
 import com.dtnsm.lms.service.CourseAccountOrderService;
 import com.dtnsm.lms.service.CourseAccountService;
 import com.dtnsm.lms.service.DocumentService;
@@ -14,10 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +33,9 @@ public class ApprovalAdminController {
 
     @Autowired
     DocumentService documentService;
+
+    @Autowired
+    CourseSectionSetupRepository courseSectionSetupRepository;
 
     private PageInfo pageInfo = new PageInfo();
 
@@ -276,6 +277,34 @@ public class ApprovalAdminController {
         model.addAttribute("borders", courseAccountService.getAllByStatus("2", pageable));
 
         return "admin/approval/listApprAll";
+    }
+
+    @GetMapping("/classTrainingRetest")
+    public String myClassroomView(Model model) {
+
+        pageInfo.setPageId("m-mypage-approval");
+        pageInfo.setPageTitle("Class Training 재응시 결재");
+
+        List<CourseAccount> courseAccountList = courseAccountService.getAllByTestFail(true);
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("courseAccountList", courseAccountList);
+
+        return "admin/approval/classTrainingRetest";
+    }
+
+    @GetMapping("/classTrainingRetest/retest")
+    public String myClassroomView(@RequestParam("docId") Long docId) {
+
+        CourseAccount courseAccount = courseAccountService.getById(docId);
+
+        if(courseAccount.getCourse().getCourseMaster().getId().equals("BC0102")) // class training
+        {
+            courseAccount.setTestFail(false);
+            courseAccountService.save(courseAccount);
+        }
+
+        return "redirect:";
     }
 }
 

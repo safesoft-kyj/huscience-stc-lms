@@ -229,7 +229,10 @@ public class RegistrationController {
 
         // 1.외부 사용자 상위결재권자가 지정되어 있지 않은 경우 교육관리자로 지정한다.
         if (account.getParentUserId() == null ||  account.getParentUserId().isEmpty()) {
-            account.setParentUserId(courseManagerService.getCourseManager().getAccount().getUserId());
+            if(courseManagerService.getCourseManager().getAccount().getUserId().isEmpty())
+                return "redirect:/admin/registration/account";
+            else
+                account.setParentUserId(courseManagerService.getCourseManager().getAccount().getUserId());
         }
         // 저장한다.
         Account saveAccount = userRepository.save(account);

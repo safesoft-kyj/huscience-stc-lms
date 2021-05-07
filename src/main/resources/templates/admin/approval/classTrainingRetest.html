@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+
+    <style>
+        .body-wrap {
+            background-color: #ecf0f5;
+            width: 100%;
+        }
+
+        .container {
+            display: block !important;
+            max-width: 600px !important;
+            margin: 0 auto !important;
+            clear: both !important;
+        }
+
+        .content {
+            max-width: 600px;
+            margin: 0 auto;
+            display: block;
+            padding: 20px;
+        }
+
+        th {
+            color: white;
+        }
+
+        th, td {
+            text-align: center;
+        }
+    </style>
+
+</th:block>
+
+<th:block layout:fragment="content_body">
+
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <!-- Basic Data Tables -->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-body">
+                    <hr class="table-head">
+<!--                                        <table id="customer-list-page1" class="table" cellspacing="0" width="100%">-->
+<!--                                            <form name="testForm" id="testForm" th:action="@{/admin/report/course/self}" method="post">-->
+<!--                                                <tbody>-->
+<!--                                                <tr>-->
+<!--                                                    <td class="text-right col-lg-2" style="vertical-align: middle; background: #FAFAFA;">상태</td>-->
+<!--                                                    <td class="col-lg-4">-->
+<!--                                                        <div>-->
+<!--                                                            <select name="status" class="form-control">-->
+<!--                                                                <option value="0" th:selected="${#strings.equalsIgnoreCase(param.status, '0')}">진행중</option>-->
+<!--                                                                <option value="1" th:selected="${#strings.equalsIgnoreCase(param.status, '1')}">완료</option>-->
+<!--                                                                <option value="%" th:selected="${#strings.equalsIgnoreCase(param.status, '%')}">전체</option>-->
+<!--                                                            </select>-->
+<!--                                                        </div>-->
+<!--                                                    </td>-->
+<!--                                                    <td class="text-right col-lg-2" style="vertical-align: middle; background: #FAFAFA;">사용자</td>-->
+<!--                                                    <td class="col-lg-4">-->
+<!--                                                        <input class="form-control" type="text" th:value="${param.userName}" id="userName" name="userName" />-->
+<!--                                                    </td>-->
+<!--                                                </tr>-->
+<!--                                                <tr>-->
+<!--                                                    <td class="text-right col-lg-2" style="vertical-align: middle; background: #FAFAFA;">부서명</td>-->
+<!--                                                    <td class="col-lg-4">-->
+<!--                                                        <input class="form-control" type="text" th:value="${param.orgDepart}" id="orgDepart" name="orgDepart" />-->
+<!--                                                    </td>-->
+<!--                                                    <td class="text-right col-lg-2" style="vertical-align: middle; background: #FAFAFA;">팀명</td>-->
+<!--                                                    <td class="col-lg-4">-->
+<!--                                                        <input class="form-control" type="text" th:value="${param.orgTeam}" id="orgTeam" name="orgTeam" />-->
+<!--                                                    </td>-->
+<!--                                                </tr>-->
+<!--                                                <tr>-->
+<!--                                                    <td class="text-right col-lg-2" style="vertical-align: middle; background: #FAFAFA;">과정명</td>-->
+<!--                                                    <td class="col-lg-4">-->
+<!--                                                        <input class="form-control" type="text" th:value="${param.courseTitle}" id="courseTitle" name="courseTitle" />-->
+<!--                                                    </td>-->
+<!--                                                    <td class="text-right col-lg-2" style="vertical-align: middle; background: #FAFAFA;">&nbsp;</td>-->
+<!--                                                    <td class="col-lg-4">-->
+<!--                                                        &nbsp;-->
+<!--                                                    </td>-->
+<!--                                                </tr>-->
+<!--                                                <tr>-->
+<!--                                                    <td colspan="4" class="text-center">-->
+<!--                                                        <br>-->
+<!--                                                        <button type="submit" class="btn btn-lg btn-info">-->
+<!--                                                            <div class="demo-icon">-->
+<!--                                                                <i class="fa fa-search"></i> <span th:text="#{label.search}">fa fa-search</span>-->
+<!--                                                            </div>-->
+<!--                                                        </button>-->
+<!--                                                        <a class="btn btn-lg btn-default" th:href="@{/admin/report/course/self}" th:text="#{label.init}">초기화</a>-->
+<!--                                                    </td>-->
+<!--                                                </tr>-->
+
+<!--                                                </tbody>-->
+<!--                                            </form>-->
+<!--                                        </table>-->
+
+                    <div class="table-responsive">
+                        <table id="demo-dt-basic" class="table" cellspacing="0" width="100%">
+                            <colgroup>
+                                <col width="5%">
+                                <col width="55%">
+                                <col width="20%">
+                                <col width="20%">
+                            </colgroup>
+                            <thead>
+                            <tr class="bg-gray-light">
+                                <th class="text-center col-md-1" th:text="#{label.no}">#</th>
+                                <th style="vertical-align: middle">과정명</th>
+                                <th style="vertical-align: middle">사용자</th>
+                                <th style="vertical-align: middle">상태</th>
+                            </tr>
+                            </thead>
+                            <h2 th:if="${courseAccountList.isEmpty()}">
+                                <tr>
+                                    <td class="text-center" colspan="5">
+                                        <h4 class="text-warning">재시험 응시자가 존재하지 않습니다.</h4>
+                                    </td>
+                                </tr>
+                            </h2>
+                            <div th:if="${courseAccountList.isEmpty() == false}">
+                                <tbody>
+                                <tr th:each="courseAccount, index : ${courseAccountList}">
+                                    <td th:text="${index.count}"></td>
+                                    <td class="text-left">
+                                        <span th:text="${courseAccount.getCourse().getTitle()}"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span th:text="${courseAccount.getAccount().getName()}"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <form method="post">
+                                        <a th:href="@{/admin/approval/classTrainingRetest/retest(docId=${courseAccount.getId()})}"
+                                           class="label label-table label-danger" th:text="#{label.course.quiz.reRequest}"></a>
+                                        </form>
+                                    </td>
+                                </tr>
+                                </tbody>
+<!--                            </div>-->
+                        </table>
+                    </div>
+                </div><!--panel-body End -->
+            </div><!-- panel End -->
+        </div><!-- Page content End -->
+    </div><!-- Content container End -->
+
+</th:block>
+
+<th:block layout:fragment="custom_js">
+    <script th:inline="javascript">
+
+    </script>
+</th:block>
+
+</html>
+

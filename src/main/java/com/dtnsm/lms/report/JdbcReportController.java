@@ -6,10 +6,8 @@ import com.dtnsm.lms.util.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -121,21 +119,35 @@ public class JdbcReportController {
      * @exception
      * @see
      */
-    @RequestMapping({"/course/self"})
+    @RequestMapping({"/course/self", "/{employees}/report"})
     public String courseList(Model model
+            , @PathVariable(value = "employees", required = false) String employees
             , @RequestParam(value = "courseTitle", defaultValue = "%") String courseTitle
             , @RequestParam(value = "orgDepart", defaultValue = "%") String ordDepart
             , @RequestParam(value = "orgTeam", defaultValue = "%") String orgTeam
             , @RequestParam(value = "status", defaultValue = "0") String status
             , @RequestParam(value = "userName", defaultValue = "%") String userName) {
 
-        List<Map<String, Object>> mapList = courseReportRepository.findBySelfTraining(courseTitle, ordDepart, orgTeam, userName, status);
-        pageInfo.setPageTitle("Self Training 교육현황");
+        if(StringUtils.isEmpty(employees)) {
+            pageInfo.setPageTitle("Self Training 교육현황");
+        } else {
+            pageInfo.setParentId("m-teamDept");
+            pageInfo.setParentTitle("Team/Department");
 
+            pageInfo.setPageId("m-report");
+            pageInfo.setPageTitle("Report");
+        }
         model.addAttribute(pageInfo);
+
+        // List
+        List<Map<String, Object>> mapList;
+        if(StringUtils.isEmpty(employees))
+            mapList = courseReportRepository.findBySelfTraining(courseTitle, ordDepart, orgTeam, userName, status);
+        else
+            mapList = courseReportRepository.findByParentUser(courseTitle, ordDepart, orgTeam, userName, status);
+
         model.addAttribute("borders", mapList);
 
         return "admin/report/course-self";
     }
-
 }

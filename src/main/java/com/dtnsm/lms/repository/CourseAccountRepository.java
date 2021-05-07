@@ -83,6 +83,8 @@ public interface CourseAccountRepository extends JpaRepository<CourseAccount, Lo
     // 상태별 신청 조회
     List<CourseAccount> findByFnStatus(String status);
 
+    List<CourseAccount> findByIsTestFail(Boolean status);
+
     Page<CourseAccount> findByFnStatus(String status, Pageable pageable);
 
 

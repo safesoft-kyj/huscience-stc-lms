@@ -62,6 +62,10 @@ public class CourseAccount extends AuditorEntity<String> {
     @Enumerated(EnumType.STRING)
     private CourseStepStatus courseStatus = CourseStepStatus.none;
 
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private boolean isTestFail;
+
     // 총결재자 수
     @ColumnDefault("0")
     private int fnFinalCount = 0;

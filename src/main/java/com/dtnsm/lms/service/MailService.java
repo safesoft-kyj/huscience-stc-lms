@@ -47,7 +47,6 @@ public class MailService {
     private String siteCode;
 
 
-
     public ResponseEntity<?> sendMail(Mail mail){
         send(mail);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

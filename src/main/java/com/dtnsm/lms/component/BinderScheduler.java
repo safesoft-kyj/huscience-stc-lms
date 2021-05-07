@@ -80,7 +80,6 @@ public class BinderScheduler {
                 Context context = new Context();
                 context.setVariable("empName", user.getName());
                 context.setVariable("remainDay", user.getRemainDay());
-
                 mailService.send(user.getEmail(), String.format(BinderAlarmType.BINDER_REG.getTitle(), user.getName()), BinderAlarmType.BINDER_REG, context);
             }
         }

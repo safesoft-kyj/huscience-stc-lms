@@ -68,7 +68,7 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
 
-        var courseId = /*[[${courseId}]]*/;
+        var courseId /*= [[${courseId}]]*/;
 
         var saveStatus = true;
 
@@ -172,7 +172,7 @@
 
                     if (data == 4) {
                         saveStatus = false;
-                        alert('이미 신청한 내역이 있습니다..');
+                        alert('이미 신청한 내역이 있습니다.');
                         return false;
                     }
 

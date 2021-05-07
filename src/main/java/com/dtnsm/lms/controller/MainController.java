@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -74,6 +75,21 @@ public class MainController {
 
     @Value("${site.code}")
     private String siteCode;
+
+    @Value("${site.link}")
+    private String siteLink;
+
+    @Value("${site.image-logo}")
+    private String imageLogo;
+
+    @Value("${site.login-image}")
+    private String loginImage;
+
+    @Value("${meta.keywords}")
+    private String keywords;
+
+    @Value("${meta.description}")
+    private String description;
 
     private PageInfo pageInfo = new PageInfo();
 
@@ -244,8 +260,20 @@ public class MainController {
 
 
     @GetMapping("/login")
-    public String login(Model model) {
-        return "login-new";
+    public String login(Authentication authentication, Model model) {
+
+        if(ObjectUtils.isEmpty(authentication)) {
+            model.addAttribute("imageLogo", imageLogo);
+            model.addAttribute("siteLink", siteLink);
+            model.addAttribute("loginImage", loginImage);
+            model.addAttribute("siteCode", siteCode);
+            model.addAttribute("description", description);
+            model.addAttribute("keywords", keywords);
+
+            return "login-new";
+        } else {
+            return "redirect:/notice";
+        }
     }
 
     @PostMapping("/logout")

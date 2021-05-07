@@ -11,7 +11,6 @@ spring:
     enabled: true
     encoding: UTF-8
     mode: HTML
-    #    prefix: classpath:/templates/
     suffix: .html
     servlet:
       content-type: text/html
@@ -21,9 +20,6 @@ spring:
     password: safe123!@#
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
   flyway:
-    #      url: jdbc:sqlserver://localhost:1433;DatabaseName=elearning
-    #      user: sa
-    #      password: Dtncro@123##
     locations: classpath:/db/migration/prod
     baseline-on-migrate: true
     encoding: UTF-8
@@ -38,35 +34,9 @@ spring:
         default_batch_fetch_size: 1000
         format_sql: true
         use_sql_comments: true
-  servlet:
-    multipart:
-      enabled: true
-      max-file-size: 200MB
-      max-request-size: 215MB
-  mail:
-    host: gw.dtnsm.com
-    port: 25
-    protocol: smtp
-    username: sanomedics@dtnsm.com
-    #    password: cksdb0826
-    password: qwer1234!
-    default-encoding: UTF-8
-    properties:
-      mail:
-        smtp:
-          starttls:
-            enable: true
-          auth: true
+
 mybatis:
   type-aliases-package: com.dtnsm.lms.mybatis.dto
-
-#logging:
-#  level:
-#    root: ERROR
-#    org.springframework.web: ERROR
-#    com.dtnsm.lms: DEBUG
-#    org.hibernate: ERROR
-
 
 file:
   default-base: D://UploadFiles//lms//

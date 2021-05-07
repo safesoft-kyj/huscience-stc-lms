@@ -108,8 +108,6 @@ public class MyPageController {
     @Value("${my.log}")
     private String mypageLog;
 
-
-
     @Value("${my.user-info}")
     private String mypageUserInfo;
 
@@ -706,7 +704,6 @@ public class MyPageController {
 
             int completeCount = 0;
 
-
             CourseAccount courseAccount = courseQuizAction1.getCourseAccount();
 
             // 교육과정의 설문이 있는지 확인
@@ -747,6 +744,15 @@ public class MyPageController {
                     attributes.addFlashAttribute("type", "error");
                     attributes.addFlashAttribute("msg", "이미 교육과정 상태가 Complete 처리되어, 작업이 수행되지 않았습니다.");
                 }
+            }
+        }
+        else {
+            CourseAccount courseAccount = courseQuizAction1.getCourseAccount();
+
+            if(courseAccount.getCourse().getCourseMaster().getId().equals("BC0102")) // class training
+            {
+                courseAccount.setTestFail(true);
+                courseAccountService.save(courseAccount);
             }
         }
 

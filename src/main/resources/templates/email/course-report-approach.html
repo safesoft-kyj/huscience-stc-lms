@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title th:text="|${@environment.getProperty('site.code')} LMS Email|"></title>
+    <title th:text="|${siteCode} LMS Email|"></title>
     <link href="/default/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
 </head>
 
@@ -38,12 +38,12 @@
 <!--                                </tr>-->
                                 <tr>
                                     <td class="content-block">
-                                        <a th:href="${@environment.getProperty('server.link')}" class="btn-primary">Learning Management System</a>
+                                        <a th:href="|${serverLink}|" class="btn-primary">Learning Management System</a>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="content-block">
-                                        <span th:text="${@environment.getProperty('site.code')}"/>
+                                        <span th:text="${siteCode}"/>
                                     </td>
                                 </tr>
 <!--                            </table>-->

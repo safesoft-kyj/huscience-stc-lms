@@ -1,10 +1,14 @@
 package com.dtnsm.lms.report;
 
+import com.dtnsm.lms.auth.UserServiceImpl;
+import com.dtnsm.lms.domain.Account;
 import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.domain.DTO.CourseAccountSimple;
 import com.dtnsm.lms.domain.DTO.CourseSimple;
 import com.dtnsm.lms.domain.constant.CourseStepStatus;
+import com.dtnsm.lms.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.*;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,6 +27,9 @@ import java.util.Map;
 @Qualifier
 @RequiredArgsConstructor
 public class CourseReportRepository {
+
+    @Autowired
+    UserServiceImpl userService;
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -51,6 +58,29 @@ public class CourseReportRepository {
                         , '%' + name + '%'
                         , '%' + status + '%'
                     });
+    }
+
+    public List<Map<String, Object>> findByParentUser(String courseTitle, String orgDepart, String orgTeam, String name, String status) {
+
+        String parentUser = userService.getAccountByUserId(SessionUtil.getUserId()).getUserId();
+
+        query = " select *" +
+                " from vw_course_self_report1" +
+                " where title like ? " +
+                " and org_depart like ? " +
+                " and org_team like ? " +
+                " and name like ? " +
+                " and name in(select a.name FROM account as a where a.parent_user_id = ?)" +
+                " and is_commit like ? ";
+        return jdbcTemplate.queryForList(query
+                , new Object[]{
+                        '%' + courseTitle + '%'
+                        , '%' + orgDepart + '%'
+                        , '%' + orgTeam + '%'
+                        , '%' + name + '%'
+                        ,  parentUser
+                        , '%' + status + '%'
+                });
     }
 
     public Page<CourseSimple> findCourseSimpleByPage(String typeId, String title, String active, String status, Pageable pageable) {

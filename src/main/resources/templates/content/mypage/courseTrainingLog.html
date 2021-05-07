@@ -45,7 +45,7 @@
                     </div>
                     <div th:switch="${borders}">
                         <div class="table-responsive">
-                            `<table id="customer-list-page" class="table table-bordered" cellspacing="0" width="100%">
+                            <table id="customer-list-page" class="table table-bordered" cellspacing="0" width="100%">
                                 <thead>
                                 <tr class="bg-gray-light">
                                     <th class="col-sm-1" style="vertical-align: middle" th:text="#{label.no}">No.</th>
@@ -84,8 +84,8 @@
                             </table>`
                             <nav style="text-align: center;" th:fragment="pagenation">
                                 <ul class="pagination"
-                                    th:with="start=${T(Math).floor(borders.number/10)*10 + 1},
-                last=(${start + 9 < borders.totalPages ? start + 9 : borders.totalPages})">
+                                    th:with="start=${T(Math).floor(borders.number/10)*10 + 1}, 
+                                    last=(${start + 9 < borders.totalPages ? start + 9 : borders.totalPages})">
                                     <li>
                                         <a th:href="@{/mypage/courseTraingLog(page=1)}" aria-label="First">
                                             <span aria-hidden="true">First</span>

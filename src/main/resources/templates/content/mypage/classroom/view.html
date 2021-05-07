@@ -18,17 +18,28 @@
         }
 
         input {
-            border:none;border-right:0px; border-top:0px; boder-left:0px; boder-bottom:0px;
+            border: none;
+            border-right: 0px;
+            border-top: 0px;
+            boder-left: 0px;
+            boder-bottom: 0px;
         }
 
         .page-label {
-            width:30px;
+            width: 30px;
             vertical-align: center;
             font-size: 18px;
         }
 
         /* Important part */
-        .modal-dialog{ overflow-y: initial !important } .modal-body{ height: 100%; overflow-y: auto; }
+        .modal-dialog {
+            overflow-y: initial !important
+        }
+
+        .modal-body {
+            height: 100%;
+            overflow-y: auto;
+        }
 
     </style>
 
@@ -59,81 +70,109 @@
                         <hr class="table-head">
                         <div class="table-responsive">
                             <table class="table" cellspacing="0" width="100%">
-                                <colgroup><col width="5%" /><col width="10%" /><col width="30%" /><col width="20%" /><col width="10%" /><col width="15%" /></colgroup>
+                                <colgroup>
+                                    <col width="5%"/>
+                                    <col width="10%"/>
+                                    <col width="30%"/>
+                                    <col width="20%"/>
+                                    <col width="10%"/>
+                                    <col width="15%"/>
+                                </colgroup>
                                 <thead>
-                                <th class="text-center">No</th>
-                                <th class="text-center">구분</th>
-                                <th class="text-center">과정명</th>
-    <!--                            <th class="text-center">기간</th>-->
-                                <th class="text-center" th:text="#{label.course.period}">교육기간</th>
-                                <th class="text-center">진도율</th>
-                                <th class="text-center" th:text="#{label.status}">상태</th>
-                                <th class="text-center" th:text="#{label.actions}"></th>
+                                    <th class="text-center">No</th>
+                                    <th class="text-center">구분</th>
+                                    <th class="text-center">과정명</th>
+                                    <th class="text-center" th:text="#{label.course.period}">교육기간</th>
+                                    <th class="text-center">진도율</th>
+                                    <th class="text-center" th:text="#{label.status}">상태</th>
+                                    <th class="text-center" th:text="#{label.actions}"></th>
                                 </thead>
                                 <tbody>
-
                                     <th:block th:each="sectionAction, index : ${courseSectionActions}">
-                                        <th:block th:if="${sectionAction.getCourseAccount().getCourse().getCourseMaster().getCourseGubun().getMinorCd().equals('BC0101')}">
+                                        <th:block
+                                                th:if="${sectionAction.getCourseAccount().getCourse().getCourseMaster().getCourseGubun().getMinorCd().equals('BC0101')}">
                                             <tr>
-                                                <td class="text-center" th:text="${index.count}"}></td>
-                                                <td class="text-center" th:text="#{label.title.section}"}></td>
-                                                <td class="text-left" th:text="${sectionAction.getCourseSection().getName()}"}></td>
-                <!--                                <td class="text-center" th:text="${section.getFromDate() + ' ~ ' + section.getToDate()}"></td>-->
+                                                <td class="text-center" th:text="${index.count}" }></td>
+                                                <td class="text-center" th:text="#{label.title.section}" }></td>
+                                                <td class="text-left"
+                                                    th:text="${sectionAction.getCourseSection().getName()}" }></td>
+                                                <!--                                <td class="text-center" th:text="${section.getFromDate() + ' ~ ' + section.getToDate()}"></td>-->
                                                 <td class="text-center">
-<!--                                                    <span th:text="${sectionAction.getCourseSection().getMinute()} + '분'"}></td>-->
-                                                    <span th:unless="${#strings.equalsIgnoreCase(courseAccount.getFromDate(), courseAccount.getToDate())}" class="text-center" th:text="${courseAccount.getFromDate() + '~' + courseAccount.getToDate()}"></span>
-                                                    <span th:if="${#strings.equalsIgnoreCase(courseAccount.getFromDate(), courseAccount.getToDate())}" class="text-center" th:text="${courseAccount.getFromDate()}"></span>
-                <!--                                <td class="text-center" th:text="${section.getTeacher()}"}></td>-->
-                                                <td class="text-center" >
+                                                    <!--                                                    <span th:text="${sectionAction.getCourseSection().getMinute()} + '분'"}></td>-->
+                                                    <span th:unless="${#strings.equalsIgnoreCase(courseAccount.getFromDate(), courseAccount.getToDate())}"
+                                                          class="text-center"
+                                                          th:text="${courseAccount.getFromDate() + '~' + courseAccount.getToDate()}"></span>
+                                                    <span th:if="${#strings.equalsIgnoreCase(courseAccount.getFromDate(), courseAccount.getToDate())}"
+                                                          class="text-center"
+                                                          th:text="${courseAccount.getFromDate()}"></span>
+                                                    <!--                                <td class="text-center" th:text="${section.getTeacher()}"}></td>-->
+                                                <td class="text-center">
 
                                                     <div class="progress">
-                                                        <th:block th:if="${sectionAction.getTotalUseSecond() > sectionAction.getCourseSection().getSecond() }">
-                                                            <div id="time"  class="progress-bar progress-bar-info"
+                                                        <th:block
+                                                                th:if="${sectionAction.getTotalUseSecond() > sectionAction.getCourseSection().getSecond() }">
+                                                            <div id="time" class="progress-bar progress-bar-info"
                                                                  th:attr="style=${'width:100%'}"
-                                                                 th:text="${'100%'}">0%</div>
+                                                                 th:text="${'100%'}">0%
+                                                            </div>
                                                         </th:block>
-                                                        <th:block th:unless="${sectionAction.getTotalUseSecond() > sectionAction.getCourseSection().getSecond() }">
-                                                            <div id="time2"  class="progress-bar progress-bar-info"
+                                                        <th:block
+                                                                th:unless="${sectionAction.getTotalUseSecond() > sectionAction.getCourseSection().getSecond() }">
+                                                            <div id="time2" class="progress-bar progress-bar-info"
                                                                  th:attr="style=${'width:' + T(Math).round((sectionAction.getImageCurrent()*1.0) / sectionAction.getImageSize() * 100) + '%'}"
-                                                                 th:text="${T(Math).round((sectionAction.getImageCurrent()*1.0) / sectionAction.getImageSize()* 100) + ' %'}">0%</div>
+                                                                 th:text="${T(Math).round((sectionAction.getImageCurrent()*1.0) / sectionAction.getImageSize()* 100) + ' %'}">
+                                                                0%
+                                                            </div>
                                                         </th:block>
                                                     </div>
                                                 </td>
-                                                <td class="text-center" >
-                                                    <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'REQUEST')}">
-                                                        <span th:text="${sectionAction.getStatus()}" class="label label-mint"></span>
+                                                <td class="text-center">
+                                                    <th:block
+                                                            th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'REQUEST')}">
+                                                        <span th:text="${sectionAction.getStatus()}"
+                                                              class="label label-mint"></span>
                                                     </th:block>
-                                                    <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'ONGOING')}">
-                                                        <span th:text="${sectionAction.getStatus()}" class="label label-danger"></span>
+                                                    <th:block
+                                                            th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'ONGOING')}">
+                                                        <span th:text="${sectionAction.getStatus()}"
+                                                              class="label label-danger"></span>
                                                     </th:block>
-                                                    <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE')}">
-                                                        <span th:text="${sectionAction.getStatus()}" class="label label-success"></span>
+                                                    <th:block
+                                                            th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE')}">
+                                                        <span th:text="${sectionAction.getStatus()}"
+                                                              class="label label-success"></span>
                                                     </th:block>
                                                 </td>
                                                 <td class="text-center">
-                <!--                                    <a href="#" class="btn btn-success" id="popupBtn" onclick="popupPdfView('11', '디티앤사노메딕스')" target="_blank">학습하기</a>-->
-                <!--                                    <span th:id="${'id' + index.count}" th:text="${section.getId()}"></span>-->
+                                                    <!--                                    <a href="#" class="btn btn-success" id="popupBtn" onclick="popupPdfView('11', '디티앤사노메딕스')" target="_blank">학습하기</a>-->
+                                                    <!--                                    <span th:id="${'id' + index.count}" th:text="${section.getId()}"></span>-->
 
 
-                                                    <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE')}">
-                                                        <th:block th:inline="text" th:each="sectionFile : ${sectionAction.getCourseSection().getSectionFiles()}">
-<!--                                                            <a href="#" class="label label-table label-success" id="popupBtn1"-->
-<!--                                                               th:onclick="|javascript:popupPdfView('${sectionFile.getId()}', '${sectionAction.getId()}');return false;|" target="_blank" th:text="#{label.course.section.request}">학습하기</a>-->
-                                                            <span class="label label-table label-success" th:text="${'학습종료'}"></span>
+                                                    <th:block
+                                                            th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE')}">
+                                                        <th:block th:inline="text"
+                                                                  th:each="sectionFile : ${sectionAction.getCourseSection().getSectionFiles()}">
+                                                            <!--                                                            <a href="#" class="label label-table label-success" id="popupBtn1"-->
+                                                            <!--                                                               th:onclick="|javascript:popupPdfView('${sectionFile.getId()}', '${sectionAction.getId()}');return false;|" target="_blank" th:text="#{label.course.section.request}">학습하기</a>-->
+                                                            <span class="label label-table label-success"
+                                                                  th:text="${'학습종료'}"></span>
                                                         </th:block>
                                                     </th:block>
 
-                                                    <th:block th:unless="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE') or #strings.isEmpty(sectionAction.getStatus())}">
-                                                        <th:block th:inline="text" th:each="sectionFile : ${sectionAction.getCourseSection().getSectionFiles()}">
-<!--                                                            <a href="#" class="label label-table label-info" id="popupBtn"-->
-<!--                                                               th:onclick="|javascript:popupPdfView('${sectionFile.getId()}', '${sectionAction.getId()}');return false;|" target="_blank" th:text="#{label.course.section.request}">학습하기</a>-->
+                                                    <th:block
+                                                            th:unless="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'COMPLETE') or #strings.isEmpty(sectionAction.getStatus())}">
+                                                        <th:block th:inline="text"
+                                                                  th:each="sectionFile : ${sectionAction.getCourseSection().getSectionFiles()}">
+                                                            <!--                                                            <a href="#" class="label label-table label-info" id="popupBtn"-->
+                                                            <!--                                                               th:onclick="|javascript:popupPdfView('${sectionFile.getId()}', '${sectionAction.getId()}');return false;|" target="_blank" th:text="#{label.course.section.request}">학습하기</a>-->
 
-                                                            <a href="#" class="label label-table label-info" id="btnSection" th:text="#{label.course.section.request}"
+                                                            <a href="#" class="label label-table label-info" id="btnSection"
+                                                               th:text="#{label.course.section.request}"
                                                                th:onclick="openModal([[${sectionAction.getTotalUseSecond()}]], [[${sectionAction.getId()}]], [[${sectionFile.getId()}]], [[${sectionAction.getImageCurrent()}]], [[${sectionAction.getImageSize()}]], [[${sectionAction.getCourseSection().getName()}]])">학습</a>
 
-<!--                                                            <a href="#" class="" data-toggle="modal" data-target="#demo-default-modal"-->
-<!--                                                               th:onclick="openModal([[${sectionFile.getId()}]])">학습</a>-->
-<!--                                                            <input type="text" name="fileId" id="fileId">-->
+                                                            <!--                                                            <a href="#" class="" data-toggle="modal" data-target="#demo-default-modal"-->
+                                                            <!--                                                               th:onclick="openModal([[${sectionFile.getId()}]])">학습</a>-->
+                                                            <!--                                                            <input type="text" name="fileId" id="fileId">-->
 
                                                         </th:block>
                                                     </th:block>
@@ -142,125 +181,156 @@
                                                 </td>
                                             </tr>
                                         </th:block>
-                                     </th:block>
+                                    </th:block>
+                                    <th:block th:each="quizAction, index : ${quizActions}">
+                                        <tr>
+                                            <td class="text-center" th:text="${index.count}" }>1</td>
+                                            <td class="text-center" th:text="#{label.title.quiz}"></td>
+                                            <td class="text-left" th:text="${quizAction.getQuiz().getName()}" }></td>
+                                            <td class="text-center"
+                                                th:text="${quizAction.getQuiz().getMinute() + '분'}"></td>
+                                            <!--                                <td class="text-center"></td>-->
+                                            <!--                                <td class="text-left" >-->
+                                            <!--                                    <th:block th:each="actionQuiz : ${quiz.getQuizActions()}">-->
+                                            <!--                                        <div class="progress">-->
+                                            <!--                                            <div id="time2"  class="progress-bar progress-bar-success"-->
+                                            <!--                                                 th:attr="style=${'width:' + T(Math).round((actionQuiz.getTotalUseSecond()*1.0) / actionQuiz.getSecond() * 100) + '%'}"-->
+                                            <!--                                                 th:text="${T(Math).round((actionQuiz.getTotalUseSecond()*1.0) / actionQuiz.getSecond() * 100) + ' %'}">0%</div>-->
+                                            <!--                                        </div>-->
+                                            <!--                                    </th:block>-->
+                                            <!--                                </td>-->
+                                            <td class="text-center">
+                                            </td>
+                                            <td class="text-center">
+                                                <th:block
+                                                        th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'REQUEST')}">
+                                                    <span th:text="${quizAction.getStatus()}"
+                                                          class="label label-mint"></span>
+                                                </th:block>
+                                                <th:block
+                                                        th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'ONGOING')}">
+                                                    <span th:text="${quizAction.getStatus()}"
+                                                          class="label label-danger"></span>
+                                                </th:block>
+                                                <th:block
+                                                        th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'FAIL')}">
+                                                    <span th:text="${quizAction.getStatus()}"
+                                                          class="label label-danger"></span>
+                                                </th:block>
+                                                <th:block
+                                                        th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'COMPLETE')}">
+                                                    <span th:text="${quizAction.getStatus()}"
+                                                          class="label label-success"></span>
+                                                </th:block>
+                                            </td>
+                                            <td class="text-center">
+                                                <th:block
+                                                        th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'REQUEST')}">
+                                                    <span class="label label-table label-warning"
+                                                          th:text="#{label.course.quiz.request}">미진행</span>
+                                                </th:block>
+                                                <th:block
+                                                        th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'FAIL')}">
 
-    <!--                            <tr th:each="quizAction, index : ${courseQuizActions}">-->
-                                <th:block th:each="quizAction, index : ${quizActions}">
-                                <tr>
-                                    <td class="text-center" th:text="${index.count}"}>1</td>
-                                    <td class="text-center" th:text="#{label.title.quiz}"></td>
-                                    <td class="text-left" th:text="${quizAction.getQuiz().getName()}"}></td>
-    <!--                                <td class="text-center" th:text="${quiz.getFromDate() + ' ~ ' + quiz.getToDate()}"></td>-->
-                                    <td class="text-center" th:text="${quizAction.getQuiz().getMinute() + '분'}"></td>
-    <!--                                <td class="text-center"></td>-->
-    <!--                                <td class="text-left" >-->
-    <!--                                    <th:block th:each="actionQuiz : ${quiz.getQuizActions()}">-->
-    <!--                                        <div class="progress">-->
-    <!--                                            <div id="time2"  class="progress-bar progress-bar-success"-->
-    <!--                                                 th:attr="style=${'width:' + T(Math).round((actionQuiz.getTotalUseSecond()*1.0) / actionQuiz.getSecond() * 100) + '%'}"-->
-    <!--                                                 th:text="${T(Math).round((actionQuiz.getTotalUseSecond()*1.0) / actionQuiz.getSecond() * 100) + ' %'}">0%</div>-->
-    <!--                                        </div>-->
-    <!--                                    </th:block>-->
-    <!--                                </td>-->
-                                    <td class="text-center">
-                                    </td>
-                                    <td class="text-center">
-                                        <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'REQUEST')}">
-                                            <span th:text="${quizAction.getStatus()}" class="label label-mint"></span>
-                                        </th:block>
-                                        <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'ONGOING')}">
-                                            <span th:text="${quizAction.getStatus()}" class="label label-danger"></span>
-                                        </th:block>
-                                        <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'FAIL')}">
-                                            <span th:text="${quizAction.getStatus()}" class="label label-danger"></span>
-                                        </th:block>
-                                        <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'COMPLETE')}">
-                                            <span th:text="${quizAction.getStatus()}" class="label label-success"></span>
-                                        </th:block>
-                                    </td>
-                                    <td class="text-center">
-                                        <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'REQUEST')}">
-                                            <span class="label label-table label-warning" th:text="#{label.course.quiz.request}">미진행</span>
-                                        </th:block>
-                                        <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'FAIL')}">
-                                            <a href="#" class="label label-table label-danger" id="popupQuiz"
-                                               th:onclick="|javascript:popupQuizView('${quizAction.getId()}', 'Y');return false;|" target="_blank" th:text="#{label.course.quiz.reRequest}">재응시</a>
-                                        </th:block>
-                                        <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'COMPLETE')}">
-                                            <span class="label label-table label-success" th:text="#{label.course.quiz.commit}">시험완료</span>
-                                        </th:block>
-                                        <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'ONGOING')}">
-                                            <a href="#" class="label label-table label-info" id="popupQuiz2"
-                                               th:onclick="|javascript:popupQuizView('${quizAction.getId()}', 'N');return false;|" target="_blank" th:text="#{label.course.quiz.request}">시험응시</a>
-                                        </th:block>
-                                    </td>
-                                </tr>
-                                </th:block>
+                                                        <th:block th:if="${courseAccount.isTestFail() == true}">
+                                                        <a href="javascript:popupAlert();" class="label label-table label-warning">재시험요청</a>
+                                                    </th:block>
+                                                    <th:block th:if="${courseAccount.isTestFail() == false}">
+                                                        <a href="#" class="label label-table label-danger" id="popupQuiz"
+                                                           th:onclick="|javascript:popupQuizView('${quizAction.getId()}', 'Y');return false;|"
+                                                           target="_blank" th:text="#{label.course.quiz.reRequest}">재응시</a>
+                                                    </th:block>
 
-                                <th:block th:each="surveyAction, index : ${surveyActions}">
-                                <tr>
-                                    <td class="text-center" th:text="${index.count}"}>1</td>
-                                    <td class="text-center" th:text="#{label.title.survey}"></td>
-                                    <td class="text-left" th:text="${surveyAction.getCourseSurvey().getName()}"}></td>
-    <!--                                <td class="text-center" th:text="${survey.getFromDate() + ' ~ ' + survey.getToDate()}"}></td>-->
-                                    <td class="text-center"></td>
-                                    <td class="text-center"></td>
-                                    <td class="text-center">
-                                        <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'REQUEST')}">
-                                            <span th:text="${surveyAction.getStatus()}" class="label label-mint"></span>
-                                        </th:block>
-                                        <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'COMPLETE')}">
-                                            <span th:text="${surveyAction.getStatus()}" class="label label-success"></span>
-                                        </th:block>
-                                        <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'ONGOING')}">
-                                            <span th:text="${surveyAction.getStatus()}" class="label label-danger"></span>
-                                        </th:block>
-                                    </td>
-                                    <td class="text-center">
-                                        <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'REQUEST')}">
-                                            <span class="label label-table label-warning" th:text="#{label.course.survey.request}">미진행</span>
-                                        </th:block>
-                                        <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'COMPLETE')}">
-                                            <span class="label label-table label-success" th:text="#{label.course.survey.commit}">설문완료</span>
-                                        </th:block>
-                                        <th:block th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'ONGOING')}">
-                                            <a href="#" class="label label-table label-info" id="popupSurvey2"
-                                               th:onclick="|javascript:popupSurveyView('${surveyAction.getId()}');return false;|" target="_blank" th:text="#{label.course.survey.request}">참여</a>
-                                        </th:block>
-                                    </td>
-                                </tr>
-                                </th:block>
+                                                </th:block>
+                                                <th:block
+                                                        th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'COMPLETE')}">
+                                                    <span class="label label-table label-success"
+                                                          th:text="#{label.course.quiz.commit}">시험완료</span>
+                                                </th:block>
+                                                <th:block
+                                                        th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'ONGOING')}">
+                                                    <a href="#" class="label label-table label-info" id="popupQuiz2"
+                                                       th:onclick="|javascript:popupQuizView('${quizAction.getId()}', 'N');return false;|"
+                                                       target="_blank" th:text="#{label.course.quiz.request}">시험응시</a>
+                                                </th:block>
+                                            </td>
+                                        </tr>
+                                    </th:block>
+                                    <th:block th:each="surveyAction, index : ${surveyActions}">
+                                        <tr>
+                                            <td class="text-center" th:text="${index.count}" }>1</td>
+                                            <td class="text-center" th:text="#{label.title.survey}"></td>
+                                            <td class="text-left" th:text="${surveyAction.getCourseSurvey().getName()}"
+                                                }></td>
+                                            <!--                                <td class="text-center" th:text="${survey.getFromDate() + ' ~ ' + survey.getToDate()}"}></td>-->
+                                            <td class="text-center"></td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center">
+                                                <th:block
+                                                        th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'REQUEST')}">
+                                                    <span th:text="${surveyAction.getStatus()}"
+                                                          class="label label-mint"></span>
+                                                </th:block>
+                                                <th:block
+                                                        th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'COMPLETE')}">
+                                                    <span th:text="${surveyAction.getStatus()}"
+                                                          class="label label-success"></span>
+                                                </th:block>
+                                                <th:block
+                                                        th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'ONGOING')}">
+                                                    <span th:text="${surveyAction.getStatus()}"
+                                                          class="label label-danger"></span>
+                                                </th:block>
+                                            </td>
+                                            <td class="text-center">
+                                                <th:block
+                                                        th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'REQUEST')}">
+                                                    <span class="label label-table label-warning"
+                                                          th:text="#{label.course.survey.request}">미진행</span>
+                                                </th:block>
+                                                <th:block
+                                                        th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'COMPLETE')}">
+                                                    <span class="label label-table label-success"
+                                                          th:text="#{label.course.survey.commit}">설문완료</span>
+                                                </th:block>
+                                                <th:block
+                                                        th:if="${#strings.equalsIgnoreCase(surveyAction.getStatus(), 'ONGOING')}">
+                                                    <a href="#" class="label label-table label-info" id="popupSurvey2"
+                                                       th:onclick="|javascript:popupSurveyView('${surveyAction.getId()}');return false;|"
+                                                       target="_blank" th:text="#{label.course.survey.request}">참여</a>
+                                                </th:block>
+                                            </td>
+                                        </tr>
+                                    </th:block>
 
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div><!--panel-body End -->
-
-
-
-
             </div><!-- panel End -->
         </div><!-- Page content End -->
     </div><!-- Content container End -->
 
     <!--강의 Modal-->
     <!--===================================================-->
-    <div class="modal fade" id="demo-default-modal" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+    <div class="modal fade" id="demo-default-modal" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal"
+         aria-hidden="true">
         <div class="modal-dialog" style="max-width: 100%; width: 50%;">
-<!--        <div class="modal-dialog modal-fullsize" style="max-width: 100%; width: auto;">-->
+            <!--        <div class="modal-dialog modal-fullsize" style="max-width: 100%; width: auto;">-->
 
             <div class="modal-content modal-fullsize" id="modal-content">
 
                 <!--Modal header-->
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                    <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i>
+                    </button>
                     <h4 id="modal-title" class="modal-title" th:text="${courseAccount.getCourse().getTitle()}">학습</h4>
                 </div>
 
                 <!--Modal body-->
                 <div class="modal-body text-center" id="modal-body">
-                    <img src="" style="width:90%;" id="pdfImage" />
+                    <img src="" style="width:90%;" id="pdfImage"/>
                 </div>
 
                 <!--Modal footer-->
@@ -270,12 +340,18 @@
                             <!-- FileNumber-->
                             <input class="page-label" type="hidden" name="fileId" id="fileId" value="1" size="3">
                             <!-- PageCurrent-->
-                            <input class="page-label" type="hidden" name="currentPageNo" id="currentPageNo" value="1" size="3">
+                            <input class="page-label" type="hidden" name="currentPageNo" id="currentPageNo" value="1"
+                                   size="3">
                             <span class="page-label text-primary"><i class="ti-timer"></i> 학습시간 : <span id="timer">0:0:00</span> </span>
                         </div>
                         <div class="col-lg-4 text-center">
-                            <span class="page-label text-right">Page</span><input class="page-label text-warning" type="text" name="pageNo" id="pageNo" value="1" size="3" style="text-align: right">&nbsp;<span class="page-label">/</span>&nbsp;
-                            <input class="page-label text-info" type="text" name="totalPage" id="totalPage" value="1" size="3" style="text-align: left">
+                            <span class="page-label text-right">Page</span><input class="page-label text-warning"
+                                                                                  type="text" name="pageNo" id="pageNo"
+                                                                                  value="1" size="3"
+                                                                                  style="text-align: right">&nbsp;<span
+                                class="page-label">/</span>&nbsp;
+                            <input class="page-label text-info" type="text" name="totalPage" id="totalPage" value="1"
+                                   size="3" style="text-align: left">
                         </div>
                         <div class="col-lg-4 text-right">
                             <button class="btn btn-default btn-lg" type="button" id="prev">Prev</button>
@@ -292,7 +368,6 @@
     </div>
 
 </th:block>
-
 
 
 <th:block layout:fragment="custom_js">
@@ -324,7 +399,7 @@
         var gCurrSecond = 0;
 
 
-        $(function() {
+        $(function () {
 
             // $('#pdfImage').attr('src',  url + '77/20');
             // var image = new Image();
@@ -340,7 +415,7 @@
             // resizeImage();
 
             // 모달창 닫기 이벤트
-            $("#demo-default-modal").on('hidden.bs.modal', function() {
+            $("#demo-default-modal").on('hidden.bs.modal', function () {
                 saveSectionSecond();
                 location.reload();
             });
@@ -354,13 +429,13 @@
             })
 
 
-            $('#prev').click(function(){
+            $('#prev').click(function () {
 
                 var prevUrl = url + $('#fileId').val() + '/';
-                var prevSrc = $('#pdfImage').attr( 'src' );
+                var prevSrc = $('#pdfImage').attr('src');
 
                 var prevSplit = prevSrc.split('/');
-                var imageNo = Number(prevSplit[prevSplit.length-1]);
+                var imageNo = Number(prevSplit[prevSplit.length - 1]);
 
                 if (imageNo <= 1) {
                     alert('첫페이지 입니다.');
@@ -369,7 +444,7 @@
                     imageNo--;
                 }
 
-                $('#pdfImage').attr('src', prevUrl +  imageNo); // 클릭한 버튼의 이미지 보여주기
+                $('#pdfImage').attr('src', prevUrl + imageNo); // 클릭한 버튼의 이미지 보여주기
                 // 페이지별 크기가 다른 경우 주석 제거
                 // resizeImage();
                 $('#pageNo').val(imageNo);
@@ -377,15 +452,14 @@
 
             });
 
-            $('#next').click(function(){
+            $('#next').click(function () {
 
-                var totalPage  = $('#totalPage').val();
+                var totalPage = $('#totalPage').val();
                 var nextUrl = url + $('#fileId').val() + '/';
-                var prevSrc = $('#pdfImage').attr( 'src' );
+                var prevSrc = $('#pdfImage').attr('src');
 
                 var prevSplit = prevSrc.split('/');
-                var imageNo = Number(prevSplit[prevSplit.length-1]);
-
+                var imageNo = Number(prevSplit[prevSplit.length - 1]);
 
 
                 if (imageNo < totalPage) {
@@ -394,7 +468,7 @@
 
                     // db에 있는 마지막 페이지 보다 현재 페이지가 큰경우 임시 저장한다.
                     if (gCurrentNo < imageNo) gCurrentNo = imageNo;
-                    $('#pdfImage').attr('src', nextUrl +  imageNo); // 클릭한 버튼의 이미지 보여주기
+                    $('#pdfImage').attr('src', nextUrl + imageNo); // 클릭한 버튼의 이미지 보여주기
                     // 페이지별 크기가 다른 경우 주석 제거
                     // resizeImage();
                     $('#pageNo').val(imageNo);
@@ -410,9 +484,9 @@
 
         function msg_time() {
 
-            var hours = Math.floor((((gCurrSecond+gTotalUseSecond) * 1000) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var miniutes = Math.floor((((gCurrSecond+gTotalUseSecond) * 1000) % (1000 * 60 * 60)) / (1000 * 60));
-            var seconds = Math.floor((((gCurrSecond+gTotalUseSecond) * 1000) % (1000 * 60)) / 1000);
+            var hours = Math.floor((((gCurrSecond + gTotalUseSecond) * 1000) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var miniutes = Math.floor((((gCurrSecond + gTotalUseSecond) * 1000) % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((((gCurrSecond + gTotalUseSecond) * 1000) % (1000 * 60)) / 1000);
 
             var timeText = hours + ":" + miniutes + ":" + seconds; // 남은 시간 text형태로 변경
 
@@ -439,7 +513,7 @@
             showMessage();
 
             // 강의파일 이미지의 width가 3000보다 작으면 종, 3000 보다 크면 횡으로 판단함
-            if(pdfImage.naturalWidth < setupTargetWidth) {
+            if (pdfImage.naturalWidth < setupTargetWidth) {
                 $('.modal-dialog').css("width", setupSmallWidthRate + "%");
             } else {
                 $('.modal-dialog').css("width", setupBigWidthRate + "%");
@@ -447,7 +521,7 @@
         }
 
         function showMessage() {
-            console.log("fileId : " +  $('#fileId').val());
+            console.log("fileId : " + $('#fileId').val());
             console.log("이미지 URL : " + pdfImage.src);
             console.log("이미지 Wdith : " + pdfImage.naturalWidth);
         }
@@ -473,7 +547,7 @@
             $('#currentPageNo').val(currentPageNo);
             $('#totalPage').val(totalPage);
             $('#pageNo').val(currentPageNo);
-            $('#pdfImage').attr('src', default_url +  currentPageNo); // 클릭한 버튼의 이미지 보여주기
+            $('#pdfImage').attr('src', default_url + currentPageNo); // 클릭한 버튼의 이미지 보여주기
             $('#modal-title').val(modalTitle);
 
             // 바깥을 클릭하거나 ESC 클릭했을경우 창이 닫히지 않게 설정
@@ -533,15 +607,15 @@
 
         // Popup 창
         function popupPdfView(id, sectionActionId) {
-           var width = 1000;
-           var height = 720;
+            var width = 1000;
+            var height = 720;
 
             var title = "디티앤사노메딕스";
             var url = "/mypage/classroom/pdfview/" + id + "/" + sectionActionId;
             // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
             var popupX = (window.screen.width / 2) - (width / 2);
             // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
-            var popupY= (window.screen.height / 2) - (height / 2);
+            var popupY = (window.screen.height / 2) - (height / 2);
 
             var option = "width =" + width + ", height =" + height + ", menubar=no, directories=no, location = no, scrollbars=yes, resizable=yes";
             option += ", left=" + popupX + ", top=" + popupY;
@@ -560,7 +634,7 @@
             // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
             var popupX = (window.screen.width / 2) - (width / 2);
             // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
-            var popupY= (window.screen.height / 2) - (height / 2);
+            var popupY = (window.screen.height / 2) - (height / 2);
 
             var option = "width =" + width + ", height =" + height + ", menubar=no, directories=no, location = no, scrollbars=yes, resizable=no";
             option += ", left=" + popupX + ", top=" + popupY;
@@ -572,7 +646,7 @@
         function popupSurveyView(quizActionId) {
 
             // 참여 버튼 비활성화
-            $("#popupSurvey2").css({ 'pointer-events': 'none' });
+            $("#popupSurvey2").css({'pointer-events': 'none'});
 
             let width = 1000;
             let height = 720;
@@ -582,7 +656,7 @@
             // 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
             let popupX = (window.screen.width / 2) - (width / 2);
             // 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
-            let popupY= (window.screen.height / 2) - (height / 2);
+            let popupY = (window.screen.height / 2) - (height / 2);
 
             let option = "width =" + width + ", height =" + height + ", menubar=no, directories=no, location = no, scrollbars=yes, resizable=no";
             option += ", left=" + popupX + ", top=" + popupY;
@@ -591,24 +665,33 @@
         }
 
         // 새로고침 방지
-        function doNotReload(){
+        function doNotReload() {
             //ctrl+N , ctrl+R, function F5
-            if( (event.ctrlKey == true && (event.keyCode == 78 || event.keyCode == 82)) || (event.keyCode == 116))
-            {
+            if ((event.ctrlKey == true && (event.keyCode == 78 || event.keyCode == 82)) || (event.keyCode == 116)) {
                 event.keyCode = 0;
                 event.cancelBubble = true;
                 event.returnValue = false;
             }
         }
+
         document.onkeydown = doNotReload;
 
-        $(document).ready(function(){
-            $(document).bind("contextmenu", function(e) {
+        $(document).ready(function () {
+            $(document).bind("contextmenu", function (e) {
                 return false;
             });
         });
-        $(document).bind('selectstart',function() {return false;});
-        $(document).bind('dragstart',function(){return false;});
+        $(document).bind('selectstart', function () {
+            return false;
+        });
+        $(document).bind('dragstart', function () {
+            return false;
+        });
+
+        // 알림창
+        function popupAlert() {
+            alert('관리자에게 메일로 해당 교육 재응시를 요청하세요.');
+        }
 
     </script>
 </th:block>

@@ -69,8 +69,9 @@ public class CVFindController {
         }
         model.addAttribute(pageInfo);
         model.addAttribute("cvFindParam", new CVFindParam());
-        model.addAttribute("taList", cvCodeList.getTaList());
-        model.addAttribute("indicationMap", cvCodeList.getIndicationMap());
+        model.addAttribute("indicationList", cvCodeList.getIndicationList());
+//        model.addAttribute("taList", cvCodeList.getTaList());
+//        model.addAttribute("indicationMap", cvCodeList.getIndicationMap());
         return "content/finder/condition";
     }
 
@@ -98,26 +99,30 @@ public class CVFindController {
         if(StringUtils.isEmpty(param.getIndication())) {
             param.setIndication(null);
         }
+        if(StringUtils.isEmpty(param.getName())) {
+            param.setName(null);
+        }
 
         if(!StringUtils.isEmpty(employees)) {
-            List<String> usernameList = cvFinderMapper.findByParentUserId(SessionUtil.getUserId());
-            param.setUsernameList(usernameList);
-//            Optional<List<Account>> optionalAccounts = userRepository.findByParentUserId(SessionUtil.getUserId());
-//            if (optionalAccounts.isPresent()) {
-//                List<Account> accounts = optionalAccounts.get();
-//                List<String> usernameList = accounts.stream().map(u -> u.getUserId()).collect(Collectors.toList());
-//
-//            }
+//         List<String> usernameList = cvFinderMapper.findByParentUserId(SessionUtil.getUserId());
+//         param.setUsernameList(usernameList);
+           Optional<List<Account>> optionalAccounts = userRepository.findByParentUserId(SessionUtil.getUserId());
+           if (optionalAccounts.isPresent()) {
+               List<Account> accounts = optionalAccounts.get();
+               List<String> usernameList = accounts.stream().map(u -> u.getUserId()).collect(Collectors.toList());
+               param.setUsernameList(usernameList);
+           }
         }
 
         List<CVFindResult> resultList = cvFinderMapper.findCV(param);
 
-
-
         List<Integer> cvIds = resultList.stream().filter(cv -> (cv.getDays() / 365) >= param.getCareer()).map(CVFindResult::getId)
                 .collect(Collectors.toList());
+
         if(!ObjectUtils.isEmpty(cvIds)) {
             builder.and(qCurriculumVitae.id.in(cvIds));
+            if(!StringUtils.isEmpty(param.getName()))
+                builder.and(qCurriculumVitae.account.engName.contains(param.getName()));
             Iterable<CurriculumVitae> cvList = curriculumVitaeRepository.findAll(builder);
 
             model.addAttribute("cvList", cvList);
@@ -129,9 +134,8 @@ public class CVFindController {
     public void getBlindCV(@RequestParam("username") String username,
                            @RequestParam(value = "blind", defaultValue = "true") boolean blind,
                            HttpServletResponse httpServletResponse) throws Exception {
-
+		httpServletResponse.setHeader("Content-Disposition", "attachment; filename=\""+(blind ? "Blind" : account.getEngName())+"_CV(" + username + ").pdf\"");
         Account account = userRepository.findByUserId(username);
-        httpServletResponse.setHeader("Content-Disposition", "attachment; filename=\""+(blind ? "Blind" : account.getEngName())+"_CV(" + username + ").pdf\"");
         Optional<CurriculumVitae> optionalCurriculumVitae = curriculumVitaeRepository.findTop1ByAccountAndStatusOrderByIdDesc(account, CurriculumVitaeStatus.CURRENT);
         if(optionalCurriculumVitae.isPresent()) {
             CurriculumVitae curriculumVitae = optionalCurriculumVitae.get();

@@ -17,7 +17,8 @@
     <!-- Visible when footer positions are static -->
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <div class="hide-fixed pull-right pad-rgt">
-        <a href="http://dtnsm.com/" target="_blank"><img th:src="@{/default/img/logo.jpg}" th:alt="${@environment.getProperty('site.code')}" class="brand-icon" style="margin-top:0px;padding-left:15px;padding-bottom:3px; width:150px;height:30px;"></a>
+        <a th:href="@{${@environment.getProperty('site.link')}}" target="_blank">
+            <img th:src="@{${@environment.getProperty('site.footer-img')}}" th:alt="${@environment.getProperty('site.code')}" class="brand-icon" style="margin-top:0px;padding-left:15px;padding-bottom:3px; width:150px;height:30px;"></a>
     </div>
 
 
@@ -26,7 +27,7 @@
     <!-- Remove the class "show-fixed" and "hide-fixed" to make the content always appears. -->
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
-    <p class="pad-lft"><a href="http://dtnsm.com/" target="_blank"><span th:text="${@environment.getProperty('site.footer-msg')}"></span></a></p>
+    <p class="pad-lft"><a th:href="@{${@environment.getProperty('site.link')}}" target="_blank"><span th:text="${@environment.getProperty('site.footer-msg')}"></span></a></p>
 
 
 <!--    <div class="container">-->

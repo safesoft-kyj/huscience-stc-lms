@@ -14,12 +14,12 @@
     </tr>
     <tr>
         <td class="content-block">
-            <a th:href="${@environment.getProperty('server.link')}" class="btn-primary">Learning Management System</a>
+            <a th:href="|${serverLink}|" class="btn-primary">Learning Management System</a>
         </td>
     </tr>
     <tr>
         <td class="content-block">
-            <span th:text="${@environment.getProperty('site.code')}"/>
+            <span th:text="${siteCode}"/>
         </td>
     </tr>
     </tbody>

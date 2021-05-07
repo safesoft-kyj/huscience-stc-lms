@@ -125,6 +125,11 @@ public class CourseAccountService {
         return courseAccountRepository.findByFnStatus(status);
     }
 
+    public List<CourseAccount> getAllByTestFail(boolean status) {
+
+        return courseAccountRepository.findByIsTestFail(status);
+    }
+
     // 상태별 신청 조회
     public Page<CourseAccount> getAllByStatus(String status, Pageable pageable) {
 
