@@ -3,6 +3,8 @@ package com.dtnsm.lms.domain;
 import com.dtnsm.lms.auth.AuditorCreateEntity;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 
@@ -10,6 +12,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Table(name="el_course_file")
+@Audited(withModifiedFlag = true)
 public class CourseFile extends AuditorCreateEntity<String> {
 
     @Id
@@ -36,6 +39,7 @@ public class CourseFile extends AuditorCreateEntity<String> {
     // Parent 필드 추가
     @ManyToOne
     @JoinColumn(name = "course_id")
+    @NotAudited
     private Course course;
 
     public CourseFile() {

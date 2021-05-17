@@ -3,6 +3,8 @@ package com.dtnsm.lms.domain;
 import com.dtnsm.lms.auth.AuditorCreateEntity;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -11,6 +13,7 @@ import javax.validation.constraints.NotEmpty;
 @Getter
 @Setter
 @Table(name="el_certificate_file")
+@Audited(withModifiedFlag = true)
 public class CertificateFile extends AuditorCreateEntity<String> {
 
     @Id
@@ -38,6 +41,7 @@ public class CertificateFile extends AuditorCreateEntity<String> {
 
     @ManyToOne
     @JoinColumn(name = "doc_id")
+    @NotAudited
     private CourseAccount courseAccount;
 
     public CertificateFile() {

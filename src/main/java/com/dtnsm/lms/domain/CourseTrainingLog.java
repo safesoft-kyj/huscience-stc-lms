@@ -7,6 +7,8 @@ import com.dtnsm.lms.util.DateUtil;
 import lombok.*;
 import org.apache.poi.hpsf.Decimal;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.text.DecimalFormat;
@@ -19,6 +21,7 @@ import java.util.Date;
 @Builder
 @EqualsAndHashCode(callSuper = false)
 @Table(name="el_course_training_log")
+@Audited(withModifiedFlag = true)
 public class CourseTrainingLog extends AuditorCreateEntity<String> {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -60,6 +63,7 @@ public class CourseTrainingLog extends AuditorCreateEntity<String> {
 
     @ManyToOne
     @JoinColumn(name = "doc_no")
+    @NotAudited
     private CourseAccount courseAccount;
 
     // 디지털 바이터 서식으로 리턴

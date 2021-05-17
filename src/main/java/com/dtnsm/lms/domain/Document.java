@@ -3,6 +3,8 @@ package com.dtnsm.lms.domain;
 import com.dtnsm.lms.auth.AuditorCreateEntity;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ import java.util.List;
 @Entity
 @Data
 @Table(name="el_document")
+@Audited(withModifiedFlag = true)
 public class Document extends AuditorCreateEntity<String> {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -38,6 +41,7 @@ public class Document extends AuditorCreateEntity<String> {
 
     @ManyToOne
     @JoinColumn(name = "course_doc_id",nullable = true)
+    @NotAudited
     private CourseAccount courseAccount;
 
     // 사용자계정 필드 추가

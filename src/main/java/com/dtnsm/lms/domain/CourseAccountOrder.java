@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -13,6 +15,7 @@ import java.util.Date;
 @Setter
 @Getter
 @Table(name="el_course_account_order")
+@Audited(withModifiedFlag = true)
 public class CourseAccountOrder extends AuditorEntity<String> {
 
     @Id
@@ -54,5 +57,6 @@ public class CourseAccountOrder extends AuditorEntity<String> {
 
     @ManyToOne
     @JoinColumn(name = "doc_no")
+    @NotAudited
     private CourseAccount courseAccount;
 }

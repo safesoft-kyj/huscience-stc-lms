@@ -4,6 +4,8 @@ import com.dtnsm.lms.auth.AuditorCreateEntity;
 import com.dtnsm.lms.domain.constant.LmsAlarmGubun;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 
@@ -11,6 +13,7 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @Table(name="el_lms_notification")
+@Audited(withModifiedFlag = true)
 public class LmsNotification extends AuditorCreateEntity<String> {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -40,6 +43,7 @@ public class LmsNotification extends AuditorCreateEntity<String> {
 
     @ManyToOne
     @JoinColumn(name = "course_id")
+    @NotAudited
     private Course course;
 
     @ManyToOne

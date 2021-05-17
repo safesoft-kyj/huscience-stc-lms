@@ -2,6 +2,7 @@ package com.dtnsm.lms.domain;
 
 import com.dtnsm.lms.auth.AuditorCreateEntity;
 import lombok.Data;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -11,6 +12,7 @@ import java.util.List;
 @Entity
 @Data
 @Table(name="el_document_template")
+@Audited(withModifiedFlag = true)
 public class DocumentTemplate extends AuditorCreateEntity<String> {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)

@@ -5,6 +5,7 @@ import com.dtnsm.lms.domain.constant.ApprovalStatusType;
 import com.dtnsm.lms.domain.constant.CourseRequestType;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -12,6 +13,7 @@ import java.util.Date;
 @Entity
 @Data
 @Table(name="el_document_course_account")
+@Audited(withModifiedFlag = true)
 public class DocumentCourseAccount extends AuditorEntity<String> {
 
     @Id

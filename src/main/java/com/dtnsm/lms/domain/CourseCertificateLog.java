@@ -4,6 +4,8 @@ import com.dtnsm.lms.auth.AuditorCreateEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -12,6 +14,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @Table(name="el_course_certificate_log")
+@Audited(withModifiedFlag = true)
 public class CourseCertificateLog extends AuditorCreateEntity<String> {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -31,6 +34,7 @@ public class CourseCertificateLog extends AuditorCreateEntity<String> {
 
     @OneToOne
     @JoinColumn(name = "doc_id")
+    @NotAudited
     private CourseAccount courseAccount;
 
     @ManyToOne
