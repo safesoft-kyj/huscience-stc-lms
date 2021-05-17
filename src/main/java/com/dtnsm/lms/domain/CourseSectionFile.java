@@ -4,6 +4,7 @@ import com.dtnsm.lms.auth.AuditorCreateEntity;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 
@@ -11,6 +12,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Table(name="el_course_section_file")
+@Audited(withModifiedFlag = true)
 public class CourseSectionFile extends AuditorCreateEntity<String> {
 
     @Id

@@ -73,12 +73,10 @@ public class CourseSurveyQuestion extends AuditorCreateEntity<String> {
     // Parent 필드 추가
     @ManyToOne
     @JoinColumn(name = "course_survey_id")
-    @NotAudited
     private CourseSurvey courseSurvey;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "question")
     @JoinColumn(name = "question_id")
-    @NotAudited
     private CourseSurveyActionAnswer questionAnswer;
 
     public CourseSurveyQuestion(){}

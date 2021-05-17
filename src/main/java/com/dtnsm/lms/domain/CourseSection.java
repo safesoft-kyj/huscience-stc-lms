@@ -4,6 +4,8 @@ import com.dtnsm.lms.auth.AuditorCreateEntity;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name="el_course_section")
+@Audited(withModifiedFlag = true)
 public class CourseSection extends AuditorCreateEntity<String> {
 
     @Id
@@ -64,12 +67,14 @@ public class CourseSection extends AuditorCreateEntity<String> {
     // Parent 필드 추가
     @ManyToOne
     @JoinColumn(name = "course_id")
+    @NotAudited
     private Course course;
 
     @OneToMany(mappedBy = "courseSection", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CourseSectionFile> sectionFiles = new ArrayList<>();
 
     @OneToMany(mappedBy = "courseSection", cascade = CascadeType.ALL, orphanRemoval = true)
+    @NotAudited
     private List<CourseSectionAction> courseSectionActions = new ArrayList<>();
 
     public CourseSection() {

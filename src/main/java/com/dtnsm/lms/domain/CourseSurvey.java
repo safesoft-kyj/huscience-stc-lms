@@ -38,14 +38,11 @@ public class CourseSurvey extends AuditorCreateEntity<String> {
     // Parent 필드 추가
     @ManyToOne
     @JoinColumn(name = "survey_id")
-    @NotAudited
     private Survey survey;
 
     @OneToMany(mappedBy = "courseSurvey", cascade = CascadeType.ALL, orphanRemoval = true)
-    @NotAudited
     private List<CourseSurveyQuestion> questions = new ArrayList<>();
 
     @OneToMany(mappedBy = "courseSurvey", cascade = CascadeType.ALL, orphanRemoval = true)
-    @NotAudited
     private List<CourseSurveyAction> surveyActions = new ArrayList<>();
 }
