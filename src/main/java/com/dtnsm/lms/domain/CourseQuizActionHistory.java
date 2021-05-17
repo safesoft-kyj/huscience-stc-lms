@@ -4,6 +4,7 @@ import com.dtnsm.lms.auth.AuditorCreateEntity;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -12,6 +13,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Table(name="el_course_quiz_action_history")
+@Audited(withModifiedFlag = true)
 public class CourseQuizActionHistory extends AuditorCreateEntity<String> {
 
     @Id

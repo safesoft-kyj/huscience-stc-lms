@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.persistence.Table;
@@ -20,6 +21,7 @@ import java.util.List;
 @Setter
 @Slf4j
 @Table(name="el_course_quiz_question")
+@Audited(withModifiedFlag = true)
 public class CourseQuizQuestion extends AuditorCreateEntity<String> {
 
     @Id

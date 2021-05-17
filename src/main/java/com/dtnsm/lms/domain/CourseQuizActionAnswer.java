@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.poi.ss.usermodel.Row;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name="el_course_quiz_action_answer")
+@Audited(withModifiedFlag = true)
 public class CourseQuizActionAnswer extends AuditorCreateEntity<String> {
 
     @Id

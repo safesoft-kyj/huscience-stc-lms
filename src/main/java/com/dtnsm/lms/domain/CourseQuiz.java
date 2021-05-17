@@ -5,6 +5,8 @@ import com.dtnsm.lms.domain.constant.QuizStatusType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name="el_course_quiz")
+@Audited(withModifiedFlag = true)
 public class CourseQuiz extends AuditorCreateEntity<String> {
 
     @Id
@@ -51,6 +54,7 @@ public class CourseQuiz extends AuditorCreateEntity<String> {
     // Parent 필드 추가
     @ManyToOne
     @JoinColumn(name = "course_id")
+    @NotAudited
     private Course course;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
