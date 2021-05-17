@@ -6,6 +6,9 @@ import com.dtnsm.lms.domain.constant.SurveyStatusType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.AuditMappedBy;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,6 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name="el_course_survey_action")
+@Audited(withModifiedFlag = true)
 public class CourseSurveyAction extends AuditorCreateEntity<String> {
 
     @Id
@@ -42,6 +46,7 @@ public class CourseSurveyAction extends AuditorCreateEntity<String> {
     // Parent 필드 추가
     @ManyToOne
     @JoinColumn(name = "doc_id")
+    @NotAudited
     private CourseAccount courseAccount;
 
     // Parent 필드 추가
@@ -54,6 +59,7 @@ public class CourseSurveyAction extends AuditorCreateEntity<String> {
     private Account account;
 
     @OneToMany(mappedBy = "surveyAction", cascade = CascadeType.ALL, orphanRemoval = true)
+    @AuditMappedBy(mappedBy = "surveyAction")
     private List<CourseSurveyActionAnswer> actionAnswers = new ArrayList<>();
 
     public boolean addQuizActionAnswer(CourseSurveyActionAnswer courseSurveyActionAnswer) {

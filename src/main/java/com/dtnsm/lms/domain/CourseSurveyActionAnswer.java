@@ -3,6 +3,8 @@ package com.dtnsm.lms.domain;
 import com.dtnsm.lms.auth.AuditorCreateEntity;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 
@@ -11,6 +13,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Table(name="el_course_survey_action_answer")
+@Audited(withModifiedFlag = true)
 public class CourseSurveyActionAnswer extends AuditorCreateEntity<String> {
 
     @Id

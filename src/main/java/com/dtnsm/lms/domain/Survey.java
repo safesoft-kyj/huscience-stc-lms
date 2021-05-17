@@ -4,6 +4,7 @@ import com.dtnsm.lms.auth.AuditorCreateEntity;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name="el_survey")
+@Audited(withModifiedFlag = true)
 public class Survey extends AuditorCreateEntity<String> {
 
     @Id

@@ -4,6 +4,8 @@ import com.dtnsm.lms.auth.AuditorCreateEntity;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.poi.ss.usermodel.Row;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 
@@ -12,6 +14,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Table(name="el_course_survey_question")
+@Audited(withModifiedFlag = true)
 public class CourseSurveyQuestion extends AuditorCreateEntity<String> {
 
     @Id
@@ -70,10 +73,12 @@ public class CourseSurveyQuestion extends AuditorCreateEntity<String> {
     // Parent 필드 추가
     @ManyToOne
     @JoinColumn(name = "course_survey_id")
+    @NotAudited
     private CourseSurvey courseSurvey;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "question")
     @JoinColumn(name = "question_id")
+    @NotAudited
     private CourseSurveyActionAnswer questionAnswer;
 
     public CourseSurveyQuestion(){}

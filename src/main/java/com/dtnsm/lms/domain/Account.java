@@ -1,6 +1,9 @@
 package com.dtnsm.lms.domain;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.AuditMappedBy;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,6 +12,7 @@ import java.util.List;
 
 @Entity
 //@Table(uniqueConstraints = @UniqueConstraint(columnNames = "userId"))
+@Audited(withModifiedFlag = true)
 public class Account {
 
 
@@ -83,6 +87,7 @@ public class Account {
                     name = "user_id", referencedColumnName = "userId"),
             inverseJoinColumns = @JoinColumn(
                     name = "role_id", referencedColumnName = "id"))
+    @NotAudited
     private Collection<Role> roles;
 
 //    @OneToMany(mappedBy = "account")
@@ -92,6 +97,7 @@ public class Account {
 //    private List<BinderJd> binderJdList;
 
     @OneToMany(mappedBy = "account")
+    @NotAudited
     private List<CourseAccount> courseAccountList;
 
 //    @OneToMany(mappedBy = "document")
