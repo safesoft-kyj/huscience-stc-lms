@@ -4,6 +4,9 @@ import com.dtnsm.lms.auth.AuditorCreateEntity;
 import com.dtnsm.lms.auth.AuditorEntity;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.AuditMappedBy;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,6 +15,7 @@ import java.util.List;
 @Entity
 @Data
 @Table(name="el_border")
+@Audited(withModifiedFlag = true)
 public class Border extends AuditorEntity<String> {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -49,12 +53,15 @@ public class Border extends AuditorEntity<String> {
     // 작성자
     @ManyToOne
     @JoinColumn(name = "user_id",columnDefinition="VARCHAR(30)")
+    @NotAudited
     private Account account;
 
     @OneToMany(mappedBy = "border", cascade = CascadeType.ALL, orphanRemoval = true)
+    @AuditMappedBy(mappedBy = "border")
     private List<BorderViewAccount> borderViewAccounts = new ArrayList<>();
 
     @OneToMany(mappedBy = "border", cascade = CascadeType.ALL, orphanRemoval = true)
+    @AuditMappedBy(mappedBy = "border")
     private List<BorderFile> borderFiles = new ArrayList<>();
 
     public Border(){}

@@ -4,6 +4,8 @@ import com.dtnsm.lms.auth.AuditorEntity;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.hibernate.envers.AuditMappedBy;
+import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +14,7 @@ import java.util.Set;
 @Setter
 @Getter
 @Table(name = "el_major")
+@Audited(withModifiedFlag = true)
 public class ElMajor extends AuditorEntity<String> {
     @Id
     @Column(name="major_cd", length = 5, nullable = false)
@@ -24,6 +27,7 @@ public class ElMajor extends AuditorEntity<String> {
     private String type;
 
     @OneToMany(mappedBy = "elMajor")
+    @AuditMappedBy(mappedBy = "elMajor")
     private Set<ElMinor> minors = new HashSet<>();
 
     public void add(ElMinor minor) {

@@ -3,6 +3,7 @@ package com.dtnsm.lms.domain;
 import com.dtnsm.lms.auth.AuditorCreateEntity;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -11,6 +12,7 @@ import javax.validation.constraints.NotEmpty;
 @Getter
 @Setter
 @Table(name="el_border_file")
+@Audited(withModifiedFlag = true)
 public class BorderFile extends AuditorCreateEntity<String> {
 
     @Id
