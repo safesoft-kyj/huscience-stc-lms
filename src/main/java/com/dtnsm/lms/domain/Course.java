@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import java.util.List;
 @Getter
 @Table(name="el_course")
 //@ToString
+@Audited(withModifiedFlag = true)
 public class Course extends AuditorCreateEntity<String> {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -138,8 +141,8 @@ public class Course extends AuditorCreateEntity<String> {
     // Parent 필드 추가
     @ManyToOne
     @JoinColumn(name = "type_id")
+    @NotAudited
     private CourseMaster courseMaster;
-
 
 //    @ManyToMany(fetch = FetchType.EAGER)
 //    @JoinTable(

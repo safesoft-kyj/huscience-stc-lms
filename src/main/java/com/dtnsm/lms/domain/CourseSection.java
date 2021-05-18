@@ -67,7 +67,6 @@ public class CourseSection extends AuditorCreateEntity<String> {
     // Parent 필드 추가
     @ManyToOne
     @JoinColumn(name = "course_id")
-    @NotAudited
     private Course course;
 
     @OneToMany(mappedBy = "courseSection", cascade = CascadeType.ALL, orphanRemoval = true)
