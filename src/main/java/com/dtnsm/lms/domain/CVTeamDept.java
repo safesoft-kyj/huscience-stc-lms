@@ -4,6 +4,7 @@ import com.dtnsm.lms.auth.AuditorEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ import java.io.Serializable;
 @ToString(exclude = "careerHistory")
 @NoArgsConstructor
 @Audited(withModifiedFlag = true)
+@AuditOverride(forClass = AuditorEntity.class)
 public class CVTeamDept extends AuditorEntity<String> implements Serializable {
     private static final long serialVersionUID = 3231735123894893487L;
     @Id

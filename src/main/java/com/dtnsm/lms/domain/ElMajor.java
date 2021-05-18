@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.hibernate.envers.AuditMappedBy;
+import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import java.util.HashSet;
@@ -15,6 +16,7 @@ import java.util.Set;
 @Getter
 @Table(name = "el_major")
 @Audited(withModifiedFlag = true)
+@AuditOverride(forClass = AuditorEntity.class)
 public class ElMajor extends AuditorEntity<String> {
     @Id
     @Column(name="major_cd", length = 5, nullable = false)

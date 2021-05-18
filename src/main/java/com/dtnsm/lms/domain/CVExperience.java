@@ -5,6 +5,7 @@ import com.dtnsm.lms.converter.RoleConverter;
 import com.dtnsm.lms.domain.constant.GlobalOrLocal;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -16,6 +17,7 @@ import java.io.Serializable;
 @Table(name = "el_cv_experience")
 @NoArgsConstructor
 @Audited(withModifiedFlag = true)
+@AuditOverride(forClass = AuditorEntity.class)
 public class CVExperience extends AuditorEntity<String> implements Serializable {
     private static final long serialVersionUID = -5269508620489212051L;
     @Id

@@ -4,6 +4,7 @@ import com.dtnsm.lms.auth.AuditorEntity;
 import com.dtnsm.lms.domain.ElMajor;
 import lombok.Getter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @Getter
 @Table(name = "el_minor")
 @Audited(withModifiedFlag = true)
+@AuditOverride(forClass = AuditorEntity.class)
 public class ElMinor extends AuditorEntity<String> {
 
 //    @EmbeddedId

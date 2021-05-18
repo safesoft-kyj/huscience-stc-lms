@@ -3,6 +3,7 @@ package com.dtnsm.lms.domain;
 import com.dtnsm.lms.auth.AuditorEntity;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.util.Date;
 @Data
 @Table(name="el_document_account_order")
 @Audited(withModifiedFlag = true)
+@AuditOverride(forClass = AuditorEntity.class)
 public class DocumentAccountOrder extends AuditorEntity<String> {
 
     @Id

@@ -3,6 +3,7 @@ package com.dtnsm.lms.domain;
 import com.dtnsm.lms.auth.AuditorEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -15,6 +16,7 @@ import java.util.Date;
 @Table(name = "el_cv_certification")
 @NoArgsConstructor
 @Audited(withModifiedFlag = true)
+@AuditOverride(forClass = AuditorEntity.class)
 public class CVCertification extends AuditorEntity<String> implements Serializable {
     private static final long serialVersionUID = -6170291703919688555L;
     @Id

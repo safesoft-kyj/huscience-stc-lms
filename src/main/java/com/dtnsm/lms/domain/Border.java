@@ -5,6 +5,7 @@ import com.dtnsm.lms.auth.AuditorEntity;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.envers.AuditMappedBy;
+import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @Data
 @Table(name="el_border")
 @Audited(withModifiedFlag = true)
+@AuditOverride(forClass = AuditorEntity.class)
 public class Border extends AuditorEntity<String> {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)

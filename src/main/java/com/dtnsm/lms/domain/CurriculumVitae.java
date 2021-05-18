@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
@@ -21,6 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @ToString(of = {"id"})
 @Audited(withModifiedFlag = true)
+@AuditOverride(forClass = AuditorEntity.class)
 public class CurriculumVitae extends AuditorEntity<String> implements Serializable, Cloneable {
     private static final long serialVersionUID = -6522318781199162543L;
     @Id

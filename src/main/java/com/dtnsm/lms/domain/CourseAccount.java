@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
@@ -20,6 +21,7 @@ import java.util.List;
 @Table(name="el_course_account")
 //@IdClass(CourseAccountId.class)
 @Audited(withModifiedFlag = true)
+@AuditOverride(forClass = AuditorEntity.class)
 public class CourseAccount extends AuditorEntity<String> {
 
     @Id
