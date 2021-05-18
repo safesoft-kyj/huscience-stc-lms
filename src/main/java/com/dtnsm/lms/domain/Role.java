@@ -1,9 +1,12 @@
 package com.dtnsm.lms.domain;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
+@Audited(withModifiedFlag = true)
 public class Role {
 
     @Id

@@ -73,7 +73,6 @@ public class CourseSection extends AuditorCreateEntity<String> {
     private List<CourseSectionFile> sectionFiles = new ArrayList<>();
 
     @OneToMany(mappedBy = "courseSection", cascade = CascadeType.ALL, orphanRemoval = true)
-    @NotAudited
     private List<CourseSectionAction> courseSectionActions = new ArrayList<>();
 
     public CourseSection() {

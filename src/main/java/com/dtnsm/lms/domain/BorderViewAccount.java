@@ -28,7 +28,6 @@ public class BorderViewAccount extends AuditorCreateEntity<String> {
     // 사용자
     @ManyToOne
     @JoinColumn(name = "user_id",columnDefinition="VARCHAR(30)")
-    @NotAudited
     private Account account;
 
     public BorderViewAccount(){}

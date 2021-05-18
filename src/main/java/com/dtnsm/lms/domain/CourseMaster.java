@@ -4,6 +4,7 @@ package com.dtnsm.lms.domain;
 import com.dtnsm.lms.auth.AuditorCreateEntity;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
 @Entity
 @Data
 @Table(name="el_course_master")
+@Audited(withModifiedFlag = true)
 public class CourseMaster extends AuditorCreateEntity<String> {
     @Id
     @Column(length = 10, nullable = false)

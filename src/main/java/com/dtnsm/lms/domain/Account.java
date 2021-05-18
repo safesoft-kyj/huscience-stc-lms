@@ -87,7 +87,6 @@ public class Account {
                     name = "user_id", referencedColumnName = "userId"),
             inverseJoinColumns = @JoinColumn(
                     name = "role_id", referencedColumnName = "id"))
-    @NotAudited
     private Collection<Role> roles;
 
 //    @OneToMany(mappedBy = "account")
@@ -97,7 +96,6 @@ public class Account {
 //    private List<BinderJd> binderJdList;
 
     @OneToMany(mappedBy = "account")
-    @NotAudited
     private List<CourseAccount> courseAccountList;
 
 //    @OneToMany(mappedBy = "document")

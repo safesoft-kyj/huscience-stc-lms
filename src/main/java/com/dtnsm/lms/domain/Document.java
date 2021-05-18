@@ -41,7 +41,6 @@ public class Document extends AuditorCreateEntity<String> {
 
     @ManyToOne
     @JoinColumn(name = "course_doc_id",nullable = true)
-    @NotAudited
     private CourseAccount courseAccount;
 
     // 사용자계정 필드 추가

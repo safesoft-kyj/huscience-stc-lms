@@ -41,7 +41,6 @@ public class CertificateFile extends AuditorCreateEntity<String> {
 
     @ManyToOne
     @JoinColumn(name = "doc_id")
-    @NotAudited
     private CourseAccount courseAccount;
 
     public CertificateFile() {

@@ -141,7 +141,6 @@ public class Course extends AuditorCreateEntity<String> {
     // Parent 필드 추가
     @ManyToOne
     @JoinColumn(name = "type_id")
-    @NotAudited
     private CourseMaster courseMaster;
 
 //    @ManyToMany(fetch = FetchType.EAGER)

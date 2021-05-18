@@ -53,7 +53,6 @@ public class Border extends AuditorEntity<String> {
     // 작성자
     @ManyToOne
     @JoinColumn(name = "user_id",columnDefinition="VARCHAR(30)")
-    @NotAudited
     private Account account;
 
     @OneToMany(mappedBy = "border", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -57,6 +57,5 @@ public class CourseAccountOrder extends AuditorEntity<String> {
 
     @ManyToOne
     @JoinColumn(name = "doc_no")
-    @NotAudited
     private CourseAccount courseAccount;
 }

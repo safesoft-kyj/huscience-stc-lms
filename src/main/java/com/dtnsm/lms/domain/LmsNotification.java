@@ -43,7 +43,6 @@ public class LmsNotification extends AuditorCreateEntity<String> {
 
     @ManyToOne
     @JoinColumn(name = "course_id")
-    @NotAudited
     private Course course;
 
     @ManyToOne

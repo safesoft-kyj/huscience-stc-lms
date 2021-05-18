@@ -63,7 +63,6 @@ public class CourseTrainingLog extends AuditorCreateEntity<String> {
 
     @ManyToOne
     @JoinColumn(name = "doc_no")
-    @NotAudited
     private CourseAccount courseAccount;
 
     // 디지털 바이터 서식으로 리턴

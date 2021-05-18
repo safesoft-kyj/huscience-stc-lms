@@ -34,7 +34,6 @@ public class CourseCertificateLog extends AuditorCreateEntity<String> {
 
     @OneToOne
     @JoinColumn(name = "doc_id")
-    @NotAudited
     private CourseAccount courseAccount;
 
     @ManyToOne
