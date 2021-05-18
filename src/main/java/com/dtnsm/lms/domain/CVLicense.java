@@ -3,6 +3,7 @@ package com.dtnsm.lms.domain;
 import com.dtnsm.lms.auth.AuditorEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,6 +12,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "el_cv_license")
 @NoArgsConstructor
+@Audited(withModifiedFlag = true)
 public class CVLicense extends AuditorEntity<String> implements Serializable {
 
     private static final long serialVersionUID = 1339989915897851851L;

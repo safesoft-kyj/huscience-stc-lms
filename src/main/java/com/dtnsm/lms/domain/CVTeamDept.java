@@ -4,6 +4,7 @@ import com.dtnsm.lms.auth.AuditorEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,6 +14,7 @@ import java.io.Serializable;
 @Table(name = "el_cv_team_dept")
 @ToString(exclude = "careerHistory")
 @NoArgsConstructor
+@Audited(withModifiedFlag = true)
 public class CVTeamDept extends AuditorEntity<String> implements Serializable {
     private static final long serialVersionUID = 3231735123894893487L;
     @Id

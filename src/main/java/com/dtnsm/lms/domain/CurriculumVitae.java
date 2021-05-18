@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,6 +20,7 @@ import java.util.List;
 @Table(name = "el_curriculum_vitae")
 @NoArgsConstructor
 @ToString(of = {"id"})
+@Audited(withModifiedFlag = true)
 public class CurriculumVitae extends AuditorEntity<String> implements Serializable, Cloneable {
     private static final long serialVersionUID = -6522318781199162543L;
     @Id

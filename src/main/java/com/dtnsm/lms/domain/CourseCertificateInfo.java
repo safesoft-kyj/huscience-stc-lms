@@ -3,12 +3,14 @@ package com.dtnsm.lms.domain;
 import com.dtnsm.lms.auth.AuditorCreateEntity;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 
 @Entity
 @Data
 @Table(name="el_course_certificate_info")
+@Audited(withModifiedFlag = true)
 public class CourseCertificateInfo extends AuditorCreateEntity<String> {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)

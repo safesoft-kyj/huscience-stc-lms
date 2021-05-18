@@ -4,6 +4,7 @@ import com.dtnsm.lms.auth.AuditorEntity;
 import com.dtnsm.lms.domain.constant.SkillLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,6 +15,7 @@ import java.util.List;
 @Entity
 @Table(name = "el_cv_computer_knowledge")
 @NoArgsConstructor
+@Audited(withModifiedFlag = true)
 public class CVComputerKnowledge extends AuditorEntity<String> implements Serializable {
     private static final long serialVersionUID = -4409916705024970304L;
     @Id

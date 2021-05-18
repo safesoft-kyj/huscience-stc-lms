@@ -3,6 +3,7 @@ package com.dtnsm.lms.domain;
 import com.dtnsm.lms.auth.AuditorEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.Audited;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.util.Date;
 @Entity
 @Table(name = "el_cv_membership")
 @NoArgsConstructor
+@Audited(withModifiedFlag = true)
 public class CVMembership extends AuditorEntity<String> implements Serializable {
     private static final long serialVersionUID = 7214340835824954397L;
     @Id

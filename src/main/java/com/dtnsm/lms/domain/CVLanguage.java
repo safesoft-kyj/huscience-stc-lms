@@ -4,6 +4,7 @@ import com.dtnsm.lms.auth.AuditorEntity;
 import com.dtnsm.lms.domain.constant.SkillLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,6 +15,7 @@ import java.util.List;
 @Entity
 @Table(name = "el_cv_language")
 @NoArgsConstructor
+@Audited(withModifiedFlag = true)
 public class CVLanguage extends AuditorEntity<String> implements Serializable {
     private static final long serialVersionUID = -58763108466687008L;
     @Id

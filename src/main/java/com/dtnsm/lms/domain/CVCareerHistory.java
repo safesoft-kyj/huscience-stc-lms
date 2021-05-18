@@ -4,6 +4,8 @@ import com.dtnsm.lms.auth.AuditorEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -16,6 +18,7 @@ import java.util.List;
 @Entity
 @Table(name = "el_cv_career_history")
 @NoArgsConstructor
+@Audited(withModifiedFlag = true)
 public class CVCareerHistory extends AuditorEntity<String> implements Serializable {
 
     private static final long serialVersionUID = -3998579250253963340L;
