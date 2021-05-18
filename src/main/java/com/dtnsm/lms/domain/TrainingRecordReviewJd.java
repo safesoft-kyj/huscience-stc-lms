@@ -4,6 +4,7 @@ import com.dtnsm.common.entity.UserJobDescription;
 import com.dtnsm.lms.auth.AuditorEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,6 +13,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "el_training_record_review_jd")
 @NoArgsConstructor
+@Audited(withModifiedFlag = true)
 public class TrainingRecordReviewJd extends AuditorEntity<String> implements Serializable {
     private static final long serialVersionUID = 1995584156964319966L;
 

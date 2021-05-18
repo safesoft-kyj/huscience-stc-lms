@@ -3,12 +3,14 @@ package com.dtnsm.lms.domain;
 import com.dtnsm.lms.auth.AuditorEntity;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 
 @Entity
 @Data
 @Table(name="el_customer")
+@Audited(withModifiedFlag = true)
 public class Customer extends AuditorEntity<String> {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)

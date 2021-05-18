@@ -2,12 +2,14 @@ package com.dtnsm.lms.domain;
 
 import com.dtnsm.lms.auth.AuditorCreateEntity;
 import lombok.Data;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 
 @Entity
 @Data
 @Table(name="el_schedule_account")
+@Audited(withModifiedFlag = true)
 public class ScheduleViewAccount extends AuditorCreateEntity<String> {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)

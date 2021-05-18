@@ -4,6 +4,7 @@ import com.dtnsm.lms.auth.AuditorCreateEntity;
 import com.dtnsm.lms.domain.constant.ScheduleType;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
 @Entity
 @Data
 @Table(name="el_schedule")
+@Audited(withModifiedFlag = true)
 public class Schedule extends AuditorCreateEntity<String> {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
