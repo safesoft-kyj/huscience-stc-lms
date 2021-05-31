@@ -497,6 +497,7 @@ public class EmployeeController {
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qUserJobDescription.username.eq(userJobDescription.getUsername()));
         builder.and(qUserJobDescription.jobDescriptionVersion.id.eq(userJobDescription.getJobDescriptionVersion().getId()));
+        builder.and(qUserJobDescription.status.eq(JobDescriptionStatus.ASSIGNED).or(qUserJobDescription.status.eq(JobDescriptionStatus.AGREE).or(qUserJobDescription.status.eq(JobDescriptionStatus.APPROVED))));
 
         if(!userJobDescriptionRepository.findOne(builder).isPresent()) {
             Account account = userRepository.findByUserId(userJobDescription.getUsername());
@@ -513,7 +514,8 @@ public class EmployeeController {
             mailService.send(toEmail, String.format(BinderAlarmType.JD_ASSIGNED.getTitle(), jobTitle, account.getName()), BinderAlarmType.JD_ASSIGNED, context);
             return "redirect:/employees/jd/approved";
         } else {
-            attributes.addFlashAttribute("message", "이미 배정된 이력이 존재 합니다.");
+            attributes.addFlashAttribute("type", "warning");
+            attributes.addFlashAttribute("msg", "이미 ASSIGNED/AGREE/APPROVED 중에 배정된 이력이 존재 합니다.");
             return "redirect:/employees/jd/approved";
         }
     }

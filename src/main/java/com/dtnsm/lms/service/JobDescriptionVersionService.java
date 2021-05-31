@@ -47,7 +47,7 @@ public class JobDescriptionVersionService {
     public Optional<JobDescriptionVersion> findByJobDescriptionVersion(JobDescriptionVersion jobDescriptionVersion) {
         QJobDescriptionVersion qJobDescriptionVersion = QJobDescriptionVersion.jobDescriptionVersion;
         BooleanBuilder builder = new BooleanBuilder();
-//        builder.and(qJobDescriptionVersion.jobDescription.id.eq(jobDescriptionVersion.getJobDescription().getId()));
+        builder.and(qJobDescriptionVersion.jobDescription.id.eq(jobDescriptionVersion.getJobDescription().getId()));
         builder.and(qJobDescriptionVersion.version_no.eq(jobDescriptionVersion.getVersion_no()));
 
         return repository.findOne(builder);
