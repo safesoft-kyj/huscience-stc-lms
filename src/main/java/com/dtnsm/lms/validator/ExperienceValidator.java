@@ -39,6 +39,9 @@ public class ExperienceValidator implements Validator {
                 if(!ObjectUtils.isEmpty(exp.getRole()) && Arrays.asList(exp.getRole()).contains(otherString) && StringUtils.isEmpty(exp.getRoleOther())) {
                     errors.rejectValue("experiences[" + i + "].roleOther", "message.required", "required field.");
                 }
+                if(ObjectUtils.isEmpty(exp.getRole())){
+                    errors.rejectValue("experiences[" + i + "].role", "message.required", "required field.");
+                }
                 if(StringUtils.isEmpty(exp.getWorkingDetails())) {
                     errors.rejectValue("experiences[" + i + "].workingDetails", "message.required", "required field.");
                 }
