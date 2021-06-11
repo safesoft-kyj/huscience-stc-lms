@@ -381,10 +381,20 @@ public class CourseAdminController {
 //    }
 
     @GetMapping("/{typeId}/editOnLine/{id}")
-    public String editOnLine(@PathVariable("typeId") String typeId, @PathVariable("id") long id, Model model) {
+    public String editOnLine(@PathVariable("typeId") String typeId
+            , @PathVariable("id") long id
+            , Model model
+            , RedirectAttributes attributes) {
 
         Course course = courseService.getCourseById(id);
         pageInfo.setPageTitle(course.getCourseMaster().getCourseName());
+
+        if(course.getCourseAccountList().size() > 0) {
+            attributes.addFlashAttribute("type", "warning-top");
+            attributes.addFlashAttribute("msg", "수강자가 있을 경우 교육과정을 변경할 수 없습니다.");
+
+            return "redirect:/admin/course/" + typeId;
+        }
 
         // isAlways : 1:상시, 2:기간 => 상시인 경우 오늘부터 최대일자로 기간을 설정한다.
         if(course.getIsAlways().equals("1")) {
@@ -409,10 +419,20 @@ public class CourseAdminController {
     }
 
     @GetMapping("/{typeId}/editOffLine/{id}")
-    public String editOffLine(@PathVariable("typeId") String typeId, @PathVariable("id") long id, Model model) {
+    public String editOffLine(@PathVariable("typeId") String typeId
+            , @PathVariable("id") long id
+            , Model model
+            , RedirectAttributes attributes) {
 
         Course course = courseService.getCourseById(id);
         pageInfo.setPageTitle(course.getCourseMaster().getCourseName());
+
+        if(course.getCourseAccountList().size() > 0) {
+            attributes.addFlashAttribute("type", "warning-top");
+            attributes.addFlashAttribute("msg", "수강자가 있을 경우 교육과정을 변경할 수 없습니다.");
+
+            return "redirect:/admin/course/" + typeId;
+        }
 
         model.addAttribute(pageInfo);
         model.addAttribute("course", course);
