@@ -99,7 +99,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label"><i class="fa fa-file-pdf-o text-info"></i> 파일추가</label>
                                         <div class="col-sm-10">
-                                            <input type="file" name="files" accept=".pdf">
+                                            <input type="file" id="input-files" name="files" accept=".pdf">
                                         </div>
                                     </div>
                                 </div>
@@ -158,6 +158,17 @@
                 //id가 smarteditor인 textarea에 에디터에서 대입
                 obj.getById["editor"].exec("UPDATE_CONTENTS_FIELD", []);
             });
+        });
+
+        $("#input-files").change(function(){
+            let selectedFiles = $("#input-files")[0].files;
+            let fileTypes = ['application/pdf', ];
+            for(let file of selectedFiles) {
+                if(!fileTypes.includes(file.type)){
+                    alert("pdf만 등록하실 수 있습니다.");
+                    $("#input-files").val("");
+                }
+            }
         });
 
     </script>
