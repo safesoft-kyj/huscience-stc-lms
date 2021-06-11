@@ -245,6 +245,42 @@
                             showHideTransition: 'fade'
                         });
                         return;
+                    case 'error-top':
+                        $.toast({
+                            heading: 'Error',
+                            icon: 'error',
+                            text: msg,
+                            position: 'top-right',
+                            showHideTransition: 'fade'
+                        });
+                        return;
+                    case 'info-top':
+                        $.toast({
+                            heading: 'Information',
+                            icon: 'info',
+                            text: msg,
+                            position: 'top-right',
+                            showHideTransition: 'fade'
+                        });
+                        return;
+                    case 'success-top':
+                        $.toast({
+                            heading: 'Success',
+                            icon: 'success',
+                            text: msg,
+                            position: 'top-right',
+                            showHideTransition: 'fade'
+                        });
+                        return;
+                    case 'warning-top':
+                        $.toast({
+                            heading: 'Warning',
+                            icon: 'warning',
+                            text: msg,
+                            position: 'top-right',
+                            showHideTransition: 'fade'
+                        });
+                        return;
                 }
             }
         </script>

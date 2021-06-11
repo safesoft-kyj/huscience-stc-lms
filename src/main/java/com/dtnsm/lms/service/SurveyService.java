@@ -40,7 +40,7 @@ public class SurveyService {
         return surveyRepository.save(survey);
     }
 
-    public void deleteSurvey(Survey survey) {
+    public boolean deleteSurvey(Survey survey) {
 
          try {
              surveyRepository.delete(survey);
@@ -56,7 +56,9 @@ public class SurveyService {
              }
          } catch (Exception ex) {
              ex.printStackTrace();
+             return false;
         }
+         return true;
     }
 
     public void deleteSurvey(Long id) {

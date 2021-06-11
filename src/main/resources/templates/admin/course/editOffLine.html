@@ -100,16 +100,16 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="day" th:text="#{label.course.daycountandtime}">학습일수/시간</label>
                             <div class="col-sm-2">
-                                <input type="number" th:field="*{day}" id="day" placeholder="day" class="form-control" required="required">
+                                <input type="number" th:field="*{day}" id="day" placeholder="day" class="form-control" required="required" min="0">
                             </div>
                             <span th:if="${#fields.hasErrors('day')}" th:errors="*{day}"></span>
                             <div class="col-sm-2">
-                                <input type="number" step=".01" th:field="*{hour}" id="hour" placeholder="hour" class="form-control" required="required">
+                                <input type="number" step=".01" th:field="*{hour}" id="hour" placeholder="hour" class="form-control" required="required" min="0">
                             </div>
                             <span th:if="${#fields.hasErrors('hour')}" th:errors="*{hour}"></span>
                             <label class="col-sm-2 control-label" for="cnt" th:text="#{label.course.peoplecount}">교육정원</label>
                             <div class="col-sm-4">
-                                <input type="number" th:field="*{cnt}" id="cnt" placeholder="교육정원" class="form-control" required="required">
+                                <input type="number" th:field="*{cnt}" id="cnt" placeholder="교육정원" class="form-control" required="required" min="0">
                             </div>
                             <span th:if="${#fields.hasErrors('cnt')}" th:errors="*{cnt}"></span>
                         </div>
@@ -199,10 +199,10 @@
                             </div>
                         </div>
 
-                        <div class="form-group" th:each="num: ${#numbers.sequence(1,1)}">
-                            <label class="col-sm-2 control-label" for="editor" th:text="#{label.file} + ${num}">첨부파일</label>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="editor"></label>
                             <div class="col-sm-10">
-                                <input type="file" name="files" multiple = "multiple">
+                                <input type="file" name="files" multiple = "multiple" onchange="foo(this.files)">
                             </div>
                         </div>
 
@@ -333,27 +333,6 @@
             //전송버튼
             $("#boardFrm").submit(function(e){
 
-                var title = $("#title").val();
-
-                if(!title) {
-                    alert('과정명을 입력하세요');
-                    return;
-                }
-
-                var day = $("#day").val();
-
-                if(!day) {
-                    alert('강의 일수를 입력하세요');
-                    return;
-                }
-
-                var hour = $("#hour").val();
-
-                if(!hour) {
-                    alert('강의 시간을 입력하세요');
-                    return;
-                }
-
                 //id가 smarteditor인 textarea에 에디터에서 대입
                 obj.getById["editor"].exec("UPDATE_CONTENTS_FIELD", []);
             });
@@ -394,14 +373,18 @@
             $('#day').val(gap2);
         });
 
-        // 수료증
-        // $('#isCerti').change(function() {
-        //     if($('#isCerti option:selected').val() == "Y") {
-        //         $('#certi-detail').show();
-        //     } else {
-        //         $('#certi-detail').hide();
-        //     }
-        // });
+
+        $(document).ready(function () {
+            // 수료증
+            $('#isCerti').change(function () {
+                var isCerti = $(this).val();
+                if(isCerti == "N") {
+                    $('#certi-detail').hide();
+                } else {
+                    $('#certi-detail').show();
+                }
+            }).trigger('change');
+        });
 
     </script>
 

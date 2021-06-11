@@ -24,6 +24,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
@@ -461,8 +462,6 @@ public class CourseAdminController {
                 // 부서별 교육은 참석자 등록을 바로 해야 함으로 상태를 종료상태로 변경한다.
                 course.setStatus(5);
             }
-
-
         }
 
         if(course.getPlace() == null || course.getTeam() == null) {
@@ -549,8 +548,6 @@ public class CourseAdminController {
 
         Course course1 = courseService.save(course);
 
-
-
         Arrays.asList(files)
                 .stream()
                 .map(file -> courseFileService.storeFile(file, course1))
@@ -595,25 +592,25 @@ public class CourseAdminController {
             , @RequestParam(value = "active", required = false, defaultValue = "") String active
             , @RequestParam(value = "status", required = false, defaultValue = "") String status
             , @RequestParam(value = "title", required = false, defaultValue = "") String title
-            , HttpServletRequest request) {
+            , HttpServletRequest request, RedirectAttributes attributes) {
 
         Course course = courseService.getCourseById(courseId);
 
         // 과정 신청된 내역이 있으면 삭제 하지 않는다.
         if (course.getCourseAccountList().size() <= 0) {
-
             try {
-
                 // 과정을 삭제할때는 로그까지 함께 삭제한다.
                 for (LmsNotification lmsNotification : lmsNotificationService.getAllByCourseIdNotification(courseId)) {
                     lmsNotificationService.delete(lmsNotification);
                 }
-
                 courseService.delete(course);
 
             } catch(Exception ex) {
                 ex.printStackTrace();
             }
+        } else {
+            attributes.addFlashAttribute("type", "warning-top");
+            attributes.addFlashAttribute("msg", "해당 과정을 수강중인 사용자가 있습니다.");
         }
 
         // 이전 URL를 리턴한다.

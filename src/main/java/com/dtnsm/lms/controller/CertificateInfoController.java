@@ -2,6 +2,7 @@ package com.dtnsm.lms.controller;
 
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.domain.CourseCertificateInfo;
+import com.dtnsm.lms.domain.CourseManager;
 import com.dtnsm.lms.repository.CourseCertificateInfoRepository;
 import com.dtnsm.lms.repository.CourseCertificateLogRepository;
 import com.dtnsm.lms.service.CourseCertificateService;
@@ -14,8 +15,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/certificate/info")
@@ -107,12 +110,21 @@ public class CertificateInfoController {
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") int id) {
+    public String delete(@PathVariable("id") int id, RedirectAttributes attributes) {
 
-        CourseCertificateInfo courseCertificateInfo = courseCertificateInfoRepository.findById(id).get();
-
-        courseCertificateInfoRepository.delete(courseCertificateInfo);
-
+        List<CourseCertificateInfo> certificateInfoList = courseCertificateInfoRepository.findAll();
+        if(certificateInfoList.size() <= 1) {
+            attributes.addFlashAttribute("type", "warning-top");
+            attributes.addFlashAttribute("msg", "수료증정보는 반드시 설정되어야 합니다.");
+        } else {
+            CourseCertificateInfo courseCertificateInfo = courseCertificateInfoRepository.findById(id).get();
+            if(courseCertificateInfo.getIsActive() == 1) {
+                attributes.addFlashAttribute("type", "warning-top");
+                attributes.addFlashAttribute("msg", "선택한 수료증정보는 Active 상태임으로 삭제할 수 없습니다.");
+            } else  {
+                courseCertificateInfoRepository.delete(courseCertificateInfo);
+            }
+        }
         return "redirect:/admin/certificate/info";
     }
 

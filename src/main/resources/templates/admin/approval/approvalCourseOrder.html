@@ -199,7 +199,7 @@
                         </tr>
                         <tr>
                             <th><span th:text="#{label.course.requesperiod}">신청기간</span></th>
-                            <td th:text="${course.getRequestFromDate() + ' ~ ' + course.getToDate()} "></td>
+                            <td th:text="${course.getRequestFromDate() + ' ~ ' + course.getRequestToDate()} "></td>
                             <th><span th:text="#{label.course.period}">교육기간</span></th>
                             <td th:text="${course.getFromDate() + ' ~ ' + course.getToDate()} "></td>
                         </tr>

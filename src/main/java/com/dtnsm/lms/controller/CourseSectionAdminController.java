@@ -18,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
@@ -234,13 +235,17 @@ public class CourseSectionAdminController {
             , @PathVariable("courseId") Long courseId
             , @PathVariable("id") long id
             , @RequestParam(value = "page", required = false, defaultValue = "") String page
-            , HttpServletRequest request) {
+            , HttpServletRequest request
+            , RedirectAttributes attributes) {
 
         CourseSection courseSection = sectionService.getCourseSectionById(id);
 
         // 과정 신청된 내역이 있으면 삭제 하지 않는다.
         if (courseSection.getCourse().getCourseAccountList().size() <= 0) {
             sectionService.deleteSection(courseSection);
+        } else {
+            attributes.addFlashAttribute("type", "warning-top");
+            attributes.addFlashAttribute("msg", "이미 강의를 이수 중인 사용자가 있습니다.");
         }
 
         // 이전 URL를 리턴한다.

@@ -426,15 +426,18 @@ public class MyPageController {
 
 
     // 초기 교육 자료를 업로드 한다.
-    @PostMapping("uploadTrainingLog")
+    @PostMapping("/uploadTrainingLog")
     public String uploadTraingLogPost( @RequestParam(value="isUploadDataDelete",  defaultValue = "0") boolean isUploadDataDelete
-            , @RequestParam("file") MultipartFile multipartFile) {
+            , @RequestParam("file") MultipartFile multipartFile, RedirectAttributes attributes) {
 
         if(multipartFile.isEmpty()) return "redirect:/mypage/uploadTrainingLog";
 
-        boolean isUpload = true;
-
-        isUpload = binderLogService.uploadTrainingLog(SessionUtil.getUserId(), multipartFile, isUploadDataDelete);
+        String message = binderLogService.uploadTrainingLog(SessionUtil.getUserId(), multipartFile, isUploadDataDelete);
+        if(!message.isEmpty())
+        {
+            attributes.addFlashAttribute("type", "warning-top");
+            attributes.addFlashAttribute("msg", message);
+        }
 
         return "redirect:/mypage/uploadTrainingLog";
     }

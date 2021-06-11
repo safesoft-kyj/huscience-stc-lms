@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -366,7 +367,6 @@ public class RegistrationController {
     @GetMapping("/courseManager/add")
     public String courseManagerAdd(CourseManager courseManager, Model model) {
 
-
         pageInfo.setParentTitle("교육과정기준정보");
         pageInfo.setPageTitle("교육과정관리자");
 
@@ -407,13 +407,13 @@ public class RegistrationController {
     @GetMapping("/courseManager/updateActive")
     public String updateActive(@RequestParam("userId") String userId) {
 
-        // 모든 설문을 초기화 한다.
+        // 모든 Manager의 Active를 초기화 한다.
         for(CourseManager courseManager : courseManagerService.getList()) {
             courseManager.setIsActive(0);
             courseManagerService.save(courseManager);
         }
 
-        // 요청된 설문을 기본 설문으로 변경한다.
+        // 요청된 Manager를 Active 한다.
         CourseManager courseManager = courseManagerService.getByUserId(userId);
         courseManager.setIsActive(1);
         courseManagerService.save(courseManager);
@@ -451,11 +451,21 @@ public class RegistrationController {
 
 
     @GetMapping("/courseManager/delete")
-    public String deleteRole(@RequestParam("userId") String userId) {
+    public String deleteRole(@RequestParam("userId") String userId, RedirectAttributes attributes) {
 
-        CourseManager courseManager = courseManagerService.getByUserId(userId);
-
-        courseManagerService.delete(courseManager);
+        List<CourseManager> courseManagerList = courseManagerService.getList();
+        if(courseManagerList.size() <= 1) {
+            attributes.addFlashAttribute("type", "warning-top");
+            attributes.addFlashAttribute("msg", "교육과정관리자는 반드시 설정되어야 합니다.");
+        } else {
+            CourseManager courseManager = courseManagerService.getByUserId(userId);
+            if(courseManager.getIsActive() == 1) {
+                attributes.addFlashAttribute("type", "warning-top");
+                attributes.addFlashAttribute("msg", "선택한 관리자는 Active 상태임으로 삭제할 수 없습니다.");
+            } else  {
+                courseManagerService.delete(courseManager);
+            }
+        }
 
         return "redirect:/admin/registration/courseManager";
     }

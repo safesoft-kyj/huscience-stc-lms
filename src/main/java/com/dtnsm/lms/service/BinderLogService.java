@@ -258,7 +258,7 @@ public class BinderLogService {
 
     // 초기 교육자료를 업로드 한다.
     @Transactional
-    public boolean uploadTrainingLog(String userId, MultipartFile multipartFile, boolean isUploadDataDelete) {
+    public String uploadTrainingLog(String userId, MultipartFile multipartFile, boolean isUploadDataDelete) {
 
         // TODO : 2020-05-10 초기 교육자료 업로드 시작
         boolean isSuccess = true;
@@ -295,10 +295,7 @@ public class BinderLogService {
                     log.debug("@Employee No : {}", empNo);
 
                     if (!empNo.toUpperCase().equals(user.getComNum().toUpperCase())) {
-                        log.warn("로그인한 사용자의 트레이닝 로그 파일 Emp No가 다름.");
-
-//                     attributes.addFlashAttribute("message", "Training Log 파일의 사번과 로그인한 사용자의 사번이 다릅니다.");
-                        return false;
+                        return "Employee Training Log 파일 내 Emp No가 다릅니다.";
                     }
                     List<CourseTrainingLog> trainingLogs = new ArrayList<>();
                     for (int i = 1; i < logTable.getNumberOfRows(); i++) {
@@ -345,10 +342,10 @@ public class BinderLogService {
             log.error("Training log Upload Error : {}, {}, {}", user.getUserId(), user.getName(), e.getMessage());
             LogUtil.write("BinderLogService/uploadTrainingLog", "error", e.getMessage());
             e.printStackTrace();
-            return false;
+            return "Training Log를 업로드 할 수 없습니다. 업로드한 파일을 확인해 주세요.";
         }
 
-        return true;
+        return "";
     }
 
 }

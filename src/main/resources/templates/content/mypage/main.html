@@ -246,7 +246,9 @@
                                                     </th:block>
                                                     <!-- class 교육이 아닌경우(Self training)는 교육기간을 체크한다. -->
                                                     <th:block th:unless="${#strings.equalsIgnoreCase(courseAccount.getCourse().getCourseMaster().getId(), 'BC0102')}">
-                                                        <a class="btn btn-info" th:onclick="|javascript:checkCoursePeriod('${courseAccount.getId()}','${index.count}')|"><i class="demo-pli-inbox-into"></i> 입장</a>
+                                                        <th:block th:unless="${#strings.equalsIgnoreCase(courseAccount.getCourse().getCourseMaster().getId(), 'BC0104')}">
+                                                            <a class="btn btn-info" th:onclick="|javascript:checkCoursePeriod('${courseAccount.getId()}','${index.count}')|"><i class="demo-pli-inbox-into"></i> 입장</a>
+                                                        </th:block>
                                                     </th:block>
                                                 </form>
                                             </th:block>

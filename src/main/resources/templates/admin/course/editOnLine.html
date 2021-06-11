@@ -94,11 +94,11 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="hour">학습일수/학습시간</label>
                             <div class="col-sm-2">
-                                <input type="number" th:field="*{day}" id="day" placeholder="day" class="form-control" required="required">
+                                <input type="number" th:field="*{day}" id="day" placeholder="day" class="form-control" required="required" min="0">
                             </div>
                             <span th:if="${#fields.hasErrors('day')}" th:errors="*{day}"></span>
                             <div class="col-sm-2">
-                                <input type="number" step=".01" th:field="*{hour}" id="hour" placeholder="hour" class="form-control" required="required">
+                                <input type="number" step=".01" th:field="*{hour}" id="hour" placeholder="hour" class="form-control" required="required" min="0">
                             </div>
                             <span th:if="${#fields.hasErrors('hour')}" th:errors="*{hour}"></span>
                         </div>
@@ -319,25 +319,16 @@
             //전송버튼
             $("#boardFrm").submit(function(e){
 
-                var title = $("#title").val();
+                var requestFromDate = $("#requestFromDate").val();
+                var requestToDate = $("#requestToDate").val();
+                var toDate = $("#toDate").val();
 
-                if(!title) {
-                    alert('과정명을 입력하세요');
-                    return;
-                }
+                console.log('requestFromDate : ' + requestFromDate);
+                console.log('requestToDate : ' + requestToDate);
 
-                var day = $("#day").val();
-
-                if(!day) {
-                    alert('강의 일수를 입력하세요');
-                    return;
-                }
-
-                var hour = $("#hour").val();
-
-                if(!hour) {
-                    alert('강의 시간을 입력하세요');
-                    return;
+                if(toDate < requestFromDate || toDate < requestToDate) {
+                    alert('신청기간은 교육기간 종료일보다 이전이어야 합니다');
+                    return false;
                 }
 
                 //id가 smarteditor인 textarea에 에디터에서 대입
@@ -407,14 +398,16 @@
         });
 
         // 수료증
-        // $('#isCerti').change(function() {
-        //     if($('#isCerti option:selected').val() == "Y") {
-        //         $('#certi-detail').show();
-        //     } else {
-        //         $('#certi-detail').hide();
-        //     }
-        // });
-        //
+        $(document).ready(function () {
+           $('#isCerti').change(function () {
+             var isCerti = $(this).val();
+             if(isCerti == "N") {
+                 $('#certi-detail').hide();
+             } else {
+                 $('#certi-detail').show();
+             }
+           }).trigger('change');
+        });
 
         // $('#mailList, #mailList2').chosen({width:'100%'});
         //

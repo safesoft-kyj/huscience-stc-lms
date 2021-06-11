@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
@@ -168,11 +169,13 @@ public class SurveyAdminController {
     }
 
     @GetMapping("/delete/{id}")
-    public String noticeDelete(@PathVariable("id") long id) {
+    public String noticeDelete(@PathVariable("id") long id, RedirectAttributes attributes) {
 
         Survey survey = surveyService.getSurveyById(id);
-
-        surveyService.deleteSurvey(survey);
+        if(!surveyService.deleteSurvey(survey)) {
+            attributes.addFlashAttribute("type", "warning-top");
+            attributes.addFlashAttribute("msg", "해당 설문은 교육과정 내에서 사용 중이므로 삭제할 수 없습니다.");
+        }
 
         return "redirect:/admin/survey";
     }
@@ -244,7 +247,6 @@ public class SurveyAdminController {
         Survey survey = surveyService.getSurveyById(id);
 
         if (survey.getIsActive() == 0) {
-            // 교육과정을 신청할 수 있는 상태로 변경한다.
             survey.setIsActive(1);
         } else if (survey.getIsActive() == 1) {
             survey.setIsActive(0);

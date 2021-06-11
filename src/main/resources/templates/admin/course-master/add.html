@@ -62,14 +62,14 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="day">기본학습일수</label>
                             <div class="col-sm-10">
-                                <input type="number" th:field="*{day}" id="day" placeholder="day" class="form-control" required="required">
+                                <input type="number" th:field="*{day}" id="day" placeholder="day" class="form-control" min="0" required="required">
                             </div>
                             <span th:if="${#fields.hasErrors('day')}" th:errors="*{day}"></span>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="hour">기본학습시간</label>
                             <div class="col-sm-10">
-                                <input type="number" step=".01" th:field="*{hour}" id="hour" placeholder="hour" class="form-control" required="required">
+                                <input type="number" step=".01" th:field="*{hour}" id="hour" placeholder="hour" class="form-control" min="0" required="required">
                             </div>
                             <span th:if="${#fields.hasErrors('hour')}" th:errors="*{hour}"></span>
                         </div>

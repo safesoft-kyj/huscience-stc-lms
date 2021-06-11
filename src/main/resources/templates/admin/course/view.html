@@ -73,7 +73,7 @@
                                 <th><span th:text="#{label.course.requesperiod}">신청기간</span></th>
                                 <td>
                                     <th:block th:if="${#strings.equalsIgnoreCase(course.getCourseMaster().getId(), 'BC0101') or #strings.equalsIgnoreCase(course.getCourseMaster().getId(), 'BC0102')}">
-                                        <span th:text="${course.getIsAlways().equals('1') ? '상시' : course.getRequestFromDate() + ' ~ ' + course.getToDate()} "></span>
+                                        <span th:text="${course.getIsAlways().equals('1') ? '상시' : course.getRequestFromDate() + ' ~ ' + course.getRequestToDate()} "></span>
                                     </th:block>
                                 </td>
                                 <th><span th:text="#{label.course.period}">교육기간</span></th>

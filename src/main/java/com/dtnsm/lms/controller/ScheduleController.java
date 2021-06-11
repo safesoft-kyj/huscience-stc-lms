@@ -60,7 +60,6 @@ public class ScheduleController {
             pageInfo.setPageTitle("연간일정");
         }
 
-
         List<Schedule> borders = scheduleService.getListBySctypeOrderByCreatedDateDesc(sctype);
         model.addAttribute(pageInfo);
         model.addAttribute("sctype", sctype);

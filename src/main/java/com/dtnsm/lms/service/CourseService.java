@@ -45,9 +45,13 @@ public class CourseService {
             Date toDate = DateUtil.getStringToDate(course.getToDate());
             Date toDay = DateUtil.getToday();
 
+            int todayReqFromCompare = 1;
+            int todayReqToCompare = 1;
+            if(requestFromDate != null && requestToDate != null) {
+                todayReqFromCompare = toDay.compareTo(requestFromDate);  // 1 : 현재일이 크다, -1 : 요청시작일이 크다
+                todayReqToCompare = toDay.compareTo(requestToDate);      // 1 : 현재일이 크다ㅣ
+            }
 
-            int todayReqFromCompare = toDay.compareTo(requestFromDate);  // 1 : 현재일이 크다, -1 : 요청시작일이 크다
-            int todayReqToCompare = toDay.compareTo(requestToDate);      // 1 : 현재일이 크다ㅣ
             int todayFromCompare = toDay.compareTo(fromDate);
             int todayToCompare = toDay.compareTo(toDate);
 

@@ -49,7 +49,7 @@
                                     <b class="text-info"><span th:text="#{label.course.name}"></span> : <span th:text="${courseName}"></span></b><br>
                                         수강생 : <span th:text="${borders.size()}"></span>명
                                     <th:block th:if="${course.getCnt() > 0}">
-                                        , 교육정원 : <span th:text="${course.getCourseAccountList().size()}"></span>명
+                                        , 교육정원 : <span th:text="${course.getCnt()}"></span>명
                                     </th:block>
                                 </div>
                                 <div class="col-sm-4 text-right">

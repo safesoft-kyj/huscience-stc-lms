@@ -69,8 +69,12 @@
                                     <td th:text="${certiNumber.getFullNumber()}"></td>
                                     <td>
                                         <div class="form-inline">
-                                            <a th:text="#{label.edit}" th:href="@{/admin/certificate/number/edit/{id}(id=${certiNumber.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
-                                            <a th:text="#{label.delete}" th:href="@{/admin/certificate/number/delete/{id}(id=${certiNumber.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                            <a th:text="#{label.edit}" th:href="@{/admin/certificate/number/edit/{id}(id=${certiNumber.getId()})}"
+                                               class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip"
+                                               data-original-title="Edit" data-container="body"></a>
+                                            <a th:text="#{label.delete}" th:href="@{/admin/certificate/number/delete/{id}(id=${certiNumber.getId()})}"
+                                               class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip"
+                                               data-original-title="Delete" data-container="body"></a>
                                         </div>
                                     </td>
                                 </tr>

@@ -54,7 +54,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="cerYear" th:text="#{label.certi.year}">Year</label>
                             <div class="col-sm-10">
-                                <input type="text" th:field="*{cerYear}" id="cerYear" placeholder="" class="form-control" required="required">
+                                <input type="number" th:field="*{cerYear}" id="cerYear" placeholder="" class="form-control" min="0" max="9999" required="required">
                             </div>
                             <span th:if="${#fields.hasErrors('cerYear')}" th:errors="*{cerYear}"></span>
                         </div>
@@ -68,7 +68,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="fullNumber" th:text="#{label.certi.fullNumber}">Full Number</label>
                             <div class="col-sm-10">
-                                <input type="text" th:field="*{fullNumber}" id="fullNumber" placeholder="자동생성번호" class="form-control">
+                                <input type="number" th:field="*{fullNumber}" id="fullNumber" placeholder="자동생성번호" class="form-control">
                             </div>
                             <span th:if="${#fields.hasErrors('fullNumber')}" th:errors="*{fullNumber}"></span>
                         </div>

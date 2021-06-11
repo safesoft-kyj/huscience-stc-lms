@@ -127,6 +127,9 @@ public class CVFindController {
 
             model.addAttribute("cvList", cvList);
         }
+
+        model.addAttribute("indicationList", cvCodeList.getIndicationList());
+
         return "content/finder/condition";
     }
 
@@ -134,6 +137,7 @@ public class CVFindController {
     public void getBlindCV(@RequestParam("username") String username,
                            @RequestParam(value = "blind", defaultValue = "true") boolean blind,
                            HttpServletResponse httpServletResponse) throws Exception {
+
         Account account = userRepository.findByUserId(username);
         httpServletResponse.setHeader("Content-Disposition", "attachment; filename=\""+(blind ? "Blind" : account.getEngName())+"_CV(" + username + ").pdf\"");
 

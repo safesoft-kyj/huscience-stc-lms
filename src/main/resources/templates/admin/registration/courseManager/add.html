@@ -51,7 +51,7 @@
                                 <div id="demo-dp-range">
                                     <div id="demo-dp-component">
                                         <div class="input-group date">
-                                            <input type="text" th:field="*{registerDate}" id="registerDate" class="form-control">
+                                            <input type="text" th:field="*{registerDate}" id="registerDate" class="form-control" required>
                                             <span class="input-group-addon"><i class="demo-pli-calendar-4"></i></span>
                                         </div>
                                         <span th:if="${#fields.hasErrors('registerDate')}" th:errors="*{registerDate}"></span>
