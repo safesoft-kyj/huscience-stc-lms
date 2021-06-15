@@ -275,7 +275,7 @@ public class CourseAdminController {
         // isAlways : 1:상시, 2:기간 => 상시인 경우 오늘부터 최대일자로 기간을 설정한다.
         if(course.getIsAlways().equals("1")) {
             course.setRequestFromDate(DateUtil.getTodayString());
-            course.setRequestToDate("2999-12-31");
+            course.setRequestToDate(DateUtil.getStringDateAddDay(DateUtil.getTodayString(), course.getDay()));
 
             course.setFromDate(DateUtil.getTodayString());
             course.setToDate(DateUtil.getStringDateAddDay(DateUtil.getTodayString(), course.getDay()));
