@@ -8,12 +8,13 @@
         <version>2.2.2.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>com.dtnsm</groupId>
-    <artifactId>lms</artifactId>
-    <version>1.0</version>
+    <artifactId>intergrated-lms</artifactId>
+    <version>1.2.0</version>
     <packaging>jar</packaging>
-    <name>lms</name>
-    <description>Demo project for Spring Boot</description>
+    <name>intergrated-lms</name>
+    <description>intergrated-lms</description>
 
     <properties>
         <java.version>11</java.version>
@@ -242,7 +243,7 @@
 
         <dependency>
             <groupId>com.dtnsm.common</groupId>
-            <artifactId>entity</artifactId>
+            <artifactId>intergrated-entity</artifactId>
             <version>1.0</version>
         </dependency>
 
