@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -61,8 +62,6 @@ public class CourseSurveyAdminController {
 
         // 설문조사 여부가 Y 인경우만 Add 버튼 활성화
         String isAdd = course.getIsSurvey();
-
-
 
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courseSurveyService.getAllByCourseId(courseId));
@@ -121,11 +120,20 @@ public class CourseSurveyAdminController {
     @GetMapping("/{typeId}/{courseId}/survey/edit")
     public String noticeEdit(@PathVariable("typeId") String typeId
             , @PathVariable("courseId") Long courseId
-            , @RequestParam("id") long id, Model model) {
+            , @RequestParam("id") long id
+            , Model model
+            , RedirectAttributes attributes) {
 
         CourseSurvey courseSurvey = courseSurveyService.getCourseSurveyById(id);
 
         Course course = courseService.getCourseById(courseId);
+
+        if(course.getCourseAccountList().size() > 0) {
+            attributes.addFlashAttribute("type", "warning-top");
+            attributes.addFlashAttribute("msg", "수강자가 있을 경우 설문을 변경할 수 없습니다.");
+            return "redirect:/admin/course/" + typeId + "/" + courseId + "/survey";
+        }
+
         pageInfo.setPageTitle(String.format("<a href='/admin/course/%s'>%s</a> > %s", typeId , course.getCourseMaster().getCourseName(), "설문"));
 
         model.addAttribute(pageInfo);

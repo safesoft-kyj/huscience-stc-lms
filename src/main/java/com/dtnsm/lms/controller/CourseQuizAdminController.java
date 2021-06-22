@@ -20,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
@@ -156,9 +157,20 @@ public class CourseQuizAdminController {
 
     @GetMapping("/{typeId}/{courseId}/quiz/edit")
     public String noticeEdit(@PathVariable("typeId") String typeId
-            , @PathVariable("courseId") Long courseId, @RequestParam("id") long id, Model model) {
+            , @PathVariable("courseId") Long courseId
+            , @RequestParam("id") long id
+            , Model model
+            , RedirectAttributes attributes) {
 
         CourseQuiz courseQuiz = quizService.getCourseQuizById(id);
+
+        Course course = courseQuiz.getCourse();
+
+        if(course.getCourseAccountList().size() > 0) {
+            attributes.addFlashAttribute("type", "warning-top");
+            attributes.addFlashAttribute("msg", "수강자가 있을 경우 시험을 변경할 수 없습니다.");
+            return "redirect:/admin/course/" + typeId + "/" + courseId + "/quiz";
+        }
 
         pageInfo.setPageTitle(String.format("<a href='/admin/course/%s/'>%s</a> > %s", typeId, course.getCourseMaster().getCourseName(), "시험"));
 

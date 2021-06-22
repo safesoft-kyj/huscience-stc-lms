@@ -118,7 +118,7 @@
                         </th:block>
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="hour" th:text="#{label.hour}">학습시간(시)</label>
-                            <div class="col-sm-2">
+                            <div class="col-sm-10">
                                 <input type="number" step=".01" th:field="*{hour}" id="hour" placeholder="" class="form-control" required="required">
                             </div>
                             <span th:if="${#fields.hasErrors('hour')}" th:errors="*{hour}"></span>
