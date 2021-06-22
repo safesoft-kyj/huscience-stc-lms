@@ -165,6 +165,7 @@ public class CourseSectionAdminController {
         model.addAttribute("courseId", courseId);
         model.addAttribute("id", courseSection.getId());
         model.addAttribute("courseName", course.getTitle());
+        model.addAttribute("sectionIsExist", !courseSection.getSectionFiles().isEmpty());
 
         return "admin/course/section/edit";
     }
