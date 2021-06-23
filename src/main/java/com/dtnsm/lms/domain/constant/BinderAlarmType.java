@@ -11,7 +11,8 @@ public enum BinderAlarmType {
 
     JD_ASSIGNED("email/jd-assign-alert", "[LMS/%s/%s] Job Description 배정 알림", "${jobTitle}"),
     JD_AGREE("email/jd-agree-alert", "[LMS/%s/%s] Job Description 승인 요청", "${jobTitle}, ${empName}"),
-    JD_APPROVED("email/jd-approved-alert", "[LMS/%s/%s] Job Description 승인 알림", "Job Description이 승인 되었습니다.");
+    JD_APPROVED("email/jd-approved-alert", "[LMS/%s/%s] Job Description 승인 알림", "Job Description이 승인 되었습니다."),
+    JD_COMPLETED("email/jd-manager-alert", "[LMS/%s/%s] Job Description 승인 알림", "Job Description이 승인 되었습니다.");
 
     private String template;
     private String title;

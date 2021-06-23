@@ -20,6 +20,7 @@ import com.dtnsm.lms.repository.CurriculumVitaeRepository;
 import com.dtnsm.lms.repository.TrainingRecordReviewJdRepository;
 import com.dtnsm.lms.repository.TrainingRecordReviewRepository;
 import com.dtnsm.lms.repository.UserRepository;
+import com.dtnsm.lms.service.CourseManagerService;
 import com.dtnsm.lms.service.JobDescriptionFileService;
 import com.dtnsm.lms.service.MailService;
 import com.dtnsm.lms.util.*;
@@ -74,6 +75,7 @@ public class EmployeeController {
     private final FileUploadProperties prop;
     private final MailService mailService;
     private final DocumentConverter documentConverter;
+    private final CourseManagerService courseManagerService;
 
     private PageInfo pageInfo = new PageInfo();
 
@@ -596,6 +598,11 @@ public class EmployeeController {
             context.setVariable("empName", account.getName());
             context.setVariable("jobTitle", jobTitle);
             mailService.send(toEmail, String.format(BinderAlarmType.JD_APPROVED.getTitle(), jobTitle, account.getName()), BinderAlarmType.JD_APPROVED, context);
+
+            // 관리자에게 메일 전송
+            Account manager = userRepository.findByUserId(courseManagerService.getCourseManager().getUserId());
+            String managerMail = manager.getEmail();
+            mailService.send(managerMail, String.format(BinderAlarmType.JD_COMPLETED.getTitle(), jobTitle, account.getName()), BinderAlarmType.JD_COMPLETED, context);
 
         }
 
