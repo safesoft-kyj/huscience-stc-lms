@@ -395,18 +395,14 @@ public class CourseAccountService {
      */
     public boolean courseAccountManualCommit(CourseAccount courseAccount) {
 
+        courseAccount.setCourseStatus(CourseStepStatus.complete);
+        courseAccount.setIsCommit("1");
+
         // 수료증 처리
         if(courseAccount.getCourse().getIsCerti().equals("Y") && !courseAccount.getCourse().getCertiHead().equals("")){
             String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
-            if(certificateNo.isEmpty()){
-                return false;
-            }else{
-                courseAccount.setCertificateNo(certificateNo);
-            }
+            courseAccount.setCertificateNo(certificateNo);
         }
-
-        courseAccount.setCourseStatus(CourseStepStatus.complete);
-        courseAccount.setIsCommit("1");
 
         // TODO: 2019/11/12 Digital Binder Employee Training Log 처리 -ks Hwang
         // 강의별로 로그를 생성시킨다.

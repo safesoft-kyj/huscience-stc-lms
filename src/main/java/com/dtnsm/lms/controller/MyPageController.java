@@ -9,10 +9,7 @@ import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import com.dtnsm.lms.domain.constant.QuizStatusType;
 import com.dtnsm.lms.domain.constant.SurveyStatusType;
 import com.dtnsm.lms.mybatis.service.UserMapperService;
-import com.dtnsm.lms.repository.CourseAccountRepository;
-import com.dtnsm.lms.repository.CourseSectionSetupRepository;
-import com.dtnsm.lms.repository.CourseTrainingLogRepository;
-import com.dtnsm.lms.repository.UserRepository;
+import com.dtnsm.lms.repository.*;
 import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.FileUtil;
@@ -656,9 +653,17 @@ public class MyPageController {
             , Model model
             , RedirectAttributes attributes) {
 
-
         // 사용자 시험 정보 가져오기
         CourseQuizAction courseQuizAction = courseQuizActionService.getCourseQuizActionById(quizActionId);
+
+        // 수료증 정보 확인
+        if(courseQuizAction.getCourseAccount().getCourse().getIsCerti().equals("Y")) {
+            if(!courseCertificateService.getCourseCertificateActive()) {
+                attributes.addFlashAttribute("type", "error");
+                attributes.addFlashAttribute("msg", "수료증 정보가 없어 발급할 수 없습니다. 교육관리자에게 문의하세요.");
+                return "redirect:/mypage/classroom/quizCommitMessage/" + quizActionId;
+            }
+        }
 
         // 사용자 시험 답 객체 생성
         CourseQuizActionAnswer questionAnswer;
@@ -732,22 +737,14 @@ public class MyPageController {
 
                 if(courseAccount.getCourseStatus() != CourseStepStatus.complete) {
 
-                    if (courseAccount.getCourse().getIsCerti().equals("Y")) {
-                        String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
-                        if(certificateNo.isEmpty()){
-                            // 경고창을 띄우고 이전 URL를 리턴한다.
-                            attributes.addFlashAttribute("type", "warning-top");
-                            attributes.addFlashAttribute("msg", "수료증 기준정보가 설정되지 않았습니다.");
-                            String refUrl = request.getHeader("referer");
-                            return "redirect:" +  refUrl;
-                        }else{
-                            courseAccount.setCertificateNo(certificateNo);
-                        }
-                    }
-
                     courseAccount.setCourseStatus(CourseStepStatus.complete);
                     courseAccount.setIsAttendance("1");
                     courseAccount.setIsCommit("1");
+
+                    if (courseAccount.getCourse().getIsCerti().equals("Y")) {
+                        String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
+                        courseAccount.setCertificateNo(certificateNo);
+                    }
 
                     // TODO: 2019/11/12 Digital Binder Employee Training Log 처리 -ks Hwang
                     binderLogService.createTrainingLog(courseAccountService.save(courseAccount));
@@ -801,6 +798,15 @@ public class MyPageController {
         // 사용자 설문 정보 가져오기
         CourseSurveyAction courseSurveyAction = courseSurveyActionService.getCourseSurveyActionById(surveyActionId);
 
+        // 수료증 정보 확인
+        if(courseSurveyAction.getCourseAccount().getCourse().getIsCerti().equals("Y")) {
+            if(!courseCertificateService.getCourseCertificateActive()) {
+                attributes.addFlashAttribute("type", "error");
+                attributes.addFlashAttribute("msg", "수료증 정보가 없어 발급할 수 없습니다. 교육관리자에게 문의하세요.");
+                return "redirect:/mypage/classroom/surveyCommitMessage/" + surveyActionId;
+            }
+        }
+
         // 교육과정이 완료가 아닌 경우만 처리한다.
         if (courseSurveyAction.getCourseAccount().getCourseStatus() != CourseStepStatus.complete) {
             // 이전 설문 삭제
@@ -850,22 +856,13 @@ public class MyPageController {
 
             // CourseAccount 상태값 처리
             CourseAccount courseAccount1 = courseQuizAction1.getCourseAccount();
+            courseAccount1.setCourseStatus(CourseStepStatus.complete);
+            courseAccount1.setIsCommit("1");
 
             if (courseAccount1.getCourse().getIsCerti().equals("Y")) {
                 String certificateNo = courseCertificateService.newCertificateNumber(courseAccount1.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount1).getFullNumber();
-                if(certificateNo.isEmpty()){
-                    // 경고창을 띄우고 이전 URL를 리턴한다.
-                    attributes.addFlashAttribute("type", "warning-top");
-                    attributes.addFlashAttribute("msg", "수료증 기준정보가 설정되지 않았습니다.");
-                    String refUrl = request.getHeader("referer");
-                    return "redirect:" +  refUrl;
-                }else{
-                    courseAccount1.setCertificateNo(certificateNo);
-                }
+                courseAccount1.setCertificateNo(certificateNo);
             }
-
-            courseAccount1.setCourseStatus(CourseStepStatus.complete);
-            courseAccount1.setIsCommit("1");
 
             // TODO: YSH - 설문 진행 시 교육 완료 진행 여부 체킹 로직 추가 필요
             // TODO: 2019/11/12 Digital Binder Employee Training Log 처리 -ks Hwang

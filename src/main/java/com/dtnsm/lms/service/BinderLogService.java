@@ -318,7 +318,13 @@ public class BinderLogService {
                         trainingCourse  = trainingCourse.replaceAll(System.getProperty("line.separator"), "\n");
 
                         String trainingHr = row.getCell(2).getText();
+                        if(trainingHr.isEmpty())
+                            trainingHr = "0";
                         String organization = row.getCell(3).getText();
+
+                        if(completionDate.isEmpty() && trainingCourse.isEmpty() && trainingHr.equals("0") && organization.isEmpty())
+                            break;
+
                         double time = Double.parseDouble(trainingHr) * 3600;
                         boolean isSelfTraining = TrainingType.SELF.getLabel().toUpperCase().equals(organization.toUpperCase());
 

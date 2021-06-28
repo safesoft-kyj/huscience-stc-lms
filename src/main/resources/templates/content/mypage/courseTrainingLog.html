@@ -43,6 +43,7 @@
                             <button class="btn btn-info" id="publishBtn" type="button" data-loading-text="배포중.."><i class="fa fa-download"></i> 배포</button>
                         </div>
                     </div>
+                    <p>
                     <div th:switch="${borders}">
                         <div class="table-responsive">
                             <table id="customer-list-page" class="table table-bordered" cellspacing="0" width="100%">
@@ -81,7 +82,8 @@
                                         </tr>
                                         </tbody>
                                     </div>
-                            </table>`
+                            </table>
+                            <p>
                             <nav style="text-align: center;" th:fragment="pagenation">
                                 <ul class="pagination"
                                     th:with="start=${T(Math).floor(borders.number/10)*10 + 1}, 

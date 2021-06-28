@@ -118,14 +118,14 @@
 <!--                                </tr>-->
                                     <thead>
                                         <tr>
-                                            <th>#</th>
-                                            <th>문항</th>
-                                            <th th:each="courseAccount, index : ${courseQuiz.getCourse().getCourseAccountList()}">
+                                            <th class="text-center">#</th>
+                                            <th class="text-center">문항</th>
+                                            <th class="text-center" th:each="courseAccount, index : ${courseQuiz.getCourse().getCourseAccountList()}">
                                                 <div th:text="${courseAccount.getAccount().getName()}"></div>
                                             </th>
                                             <!-- 합계 -->
-                                            <th class="col-sm-1">오답수/합계</th>
-                                            <th class="col-sm-1">오답률</th>
+                                            <th class="col-sm-1 text-center">오답수/합계</th>
+                                            <th class="col-sm-1 text-center">오답률</th>
                                         </tr>
                                     </thead>
                                     <tbody>

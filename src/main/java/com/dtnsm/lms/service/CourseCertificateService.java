@@ -79,9 +79,7 @@ public class CourseCertificateService {
         CourseCertificateNumber courseCertificateNumber1 = courseCertificateNumberRepository.save(courseCertificateNumber);
 
         // 수료증 정보를 생성한다.
-        if(CreateCertificate(courseCertificateNumber1, courseAccount) == null){
-            return null;
-        }
+        CreateCertificate(courseCertificateNumber1, courseAccount);
 
         return courseCertificateNumber1;
     }
@@ -135,10 +133,7 @@ public class CourseCertificateService {
         return courseCertificateLog1;
     }
 
-
-    //
     public CourseCertificateLog getCourseCertificateLog(Long docId) {
-
         return courseCertificateLogRepository.findByCourseAccount_Id(docId);
     }
 
@@ -290,4 +285,13 @@ public class CourseCertificateService {
 
         return trainingLogSource;
     }
+
+    public boolean getCourseCertificateActive() {
+        if (courseCertificateInfoRepository.findByIsActive(1) == null) {
+            return false;
+        }
+        return true;
+    }
 }
+
+

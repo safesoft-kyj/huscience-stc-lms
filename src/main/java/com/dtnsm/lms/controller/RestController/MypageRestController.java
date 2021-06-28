@@ -8,6 +8,7 @@ import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Date;
 
@@ -48,7 +49,6 @@ public class MypageRestController {
     @Autowired
     BinderLogService binderLogService;
 
-
     @Autowired
     UserServiceImpl userService;
 
@@ -60,7 +60,8 @@ public class MypageRestController {
             , @RequestParam("useSecond") int useSecond
             , @RequestParam("startDate") Date startDate
             , @RequestParam("endDate") Date endDate
-            , @RequestParam("endFlag") int endFlag){
+            , @RequestParam("endFlag") int endFlag
+            , RedirectAttributes attributes){
 
         Account account = userService.getAccountByUserId(SessionUtil.getUserId());
 
@@ -81,6 +82,15 @@ public class MypageRestController {
         // 교육수강을 완료하면 완료 처리한다.(endFlag => 1 계속학습, 2 학습 종료)
         if (endFlag == 2) {
             //totalSecond = courseSectionAction.getCourseSection().getSecond();
+
+            // 수료증 정보 확인
+            if(courseSectionAction.getCourseAccount().getCourse().getIsCerti().equals("Y")) {
+                if(!courseCertificateService.getCourseCertificateActive()) {
+                    attributes.addFlashAttribute("type", "error");
+                    attributes.addFlashAttribute("msg", "수료증 정보가 없어 발급할 수 없습니다. 교육관리자에게 문의하세요.");
+                    return false;
+                }
+            }
 
             courseSectionAction.setStatus(SectionStatusType.COMPLETE);
             courseSectionAction.setExecuteDate(DateUtil.getTodayString());
@@ -144,18 +154,14 @@ public class MypageRestController {
 
                 if (courseAccount.getCourseStatus() != CourseStepStatus.complete) {
 
+                    courseAccount.setCourseStatus(CourseStepStatus.complete);
+                    courseAccount.setIsCommit("1");
+
                     // 수료증 처리
                     if (courseAccount.getCourse().getIsCerti().equals("Y") && !courseAccount.getCourse().getCertiHead().equals("")) {
                         String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
-                        if(certificateNo.isEmpty()){
-                            return false;
-                        }else{
-                            courseAccount.setCertificateNo(certificateNo);
-                        }
+                        courseAccount.setCertificateNo(certificateNo);
                     }
-
-                    courseAccount.setCourseStatus(CourseStepStatus.complete);
-                    courseAccount.setIsCommit("1");
 
                     // TODO: 2019/11/12 Digital Binder Employee Training Log 처리 -ks Hwang
                     // 강의별로 로그를 생성시킨다.
@@ -268,18 +274,14 @@ public class MypageRestController {
                 }
             } else {  // 시험여부가 N인 경우 CourseAccount 의 상태값을 완료로 변경하고 디지털 바인더 로그를 발생시킨다.
 
+                courseAccount.setCourseStatus(CourseStepStatus.complete);
+                courseAccount.setIsCommit("1");
+
                 // 수료증 처리
                 if(courseAccount.getCourse().getIsCerti().equals("Y") && !courseAccount.getCourse().getCertiHead().equals("")){
                     String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
-                    if(certificateNo.isEmpty()){
-                        return false;
-                    }else{
-                        courseAccount.setCertificateNo(certificateNo);
-                    }
+                    courseAccount.setCertificateNo(certificateNo);
                 }
-
-                courseAccount.setCourseStatus(CourseStepStatus.complete);
-                courseAccount.setIsCommit("1");
 
                 // TODO: 2019/11/12 Digital Binder Employee Training Log 처리 -ks Hwang
                 // 강의별로 로그를 생성시킨다.

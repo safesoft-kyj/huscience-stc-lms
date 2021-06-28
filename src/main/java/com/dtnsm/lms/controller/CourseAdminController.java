@@ -278,7 +278,7 @@ public class CourseAdminController {
             course.setRequestToDate(DateUtil.getStringDateAddDay(DateUtil.getTodayString(), course.getDay()));
 
             course.setFromDate(DateUtil.getTodayString());
-            course.setToDate(DateUtil.getStringDateAddDay(DateUtil.getTodayString(), course.getDay()));
+            course.setToDate("2999-12-31");
         }
 
         // 부서별 교육(BC0103), 외부교육(BC0104) 은 신청기간이 없음으로 1900-01-01 로 설정한다.
@@ -398,11 +398,10 @@ public class CourseAdminController {
 
         // isAlways : 1:상시, 2:기간 => 상시인 경우 오늘부터 최대일자로 기간을 설정한다.
         if(course.getIsAlways().equals("1")) {
-//            // cyj : 교육신청일 기준으로 변경
-//            course.setRequestFromDate(DateUtil.getTodayString());
-//            course.setRequestToDate("2999-12-31");
-//            course.setFromDate(DateUtil.getTodayString());
-//            course.setToDate("2999-12-31");
+            course.setRequestFromDate(DateUtil.getTodayString());
+            course.setRequestToDate("2999-12-31");
+            course.setFromDate(DateUtil.getTodayString());
+            course.setToDate("2999-12-31");
         }
 
 
@@ -460,11 +459,10 @@ public class CourseAdminController {
         // isAlways : 1:상시, 2:기간 => 상시인 경우 오늘부터 최대일자로 기간을 설정한다.
         if(oldCourse.getIsAlways().equals(course.getIsAlways())) {
             if(course.getIsAlways().equals("1")) {
-//                // cyj : 교육신청일 기준으로 변경
-//                course.setRequestFromDate(DateUtil.getTodayString());
-//                course.setRequestToDate("2999-12-31");
-//                course.setFromDate(DateUtil.getTodayString());
-//                course.setToDate("2999-12-31");
+                course.setRequestFromDate(DateUtil.getTodayString());
+                course.setRequestToDate("2999-12-31");
+                course.setFromDate(DateUtil.getTodayString());
+                course.setToDate("2999-12-31");
             }
         }
 

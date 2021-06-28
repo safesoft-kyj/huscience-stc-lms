@@ -581,7 +581,7 @@ public class ApprovalCourseProcessService {
             else
             {
                 fromDate = course.getFromDate();
-                toDate = course.getToDate();
+                toDate = DateUtil.getStringDateAddDay(fromDate, course.getDay());
             }
 
         } else {    // 상시교육이 아닌 경우
@@ -640,11 +640,11 @@ public class ApprovalCourseProcessService {
         // 9: 과정 신청 가능
 //        if (courseAccountService.accountVerification(account.getUserId()) != 9) return false;
 
+        String fromDate = "";
+        String toDate = "";
+
         // 교육과정 대상자 지정인 경우는 대상자만 생성한후 프로세스를 종료한다.
         if (requestType.equals("0")) {
-
-            String fromDate = "";
-            String toDate = "";
 
             // 교육신청
             CourseAccount courseAccount = new CourseAccount();
@@ -712,7 +712,7 @@ public class ApprovalCourseProcessService {
                 else
                 {
                     fromDate = course.getFromDate();
-                    toDate = course.getToDate();
+                    toDate = DateUtil.getStringDateAddDay(fromDate, course.getDay());
                 }
             }
             else {    // 상시교육이 아닌 경우
@@ -786,23 +786,19 @@ public class ApprovalCourseProcessService {
                     }
 
                     int nCompare = inDate.compareTo(courseDate);
-
-                    // 수강생 지정시 교육일자가 안만들어 졌으면 신청시점에 생성한다.
-                    if (saveCourseAccount.getFromDate().equals("")) {
-
-                        if (nCompare >= 0)   // 입사일 >= 교육시작일
-                            saveCourseAccount.setFromDate(DateUtil.getTodayString());
-                        else
-                            saveCourseAccount.setFromDate(course.getFromDate());
+                    if(nCompare >= 0)   // 입사일 >= 교육시작일
+                    {
+                        fromDate = DateUtil.getTodayString();
+                        toDate = DateUtil.getStringDateAddDay(fromDate, course.getDay());
+                    }
+                    else
+                    {
+                        fromDate = course.getFromDate();
+                        toDate = DateUtil.getStringDateAddDay(fromDate, course.getDay());
                     }
 
-                    if (saveCourseAccount.getToDate().equals("")) {
-
-                        if (nCompare >= 0)   // 입사일 >= 교육시작일
-                            saveCourseAccount.setToDate(DateUtil.getStringDateAddDay(DateUtil.getTodayString(), course.getDay()));
-                        else
-                            saveCourseAccount.setToDate(course.getToDate());
-                    }
+                    saveCourseAccount.setFromDate(fromDate);
+                    saveCourseAccount.setToDate(toDate);
                 }
             }
 
@@ -836,15 +832,13 @@ public class ApprovalCourseProcessService {
 //                courseAccount = courseAccountDeptProcess(courseAccount);
 //            }
 
-            if (!saveCourseAccount.getIsTeamMangerApproval().equals("")) {
-                // 팀장/부서장 승인여부
+            // 팀장/부서장 승인여부
+            if (!saveCourseAccount.getIsTeamMangerApproval().equals(""))
                 isAppr1 = course.getCourseMaster().getIsTeamMangerApproval();
-            }
 
-            if (!saveCourseAccount.getIsCourseMangerApproval().equals("")) {
-                // 과정 관리자 승인여부
+            // 과정 관리자 승인여부
+            if (!saveCourseAccount.getIsCourseMangerApproval().equals(""))
                 isAppr2 = course.getCourseMaster().getIsCourseMangerApproval();
-            }
 
             // 전자결재가 있는 경우
             if (isAppr1.equals("Y") || isAppr2.equals("Y")) {

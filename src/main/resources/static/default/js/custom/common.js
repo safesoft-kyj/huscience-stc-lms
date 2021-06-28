@@ -19,3 +19,10 @@ function dateDiff(_date1, _date2) {
 
     return diff+1;
 }
+
+
+$(document).ready(() => {
+    $(document).bind("contextmenu", function (e) {return false;});
+    $(document).bind("selectstart", function (e) {return false;});
+    $(document).bind("dragstart", function (e) {return false;});
+});

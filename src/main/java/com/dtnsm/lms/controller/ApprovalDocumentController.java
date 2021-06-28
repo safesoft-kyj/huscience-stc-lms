@@ -127,17 +127,13 @@ public class ApprovalDocumentController {
 
     // 교육신청 승인
     @GetMapping("/successAppr1/{orderId}")
-    public String successAppr1(@PathVariable("orderId") Long orderId
-            , Model model
-            , RedirectAttributes attributes) {
+    public String successAppr1(@PathVariable("orderId") Long orderId, Model model) {
 
         DocumentAccountOrder documentAccountOrder = documentAccountOrderService.getById(orderId);
 
         // 승인 처리
-        if(!approvalDocumentProcessService.documentApproval1Proces(documentAccountOrder)){
-            attributes.addFlashAttribute("type", "warning-top");
-            attributes.addFlashAttribute("msg", "수료증 기준정보가 설정되지 않았습니다.");
-        }
+        approvalDocumentProcessService.documentApproval1Proces(documentAccountOrder);
+
 //        return "redirect:/approval/document/listApprProcess";
         return "redirect:/approval/mainApproval?status=request";
     }

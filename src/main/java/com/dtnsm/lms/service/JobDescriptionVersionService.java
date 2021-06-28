@@ -44,7 +44,7 @@ public class JobDescriptionVersionService {
         return repository.findOne(booleanBuilder);
     }
 
-    public Optional<JobDescriptionVersion> findByJobDescriptionVersion(JobDescriptionVersion jobDescriptionVersion) {
+    public Optional<JobDescriptionVersion> findByJobDescriptionEqualVersion(JobDescriptionVersion jobDescriptionVersion) {
         QJobDescriptionVersion qJobDescriptionVersion = QJobDescriptionVersion.jobDescriptionVersion;
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qJobDescriptionVersion.jobDescription.id.eq(jobDescriptionVersion.getJobDescription().getId()));
@@ -52,6 +52,24 @@ public class JobDescriptionVersionService {
 
         return repository.findOne(builder);
     }
+
+
+    public Optional<JobDescriptionVersion> findByJobDescriptionVersion(JobDescriptionVersion jobDescriptionVersion) {
+        QJobDescriptionVersion qJobDescriptionVersion = QJobDescriptionVersion.jobDescriptionVersion;
+
+        BooleanBuilder builderTemp = new BooleanBuilder();
+        builderTemp.and(qJobDescriptionVersion.status.eq(JobDescriptionVersionStatus.CURRENT));
+        builderTemp.and(qJobDescriptionVersion.release_date.gt(jobDescriptionVersion.getRelease_date()));
+
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qJobDescriptionVersion.jobDescription.id.eq(jobDescriptionVersion.getJobDescription().getId()));
+        builder.and(qJobDescriptionVersion.version_no.goe(jobDescriptionVersion.getVersion_no()).or(builderTemp));
+
+        return repository.findOne(builder);
+    }
+
+
+
 
     public JobDescriptionVersion getByJdIdAndActiveJd(long jdId) {
 //        return repository.findByJd_IdAndIsActive(jdId, "1");

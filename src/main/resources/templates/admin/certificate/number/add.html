@@ -54,7 +54,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="cerYear" th:text="#{label.certi.year}">Year</label>
                             <div class="col-sm-10">
-                                <input type="number" th:field="*{cerYear}" id="cerYear" placeholder="" class="form-control" min="0" max="9999" required="required">
+                                <input type="number" th:field="*{cerYear}" id="cerYear" placeholder="" class="form-control" min="1000" max="9999" required="required">
                             </div>
                             <span th:if="${#fields.hasErrors('cerYear')}" th:errors="*{cerYear}"></span>
                         </div>

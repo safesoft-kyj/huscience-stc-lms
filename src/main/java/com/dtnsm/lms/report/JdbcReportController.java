@@ -104,15 +104,11 @@ public class JdbcReportController {
     }
 
     @GetMapping("/bind/target/process")
-    public String bindTarget(@RequestParam("docId") Long docId
-            , RedirectAttributes attributes) {
+    public String bindTarget(@RequestParam("docId") Long docId) {
 
         CourseAccount courseAccount = courseAccountService.getById(docId);
 
-        if(!courseAccountService.courseAccountManualCommit(courseAccount)){
-            attributes.addFlashAttribute("type", "warning-top");
-            attributes.addFlashAttribute("msg", "수료증 기준정보가 설정되지 않았습니다.");
-        }
+        courseAccountService.courseAccountManualCommit(courseAccount);
 
         return "redirect:/admin/report/bind/target";
     }

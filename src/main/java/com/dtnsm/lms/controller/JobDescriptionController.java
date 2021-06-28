@@ -97,7 +97,6 @@ public class JobDescriptionController {
         if(!ObjectUtils.isEmpty(file) && file.isEmpty() == false) {
             InputStream is = file.getInputStream();
 
-
             XWPFDocument document = new XWPFDocument(is);
             List<XWPFTable> tables = document.getTables();
             if (ObjectUtils.isEmpty(tables) == false && tables.size() == 4) {
@@ -137,9 +136,15 @@ public class JobDescriptionController {
                     jobDescriptionVersion.setFile(file);
 
                     if(ObjectUtils.isEmpty(jobDescription.getId()) == false) {
+                        Optional<JobDescriptionVersion> optionalJobDescriptionEqualVersion = jobDescriptionVersionService.findByJobDescriptionEqualVersion(jobDescriptionVersion);
+                        if (optionalJobDescriptionEqualVersion.isPresent()) {
+                            attributes.addFlashAttribute("returnMessage", "이미 등록 된 Job Description 정보가 존재 합니다.");
+                            return "redirect:/admin/jd/list";
+                        }
+
                         Optional<JobDescriptionVersion> optionalJobDescriptionVersion = jobDescriptionVersionService.findByJobDescriptionVersion(jobDescriptionVersion);
                         if (optionalJobDescriptionVersion.isPresent()) {
-                            attributes.addFlashAttribute("returnMessage", "이미 등록 된 Job Description 정보가 존재 합니다.");
+                            attributes.addFlashAttribute("returnMessage", "Job Description의 Version 또는 Release Date가 잘못 기재되었습니다.");
                             return "redirect:/admin/jd/list";
                         }
                     }

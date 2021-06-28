@@ -282,6 +282,7 @@ public class CourseScheduler {
 
         // 그룹웨어 사용자 정보로 Account 계정의 정보를 생성하거나 업데이트 한다.
         for(UserVO userVO : userMapperService.getUserAll()) {
+            // TODO : CYJ : 배포시 주석 풀것
             //userService.updateAccountByGroupwareInfo(userVO.getUserId());
         }
 

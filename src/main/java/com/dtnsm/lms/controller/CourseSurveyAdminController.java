@@ -178,13 +178,17 @@ public class CourseSurveyAdminController {
     public String noticeDelete(@PathVariable("typeId") String typeId
             , @PathVariable("courseId") Long courseId
             , @RequestParam(value = "page", required = false, defaultValue = "") String page
-            , @PathVariable("id") long id, HttpServletRequest request) {
+            , @PathVariable("id") long id
+            , HttpServletRequest request, RedirectAttributes attributes) {
 
         CourseSurvey courseSurvey = courseSurveyService.getCourseSurveyById(id);
 
         // 과정 신청된 내역이 있으면 삭제 하지 않는다.
         if (courseSurvey.getCourse().getCourseAccountList().size() <= 0) {
             courseSurveyService.deleteSurvey(courseSurvey);
+        } else {
+            attributes.addFlashAttribute("type", "warning-top");
+            attributes.addFlashAttribute("msg", "해당 설문은 교육과정 내에서 사용 중이므로 삭제할 수 없습니다.");
         }
 
         // 이전 URL를 리턴한다.

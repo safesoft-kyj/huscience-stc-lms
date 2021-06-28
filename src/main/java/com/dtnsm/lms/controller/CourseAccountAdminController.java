@@ -204,6 +204,17 @@ public class CourseAccountAdminController {
 
         if (courseAccount.getIsAttendance().equals("0")) {
 
+            // 수료증 정보 확인
+            if(courseAccount.getCourse().getIsCerti().equals("Y")) {
+                if(!courseCertificateService.getCourseCertificateActive()) {
+                    attributes.addFlashAttribute("type", "error");
+                    attributes.addFlashAttribute("msg", "수료증 정보가 없어 발급할 수 없습니다. 교육관리자에게 문의하세요.");
+
+                    String refUrl = request.getHeader("referer");
+                    return "redirect:" +  refUrl;
+                }
+            }
+
             // 교육참석으로 처리
             courseAccount.setIsAttendance("1");
 
@@ -219,24 +230,14 @@ public class CourseAccountAdminController {
             } else if (courseAccount.getCourse().getCourseMaster().getId().equals("BC0102")) {   // Class 교육이면 시험, 설문, 수료증을 체크하여 종료 처리한다.
 
                 if(courseAccount.getCourseQuizActions().size() == 0 && courseAccount.getCourseSurveyActions().size() == 0) {
-//                if(courseAccount.getCourse().getIsQuiz().equals("N") && courseAccount.getCourse().getIsSurvey().equals("N")) {
-
-                    if (courseAccount.getCourse().getIsCerti().equals("Y")) {
-                        String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
-
-                        if(certificateNo.isEmpty()){
-                            // 경고창을 띄우고 이전 URL를 리턴한다.
-                            attributes.addFlashAttribute("type", "warning-top");
-                            attributes.addFlashAttribute("msg", "수료증 기준정보가 설정되지 않았습니다.");
-                            String refUrl = request.getHeader("referer");
-                            return "redirect:" +  refUrl;
-                        }else{
-                            courseAccount.setCertificateNo(certificateNo);
-                        }
-                    }
 
                     courseAccount.setCourseStatus(CourseStepStatus.complete);
                     courseAccount.setIsCommit("1");
+
+                    if (courseAccount.getCourse().getIsCerti().equals("Y")) {
+                        String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
+                        courseAccount.setCertificateNo(certificateNo);
+                    }
 
                     // TODO : Training Log 발생
                     // 강의별로 로그를 생성시킨다.
