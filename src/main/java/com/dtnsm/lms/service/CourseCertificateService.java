@@ -79,7 +79,9 @@ public class CourseCertificateService {
         CourseCertificateNumber courseCertificateNumber1 = courseCertificateNumberRepository.save(courseCertificateNumber);
 
         // 수료증 정보를 생성한다.
-        CreateCertificate(courseCertificateNumber1, courseAccount);
+        if(CreateCertificate(courseCertificateNumber1, courseAccount) == null){
+            return null;
+        }
 
         return courseCertificateNumber1;
     }

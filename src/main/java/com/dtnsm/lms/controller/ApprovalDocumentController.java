@@ -14,6 +14,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/approval/document")
@@ -126,13 +127,17 @@ public class ApprovalDocumentController {
 
     // 교육신청 승인
     @GetMapping("/successAppr1/{orderId}")
-    public String successAppr1(@PathVariable("orderId") Long orderId, Model model) {
+    public String successAppr1(@PathVariable("orderId") Long orderId
+            , Model model
+            , RedirectAttributes attributes) {
 
         DocumentAccountOrder documentAccountOrder = documentAccountOrderService.getById(orderId);
 
         // 승인 처리
-        approvalDocumentProcessService.documentApproval1Proces(documentAccountOrder);
-
+        if(!approvalDocumentProcessService.documentApproval1Proces(documentAccountOrder)){
+            attributes.addFlashAttribute("type", "warning-top");
+            attributes.addFlashAttribute("msg", "수료증 기준정보가 설정되지 않았습니다.");
+        }
 //        return "redirect:/approval/document/listApprProcess";
         return "redirect:/approval/mainApproval?status=request";
     }

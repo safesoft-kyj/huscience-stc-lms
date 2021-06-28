@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Map;
@@ -103,11 +104,15 @@ public class JdbcReportController {
     }
 
     @GetMapping("/bind/target/process")
-    public String bindTarget(@RequestParam("docId") Long docId) {
+    public String bindTarget(@RequestParam("docId") Long docId
+            , RedirectAttributes attributes) {
 
         CourseAccount courseAccount = courseAccountService.getById(docId);
 
-        courseAccountService.courseAccountManualCommit(courseAccount);
+        if(!courseAccountService.courseAccountManualCommit(courseAccount)){
+            attributes.addFlashAttribute("type", "warning-top");
+            attributes.addFlashAttribute("msg", "수료증 기준정보가 설정되지 않았습니다.");
+        }
 
         return "redirect:/admin/report/bind/target";
     }

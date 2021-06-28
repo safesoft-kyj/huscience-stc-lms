@@ -148,7 +148,7 @@ public class ApprovalDocumentProcessService {
     }
 
     // 1차 승인 처리
-    public void documentApproval1Proces(DocumentAccountOrder documentAccountOrder) {
+    public boolean documentApproval1Proces(DocumentAccountOrder documentAccountOrder) {
 
         int finalCount = documentAccountOrder.getDocument().getFnFinalCount();
 
@@ -174,17 +174,22 @@ public class ApprovalDocumentProcessService {
             if(document1.getTemplate().getId() == 1 && document1.getCourseAccount() != null) {
 
                 CourseAccount courseAccount = document1.getCourseAccount();
+
+                if (courseAccount.getCourse().getIsCerti().equals("Y")) {
+                    String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
+                    if(certificateNo.isEmpty()){
+                        return false;
+                    }else{
+                        courseAccount.setCertificateNo(certificateNo);
+                    }
+                } else {
+                    courseAccount.setCertificateNo("");
+                }
+
                 courseAccount.setCourseStatus(CourseStepStatus.complete);
                 courseAccount.setIsAttendance("1");
                 courseAccount.setIsCommit("1");
                 courseAccount.setReportStatus("1");
-
-                if (courseAccount.getCourse().getIsCerti().equals("Y")) {
-                    String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
-                    courseAccount.setCertificateNo(certificateNo);
-                } else {
-                    courseAccount.setCertificateNo("");
-                }
 
                 courseAccountService.save(courseAccount);
 
@@ -262,6 +267,8 @@ public class ApprovalDocumentProcessService {
                 MessageUtil.sendNotificationMessage(messageSource, true);
             }
         }
+
+        return true;
     }
 
     // 전자결재 1차 기각 처리
@@ -352,18 +359,22 @@ public class ApprovalDocumentProcessService {
             if(document1.getTemplate().getId() == 1 && document1.getCourseAccount() != null) {
 
                 CourseAccount courseAccount = document1.getCourseAccount();
+
+                if (courseAccount.getCourse().getIsCerti().equals("Y")) {
+                    String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
+                    if(certificateNo.isEmpty()){
+                        return;
+                    }else{
+                        courseAccount.setCertificateNo(certificateNo);
+                    }
+                } else {
+                    courseAccount.setCertificateNo("");
+                }
+
                 courseAccount.setCourseStatus(CourseStepStatus.complete);
                 courseAccount.setIsAttendance("1");
                 courseAccount.setIsCommit("1");
                 courseAccount.setReportStatus("1");
-
-
-                if (courseAccount.getCourse().getIsCerti().equals("Y")) {
-                    String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
-                    courseAccount.setCertificateNo(certificateNo);
-                } else {
-                    courseAccount.setCertificateNo("");
-                }
 
                 courseAccountService.save(courseAccount);
 

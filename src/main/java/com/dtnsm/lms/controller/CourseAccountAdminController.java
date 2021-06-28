@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -195,7 +196,9 @@ public class CourseAccountAdminController {
 
     // 교육참석처리
     @GetMapping("/{typeId}/{courseId}/account/updateAttendance/{id}")
-    public String updateAttendance(@PathVariable("id") long docId, HttpServletRequest request) {
+    public String updateAttendance(@PathVariable("id") long docId
+            , HttpServletRequest request
+            , RedirectAttributes attributes) {
 
         CourseAccount courseAccount = courseAccountService.getById(docId);
 
@@ -217,16 +220,25 @@ public class CourseAccountAdminController {
 
                 if(courseAccount.getCourseQuizActions().size() == 0 && courseAccount.getCourseSurveyActions().size() == 0) {
 //                if(courseAccount.getCourse().getIsQuiz().equals("N") && courseAccount.getCourse().getIsSurvey().equals("N")) {
-                    courseAccount.setCourseStatus(CourseStepStatus.complete);
-                    courseAccount.setIsCommit("1");
 
                     if (courseAccount.getCourse().getIsCerti().equals("Y")) {
                         String certificateNo = courseCertificateService.newCertificateNumber(courseAccount.getCourse().getCertiHead(), DateUtil.getTodayString().substring(0, 4), courseAccount).getFullNumber();
-                        courseAccount.setCertificateNo(certificateNo);
+
+                        if(certificateNo.isEmpty()){
+                            // 경고창을 띄우고 이전 URL를 리턴한다.
+                            attributes.addFlashAttribute("type", "warning-top");
+                            attributes.addFlashAttribute("msg", "수료증 기준정보가 설정되지 않았습니다.");
+                            String refUrl = request.getHeader("referer");
+                            return "redirect:" +  refUrl;
+                        }else{
+                            courseAccount.setCertificateNo(certificateNo);
+                        }
                     }
 
-                    // TODO : Training Log 발생
+                    courseAccount.setCourseStatus(CourseStepStatus.complete);
+                    courseAccount.setIsCommit("1");
 
+                    // TODO : Training Log 발생
                     // 강의별로 로그를 생성시킨다.
                     binderLogService.createTrainingLog(courseAccount);
                 } else {
