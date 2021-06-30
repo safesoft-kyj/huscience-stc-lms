@@ -11,4 +11,5 @@ public class CVFindParam {
     private String indication;
     private String name;
     private List<String> usernameList;
+    private boolean enabled = true;
 }

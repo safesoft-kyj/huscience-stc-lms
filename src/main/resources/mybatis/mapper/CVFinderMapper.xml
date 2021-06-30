@@ -22,7 +22,7 @@
             on cv.account_user_id = acc.user_id
             where cv.status = 'CURRENT'
             and ca.clinical_trial_experience = 1
-            and acc.enabled = 1
+            and acc.enabled = #{enabled}
             <if test="usernameList != null">
                 and cv.account_user_id in
                 <foreach collection="usernameList" item="username" index="index" separator="," open="(" close=")">
