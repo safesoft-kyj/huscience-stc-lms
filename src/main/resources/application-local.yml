@@ -15,7 +15,8 @@ spring:
     servlet:
       content-type: text/html
   datasource:
-    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=dtnsm_prod
+    url: jdbc:sqlserver://183.111.104.67:20170;DatabaseName=dtnsm_dev_20210622
+#    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=dtnsm_prod
     username: sa
     password: safe123!@#
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
