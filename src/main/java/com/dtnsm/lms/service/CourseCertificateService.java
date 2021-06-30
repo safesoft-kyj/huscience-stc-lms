@@ -153,8 +153,6 @@ public class CourseCertificateService {
 
         String outputCertificationFileName = String.format("%s_%s_certi.pdf", timestamp, userId);
 
-
-
         // 파일 기본 경로
         String sourceRootFoloer = prop.getXdocUploadDir() + "Data//Storage//";
         String outputRootFoloer = prop.getCertificateUploadDir();
