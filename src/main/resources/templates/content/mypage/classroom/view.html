@@ -184,9 +184,9 @@
                                     </th:block>
                                     <th:block th:each="quizAction, index : ${quizActions}">
                                         <tr>
-                                            <td class="text-center" th:text="${index.count}" }>1</td>
+                                            <td class="text-center" th:text="${index.count}">1</td>
                                             <td class="text-center" th:text="#{label.title.quiz}"></td>
-                                            <td class="text-left" th:text="${quizAction.getQuiz().getName()}" }></td>
+                                            <td class="text-left" th:text="${quizAction.getQuiz().getName()}"></td>
                                             <td class="text-center"
                                                 th:text="${quizAction.getQuiz().getMinute() + '분'}"></td>
                                             <!--                                <td class="text-center"></td>-->
@@ -258,7 +258,7 @@
                                     </th:block>
                                     <th:block th:each="surveyAction, index : ${surveyActions}">
                                         <tr>
-                                            <td class="text-center" th:text="${index.count}" }>1</td>
+                                            <td class="text-center" th:text="${index.count}">1</td>
                                             <td class="text-center" th:text="#{label.title.survey}"></td>
                                             <td class="text-left" th:text="${surveyAction.getCourseSurvey().getName()}"
                                                 }></td>
