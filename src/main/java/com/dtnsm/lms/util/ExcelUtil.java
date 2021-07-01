@@ -25,16 +25,17 @@ public  class ExcelUtil {
         } else if (cell.getCellType() == CellType.BOOLEAN) {
                 cellString = cell.toString();
         } else if (cell.getCellType() == CellType.NUMERIC) {
-            if (DateUtil.isValidExcelDate(cell.getNumericCellValue()) && cell.getNumericCellValue() > 100) {
-                Date date = cell.getDateCellValue();
+            cellString = String.valueOf(Math.round(cell.getNumericCellValue()));
 
-                cellString = new SimpleDateFormat("yyyy년 MM월 dd일").format(date);
-            } else {
-                //cellString = String.valueOf(cell.getNumericCellValue());
-
-                cellString = String.valueOf(Math.round(cell.getNumericCellValue()));
-//                cellString = formatter.formatCellValue(cell);
-            }
+//            if (DateUtil.isValidExcelDate(cell.getNumericCellValue()) && cell.getNumericCellValue() > 100) {
+////                Date date = cell.getDateCellValue();
+////                cellString = new SimpleDateFormat("yyyy년 MM월 dd일").format(date);
+//            } else {
+//                //cellString = String.valueOf(cell.getNumericCellValue());
+//
+//                cellString = String.valueOf(Math.round(cell.getNumericCellValue()));
+////                cellString = formatter.formatCellValue(cell);
+//            }
         } else {
             cellString = "변환오류";
         }
