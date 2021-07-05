@@ -178,9 +178,7 @@ public class CourseAccountAdminController {
             , @PathVariable("courseId") Long courseId
             , @PathVariable("id") long docId, HttpServletRequest request) {
 
-
         try {
-
             CourseAccount courseAccount = courseAccountService.getById(docId);
             courseAccountService.delete(courseAccount);
 

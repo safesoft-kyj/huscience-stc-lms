@@ -166,11 +166,11 @@ public class CourseQuizAdminController {
 
         Course course = courseQuiz.getCourse();
 
-        if(course.getCourseAccountList().size() > 0) {
-            attributes.addFlashAttribute("type", "warning-top");
-            attributes.addFlashAttribute("msg", "수강자가 있을 경우 시험을 변경할 수 없습니다.");
-            return "redirect:/admin/course/" + typeId + "/" + courseId + "/quiz";
-        }
+//        if(course.getCourseAccountList().size() > 0) {
+//            attributes.addFlashAttribute("type", "warning-top");
+//            attributes.addFlashAttribute("msg", "수강자가 있을 경우 시험을 변경할 수 없습니다.");
+//            return "redirect:/admin/course/" + typeId + "/" + courseId + "/quiz";
+//        }
 
         pageInfo.setPageTitle(String.format("<a href='/admin/course/%s/'>%s</a> > %s", typeId, course.getCourseMaster().getCourseName(), "시험"));
 

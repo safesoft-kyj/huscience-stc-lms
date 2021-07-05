@@ -235,11 +235,18 @@
                                                                 </div>
                                                                 <!-- 진행중 -->
                                                                 <div th:if="${#strings.equalsIgnoreCase(doc.getFnStatus(), '0') and doc.getFnCurrSeq() <= 1}">
-                                                                    <a class="btn btn-warning"  th:href="@{/approval/{requestName}/approvalDocument/{id}(requestName=${requestName}, status=${status}, id=${doc.getId()})}">
-                                                                        <i class="demo-pli-inbox-into"></i> <span th:text="${'참석보고서'}"></span>
-                                                                    </a>
-                                                                    <a th:text="#{label.edit}" th:href="@{/approval/{requestName}/editDocument(requestName=${requestName}, status=${status}, id=${doc.getId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
-                                                                    <a th:text="#{label.delete}" th:href="@{/approval/{requestName}/deleteDocument(requestName=${requestName}, status=${status}, id=${doc.getId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                                                    <!-- 임시저장 -->
+                                                                    <div th:if="${#strings.equalsIgnoreCase(border.getReportStatus(), '8')}">
+                                                                        <a class="btn btn-mint"  th:href="@{/approval/{requestName}/approvalDocument/{id}(requestName=${requestName}, status=${status}, id=${doc.getId()})}">
+                                                                            <i class="demo-pli-inbox-into"></i> <span th:text="${'참석보고서 작성중'}"></span>
+                                                                        </a>
+                                                                    </div>
+                                                                    <!-- 진행중 -->
+                                                                    <div th:unless="${#strings.equalsIgnoreCase(border.getReportStatus(), '8')}">
+                                                                        <a class="btn btn-warning"  th:href="@{/approval/{requestName}/approvalDocument/{id}(requestName=${requestName}, status=${status}, id=${doc.getId()})}">
+                                                                            <i class="demo-pli-inbox-into"></i> <span th:text="${'참석보고서'}"></span>
+                                                                        </a>
+                                                                    </div>
                                                                 </div>
                                                             </th:block>
 

@@ -44,71 +44,93 @@
                 <div class="panel-body">
                     <div class="panel-heading text-right">
                         <th:block th:switch="${document.getFnStatus()}">
-                            <span th:case="${'0'}" class="text-info" th:text="${''}"></span>
-                            <span th:case="${'1'}" class="text-success" th:text="${''}"></span>
-                            <th:block th:case="${'2'}">
-                                <a href="#" class="btn btn-danger" data-toggle="modal" th:attr="data-target=${'#modal-course' + document.getId()}">반려 (결재의견)</a>
-                                <!--Default Bootstrap Modal-->
-                                <!--===================================================-->
-                                <div class="modal fade" th:id="${'modal-course' + document.getId()}" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content modal-lg">
+                            <form class="form-horizontal" id="boardFrm" action="#"
+                                  th:action="@{/approval/{requestName}/addDocument-post(requestName=${requestName}, status=${status})}"
+                                  th:object="${document}" method="post" enctype="multipart/form-data">
 
-                                            <!--Modal header-->
-                                            <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
-                                                <h4 class="modal-title">결재 반려</h4>
-                                            </div>
+                                <input type="hidden" th:field="*{id}" id="id" name="id">
+                                <input type="hidden" th:field="*{template.id}">
+                                <input type="hidden" th:field="*{courseAccount.id}">
 
-                                            <!--Modal body-->
-                                            <div class="modal-body">
-                                                <hr class="table-head">
-                                                <table id="customer-page" class="table" cellspacing="0" width="100%">
-                                                    <colgroup>
-                                                        <col width="5%">
-                                                        <col width="10%">
-                                                        <col width="10%">
-                                                        <col width="10%">
-                                                        <col width="65%">
-                                                    </colgroup>
-                                                    <thead>
-                                                    <tr style="background: #FAFAFA;">
-                                                        <th class="text-center">#</th>
-                                                        <th class="text-center">결재상태</th>
-                                                        <th class="text-center">결재일</th>
-                                                        <th class="text-center">결재자</th>
-                                                        <th  class="text-center">결재의견</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    <th:block  th:each="order, index : ${document.getDocumentAccountOrders()}">
-                                                        <th:block th:if="${#strings.equalsIgnoreCase(order.getFnStatus(), '2')}">
-                                                            <tr>
-                                                                <td class="text-center" th:text="${index.index}"></td>
-                                                                <td class="text-center text-danger" th:text="${'반려'}"></td>
-                                                                <td class="text-center" th:text="${#dates.format(order.getFnDate(), 'yyyy-MM-dd')}"></td>
-                                                                <td class="text-center" th:text="${order.getFnUser().getName()}"></td>
-                                                                <td class="text-left">
-                                                                    <textarea style="width:100%; border:0;overflow-y:hidden;background:clear;" row="3" readonly th:text="${order.getFnComment()}"></textarea>
-                                                                </td>
-                                                            </tr>
-                                                        </th:block>
-                                                    </th:block >
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <!--Modal footer-->
-                                            <div class="modal-footer">
-                                                <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
-                                                <!--                            <button class="btn btn-primary">Save changes</button>-->
+                                <th:block th:case="${'0'}">
+                                    <th:block th:if="${#strings.equalsIgnoreCase(document.getCourseAccount().getReportStatus(), '8')}">
+                                        <button class="btn btn-purple" type="submit" name="saveType" value="submit">
+                                            <i class="demo-pli-mail-send"></i> 상신
+                                        </button>
+                                    </th:block>
+
+                                    <a th:href="@{/approval/{requestName}/editDocument(requestName=${requestName}, status=${status}, id=${document.getId()})}" class="btn btn-success">
+                                        <i class="demo-psi-pen-5"></i> 수정
+                                    </a>
+                                    <a th:href="@{/approval/{requestName}/deleteDocument(requestName=${requestName}, status=${status}, id=${document.getId()})}" class="btn btn-danger">
+                                        <i class="demo-pli-trash"></i> 삭제
+                                    </a>
+                                </th:block>
+                                <span th:case="${'1'}" class="text-success" th:text="${''}"></span>
+                                <th:block th:case="${'2'}">
+                                    <a href="#" class="btn btn-danger" data-toggle="modal" th:attr="data-target=${'#modal-course' + document.getId()}">반려 (결재의견)</a>
+                                    <!--Default Bootstrap Modal-->
+                                    <!--===================================================-->
+                                    <div class="modal fade" th:id="${'modal-course' + document.getId()}" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content modal-lg">
+
+                                                <!--Modal header-->
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                                                    <h4 class="modal-title">결재 반려</h4>
+                                                </div>
+
+                                                <!--Modal body-->
+                                                <div class="modal-body">
+                                                    <hr class="table-head">
+                                                    <table id="customer-page" class="table" cellspacing="0" width="100%">
+                                                        <colgroup>
+                                                            <col width="5%">
+                                                            <col width="10%">
+                                                            <col width="10%">
+                                                            <col width="10%">
+                                                            <col width="65%">
+                                                        </colgroup>
+                                                        <thead>
+                                                        <tr style="background: #FAFAFA;">
+                                                            <th class="text-center">#</th>
+                                                            <th class="text-center">결재상태</th>
+                                                            <th class="text-center">결재일</th>
+                                                            <th class="text-center">결재자</th>
+                                                            <th  class="text-center">결재의견</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <th:block  th:each="order, index : ${document.getDocumentAccountOrders()}">
+                                                            <th:block th:if="${#strings.equalsIgnoreCase(order.getFnStatus(), '2')}">
+                                                                <tr>
+                                                                    <td class="text-center" th:text="${index.index}"></td>
+                                                                    <td class="text-center text-danger" th:text="${'반려'}"></td>
+                                                                    <td class="text-center" th:text="${#dates.format(order.getFnDate(), 'yyyy-MM-dd')}"></td>
+                                                                    <td class="text-center" th:text="${order.getFnUser().getName()}"></td>
+                                                                    <td class="text-left">
+                                                                        <textarea style="width:100%; border:0;overflow-y:hidden;background:clear;" row="3" readonly th:text="${order.getFnComment()}"></textarea>
+                                                                    </td>
+                                                                </tr>
+                                                            </th:block>
+                                                        </th:block >
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <!--Modal footer-->
+                                                <div class="modal-footer">
+                                                    <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+                                                    <!--                            <button class="btn btn-primary">Save changes</button>-->
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </th:block>
-                            <a th:href="@{/approval/mainRequest2(status='report')}" class="btn btn-primary">
-                                <i class="demo-pli-back"></i> 목록
-                            </a>
+                                </th:block>
+                                <a th:href="@{/approval/mainRequest2(status='report')}" class="btn btn-primary">
+                                    <i class="demo-pli-back"></i> 목록
+                                </a>
+                            </form>
                         </th:block>
                     </div>
                     <hr style="border:1.2px solid #0a6aa1">
@@ -278,6 +300,24 @@
 </th:block>
 
 <th:block layout:fragment="custom_js">
+
+    <script type="text/javascript" th:src="@{/editor/js/HuskyEZCreator.js}" charset="utf-8"></script>
+    <script>
+        $(function(){
+            //전송버튼
+            $("#boardFrm").submit(function(e){
+
+                var id = $("#courseAccount").val();
+
+                if(id == 0) {
+                    alert('외부교육 과정을 꼭 선택하셔야 합니다.');
+                    return false;
+                }
+            });
+
+        });
+    </script>
+
 </th:block>
 
 </html>

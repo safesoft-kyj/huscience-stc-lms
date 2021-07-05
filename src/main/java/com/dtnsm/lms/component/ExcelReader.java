@@ -24,7 +24,7 @@ public class ExcelReader {
         final Sheet sheet = workbook.getSheetAt(0);
 
         int cnt = 0;
-        for(int i = 0; i < sheet.getLastRowNum(); i++) {
+        for(int i = 0; i < sheet.getPhysicalNumberOfRows(); i++) {
             Row row = sheet.getRow(i);
             if(row != null) {
                 Cell cell = row.getCell(0); // 문제(A)열

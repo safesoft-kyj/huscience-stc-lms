@@ -196,8 +196,8 @@ public class ApprovalController {
 //        long requestCount4 = courseAccountService.countByCourseRequest(
 //                userId, "BC0104","1","2", "%", "1", "2");
 
-        long requestCount5 = courseAccountService.countByCourseRequest(
-                userId, "BC0104","1","1", "%", "1", "9");
+        long requestCount5 = courseAccountService.countByCourseRequest( userId, "BC0104","1","1", "%", "1", "9")
+                            + courseAccountService.countByCourseRequest( userId, "BC0104","1","1", "%", "1", "8");
 
 //        long requestCount6 = courseAccountService.countByCourseRequest(
 //                userId, "BC0104","1","%", "%", "1", "%");
@@ -375,6 +375,8 @@ public class ApprovalController {
         pageInfo.setPageTitle(document.getTemplate().getTitle());
 
         model.addAttribute(pageInfo);
+        model.addAttribute("status", status);
+        model.addAttribute("requestName", "mainRequest2");
         model.addAttribute("document", document);
 //        model.addAttribute("signature", GlobalUtil.getSignature(signatureRepository, SessionUtil.getUserId()));
 
@@ -426,7 +428,7 @@ public class ApprovalController {
         return "content/approval/addDocument";
     }
 
-    // 외부교육 보고서 작성 처리
+    // 외부교육 보고서 상신
     @PostMapping("/{requestName}/addDocument-post")
     @Transactional
     public String addAccountPost(@Valid Document document
@@ -434,40 +436,46 @@ public class ApprovalController {
             , @RequestParam("status") String status
             , @RequestParam(value = "mailList", required = false, defaultValue = "0") String[] mails
             , @RequestParam("files") MultipartFile[] files
+            , @RequestParam(value = "saveType", required = false) String saveType
             , BindingResult result) {
-        if(result.hasErrors()) {
-            //return "document/add/" + document.getTemplate().getId();
+
+        if(result.hasErrors())
             return "redirect:/document/add/" + document.getTemplate().getId() + '/' + document.getCourseAccount().getId();
-        }
 
         DocumentTemplate template = templateService.getById(document.getTemplate().getId());
-
         Optional<CourseAccount> optCourseAccount = courseAccountService.getId(document.getCourseAccount().getId());
-
         if(optCourseAccount.isPresent()) {
 
             CourseAccount courseAccount = optCourseAccount.get();
-            // 교육과정의 보고서 상태를 진행상태로 변경한다.
-            courseAccount.setReportStatus("0");
+            if(courseAccount.getReportStatus().equalsIgnoreCase("8")) {
+                Document tempDocument = documentService.getById(document.getId());
+                document = tempDocument;
+            }
 
-            // 상태를 변경하고 저장한다.
+            if(saveType.equalsIgnoreCase("submit"))
+                courseAccount.setReportStatus("0"); // 교육과정의 보고서 상태를 진행상태로 변경한다.
+            else if(saveType.equalsIgnoreCase("tempSave"))
+                courseAccount.setReportStatus("8"); // 교육과정의 보고서 상태를 임시저장으로 변경한다.
+
             document.setCourseAccount(courseAccountService.save(courseAccount));
         }
 
         document.setAccount(userService.getAccountByUserId(SessionUtil.getUserId()));
         document.setTemplate(template);
-        Document document1 = documentService.save(document);
+        Document saveDocument = documentService.save(document);
 
         if (files.length > 0) {
             Arrays.asList(files)
                     .stream()
-                    .map(file -> documentFileService.storeFile(file, document1))
+                    .map(file -> documentFileService.storeFile(file, saveDocument))
                     .collect(Collectors.toList());
         }
 
         // 기안 정보 등록
-        Account account = userService.findByUserId(SessionUtil.getUserId());
-        approvalDocumentProcessService.documentRequestProcess(account, document1);
+        if(saveType.equals("submit")) {
+            Account account = userService.findByUserId(SessionUtil.getUserId());
+            approvalDocumentProcessService.documentRequestProcess(account, saveDocument);
+        }
 
         // 이전 URL를 리턴한다.
         return String.format("redirect:/approval/%s?status=%s", requestName, status);
@@ -506,7 +514,6 @@ public class ApprovalController {
         }
 
         Document oldDocument = documentService.getById(id);
-
 
         if (oldDocument != null) {
 
@@ -568,8 +575,7 @@ public class ApprovalController {
         }
 
         // 이전 URL를 리턴한다.
-        String refUrl = request.getHeader("referer");
-        return "redirect:" +  refUrl;
+        return String.format("redirect:/approval/%s?status=%s", requestName, status);
     }
 
 

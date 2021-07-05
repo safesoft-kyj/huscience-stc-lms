@@ -218,7 +218,6 @@ public class UserServiceImpl implements UserService {
 
                 // 그룹웨어 현재 사용자에 없으면 enable을 false로 처리한다.
                 if (userVO == null) {
-
                     account.setEnabled(false);
                     userRepository.save(account);
                 }
@@ -282,6 +281,7 @@ public class UserServiceImpl implements UserService {
                 // 사용자 구분 (U:내부직원, O:외부유저)
 //                account.setUserType("U");
 //                account.setEnabled(true);
+                account.setEnabled(userVO.isIsuse());
                 userRepository.save(account);
             }
         }
