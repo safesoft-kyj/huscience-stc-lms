@@ -34,6 +34,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -540,8 +541,7 @@ public class MyPageController {
 
 
     @GetMapping("/classroom/view/{id}")
-    public String myClassroomView(@PathVariable("id") Long docId, Model model) {
-
+    public String myClassroomView(@PathVariable("id") Long docId, Model model, HttpSession session) {
         pageInfo.setPageId("m-mypage-myinfo");
         pageInfo.setPageTitle("강의목차");
 
@@ -609,7 +609,7 @@ public class MyPageController {
     @GetMapping("/classroom/quizview/{quizActionId}/{isNew}")
     public String quizView(@PathVariable("quizActionId") Long quizId
             , @PathVariable("isNew") String isNew
-            , Model model) {
+            , Model model, HttpSession session) {
 
         Account account = userService.getAccountByUserId(SessionUtil.getUserId());
 
@@ -642,6 +642,8 @@ public class MyPageController {
 
         model.addAttribute(pageInfo);
         model.addAttribute("quizAction", quizAction);
+
+//        session.setMaxInactiveInterval( (quizAction.getQuiz().getMinute() + 20/*기본 20분*/) * 60/*초*/);
 
         return "content/mypage/classroom/quizview";
     }

@@ -225,6 +225,7 @@
 
         $('input[type="radio"]').change(function (e) {
             radioEvent($(this).prop('name'), $(this).val());
+            opener.refreshTimer();
             //
             // alert('text');
             // e.preventDefault();
@@ -379,12 +380,14 @@
     }
 
     function form_submit() {
+        opener.refreshTimer();
         $('#boardFrm').submit();
         // closeWindow();
         return;
     }
 
     function closeWindow() {
+        opener.refreshTimer();
         this.close();
     }
 

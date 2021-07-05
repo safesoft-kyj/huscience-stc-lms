@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 
 @Controller
@@ -111,7 +112,9 @@ public class BorderController {
 
     @GetMapping("/{typeId}/view/{id}")
     public String viewPage(@PathVariable("id") long id
-            , Model model) {
+            , Model model, HttpSession session) {
+
+        session.invalidate();
 
         Border border = borderService.getBorderById(id);
         borderService.updateViewCnt(id, SessionUtil.getUserId());

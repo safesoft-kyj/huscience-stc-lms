@@ -3,9 +3,6 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<!--NAVBAR-->
-<!--===================================================-->
-
 <header id="navbar" th:fragment="hearder">
     <div id="navbar-container" class="boxed">
         <!--Brand logo & name-->
@@ -16,7 +13,6 @@
                 <div class="brand-title">
                     <span class="brand-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LMS</span>
                 </div>
-
             </a>
         </div>
         <!--================================-->
@@ -292,6 +288,28 @@
 <!--                        &nbsp;&nbsp;&nbsp;-->
 <!--                    </div>-->
 <!--                </li>-->
+
+
+                <li class="dropdown">
+                    <script type="text/javascript" charset="utf-8" src="/default/js/custom/timeoutchk.js"></script>
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle text-right">
+                            <span class="ic-user pull-right">
+                                <i class="fa fa-clock-o"></i>
+                                <small class="text-xs text-semibold"><span id="time-min" th:text="${@environment.getProperty('site.session-minute')}"></span>:<span id="time-sec" th:text="${@environment.getProperty('site.session-second')}"></span></small>
+                            </span>
+                    </a>
+
+                    <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right panel-default">
+                        <ul class="head-list">
+                            <li>
+                                <a href="#" onclick="refreshTimer();"><i class="pli-clock-back icon-lg icon-fw"></i> Reset</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <script>
+                        dailyMissionTimer();
+                    </script>
+                </li>
 
 
 
