@@ -3,9 +3,7 @@ package com.dtnsm.lms.component;
 import com.dtnsm.lms.domain.constant.ExcelConstant;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,7 +22,17 @@ public class ExcelReader {
 
         final Workbook workbook = readWorkbook(multipartFile);
         final Sheet sheet = workbook.getSheetAt(0);
-        final int rowCount = sheet.getPhysicalNumberOfRows();
+
+        int cnt = 0;
+        for(int i = 0; i < sheet.getLastRowNum(); i++) {
+            Row row = sheet.getRow(i);
+            if(row != null) {
+                Cell cell = row.getCell(0); // 문제(A)열
+                if(cell != null && cell.getCellType() != CellType.BLANK)
+                    cnt++;
+            }
+        }
+        final int rowCount = cnt;
 
         return IntStream
                 .range(0, rowCount)

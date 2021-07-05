@@ -43,7 +43,6 @@
             <div class="panel">
                 <div class="panel-body">
                     <div class="panel-heading text-right">
-                        `
                         <th:block th:switch="${document.getFnStatus()}">
                             <span th:case="${'0'}" class="text-info" th:text="${''}"></span>
                             <span th:case="${'1'}" class="text-success" th:text="${''}"></span>
@@ -109,7 +108,7 @@
                             </th:block>
                             <a th:href="@{/approval/mainRequest2(status='report')}" class="btn btn-primary">
                                 <i class="demo-pli-back"></i> 목록
-                            </a>`
+                            </a>
                         </th:block>
                     </div>
                     <hr style="border:1.2px solid #0a6aa1">

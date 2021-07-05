@@ -48,10 +48,11 @@
                     </h6>
                 </div>
                 <div class="panel-body">
-                <form method="post" class="col-xs-12" th:object="${cvFindParam}">
-                    <table class="table table-bordered">
+                <form method="post" id="searchForm" class="col-xs-12" th:object="${cvFindParam}">
+                    <table class="table table-bordered text-center">
                         <thead>
                         <tr class="bg-gray-light">
+                            <th class="col-xs-2">재직여부</th>
                             <th>경력</th>
 <!--                            <th>Therapheutic Area</th>-->
                             <th>Indication</th>
@@ -60,6 +61,13 @@
                         </thead>
                         <tbody>
                         <tr>
+                            <td>
+                                <select class="form-select form-control" th:field="*{empStatus}">
+                                    <option value="2">전체</option>
+                                    <option value="1" selected>재직</option>
+                                    <option value="0">퇴사</option>
+                                </select>
+                            </td>
                             <td>
                                 <input type="number" class="form-control" th:field="*{career}" step="1" min="0" max="50" required>
                             </td>
@@ -88,12 +96,14 @@
                         </tr>
                         </tbody>
                     </table>
-                    <div class="text-right">
-                        <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Search</button>
-                    </div>
                 </form>
+                <div class="text-right">
+                    <button type="submit" id="btn-search" class="btn btn-info"><i class="fa fa-search"></i> Search</button>
+<!--                    <button type="button" id="btn-export-excel" class="btn btn-success"><i class="fa fa-file-excel-o"> Excel</i></button>-->
+                </div>
                 </div>
             </div>
+
             <div class="panel" th:if="${(cvList == null || cvList.size() == 0) && cvFindParam.career > 0}">
                 <div class="panel-body text-center">
                     ** 검색 결과가 존재하지 않습니다. **
@@ -117,7 +127,11 @@
                                     <button class="btn btn-info" name="blind_btn" th:attr="data-username=${cv.account.userId},data-blind=false"><i class="fa fa-file-text-o"></i> Unblind CV</button>
                                 </div>
 <!--                                <span class="label label-primary v-middle">New</span>-->
-                                <a class="btn-link text-lg text-semibold v-middle" href="#"><span th:text="|${cv.account.engName}|"></span> </a>
+                                <div class="text-lg text-semibold v-middle">
+                                    <span th:text="|${cv.account.engName}|" class="text-info"></span>
+                                    <span th:if="${cv.account.enabled}" class="text-info">(재직)</span>
+                                    <span th:if="${!cv.account.enabled}" class="text-danger">(퇴사)</span>
+                                </div>
                             </div>
 <!--                            <p><a class="btn-link text-success" href="#">http://www.example.com/nifty/admin</a></p>-->
                             <div>
@@ -187,6 +201,16 @@
            $('#blind').val($(this).data('blind'));
            $("#blindcvForm").submit();
         });
+
+        $("#btn-search").click(function (){
+            $("#searchForm").submit();
+        });
+
+        $("#btn-export-excel").click(function (){
+            let loc = $(location).attr('pathname'); // 현재 url 주소 (팀장 메뉴인지 혹은 관리자 메뉴인지)
+            $("#searchForm").attr("action", loc + "/export").submit();
+        });
+
     </script>
 </th:block>
 

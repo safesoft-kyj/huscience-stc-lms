@@ -15,10 +15,13 @@ import com.dtnsm.lms.util.DocumentConverter;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 import com.dtnsm.lms.xdocreport.CurriculumVitaeReportService;
+import com.dtnsm.lms.xdocreport.IndexReportService;
 import com.dtnsm.lms.xdocreport.dto.CV;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jxls.common.Context;
+import org.jxls.util.JxlsHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -27,10 +30,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -67,8 +67,12 @@ public class CVFindController {
             pageInfo.setParentId("m-teamDept");
             pageInfo.setParentTitle("Team/Department");
         }
+
+        CVFindParam cvFindParam = new CVFindParam();
+        cvFindParam.setEmpStatus(1);
+
         model.addAttribute(pageInfo);
-        model.addAttribute("cvFindParam", new CVFindParam());
+        model.addAttribute("cvFindParam", cvFindParam);
         model.addAttribute("indicationList", cvCodeList.getIndicationList());
 //        model.addAttribute("taList", cvCodeList.getTaList());
 //        model.addAttribute("indicationMap", cvCodeList.getIndicationMap());
@@ -92,7 +96,7 @@ public class CVFindController {
         BooleanBuilder builder = new BooleanBuilder();
         QCurriculumVitae qCurriculumVitae = QCurriculumVitae.curriculumVitae;
 
-//        CVFindParam param = new CVFindParam();
+        // 검색어 없을 경우
         if(StringUtils.isEmpty(param.getTa())) {
             param.setTa(null);
         }
@@ -103,6 +107,7 @@ public class CVFindController {
             param.setName(null);
         }
 
+        // Team/Department MENU
         if(!StringUtils.isEmpty(employees)) {
 //         List<String> usernameList = cvFinderMapper.findByParentUserId(SessionUtil.getUserId());
 //         param.setUsernameList(usernameList);
@@ -156,4 +161,23 @@ public class CVFindController {
             }
         }
     }
+
+
+    @PostMapping({"/finder/export", "/{employees}/finder/export"})
+    public void exportCV(@PathVariable(value = "employees", required = false) String employees
+            , @ModelAttribute("cvFindParam") CVFindParam param
+            , Model model, HttpServletResponse response){
+
+        if(StringUtils.isEmpty(param.getTa())) {
+            param.setTa(null);
+        }
+        if(StringUtils.isEmpty(param.getIndication())) {
+            param.setIndication(null);
+        }
+        if(StringUtils.isEmpty(param.getName())) {
+            param.setName(null);
+        }
+    }
+
+
 }
