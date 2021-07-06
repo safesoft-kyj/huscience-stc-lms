@@ -373,8 +373,6 @@ public class DigitalBinderController {
         List<Account> empPresentList = userRepository.findAllByEnabledOrderByNameAsc(true);
 
         model.addAttribute(pageInfo);
-        model.addAttribute("empStatus", empStatus);
-        model.addAttribute("empId", empId);
         model.addAttribute("empRetireList", empRetireList);
         model.addAttribute("empPresentList", empPresentList);
         return "/admin/binder/finder/list";
@@ -391,11 +389,8 @@ public class DigitalBinderController {
         List<Account> empPresentList = userRepository.findAllByEnabledOrderByNameAsc(true);
 
         model.addAttribute(pageInfo);
-        model.addAttribute("empStatus", empStatus);
-        model.addAttribute("empId", empId);
         model.addAttribute("empRetireList", empRetireList);
         model.addAttribute("empPresentList", empPresentList);
-
 
         if( empId != null && !empId.isEmpty()){
 
