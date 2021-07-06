@@ -84,7 +84,7 @@ my:
   log-update: "Training Log Upload"
   log: "Employee Training Log"
   cv: "Curriculum Vitae"
-  jd: "job Description"
+  jd: "Job Description"
   cert-upload: "수료증 Upload"
   user-info: "사용자정보"
 binder:

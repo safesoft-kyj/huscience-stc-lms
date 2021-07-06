@@ -15,5 +15,6 @@ public interface UserRepository extends JpaRepository <Account, String >, Queryd
     Account findByUserId(String userId);
     Optional<Account> findByUserIdAndPassword(String userId, String password);
     Optional<List<Account>> findAllByParentUserIdAndEnabled(String parentUserId, Boolean enabled);
+    List<Account> findAllByEnabledOrderByNameAsc(Boolean enabled);
 
 }
