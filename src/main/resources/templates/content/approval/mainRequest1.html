@@ -49,7 +49,6 @@
                             <li> <a data-toggle="tab" href="#process">진행 <span class="badge badge-purple" th:text="${requestCount2}">0</span></a> </li>
                             <li> <a data-toggle="tab" href="#complete">완료</a> </li>
                             <li> <a data-toggle="tab" href="#reject">반려</a> </li>
-                            <li> <a data-toggle="tab" href="#report">교육참석보고서 <span class="badge badge-purple" th:text="${requestCount5}">0</span></a> </li>
                         </ul>
 
                         <!--Tabs Content-->
@@ -76,7 +75,7 @@
                                             <tr style="background: #FAFAFA;">
                                                 <th class="text-center col-sm-1" th:text="#{label.no}">번호</th>
                                                 <th class="text-center col-sm-1" th:text="#{label.course.type}">유형</th>
-                                                <th class="text-center col-sm-4" th:text="#{label.subject}">과정명</th>
+                                                <th class="text-center col-sm-3" th:text="#{label.subject}">과정명</th>
                                                 <th class="text-center col-sm-1" th:text="#{label.requestdate}">신청일</th>
                                                 <th class="text-center col-sm-1" th:text="#{label.requestby}">신청자</th>
                                                 <th class="text-center col-sm-3" th:text="#{label.status}">상태</th>
