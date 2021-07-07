@@ -145,7 +145,7 @@ public class ApprovalDocumentController {
         pageInfo.setPageId("m-mypage-approval");
         pageInfo.setPageTitle("교육보고서 반려");
 
-        DocumentAccountOrder  documentAccountOrder = documentAccountOrderService.getById(orderId);
+        DocumentAccountOrder documentAccountOrder = documentAccountOrderService.getById(orderId);
 
         // 1차 기각 처리
         approvalDocumentProcessService.documentReject1Proces(documentAccountOrder);
@@ -165,7 +165,7 @@ public class ApprovalDocumentController {
         pageInfo.setPageId("m-mypage-approval");
         pageInfo.setPageTitle("교육보고서 반려");
 
-        DocumentAccountOrder  documentAccountOrder = documentAccountOrderService.getById(orderId);
+        DocumentAccountOrder documentAccountOrder = documentAccountOrderService.getById(orderId);
         documentAccountOrder.setFnComment(rejectMemo);
 
         // 1차 기각 처리

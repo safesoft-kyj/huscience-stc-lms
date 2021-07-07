@@ -211,8 +211,6 @@ public class CourseSurveyAdminController {
         Course course = courseService.getCourseById(courseId);
         pageInfo.setPageTitle(String.format("<a href='/admin/course/%s'>%s</a> > %s", typeId , course.getCourseMaster().getCourseName(), "설문"));
 
-
-
         model.addAttribute(pageInfo);
         model.addAttribute("borders", courseSurvey.getQuestions());
         model.addAttribute("courseId", courseSurvey.getCourse().getId());
@@ -262,5 +260,4 @@ public class CourseSurveyAdminController {
 
         return "admin/course/survey/report";
     }
-
 }

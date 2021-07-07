@@ -29,7 +29,6 @@ public class JdbcReportController {
     @Autowired
     CourseReportRepository courseReportRepository;
 
-
     @Autowired
     private TrainingLogReportRepository trainingLogReportRepository;
 

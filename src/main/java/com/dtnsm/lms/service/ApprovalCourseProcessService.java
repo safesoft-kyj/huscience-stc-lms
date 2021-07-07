@@ -42,7 +42,8 @@ public class ApprovalCourseProcessService {
     @Autowired
     private MailService mailService;
 
-    @Autowired CourseAccountService courseAccountService;
+    @Autowired
+    CourseAccountService courseAccountService;
 
     @Autowired
     CourseAccountOrderService courseAccountOrderService;
@@ -601,7 +602,7 @@ public class ApprovalCourseProcessService {
         } else {
             courseAccount.setFnFinalCount(0);
             courseAccount.setIsApproval("0");   // 전자결재유무 0:없음, 1:있음
-            courseAccount.setFnStatus("9");      // 전자결재가 없으면 미진행(9)로 처리한다.
+            courseAccount.setFnStatus("9");     // 전자결재가 없으면 미진행(9)로 처리한다.
         }
 
         // 교육 대상자 신청인 경우는 상태를 신청상태로 변경한다.
@@ -722,7 +723,6 @@ public class ApprovalCourseProcessService {
 
             courseAccount.setFromDate(fromDate);
             courseAccount.setToDate(toDate);
-
             course.addCourseAccount(courseAccount);
 
             // 부서별 교육은 교육신청 및 교육과정 프로세스가 없음으로 바로 관리자 교육참석등록 상태로 변경한다.
@@ -764,6 +764,7 @@ public class ApprovalCourseProcessService {
             }
 
         } else {
+
             CourseAccount saveCourseAccount = courseAccountService.getByCourseIdAndUserId(course.getId(), account.getUserId());
 
             if (saveCourseAccount == null) {
@@ -1204,7 +1205,6 @@ public class ApprovalCourseProcessService {
 //        courseAccount.setRequestType("9");
 
         courseAccount.setIsCommit("1");
-
         courseAccount = courseAccountService.save(courseAccount);
 
         // 알람 및 메세지 전송

@@ -293,7 +293,7 @@ public class CourseQuizAdminController {
 
         // 이전 URL를 리턴한다.
         String refUrl = request.getHeader("referer");
-        return "redirect:" +  refUrl;
+        return "redirect:" + refUrl;
     }
 
     @GetMapping("/{typeId}/{courseId}/quiz/view")
@@ -321,7 +321,7 @@ public class CourseQuizAdminController {
             , @PathVariable("courseId") Long courseId
             , @PathVariable long id, HttpServletRequest request){
 
-        CourseQuizFile courseQuizFile =  fileService.getUploadFile(id);
+        CourseQuizFile courseQuizFile = fileService.getUploadFile(id);
 
         // Load file as Resource
         Resource resource = fileService.loadFileAsResource(courseQuizFile.getSaveName());
@@ -344,8 +344,6 @@ public class CourseQuizAdminController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + newFileName + "\"")
                 .body(resource);
     }
-
-
 
     // Report
     @GetMapping("/{typeId}/{courseId}/quiz/report")

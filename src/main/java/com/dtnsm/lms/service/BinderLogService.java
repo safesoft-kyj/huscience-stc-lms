@@ -186,13 +186,14 @@ public class BinderLogService {
 
                     // TODO 학습시간이 지정시간보다 큰경우는 학습시간으로 아니면 지정시간으로 저장한다.
                     // 학습시간이 지정시간보다 큰경우는 학습시간으로 아니면 지정시간으로 저장한다.
-                    if ( action.getTotalUseSecond() > courseSection.getSecond() ) {
+                    if (action.getTotalUseSecond() > courseSection.getSecond()) {
                         courseTrainingLog.setTrainingTime(action.getTotalUseSecond());
                     } else {
                         courseTrainingLog.setTrainingTime(courseSection.getSecond());
                     }
 
-                    courseTrainingLog.setCourseSectionAction(action);
+                    // TODO : CYJ 확인필요
+                    //courseTrainingLog.setCourseSectionAction(action);
                 }
 
                 courseTrainingLog.setType(TrainingType.SELF);
@@ -353,5 +354,4 @@ public class BinderLogService {
 
         return "";
     }
-
 }

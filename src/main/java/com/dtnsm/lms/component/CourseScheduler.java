@@ -15,10 +15,7 @@ import com.dtnsm.lms.mybatis.service.UserMapperService;
 import com.dtnsm.lms.repository.CourseAccountRepository;
 import com.dtnsm.lms.repository.RoleRepository;
 import com.dtnsm.lms.repository.UserRepository;
-import com.dtnsm.lms.service.CourseAccountService;
-import com.dtnsm.lms.service.CourseService;
-import com.dtnsm.lms.service.LmsNotificationService;
-import com.dtnsm.lms.service.SignatureService;
+import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -262,7 +259,6 @@ public class CourseScheduler {
 //            }
 
             }
-
         }
     }
 

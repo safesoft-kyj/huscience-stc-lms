@@ -76,8 +76,6 @@ public class CVFindController {
         return "content/finder/condition";
     }
 
-
-
     @PostMapping({"/finder", "/{employees}/finder"})
     public String finder(@PathVariable(value = "employees", required = false) String employees,
                          @ModelAttribute("cvFindParam") CVFindParam param, Model model) {
@@ -175,6 +173,4 @@ public class CVFindController {
             param.setName(null);
         }
     }
-
-
 }

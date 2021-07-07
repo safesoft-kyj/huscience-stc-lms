@@ -44,21 +44,12 @@
                     <div class="tab-base">
                         <!--Nav Tabs-->
                         <ul class="nav nav-tabs">
-                            <li>
-                                <a data-toggle="tab" href="#all">전체 <span class="badge badge-purple" th:text="${requestCount5}">0</span></a>
-                            </li>
-                            <li>
-                                <a data-toggle="tab" href="#request">요청 <span class="badge badge-purple" th:text="${requestCount1}">0</span></a>
-                            </li>
-                            <li>
-                                <a data-toggle="tab" href="#process">진행 <span class="badge badge-purple" th:text="${requestCount2}">0</span></a>
-                            </li>
-                            <li>
-                                <a data-toggle="tab" href="#complete">완료 <span class="badge badge-purple" th:text="${requestCount3}">0</span></a>
-                            </li>
-                            <li>
-                                <a data-toggle="tab" href="#reject">반려 <span class="badge badge-purple" th:text="${requestCount4}">0</span></a>
-                            </li>
+                            <li> <a data-toggle="tab" href="#all">전체</a> </li>
+                            <li> <a data-toggle="tab" href="#request">요청 <span class="badge badge-purple" th:text="${requestCount1}">0</span></a> </li>
+                            <li> <a data-toggle="tab" href="#process">진행 <span class="badge badge-purple" th:text="${requestCount2}">0</span></a> </li>
+                            <li> <a data-toggle="tab" href="#complete">완료</a> </li>
+                            <li> <a data-toggle="tab" href="#reject">반려</a> </li>
+                            <li> <a data-toggle="tab" href="#report">교육참석보고서 <span class="badge badge-purple" th:text="${requestCount5}">0</span></a> </li>
                         </ul>
 
                         <!--Tabs Content-->
@@ -66,17 +57,10 @@
                             <div id="all" class="tab-pane fade">
                                 <div id="all-content"></div>
                             </div>
-                            <div id="request" class="tab-pane fade">
-
-                            </div>
-                            <div id="process" class="tab-pane fade">
-
-                            </div>
-                            <div id="complete" class="tab-pane fade">
-
-                            </div>
-                            <div id="reject" class="tab-pane fade">
-                            </div>
+                            <div id="request" class="tab-pane fade"></div>
+                            <div id="process" class="tab-pane fade"></div>
+                            <div id="complete" class="tab-pane fade"></div>
+                            <div id="reject" class="tab-pane fade"></div>
                             <div th:switch="${borders}" id="dataList">
                                 <div th:case="null">No customer yet!</div>
                                 <div th:case="*"><!-- 미결문서 -->
@@ -101,17 +85,23 @@
                                             </thead>
                                             <tbody>
                                             <tr th:each="border, index : ${borders}">
+                                                <!-- NO -->
                                                 <td th:text="${(borders.getTotalElements() - index.index) - (borders.number * 10)}" class="text-center"></td>
+                                                <!-- 교육유형 -->
                                                 <td class="text-center">
                                                     <span th:text="${border.getCourse().getCourseMaster().getCourseName()}"></span>&nbsp;
                                                 </td>
+                                                <!-- 교육과정명 -->
                                                 <td>
                                                     <a th:href="@{/approval/{requestName}/approvalCourse/{id}(requestName=${requestName}, status=${status}, id=${border.getId()})}">
                                                         <span th:text="${border.getCourse().getTitle()}"></span>
                                                     </a>
                                                 </td>
+                                                <!-- 요청일 -->
                                                 <td th:text="${border.getRequestDate()}" class="text-center"></td>
+                                                <!-- 신청자 -->
                                                 <td th:text="${border.getAccount().getName()}" class="text-center"></td>
+                                                <!-- 상태  -->
                                                 <td class="text-center">
                                                     <th:block th:if="${#strings.equalsIgnoreCase(border.getIsApproval(), '1')}">
                                                         <div th:switch="${border.getFnStatus()}">

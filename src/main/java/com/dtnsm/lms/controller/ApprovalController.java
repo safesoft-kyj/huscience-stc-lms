@@ -82,7 +82,6 @@ public class ApprovalController {
     @Autowired
     private CourseSectionFileService courseSectionFileService;
 
-
     @Autowired
     private ApprovalCourseProcessService approvalCourseProcessService;
 

@@ -25,9 +25,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/info/api")
 public class CalendarRestController {
-
-//    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CalendarRestController.class);
-
     @Autowired
     CourseService courseService;
 
@@ -72,6 +69,7 @@ public class CalendarRestController {
                         break;
                     default:
                         color = "#FFA726";
+                        break;
                 }
 
                 event = new CalendarVO();
@@ -109,6 +107,7 @@ public class CalendarRestController {
                         break;
                     default:
                         color = "#ff0000";
+                        break;
                 }
 
                 event = new CalendarVO();
@@ -127,7 +126,7 @@ public class CalendarRestController {
 
             // FullCalendar
             ObjectMapper mapper = new ObjectMapper();
-            jsonMsg =  mapper.writerWithDefaultPrettyPrinter().writeValueAsString(events);
+            jsonMsg = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(events);
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
@@ -168,6 +167,7 @@ public class CalendarRestController {
                         break;
                     default:
                         color = "#FFA726";
+                        break;
                 }
 
                 event = new CalendarVO();
@@ -223,7 +223,7 @@ public class CalendarRestController {
 
             // FullCalendar
             ObjectMapper mapper = new ObjectMapper();
-            jsonMsg =  mapper.writerWithDefaultPrettyPrinter().writeValueAsString(events);
+            jsonMsg = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(events);
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
@@ -263,6 +263,7 @@ public class CalendarRestController {
                         break;
                     default:
                         color = "#ff0000";
+                        break;
                 }
 
                 event = new CalendarVO();
@@ -281,7 +282,7 @@ public class CalendarRestController {
 
         // FullCalendar
             ObjectMapper mapper = new ObjectMapper();
-            jsonMsg =  mapper.writerWithDefaultPrettyPrinter().writeValueAsString(events);
+            jsonMsg = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(events);
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
@@ -321,6 +322,7 @@ public class CalendarRestController {
                         break;
                     default:
                         color = "#ff0000";
+                        break;
                 }
 
                 event = new CalendarVO();
@@ -339,7 +341,7 @@ public class CalendarRestController {
 
             // FullCalendar
             ObjectMapper mapper = new ObjectMapper();
-            jsonMsg =  mapper.writerWithDefaultPrettyPrinter().writeValueAsString(events);
+            jsonMsg = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(events);
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
@@ -377,6 +379,7 @@ public class CalendarRestController {
                         break;
                     default:
                         color = "#ff0000";
+                        break;
                 }
 
                 event = new CalendarVO();
@@ -433,6 +436,7 @@ public class CalendarRestController {
                         break;
                     default:
                         color = "#ff0000";
+                        break;
                 }
 
                 event = new CalendarVO();

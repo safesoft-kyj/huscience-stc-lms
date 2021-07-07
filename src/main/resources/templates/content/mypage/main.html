@@ -168,10 +168,13 @@
                             <tbody>
                             <th:block th:each="courseAccount, index : ${courseAccountList}">
                                 <tr>
+                                    <!-- NO. -->
                                     <td th:text="${(courseAccountList.getTotalElements() - index.index) - (courseAccountList.number * 10)}" class="text-center"></td>
+                                    <!-- 교육유형 -->
                                     <td class="text-left">
                                         <span th:text="${courseAccount.getCourse().getCourseMaster().getCourseName()}"></span>
                                     </td>
+                                    <!-- 교육과정명 -->
                                     <td class="text-left">
                                         <a th:href="@{/info/request/add/{id}(id=${courseAccount.getCourse().getId()})}">
                                             <span th:text="${courseAccount.getCourse().getTitle()}"}></span>
@@ -189,6 +192,7 @@
 <!--                                            </th:block>-->
 <!--                                        </span>-->
                                     </td>
+                                    <!-- 교육기간 -->
                                     <td class="text-center">
                                         <th:block th:unless="${#strings.equalsIgnoreCase(courseAccount.getCourse().getCourseMaster().getCourseName(), 'self-training')}">
                                             <th:block th:if="${#strings.equalsIgnoreCase(courseAccount.getFromDate(), courseAccount.getToDate())}">
@@ -202,19 +206,23 @@
                                             -
                                         </th:block>
                                     </td>
+                                    <!-- 강의 -->
                                     <td class="text-center">
                                         <span class="badge badge-mint" th:text="${courseAccount.getCourse().getSections().size()}"></span>
                                     </td>
+                                    <!-- 시험 -->
                                     <td class="text-center">
                                         <th:block th:if="${courseAccount.getCourse().getIsQuiz().equals('Y')}">
                                             <span class="badge badge-success" th:text="${courseAccount.getCourse().getQuizzes().size()}"></span>
                                         </th:block>
                                     </td>
+                                    <!-- 설문 -->
                                     <td class="text-center">
                                         <th:block th:if="${courseAccount.getCourse().getIsSurvey().equals('Y')}">
                                             <span class="badge badge-warning" th:text="${courseAccount.getCourse().getSurveys().size()}"></span>
                                         </th:block>
                                     </td>
+                                    <!-- 상태 -->
                                     <td class="text-center">
                                         <form id="submit_form" th:action="@{/course/request2/{id}(id=${courseAccount.getId()})}" method="get">
 
@@ -229,10 +237,10 @@
                                             </div>
                                         </form>
                                     </td>
+                                    <!-- Actions -->
                                     <td class="text-center">
                                         <div th:switch="${courseAccount.getCourseStatus()}">
                                             <th:block th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).none}">
-<!--                                                <a class="btn btn-info" th:href="|javascript:checkRequest('${courseAccount.getCourse().getId()}', '${courseAccount.getAccount().getUserId()}')|"><i class="demo-pli-inbox-into"></i> 교육신청</a>-->
                                                 <a class="btn btn-info"  th:href="@{/info/request/add/{id}(id=${courseAccount.getCourse().getId()})}">
                                                     <i class="demo-pli-inbox-into"></i> 교육신청
                                                 </a>

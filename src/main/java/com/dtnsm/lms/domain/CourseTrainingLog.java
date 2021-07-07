@@ -52,9 +52,9 @@ public class CourseTrainingLog extends AuditorCreateEntity<String> {
 //    private String isUpload = "0";
 
     // Section Action Id
-    @ManyToOne
-    @JoinColumn(name = "sec_act_id")
-    private CourseSectionAction courseSectionAction;
+    //@ManyToOne
+    //@JoinColumn(name = "sec_act_id")
+    //private CourseSectionAction courseSectionAction;
 
     //
     @ManyToOne

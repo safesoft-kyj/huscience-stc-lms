@@ -291,5 +291,3 @@ public class CourseCertificateService {
         return true;
     }
 }
-
-

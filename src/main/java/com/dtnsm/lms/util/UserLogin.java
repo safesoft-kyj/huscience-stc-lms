@@ -32,7 +32,7 @@ public class UserLogin {
 
     public static boolean isLogin(String userId, String userPw) throws MalformedURLException {
 
-        String myURL =  "http://gw.dtnsm.com/checker9_new.aspx?txtDomainNum=%s&txtUserid=%s&txtpassword=%s&sType=LOGIN";
+        String myURL = "http://gw.dtnsm.com/checker9_new.aspx?txtDomainNum=%s&txtUserid=%s&txtpassword=%s&sType=LOGIN";
 
         try {
             userPw = URLEncoder.encode(userPw, "UTF-8");

@@ -229,7 +229,7 @@ public class RegistrationController {
         account.setParentUserId(oldAccount.getParentUserId());
 
         // 1.외부 사용자 상위결재권자가 지정되어 있지 않은 경우 교육관리자로 지정한다.
-        if (account.getParentUserId() == null ||  account.getParentUserId().isEmpty()) {
+        if (account.getParentUserId() == null || account.getParentUserId().isEmpty()) {
             if(courseManagerService.getCourseManager().getAccount().getUserId().isEmpty())
                 return "redirect:/admin/registration/account";
             else
@@ -407,13 +407,13 @@ public class RegistrationController {
     @GetMapping("/courseManager/updateActive")
     public String updateActive(@RequestParam("userId") String userId) {
 
-        // 모든 Manager의 Active를 초기화 한다.
+        // 모든 설문을 초기화 한다.
         for(CourseManager courseManager : courseManagerService.getList()) {
             courseManager.setIsActive(0);
             courseManagerService.save(courseManager);
         }
 
-        // 요청된 Manager를 Active 한다.
+        // 요청된 설문을 기본 설문으로 변경한다.
         CourseManager courseManager = courseManagerService.getByUserId(userId);
         courseManager.setIsActive(1);
         courseManagerService.save(courseManager);
@@ -462,7 +462,7 @@ public class RegistrationController {
             if(courseManager.getIsActive() == 1) {
                 attributes.addFlashAttribute("type", "warning-top");
                 attributes.addFlashAttribute("msg", "선택한 관리자는 Active 상태임으로 삭제할 수 없습니다.");
-            } else  {
+            } else{
                 courseManagerService.delete(courseManager);
             }
         }

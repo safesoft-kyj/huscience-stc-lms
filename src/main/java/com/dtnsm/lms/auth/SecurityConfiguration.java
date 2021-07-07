@@ -25,8 +25,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
-
         http.authorizeRequests()
                 .antMatchers(
                         "/registration**",
@@ -67,8 +65,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .maxSessionsPreventsLogin(true)
                 .expiredUrl("/login?duplicated");
 
-
-
          http.logout()
 //                 .logoutSuccessHandler(logoutSuccessHandler())
 //                 .logoutUrl("/logout")
@@ -79,7 +75,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                  .logoutSuccessHandler(logoutSuccessHandler())
 //                 .logoutSuccessUrl("/login")
                 .permitAll();
-
 
          http.headers().frameOptions().disable();
 

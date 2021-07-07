@@ -62,7 +62,6 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
             loginHistory = loginHistoryRepository.save(loginHistory);
 
             account.setLoginSessionId(loginHistory.getId());
-
         }
 
         if(savedRequest == null){

@@ -132,17 +132,14 @@ public class CourseAccountRestController {
 
 
         // 교육과정에 내가 지정되었거나 신청한 내역이 없으면
-        if(courseAccount == null) {
-
-            // 교육정원 관련 신청할 수 있는지 체크(신청할 수 있는 경우 true 반환)
-            if (!courseAccountService.isCourseRequestCapacity(courseId, userId)) {
+        if (courseAccount == null) {
+            if (!courseAccountService.isCourseRequestCapacity(courseId, userId))
                 return 11;
-            }
-        } else {
+        }
+        else {
             // 이미 신청정보가 있는 경우는 리턴한다.
-            if (courseAccount.getRequestType().equals("1")) {
+            if (courseAccount.getRequestType().equals("1"))
                 return 4;
-            }
         }
 
         return courseAccountService.accountVerification(userId);

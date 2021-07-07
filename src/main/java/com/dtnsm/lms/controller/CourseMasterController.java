@@ -161,6 +161,4 @@ public class CourseMasterController {
 
         return "redirect:/admin/course-master";
     }
-
-
 }

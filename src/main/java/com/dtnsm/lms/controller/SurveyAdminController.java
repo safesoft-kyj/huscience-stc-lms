@@ -247,6 +247,7 @@ public class SurveyAdminController {
         Survey survey = surveyService.getSurveyById(id);
 
         if (survey.getIsActive() == 0) {
+            // 교육과정을 신청할 수 있는 상태로 변경한다.
             survey.setIsActive(1);
         } else if (survey.getIsActive() == 1) {
             survey.setIsActive(0);

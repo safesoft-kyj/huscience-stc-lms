@@ -257,7 +257,7 @@ public class UserServiceImpl implements UserService {
                 account.setComJob(userVO.getComJob());
                 account.setComPosition(userVO.getComPosition());
                 account.setOrgDepart(userVO.getOrgDepart());
-                account.setOrgTeam(userVO.getOrgTeam() == null ? "" : userVO.getOrgTeam());
+                account.setOrgTeam((userVO.getOrgTeam() == null) ? "" : userVO.getOrgTeam());
                 account.setIndate(userVO.getIndate());
                 account.setRoles(Arrays.asList(userRole));
                 // 사용자 구분 (U:내부직원, O:외부유저)
@@ -323,7 +323,7 @@ public class UserServiceImpl implements UserService {
      */
     public Account accountRoleAdd(Account account, Role role) {
 
-        Collection<Role> roles =  account.getRoles();
+        Collection<Role> roles = account.getRoles();
         roles.add(role);
         account.setRoles(roles);
 
@@ -332,7 +332,7 @@ public class UserServiceImpl implements UserService {
 
     public Account accountRoleDelete(Account account, Role role) {
 
-        Collection<Role> roles =  account.getRoles();
+        Collection<Role> roles = account.getRoles();
         roles.remove(role);
         account.setRoles(roles);
         return userRepository.save(account);

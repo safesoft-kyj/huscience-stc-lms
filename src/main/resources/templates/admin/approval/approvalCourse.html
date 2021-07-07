@@ -140,8 +140,7 @@
 
                                         <th:block th:each="border, index : ${courseAccount.getCourseAccountOrders()}">
                                             <th:block th:if="${border.getFnKind().equals('2')}">
-                                                <td th:text="${border.getFnUser().getName()}" class="text-center">
-                                                </td>
+                                                <td th:text="${border.getFnUser().getName()}" class="text-center"></td>
                                             </th:block>
                                         </th:block>
                                     </tr>

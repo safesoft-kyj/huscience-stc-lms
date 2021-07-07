@@ -114,7 +114,7 @@ function refreshTimer() {
     clearInterval(intervalId);
     dailyMissionTimer();
 }
-``
+
 function logoutUser() {
     clearTimeout(timerchecker);
     var xhr = initAjax();

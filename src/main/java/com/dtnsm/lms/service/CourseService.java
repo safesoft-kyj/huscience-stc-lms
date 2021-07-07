@@ -57,9 +57,9 @@ public class CourseService {
 
             int status = 0;
 
-            if (todayReqFromCompare < 0)
+            if (todayReqFromCompare < 0) {
                 status = 1; // 신청기간이전 : 신청대기
-            else if (todayReqFromCompare >= 0 && todayReqToCompare <= 0) {
+            } else if (todayReqFromCompare >= 0 && todayReqToCompare <= 0) {
                 status = 2; // 요청기간중 : 교육신청
             } else if (todayReqToCompare > 0 && todayFromCompare < 0) {
                 status = 3; // 신청이후 교육 대기 : 교육대기

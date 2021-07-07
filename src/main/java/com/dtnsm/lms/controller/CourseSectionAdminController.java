@@ -101,7 +101,6 @@ public class CourseSectionAdminController {
         model.addAttribute("courseSection", courseSection);
 //        model.addAttribute("codeList", codeService.getMinorList(majorCode));
         model.addAttribute("minorCode", minorCode);
-        model.addAttribute("id", courseId);
         model.addAttribute("typeId", typeId);
         model.addAttribute("courseId", courseId);
         model.addAttribute("courseName", course.getTitle());
@@ -160,7 +159,6 @@ public class CourseSectionAdminController {
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseSection", courseSection);
-//        model.addAttribute("codeList", codeService.getMinorList(majorCode));
         model.addAttribute("typeId", typeId);
         model.addAttribute("courseId", courseId);
         model.addAttribute("id", courseSection.getId());
@@ -173,7 +171,7 @@ public class CourseSectionAdminController {
     @PostMapping("/{typeId}/{courseId}/section/edit-post/{id}")
     public String noticeEditPost(@PathVariable("id") long id
             , @PathVariable("typeId") String typeId
-            , @RequestParam(value = "files", required = false ) MultipartFile file
+            , @RequestParam(value = "files", required = false) MultipartFile file
             , @Valid CourseSection courseSection
             , @RequestParam(value = "page", required = false, defaultValue = "") String page
             , BindingResult result) {

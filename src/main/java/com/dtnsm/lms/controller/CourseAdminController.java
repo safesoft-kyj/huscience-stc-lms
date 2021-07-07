@@ -275,10 +275,10 @@ public class CourseAdminController {
         // isAlways : 1:상시, 2:기간 => 상시인 경우 오늘부터 최대일자로 기간을 설정한다.
         if(course.getIsAlways().equals("1")) {
             course.setRequestFromDate(DateUtil.getTodayString());
-            course.setRequestToDate(DateUtil.getStringDateAddDay(DateUtil.getTodayString(), course.getDay()));
+            course.setRequestToDate(DateUtil.getStringDateAddDay(course.getRequestFromDate(), course.getDay()));
 
             course.setFromDate(DateUtil.getTodayString());
-            course.setToDate("2999-12-31");
+            course.setToDate(DateUtil.getStringDateAddDay(course.getFromDate(), course.getDay()));
         }
 
         // 부서별 교육(BC0103), 외부교육(BC0104) 은 신청기간이 없음으로 1900-01-01 로 설정한다.
@@ -403,7 +403,6 @@ public class CourseAdminController {
             course.setFromDate(DateUtil.getTodayString());
             course.setToDate("2999-12-31");
         }
-
 
         // 기본 설문을 가지고 온다.
         List<Survey> surveys = surveyService.getAllByIsActive(1);
@@ -652,16 +651,15 @@ public class CourseAdminController {
 
         // 이전 URL를 리턴한다.
         String refUrl = request.getHeader("referer");
-        return "redirect:" +  refUrl;
 
-//        return String.format("redirect:/admin/course/%s?page=%s", typeId, page);
+        return "redirect:" + refUrl;
     }
 
     @GetMapping("/download-file/{id}")
     @ResponseBody
     public ResponseEntity<Resource> downloadFile(@PathVariable long id, HttpServletRequest request){
 
-        CourseFile courseFile =  fileService.getUploadFile(id);
+        CourseFile courseFile = fileService.getUploadFile(id);
 
         // Load file as Resource
         Resource resource = fileService.loadFileAsResource(courseFile.getSaveName());
@@ -713,7 +711,4 @@ public class CourseAdminController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" +  newFileName + "\"")
                 .body(resource);
     }
-
-
-
 }

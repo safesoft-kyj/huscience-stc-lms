@@ -225,9 +225,9 @@
                                                 <table id="customer-list-page7" class="table" cellspacing="0" width="100%">
                                                     <tbody>
                                                     <tr th:each="app1, index : ${app1CommitList}">
-                                                        <!--                                                <td class="col-md-2" th:text="${#temporals.createDate(app1.getRequestDate(), 'yyyy-MM-dd')}"></td>-->
+                                                        <!-- 결재 진행중 : 날짜 -->
                                                         <td class="col-md-3" th:text="${app1.getRequestDate()}"></td>
-
+                                                        <!-- 결재 진행중 : 교육명 -->
                                                         <td class="col-md-9 text-left">
 <!--                                                            <a th:href="@{/course/approval/{id}(id=${app1.getId()})}">-->
 

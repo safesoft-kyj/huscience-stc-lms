@@ -50,6 +50,7 @@ public class CourseReportRepository {
                 " and org_team like ? " +
                 " and name like ? " +
                 " and is_commit like ? ";
+
         return jdbcTemplate.queryForList(query
                 , new Object[]{
                         '%' + courseTitle + '%'

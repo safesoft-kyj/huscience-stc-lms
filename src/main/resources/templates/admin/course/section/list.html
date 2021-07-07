@@ -75,11 +75,14 @@
                                     </thead>
                                     <tbody>
                                     <tr th:each="border, index : ${borders}">
+                                        <!-- No  -->
                                         <td th:text="${index.count}" class="text-center"></td>
+                                        <!-- 제목  -->
                                         <td>
                                             <div th:text="${border.getName()}"></div>
                                             <div th:utext="${border.getDescription().replaceAll('\r\n', '<br>')}"></div>
                                         </td>
+                                        <!-- 강의파일/학습일  -->
                                         <th:block th:unless="${#strings.equalsIgnoreCase(gubunId, 'BC0101')}">
                                         <td th:text="${border.getStudyDate()}" class="text-center"></td>
                                         </th:block>
@@ -90,8 +93,11 @@
                                             </div>
                                         </td>
                                         </th:block>
+                                        <!-- 시간(시)  -->
                                         <td th:text="${border.getHour()}" class="text-center"></td>
+                                        <!-- 시간(분)  -->
                                         <td th:text="${border.getMinute()}" class="text-center"></td>
+                                        <!-- Actions  -->
                                         <td class="text-center">
                                             <a th:text="#{label.edit}" th:href="@{/admin/course/{typeId}/{courseId}/section/edit(typeId=${typeId}, courseId=${courseId}, id=${border.getId()}, page=${param.page})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
                                             <a th:text="#{label.delete}" th:href="@{/admin/course/{typeId}/{courseId}/section/delete/{id}(typeId=${typeId}, courseId=${courseId}, id=${border.getId()}, page=${param.page})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>

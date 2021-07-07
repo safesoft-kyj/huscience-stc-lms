@@ -172,7 +172,6 @@ public class CourseAccountAdminController {
                 , page, active, status, title);
     }
 
-
     @GetMapping("/{typeId}/{courseId}/account/delete/{id}")
     public String noticeDelete(@PathVariable("typeId") String typeId
             , @PathVariable("courseId") Long courseId
@@ -188,7 +187,7 @@ public class CourseAccountAdminController {
 
         // 이전 URL를 리턴한다.
         String refUrl = request.getHeader("referer");
-        return "redirect:" +  refUrl;
+        return "redirect:" + refUrl;
     }
 
 
@@ -251,7 +250,7 @@ public class CourseAccountAdminController {
 
         // 이전 URL를 리턴한다.
         String refUrl = request.getHeader("referer");
-        return "redirect:" +  refUrl;
+        return "redirect:" + refUrl;
     }
 
 

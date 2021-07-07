@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -54,6 +55,8 @@ public class GlobalUtil {
                 builder.and(qUserJobDescription.status.in(statusList));
             }
             builder.and(qUserJobDescription.username.eq(userId));
+            builder.and(qUserJobDescription.assignDate.before(new Date()));
+
     //        builder.and(qUserJobDescription.reviewed.eq(false));
 
 //            System.out.println(userJobDescriptionRepository);

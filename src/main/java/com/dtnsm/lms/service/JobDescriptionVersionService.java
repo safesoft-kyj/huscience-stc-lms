@@ -68,9 +68,6 @@ public class JobDescriptionVersionService {
         return repository.findOne(builder);
     }
 
-
-
-
     public JobDescriptionVersion getByJdIdAndActiveJd(long jdId) {
 //        return repository.findByJd_IdAndIsActive(jdId, "1");
         return null;

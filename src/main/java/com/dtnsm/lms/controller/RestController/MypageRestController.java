@@ -99,7 +99,6 @@ public class MypageRestController {
             //courseSectionActionHistory.setUseSecond(courseSectionAction.getCourseSection().getSecond() - courseSectionAction.getTotalUseSecond());
             courseSectionActionHistory.setUseSecond(useSecond);
 
-
         } else {
             courseSectionAction.setStatus(SectionStatusType.ONGOING);
         }
