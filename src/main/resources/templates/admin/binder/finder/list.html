@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="html_head">
+    <title>TachyonTech Info</title>
+</th:block>
+
+<th:block layout:fragment="custom_css">
+    <style>
+        .hide-box {display: none;}
+    </style>
+</th:block>
+
+<th:block layout:fragment="content_body">
+    <!--
+    <div th:replace="fragments/common/loading"></div>
+    -->
+    <!--CONTENT CONTAINER-->
+    <!--===================================================-->
+    <div id="content-container">
+
+        <!--Page Title-->
+        <div th:replace="fragments/common/content_title :: content-title"></div>
+        <!--Page Title End-->
+
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+
+            <div class="panel"><!--Panel-->
+                <div class="panel-body"><!--Panel Body-->
+                    <th:block>
+                        <form method="post" th:action="@{'/admin/binder'}">
+                            <table class="table table-bordered text-center">
+                                <thead>
+                                <tr class="bg-gray-light">
+                                    <th class="col-xs-2 text-center">재직여부</th>
+                                    <th class="col-xs-5 text-center">사원명</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <select id="selectEmpStatus" class="form-select form-control" th:name="empStatus">
+<!--                                            <option value="2" th:selected="${#strings.equalsIgnoreCase(param.empStatus, '2')}">전체</option>-->
+                                            <option>=== 재직여부 ===</option>
+                                            <option value="1" th:selected="${#strings.equalsIgnoreCase(param.empStatus, '1')}" selected>재직</option>
+                                            <option value="0" th:selected="${#strings.equalsIgnoreCase(param.empStatus, '0')}">퇴사</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select id="selectEmpId" class="form-select form-control" th:name="empId">
+                                            <option value="">=== 재직여부를 먼저 선택하세요 ===</option>
+                                            <option class="opPresent" th:each="emp : ${empPresentList}" th:value="${emp.userId}" th:text="${emp.name}" th:selected="${#strings.equalsIgnoreCase(param.empId, emp.userId)}"></option>
+                                            <option class="opRetire" th:each="emp : ${empRetireList}" th:value="${emp.userId}" th:text="${emp.name}" th:selected="${#strings.equalsIgnoreCase(param.empId, emp.userId)}"></option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div class="text-right">
+                                <button type="submit" id="btn-search" class="btn btn-info">
+                                    <i class="fa fa-search"><span> Search</span></i>
+                                </button>
+                            </div>
+                        </form>
+                    </th:block>
+                </div><!--Panel Body End-->
+            </div><!--Panel End-->
+
+            <div class="panel"><!--Panel-->
+                <div class="panel-body"><!--Panel Body-->
+                    <th:block th:if="${username != null}">
+                        <table class="table table-bordered table-light">
+                            <thead>
+                                <th colspan="4" class="text-center"><span th:text="${username}">이름</span></th>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th class="col-xs-2 bg-gray-light">Job Title</th><td class="col-xs-4" th:text="${jobTitle}"></td>
+                                <th class="col-xs-2 bg-gray-light">Date Started</th><td class="col-xs-4" th:text="${inDate}"></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-gray-light">Department/Team</th><td class="col-xs-4" th:text="${deptTeam}"></td>
+                                <th class="bg-gray-light">Employee No</th><td class="col-xs-4" th:text="${empNo}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </th:block>
+
+                    <th:block>
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr class="bg-gray-light">
+                                <th rowspan="2" class="text-center">Date of Request<br/>(DD-MMM-YYYY)</th>
+                                <th rowspan="2" class="text-center">Date of Review<br/>(DD-MMM-YYYY)</th>
+                                <th rowspan="2" class="text-center">Review Details</th>
+                                <th colspan="3" class="text-center">Reviewed by</th>
+                                <th rowspan="2" class="text-center"><i class="fa fa-file-pdf-o"></i></th>
+                            </tr>
+                            <tr class="bg-gray-light">
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Name</th>
+                                <th class="text-center">Signature</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:if="${trainingRecordReviewList == null || #lists.size(trainingRecordReviewList) == 0}">
+                                <td colspan="7" class="text-center text-info"><i class="fa fa-exclamation-circle"></i> Training Record Review 가 없습니다.</td>
+                            </tr>
+                            <tr th:each="tr, stat : ${trainingRecordReviewList}">
+                                <td class="text-center"><span th:text="${#dates.format(tr.requestDate, 'dd-MMM-yyyy').toUpperCase()}"></span></td>
+                                <td class="text-center"><span th:if="${tr.dateOfReview != null}" th:text="${#dates.format(tr.dateOfReview, 'dd-MMM-yyyy').toUpperCase()}"></span></td>
+                                <td class="text-center">
+                                    <span th:if="${tr.curriculumVitae != null}"><i class="fa fa-check-square-o"></i> CV</span>
+                                    <span th:if="${tr.trainingRecordReviewJdList != null && #lists.size(tr.trainingRecordReviewJdList) > 0}"><i class="fa fa-check-square-o"></i> JD</span>
+                                    <span th:if="${tr.trainingRecord != null && tr.trainingRecord.sopFileName != null}"><i class="fa fa-check-square-o"></i> Training Log(SOP)</span>
+                                    <span th:if="${tr.trainingRecord != null && tr.trainingRecord.tmFileName != null}"><i class="fa fa-check-square-o"></i> Training Log(TM)</span>
+                                </td>
+                                <td class="text-center" th:attrappend="data-status=${tr.status.name()}" th:attrprepend="id='stat_'+${stat.index}">
+                                    <span th:class="|label label-${tr.status.className}|" th:classappend="${tr.status.name() == 'REJECTED' ? 'add-popover' : ''}" th:text="${tr.status.label}" th:attr="data-content=${tr.reason}" data-toggle="popover" data-container="body" data-placement="top" data-original-title="반려 사유"></span>
+                                </td>
+                                <td class="text-center" th:text="${tr.reviewerName}"></td>
+                                <td class="text-center"><img th:src="${tr.signature}" height="25"/></td>
+                                <td class="text-center">
+                                    <a th:href="@{/binder/{id}/download(id=${tr.id})}" th:if="${tr.binderPdf != null}" class="btn btn-xs" type="button"><i class="fa fa-file-pdf-o"></i></a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </th:block>
+                </div>
+            </div>
+
+        </div><!-- Page content End -->
+
+    </div><!-- Content container End -->
+</th:block>
+
+<th:block layout:fragment="custom_js">
+    <script>
+
+        $(document).ready(function() {
+
+            $("#selectEmpStatus").on('change', function () {
+
+                // empName 선택 해제
+                $("#selectEmpId").val("").prop("selected", true);
+
+                let status = $("#selectEmpStatus option:selected").val();
+
+                if(status == 0){
+                    // 퇴사자 명단 보여주기
+                    $(".opPresent").addClass("hide-box");
+                    $(".opRetire").removeClass("hide-box");
+                }else{
+                    // 재직자 명단 보여주기
+                    $(".opPresent").removeClass("hide-box");
+                    $(".opRetire").addClass("hide-box");
+                }
+
+            });
+
+        });
+    </script>
+</th:block>
+
+</html>
+
+

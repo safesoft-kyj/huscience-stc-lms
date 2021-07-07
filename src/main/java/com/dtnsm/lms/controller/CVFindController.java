@@ -87,7 +87,6 @@ public class CVFindController {
             pageInfo.setParentTitle("Team/Department");
         }
         model.addAttribute(pageInfo);
-//        QCurriculumVitae qCurriculumVitae = QCurriculumVitae.curriculumVitae;
         BooleanBuilder builder = new BooleanBuilder();
         QCurriculumVitae qCurriculumVitae = QCurriculumVitae.curriculumVitae;
 

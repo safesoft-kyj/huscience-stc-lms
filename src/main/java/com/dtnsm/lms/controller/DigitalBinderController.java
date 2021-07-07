@@ -1,6 +1,9 @@
 package com.dtnsm.lms.controller;
 
-import com.dtnsm.common.entity.*;
+import com.dtnsm.common.entity.QTrainingRecord;
+import com.dtnsm.common.entity.QUserJobDescription;
+import com.dtnsm.common.entity.TrainingRecord;
+import com.dtnsm.common.entity.UserJobDescription;
 import com.dtnsm.common.entity.constant.JobDescriptionStatus;
 import com.dtnsm.common.entity.constant.TrainingRecordStatus;
 import com.dtnsm.common.repository.TrainingRecordRepository;
@@ -14,12 +17,12 @@ import com.dtnsm.lms.repository.CurriculumVitaeRepository;
 import com.dtnsm.lms.repository.TrainingRecordReviewJdRepository;
 import com.dtnsm.lms.repository.TrainingRecordReviewRepository;
 import com.dtnsm.lms.repository.UserRepository;
-import com.dtnsm.lms.service.Mail;
 import com.dtnsm.lms.service.MailService;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +35,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.thymeleaf.context.Context;
 
@@ -57,6 +61,9 @@ public class DigitalBinderController {
     private final MailService mailService;
     private final UserRepository userRepository;
     private final FileUploadProperties properties;
+
+
+    private final JPAQueryFactory queryFactory;
 
     @Value("${binder.cv}")
     private String digitalCv;
@@ -352,5 +359,69 @@ public class DigitalBinderController {
         }
 
         return "content/binder/certification";
+    }
+
+    @GetMapping("/admin/binder")
+    public String binderFinder(@RequestParam(value = "empStatus", required = false, defaultValue = "1") int empStatus
+            , @RequestParam(value = "empId", required = false, defaultValue = "") String empId
+            , Model model){
+        pageInfo.setPageId("h-history");
+        pageInfo.setPageTitle("Training Record Review History");
+
+        // empNameList
+        List<Account> empRetireList = userRepository.findAllByEnabledOrderByNameAsc(false);
+        List<Account> empPresentList = userRepository.findAllByEnabledOrderByNameAsc(true);
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("empRetireList", empRetireList);
+        model.addAttribute("empPresentList", empPresentList);
+        return "/admin/binder/finder/list";
+    }
+
+    @PostMapping("/admin/binder")
+    public String binderFinderResult(@RequestParam(value = "empStatus", required = false, defaultValue = "1") int empStatus
+            , @RequestParam(value = "empId", required = false, defaultValue = "") String empId
+            , Model model){
+        pageInfo.setPageId("h-history");
+        pageInfo.setPageTitle("Training Recode Review History");
+
+        List<Account> empRetireList = userRepository.findAllByEnabledOrderByNameAsc(false);
+        List<Account> empPresentList = userRepository.findAllByEnabledOrderByNameAsc(true);
+
+        model.addAttribute(pageInfo);
+        model.addAttribute("empRetireList", empRetireList);
+        model.addAttribute("empPresentList", empPresentList);
+
+        if( empId != null && !empId.isEmpty()){
+
+            // 해당 emp 정보
+            Account account = userRepository.findByUserId(empId);
+            model.addAttribute("username", account.getEngName());
+            model.addAttribute("inDate", StringUtils.isEmpty(account.getIndate()) ? "" : DateUtil.getDateToString(DateUtil.getStringToDate(account.getIndate(), "yyyy-MM-dd"), "dd-MMM-yyyy").toUpperCase());
+            model.addAttribute("deptTeam", (StringUtils.isEmpty(account.getOrgDepart()) ? "" : account.getOrgDepart()) +
+                    (!StringUtils.isEmpty(account.getOrgDepart()) && !StringUtils.isEmpty(account.getOrgTeam()) ? "/" : "") + (StringUtils.isEmpty(account.getOrgTeam()) ? "" : account.getOrgTeam()));
+            model.addAttribute("empNo", account.getComNum());
+
+            // 해당 emp 의 JD
+            Iterable<UserJobDescription> userJobDescriptions = getJobDescriptionList(empId, Arrays.asList(JobDescriptionStatus.APPROVED));
+            if(!ObjectUtils.isEmpty(userJobDescriptions)) {
+                model.addAttribute("jobTitle", StreamSupport.stream(userJobDescriptions.spliterator(), false)
+                        .map(u -> u.getJobDescriptionVersion().getJobDescription().getTitle()).collect(Collectors.joining(",")));
+            } else {
+                model.addAttribute("jobTitle", "N/A");
+            }
+
+            // 해당 emp의 trainingRecord review
+            QTrainingRecordReview qTrainingRecordReview = QTrainingRecordReview.trainingRecordReview;
+            QAccount qAccount = QAccount.account;
+            List<TrainingRecordReview> trainingRecordReviewList = queryFactory.select(qTrainingRecordReview)
+                    .from(qTrainingRecordReview)
+                    .where(qAccount.userId.eq(empId))
+                    .fetch();
+
+            model.addAttribute("trainingRecordReviewList", trainingRecordReviewList);
+        }
+
+        return "/admin/binder/finder/list";
     }
 }
