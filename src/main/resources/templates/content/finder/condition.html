@@ -104,10 +104,10 @@
                 </div>
             </div>
 
-            <div class="panel" th:if="${(cvList == null || cvList.size() == 0) && cvFindParam.career > 0}">
-                <div class="panel-body text-center">
-                    ** 검색 결과가 존재하지 않습니다. **
-                </div>
+            <div class="panel" th:if="${(cvList == null || cvList.size() == 0) && #strings.equals(search, 'true')}">
+                <br>
+                <h4 class="panel-body text-center">** 검색 결과가 존재하지 않습니다. **</h4>
+                <br>
             </div>
 
             <div class="panel" th:if="${cvList != null && cvList.size() > 0}">

@@ -128,7 +128,7 @@ public class CourseAccount extends AuditorEntity<String> {
     @ColumnDefault("'0'")
     private String isReport = "0";
 
-    // 외부교육은 보고서 작성이 있음으로 상태값을 관리한다. 0: 진행중, 1: 승인, 2:기각, 9:미진행
+    // 외부교육은 보고서 작성이 있음으로 상태값을 관리한다. 0: 진행중, 1: 승인, 2:기각, 8:임시저장, 9:미진행
     @Column(length = 1)
     @ColumnDefault("'9'")
     private String reportStatus = "9";

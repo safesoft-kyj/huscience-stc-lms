@@ -118,15 +118,16 @@ public class CVFindController {
         List<Integer> cvIds = resultList.stream().filter(cv -> (cv.getDays() / 365) >= param.getCareer()).map(CVFindResult::getId)
                 .collect(Collectors.toList());
 
+        Iterable<CurriculumVitae> cvList = null;
         if(!ObjectUtils.isEmpty(cvIds)) {
             builder.and(qCurriculumVitae.id.in(cvIds));
             if(!StringUtils.isEmpty(param.getName()))
                 builder.and(qCurriculumVitae.account.engName.contains(param.getName()));
-            Iterable<CurriculumVitae> cvList = curriculumVitaeRepository.findAll(builder);
-
-            model.addAttribute("cvList", cvList);
+            cvList = curriculumVitaeRepository.findAll(builder);
         }
 
+        model.addAttribute("cvList",  cvList);
+        model.addAttribute("search", "true");
         model.addAttribute("indicationList", cvCodeList.getIndicationList());
 
         return "content/finder/condition";

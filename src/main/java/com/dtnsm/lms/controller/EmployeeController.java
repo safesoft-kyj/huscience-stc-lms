@@ -225,7 +225,7 @@ public class EmployeeController {
         TrainingRecordReview trainingRecordReview = trainingRecordReviewRepository.findById(id).get();
         trainingRecordReview.setStatus(status);
         trainingRecordReview.setDateOfReview(new Date());
-        trainingRecordReview.setReviewerName(SessionUtil.getUserDetail().getUsername());
+        trainingRecordReview.setReviewerName(SessionUtil.getUserDetail().getEngName());
         trainingRecordReview.setReason(reason);
         trainingRecordReview.setSignature(optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : null);
 
