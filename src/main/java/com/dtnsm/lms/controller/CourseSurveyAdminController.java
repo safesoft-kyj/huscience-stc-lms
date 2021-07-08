@@ -74,13 +74,22 @@ public class CourseSurveyAdminController {
 
     @GetMapping("/{typeId}/{courseId}/survey/add")
     public String noticeAdd(@PathVariable("typeId") String typeId
-            , @PathVariable("courseId") Long courseId, Model model) {
+            , @PathVariable("courseId") Long courseId
+            , Model model
+            , RedirectAttributes attributes) {
 
         course = courseService.getCourseById(courseId);
-        CourseSurvey courseSurvey = new CourseSurvey();
-        courseSurvey.setCourse(course);
+
+        if(course.getCourseAccountList().size() > 0) {
+            attributes.addFlashAttribute("type", "warning-top");
+            attributes.addFlashAttribute("msg", "수강자가 있을 경우 설문을 변경할 수 없습니다.");
+            return "redirect:/admin/course/" + typeId + "/" + courseId + "/survey";
+        }
 
         pageInfo.setPageTitle(String.format("<a href='/admin/course/%s'>%s</a> > %s", typeId , course.getCourseMaster().getCourseName(), "설문"));
+
+        CourseSurvey courseSurvey = new CourseSurvey();
+        courseSurvey.setCourse(course);
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseSurvey", courseSurvey);
@@ -180,6 +189,14 @@ public class CourseSurveyAdminController {
             , @RequestParam(value = "page", required = false, defaultValue = "") String page
             , @PathVariable("id") long id
             , HttpServletRequest request, RedirectAttributes attributes) {
+
+        Course course = courseService.getCourseById(courseId);
+
+        if(course.getCourseAccountList().size() > 0) {
+            attributes.addFlashAttribute("type", "warning-top");
+            attributes.addFlashAttribute("msg", "수강자가 있을 경우 설문을 변경할 수 없습니다.");
+            return "redirect:/admin/course/" + typeId + "/" + courseId + "/survey";
+        }
 
         CourseSurvey courseSurvey = courseSurveyService.getCourseSurveyById(id);
 

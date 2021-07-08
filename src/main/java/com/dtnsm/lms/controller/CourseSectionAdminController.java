@@ -89,13 +89,23 @@ public class CourseSectionAdminController {
     }
 
     @GetMapping("/{typeId}/{courseId}/section/add")
-    public String noticeAdd(@PathVariable("typeId") String typeId, @PathVariable("courseId") Long courseId, Model model) {
+    public String noticeAdd(@PathVariable("typeId") String typeId
+            , @PathVariable("courseId") Long courseId
+            , Model model
+            , RedirectAttributes attributes) {
 
         Course course = courseService.getCourseById(courseId);
         CourseSection courseSection = new CourseSection();
         courseSection.setCourse(course);
 
         pageInfo.setPageTitle(String.format("<a href='/admin/course/%s/'>%s</a> > %s", typeId, course.getCourseMaster().getCourseName(), "강의"));
+
+        // 수강자가 있을 경우 강의 변경X
+        if(course.getCourseAccountList().size() > 0) {
+            attributes.addFlashAttribute("type", "warning-top");
+            attributes.addFlashAttribute("msg", "수강자가 있을 경우 강의를 변경할 수 없습니다.");
+            return "redirect:/admin/course/" + typeId + "/" + courseId + "/section";
+        }
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseSection", courseSection);
@@ -151,11 +161,20 @@ public class CourseSectionAdminController {
     @GetMapping("/{typeId}/{courseId}/section/edit")
     public String noticeEdit(@PathVariable("typeId") String typeId
             , @PathVariable("courseId") Long courseId
-            , @RequestParam("id") long id, Model model) {
+            , @RequestParam("id") long id
+            , Model model
+            , RedirectAttributes attributes) {
 
         CourseSection courseSection = sectionService.getCourseSectionById(id);
         Course course = courseService.getCourseById(courseId);
         pageInfo.setPageTitle(String.format("<a href='/admin/course/%s/'>%s</a> > %s", typeId, course.getCourseMaster().getCourseName(), "강의"));
+
+        // 수강자가 있을 경우 강의 변경X
+        if(course.getCourseAccountList().size() > 0) {
+            attributes.addFlashAttribute("type", "warning-top");
+            attributes.addFlashAttribute("msg", "수강자가 있을 경우 강의를 변경할 수 없습니다.");
+            return "redirect:/admin/course/" + typeId + "/" + courseId + "/section";
+        }
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseSection", courseSection);
@@ -236,6 +255,15 @@ public class CourseSectionAdminController {
             , @RequestParam(value = "page", required = false, defaultValue = "") String page
             , HttpServletRequest request
             , RedirectAttributes attributes) {
+
+        Course course = courseService.getCourseById(courseId);
+
+        // 수강자가 있을 경우 강의 변경X
+        if(course.getCourseAccountList().size() > 0) {
+            attributes.addFlashAttribute("type", "warning-top");
+            attributes.addFlashAttribute("msg", "수강자가 있을 경우 강의를 변경할 수 없습니다.");
+            return "redirect:/admin/course/" + typeId + "/" + courseId + "/section";
+        }
 
         CourseSection courseSection = sectionService.getCourseSectionById(id);
 

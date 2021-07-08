@@ -392,7 +392,6 @@ public class CourseAdminController {
         if(course.getCourseAccountList().size() > 0) {
             attributes.addFlashAttribute("type", "warning-top");
             attributes.addFlashAttribute("msg", "수강자가 있을 경우 교육과정을 변경할 수 없습니다.");
-
             return "redirect:/admin/course/" + typeId;
         }
 
@@ -428,7 +427,6 @@ public class CourseAdminController {
         if(course.getCourseAccountList().size() > 0) {
             attributes.addFlashAttribute("type", "warning-top");
             attributes.addFlashAttribute("msg", "수강자가 있을 경우 교육과정을 변경할 수 없습니다.");
-
             return "redirect:/admin/course/" + typeId;
         }
 
@@ -612,6 +610,12 @@ public class CourseAdminController {
             , HttpServletRequest request, RedirectAttributes attributes) {
 
         Course course = courseService.getCourseById(courseId);
+
+        if(course.getCourseAccountList().size() > 0) {
+            attributes.addFlashAttribute("type", "warning-top");
+            attributes.addFlashAttribute("msg", "수강자가 있을 경우 교육과정을 변경할 수 없습니다.");
+            return "redirect:/admin/course/" + typeId;
+        }
 
         // 과정 신청된 내역이 있으면 삭제 하지 않는다.
         if (course.getCourseAccountList().size() <= 0) {

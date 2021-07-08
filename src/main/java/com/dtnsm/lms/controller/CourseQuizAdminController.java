@@ -89,13 +89,22 @@ public class CourseQuizAdminController {
 
     @GetMapping("/{typeId}/{courseId}/quiz/add")
     public String noticeAdd(@PathVariable("typeId") String typeId
-            , @PathVariable("courseId") Long courseId, Model model) {
+            , @PathVariable("courseId") Long courseId
+            , Model model
+            , RedirectAttributes attributes) {
 
         course = courseService.getCourseById(courseId);
-        CourseQuiz courseQuiz = new CourseQuiz();
-        courseQuiz.setCourse(course);
+
+        if(course.getCourseAccountList().size() > 0) {
+            attributes.addFlashAttribute("type", "warning-top");
+            attributes.addFlashAttribute("msg", "수강자가 있을 경우 시험을 변경할 수 없습니다.");
+            return "redirect:/admin/course/" + typeId + "/" + courseId + "/quiz";
+        }
 
         pageInfo.setPageTitle(String.format("<a href='/admin/course/%s/'>%s</a> > %s", typeId, course.getCourseMaster().getCourseName(), "시험"));
+
+        CourseQuiz courseQuiz = new CourseQuiz();
+        courseQuiz.setCourse(course);
 
         model.addAttribute(pageInfo);
         model.addAttribute("courseQuiz", courseQuiz);
@@ -166,11 +175,11 @@ public class CourseQuizAdminController {
 
         Course course = courseQuiz.getCourse();
 
-//        if(course.getCourseAccountList().size() > 0) {
-//            attributes.addFlashAttribute("type", "warning-top");
-//            attributes.addFlashAttribute("msg", "수강자가 있을 경우 시험을 변경할 수 없습니다.");
-//            return "redirect:/admin/course/" + typeId + "/" + courseId + "/quiz";
-//        }
+        if(course.getCourseAccountList().size() > 0) {
+            attributes.addFlashAttribute("type", "warning-top");
+            attributes.addFlashAttribute("msg", "수강자가 있을 경우 시험을 변경할 수 없습니다.");
+            return "redirect:/admin/course/" + typeId + "/" + courseId + "/quiz";
+        }
 
         pageInfo.setPageTitle(String.format("<a href='/admin/course/%s/'>%s</a> > %s", typeId, course.getCourseMaster().getCourseName(), "시험"));
 
@@ -241,7 +250,17 @@ public class CourseQuizAdminController {
     public String noticeDelete(@PathVariable("typeId") String typeId
             , @PathVariable("courseId") Long courseId
             , @RequestParam(value = "page", required = false, defaultValue = "") String page
-            , @PathVariable("id") long id, HttpServletRequest request) {
+            , @PathVariable("id") long id
+            , HttpServletRequest request
+            , RedirectAttributes attributes) {
+
+        Course course = courseService.getCourseById(courseId);
+
+        if(course.getCourseAccountList().size() > 0) {
+            attributes.addFlashAttribute("type", "warning-top");
+            attributes.addFlashAttribute("msg", "수강자가 있을 경우 시험을 변경할 수 없습니다.");
+            return "redirect:/admin/course/" + typeId + "/" + courseId + "/quiz";
+        }
 
         CourseQuiz courseQuiz = quizService.getCourseQuizById(id);
 

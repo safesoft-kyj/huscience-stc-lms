@@ -610,10 +610,10 @@ public class MyPageController {
             , @PathVariable("isNew") String isNew
             , Model model) {
 
-        Account account = userService.getAccountByUserId(SessionUtil.getUserId());
-
         CourseQuizAction quizAction = courseQuizActionService.getCourseQuizActionById(quizId);
 
+        // TODO KJH : POST 했을때, 새로운 quizAction 이 생성되도록 변경
+        Account account = userService.getAccountByUserId(SessionUtil.getUserId());
         if(isNew.equals("Y")) {
             // isNew가 Y인경우는 재응시 이므로 이전 시험을 Fail로 처리한다.
             quizAction.setStatus(QuizStatusType.FAIL);
@@ -634,7 +634,6 @@ public class MyPageController {
             newQuizAction.setQuestionCount(quizAction.getQuestionCount());
             quizAction = courseQuizActionService.saveQuizAction(newQuizAction);
         }
-
 
         pageInfo.setPageId("m-mypage-myinfo");
         pageInfo.setPageTitle(quizAction.getQuiz().getName());
