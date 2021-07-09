@@ -375,7 +375,7 @@ public class DigitalBinderController {
         model.addAttribute(pageInfo);
         model.addAttribute("empRetireList", empRetireList);
         model.addAttribute("empPresentList", empPresentList);
-        return "/admin/binder/finder/list";
+        return "admin/binder/finder/list";
     }
 
     @PostMapping("/admin/binder")
@@ -422,6 +422,6 @@ public class DigitalBinderController {
             model.addAttribute("trainingRecordReviewList", trainingRecordReviewList);
         }
 
-        return "/admin/binder/finder/list";
+        return "admin/binder/finder/list";
     }
 }

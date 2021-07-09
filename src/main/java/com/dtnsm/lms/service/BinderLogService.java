@@ -182,18 +182,21 @@ public class BinderLogService {
                         , DateUtil.getTodayDate());
                 courseTrainingLog.setCompleteDate(DateUtil.getTodayDate());
 
-                for (CourseSectionAction action : courseSection.getCourseSectionActions()) {
+                for (CourseSectionAction action : courseAccount.getCourseSectionActions()) {
 
-                    // TODO 학습시간이 지정시간보다 큰경우는 학습시간으로 아니면 지정시간으로 저장한다.
-                    // 학습시간이 지정시간보다 큰경우는 학습시간으로 아니면 지정시간으로 저장한다.
-                    if (action.getTotalUseSecond() > courseSection.getSecond()) {
-                        courseTrainingLog.setTrainingTime(action.getTotalUseSecond());
-                    } else {
-                        courseTrainingLog.setTrainingTime(courseSection.getSecond());
+                    if(action.getCourseSection().getId() == courseSection.getId()) {
+
+                        // TODO 학습시간이 지정시간보다 큰경우는 학습시간으로 아니면 지정시간으로 저장한다.
+                        // 학습시간이 지정시간보다 큰경우는 학습시간으로 아니면 지정시간으로 저장한다.
+                        if (action.getTotalUseSecond() > courseSection.getSecond()) {
+                            courseTrainingLog.setTrainingTime(action.getTotalUseSecond());
+                        } else {
+                            courseTrainingLog.setTrainingTime(courseSection.getSecond());
+                        }
+
+                        // 210709 CYJ traininglog - sectionAction 관계 끊어놓음
+                        //courseTrainingLog.setCourseSectionAction(action);
                     }
-
-                    // TODO : CYJ 확인필요
-                    //courseTrainingLog.setCourseSectionAction(action);
                 }
 
                 courseTrainingLog.setType(TrainingType.SELF);
