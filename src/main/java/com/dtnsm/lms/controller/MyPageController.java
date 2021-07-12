@@ -612,29 +612,6 @@ public class MyPageController {
 
         CourseQuizAction quizAction = courseQuizActionService.getCourseQuizActionById(quizId);
 
-        // TODO KJH : POST 했을때, 새로운 quizAction 이 생성되도록 변경
-        Account account = userService.getAccountByUserId(SessionUtil.getUserId());
-        if(isNew.equals("Y")) {
-            // isNew가 Y인경우는 재응시 이므로 이전 시험을 Fail로 처리한다.
-            quizAction.setStatus(QuizStatusType.FAIL);
-            quizAction.setIsActive("0");
-            quizAction = courseQuizActionService.saveQuizAction(quizAction);
-
-            CourseQuiz courseQuiz = quizAction.getQuiz();
-
-            CourseQuizAction newQuizAction = new CourseQuizAction();
-            newQuizAction.setAccount(account);
-            newQuizAction.setExecuteDate(DateUtil.getTodayString());
-            newQuizAction.setRunCount(0);
-            newQuizAction.setScore(0);
-            newQuizAction.setTotalUseSecond(0);
-            newQuizAction.setQuiz(courseQuiz);
-            newQuizAction.setCourseAccount(quizAction.getCourseAccount());
-            newQuizAction.setIsActive("1");
-            newQuizAction.setQuestionCount(quizAction.getQuestionCount());
-            quizAction = courseQuizActionService.saveQuizAction(newQuizAction);
-        }
-
         pageInfo.setPageId("m-mypage-myinfo");
         pageInfo.setPageTitle(quizAction.getQuiz().getName());
 
@@ -663,6 +640,31 @@ public class MyPageController {
             }
         }
 
+        // 210712 KJH POST 했을때, 새로운 quizAction 이 생성되도록 변경
+        Account account = userService.getAccountByUserId(SessionUtil.getUserId());
+        if(courseQuizAction.getStatus() == QuizStatusType.FAIL) {
+            // 재응시 이므로 이전 시험을 active를 false로 처리한다.
+            courseQuizAction.setIsActive("0");
+            CourseQuizAction oldQuizAction = courseQuizActionService.saveQuizAction(courseQuizAction);
+
+            // 현재 받아온 퀴즈
+            CourseQuiz courseQuiz = courseQuizAction.getQuiz();
+
+            // 새로운 QuizAction 생성
+            CourseQuizAction newQuizAction = new CourseQuizAction();
+            newQuizAction.setAccount(account);
+            newQuizAction.setExecuteDate(DateUtil.getTodayString());
+            newQuizAction.setRunCount(0);
+            newQuizAction.setScore(0);
+            newQuizAction.setTotalUseSecond(0);
+            newQuizAction.setQuiz(courseQuiz);
+            newQuizAction.setCourseAccount(courseQuizAction.getCourseAccount());
+            newQuizAction.setIsActive("1");
+            newQuizAction.setQuestionCount(courseQuizAction.getQuestionCount());
+            courseQuizAction = courseQuizActionService.saveQuizAction(newQuizAction);
+            quizActionId = courseQuizAction.getId();
+        }
+
         // 사용자 시험 답 객체 생성
         CourseQuizActionAnswer questionAnswer;
         CourseQuizActionAnswer resultAnswer = null;
@@ -678,6 +680,7 @@ public class MyPageController {
             questionAnswer.setUserAnswer(userAnswer);
             questionAnswer.setQuestionId(question.getId());
             questionAnswer.setQuizAction(courseQuizAction);
+            courseQuizAction.addQuizActionAnswer(questionAnswer); // 210721 KJH
 
             // 정답일 경우 1, 오답일 경우 0으로 설정(정답갯수는 isAnswer 의 합임)
             if(questionAnswer.getAnswer().equals(questionAnswer.getUserAnswer())) {

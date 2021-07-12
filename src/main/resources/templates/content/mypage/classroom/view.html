@@ -89,35 +89,27 @@
                                 </thead>
                                 <tbody>
                                     <th:block th:each="sectionAction, index : ${courseSectionActions}">
-                                        <th:block
-                                                th:if="${sectionAction.getCourseAccount().getCourse().getCourseMaster().getCourseGubun().getMinorCd().equals('BC0101')}">
+                                        <th:block th:if="${sectionAction.getCourseAccount().getCourse().getCourseMaster().getCourseGubun().getMinorCd().equals('BC0101')}">
                                             <tr>
-                                                <td class="text-center" th:text="${index.count}" }></td>
-                                                <td class="text-center" th:text="#{label.title.section}" }></td>
-                                                <td class="text-left"
-                                                    th:text="${sectionAction.getCourseSection().getName()}" }></td>
-                                                <!--                                <td class="text-center" th:text="${section.getFromDate() + ' ~ ' + section.getToDate()}"></td>-->
+                                                <td class="text-center" th:text="${index.count}"></td>
+                                                <td class="text-center" th:text="#{label.title.section}"></td>
+                                                <td class="text-left"   th:text="${sectionAction.getCourseSection().getName()}"></td>
+                                                <!-- <td class="text-center" th:text="${section.getFromDate() + ' ~ ' + section.getToDate()}"></td>-->
                                                 <td class="text-center">
-                                                    <!--                                                    <span th:text="${sectionAction.getCourseSection().getMinute()} + '분'"}></td>-->
+                                                    <!-- <span th:text="${sectionAction.getCourseSection().getMinute()} + '분'"}></td>-->
                                                     <span th:unless="${#strings.equalsIgnoreCase(courseAccount.getFromDate(), courseAccount.getToDate())}"
-                                                          class="text-center"
-                                                          th:text="${courseAccount.getFromDate() + '~' + courseAccount.getToDate()}"></span>
+                                                          class="text-center" th:text="${courseAccount.getFromDate() + '~' + courseAccount.getToDate()}"></span>
                                                     <span th:if="${#strings.equalsIgnoreCase(courseAccount.getFromDate(), courseAccount.getToDate())}"
-                                                          class="text-center"
-                                                          th:text="${courseAccount.getFromDate()}"></span>
-                                                    <!--                                <td class="text-center" th:text="${section.getTeacher()}"}></td>-->
+                                                          class="text-center" th:text="${courseAccount.getFromDate()}"></span>
+                                                    <!--  <td class="text-center" th:text="${section.getTeacher()}"}></td>-->
                                                 <td class="text-center">
-
                                                     <div class="progress">
-                                                        <th:block
-                                                                th:if="${sectionAction.getTotalUseSecond() > sectionAction.getCourseSection().getSecond() }">
-                                                            <div id="time" class="progress-bar progress-bar-info"
-                                                                 th:attr="style=${'width:100%'}"
-                                                                 th:text="${'100%'}">0%
+                                                        <th:block th:if="${sectionAction.getTotalUseSecond() > sectionAction.getCourseSection().getSecond() }">
+                                                            <div id="time" class="progress-bar progress-bar-info" th:attr="style=${'width:100%'}" th:text="${'100%'}">
+                                                                0%
                                                             </div>
                                                         </th:block>
-                                                        <th:block
-                                                                th:unless="${sectionAction.getTotalUseSecond() > sectionAction.getCourseSection().getSecond() }">
+                                                        <th:block th:unless="${sectionAction.getTotalUseSecond() > sectionAction.getCourseSection().getSecond() }">
                                                             <div id="time2" class="progress-bar progress-bar-info"
                                                                  th:attr="style=${'width:' + T(Math).round((sectionAction.getImageCurrent()*1.0) / sectionAction.getImageSize() * 100) + '%'}"
                                                                  th:text="${T(Math).round((sectionAction.getImageCurrent()*1.0) / sectionAction.getImageSize()* 100) + ' %'}">
@@ -127,8 +119,7 @@
                                                     </div>
                                                 </td>
                                                 <td class="text-center">
-                                                    <th:block
-                                                            th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'REQUEST')}">
+                                                    <th:block th:if="${#strings.equalsIgnoreCase(sectionAction.getStatus(), 'REQUEST')}">
                                                         <span th:text="${sectionAction.getStatus()}"
                                                               class="label label-mint"></span>
                                                     </th:block>
@@ -183,12 +174,11 @@
                                         </th:block>
                                     </th:block>
                                     <th:block th:each="quizAction, index : ${quizActions}">
-                                        <tr>
+                                        <tr th:if="${quizAction.getIsActive().equals('1')}">
                                             <td class="text-center" th:text="${index.count}">1</td>
                                             <td class="text-center" th:text="#{label.title.quiz}"></td>
                                             <td class="text-left" th:text="${quizAction.getQuiz().getName()}"></td>
-                                            <td class="text-center"
-                                                th:text="${quizAction.getQuiz().getMinute() + '분'}"></td>
+                                            <td class="text-center" th:text="${quizAction.getQuiz().getMinute() + '분'}"></td>
                                             <!--                                <td class="text-center"></td>-->
                                             <!--                                <td class="text-left" >-->
                                             <!--                                    <th:block th:each="actionQuiz : ${quiz.getQuizActions()}">-->
@@ -199,40 +189,28 @@
                                             <!--                                        </div>-->
                                             <!--                                    </th:block>-->
                                             <!--                                </td>-->
+                                            <td class="text-center"></td>
                                             <td class="text-center">
-                                            </td>
-                                            <td class="text-center">
-                                                <th:block
-                                                        th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'REQUEST')}">
-                                                    <span th:text="${quizAction.getStatus()}"
-                                                          class="label label-mint"></span>
+                                                <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'REQUEST')}">
+                                                    <span th:text="${quizAction.getStatus()}" class="label label-mint"></span>
                                                 </th:block>
-                                                <th:block
-                                                        th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'ONGOING')}">
-                                                    <span th:text="${quizAction.getStatus()}"
-                                                          class="label label-danger"></span>
+                                                <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'ONGOING')}">
+                                                    <span th:text="${quizAction.getStatus()}" class="label label-danger"></span>
                                                 </th:block>
-                                                <th:block
-                                                        th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'FAIL')}">
-                                                    <span th:text="${quizAction.getStatus()}"
-                                                          class="label label-danger"></span>
+                                                <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'FAIL')}">
+                                                    <span th:text="${quizAction.getStatus()}" class="label label-danger"></span>
                                                 </th:block>
-                                                <th:block
-                                                        th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'COMPLETE')}">
-                                                    <span th:text="${quizAction.getStatus()}"
-                                                          class="label label-success"></span>
+                                                <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'COMPLETE')}">
+                                                    <span th:text="${quizAction.getStatus()}" class="label label-success"></span>
                                                 </th:block>
                                             </td>
                                             <td class="text-center">
-                                                <th:block
-                                                        th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'REQUEST')}">
-                                                    <span class="label label-table label-warning"
-                                                          th:text="#{label.course.quiz.request}">미진행</span>
+                                                <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'REQUEST')}">
+                                                    <span class="label label-table label-warning" th:text="#{label.course.quiz.request}">미진행</span>
                                                 </th:block>
-                                                <th:block
-                                                        th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'FAIL')}">
+                                                <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'FAIL')}">
 
-                                                        <th:block th:if="${courseAccount.isTestFail() == true}">
+                                                    <th:block th:if="${courseAccount.isTestFail() == true}">
                                                         <a href="javascript:popupAlert();" class="label label-table label-warning">재시험요청</a>
                                                     </th:block>
                                                     <th:block th:if="${courseAccount.isTestFail() == false}">
@@ -242,13 +220,10 @@
                                                     </th:block>
 
                                                 </th:block>
-                                                <th:block
-                                                        th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'COMPLETE')}">
-                                                    <span class="label label-table label-success"
-                                                          th:text="#{label.course.quiz.commit}">시험완료</span>
+                                                <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'COMPLETE')}">
+                                                    <span class="label label-table label-success" th:text="#{label.course.quiz.commit}">시험완료</span>
                                                 </th:block>
-                                                <th:block
-                                                        th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'ONGOING')}">
+                                                <th:block th:if="${#strings.equalsIgnoreCase(quizAction.getStatus(), 'ONGOING')}">
                                                     <a href="#" class="label label-table label-info" id="popupQuiz2"
                                                        th:onclick="|javascript:popupQuizView('${quizAction.getId()}', 'N');return false;|"
                                                        target="_blank" th:text="#{label.course.quiz.request}">시험응시</a>
@@ -302,7 +277,6 @@
                                             </td>
                                         </tr>
                                     </th:block>
-
                                 </tbody>
                             </table>
                         </div>
@@ -317,7 +291,7 @@
     <div class="modal fade" id="demo-default-modal" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal"
          aria-hidden="true">
         <div class="modal-dialog" style="max-width: 100%; width: 50%;">
-            <!--        <div class="modal-dialog modal-fullsize" style="max-width: 100%; width: auto;">-->
+            <!-- <div class="modal-dialog modal-fullsize" style="max-width: 100%; width: auto;">-->
 
             <div class="modal-content modal-fullsize" id="modal-content">
 
