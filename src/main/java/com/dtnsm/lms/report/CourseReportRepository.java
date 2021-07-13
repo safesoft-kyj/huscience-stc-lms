@@ -42,8 +42,12 @@ public class CourseReportRepository {
      * @exception
      * @see
      */
-    public List<Map<String, Object>> findBySelfTraining(String courseTitle, String orgDepart, String orgTeam, String name, String status) {
-        query = " select *" +
+    public Page<Map<String, Object>> findBySelfTraining(String courseTitle, String orgDepart, String orgTeam, String name, String status, Pageable pageable) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+        pageable = PageRequest.of(page, 10);
+
+        String rowCountSql = "select count(*)" +
                 " from vw_course_self_report1" +
                 " where title like ? " +
                 " and org_depart like ? " +
@@ -51,19 +55,61 @@ public class CourseReportRepository {
                 " and name like ? " +
                 " and is_commit like ? ";
 
-        return jdbcTemplate.queryForList(query
+        int total = jdbcTemplate.queryForObject(rowCountSql, new Object[]{
+                        '%' + courseTitle + '%'
+                        , '%' + orgDepart + '%'
+                        , '%' + orgTeam + '%'
+                        , '%' + name + '%'
+                        , '%' + status + '%'}
+                , (rs, rowNum)-> rs.getInt(1));
+
+        query = " select *" +
+                " from vw_course_self_report1" +
+                " where title like ? " +
+                " and org_depart like ? " +
+                " and org_team like ? " +
+                " and name like ? " +
+                " and is_commit like ? "+
+                " order by from_date desc" +
+                " offset " + page + " * " + pageable.getPageSize() + " row" +
+                " fetch next " + pageable.getPageSize() + " row only";
+
+        List<Map<String, Object>> mapList = jdbcTemplate.queryForList(query
                 , new Object[]{
                         '%' + courseTitle + '%'
                         , '%' + orgDepart + '%'
                         , '%' + orgTeam + '%'
                         , '%' + name + '%'
                         , '%' + status + '%'
-                    });
+                });
+
+        return new PageImpl<>(mapList, pageable, total);
     }
 
-    public List<Map<String, Object>> findByParentUser(String courseTitle, String orgDepart, String orgTeam, String name, String status) {
+    public Page<Map<String, Object>> findByParentUser(String courseTitle, String orgDepart, String orgTeam, String name, String status, Pageable pageable) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+        pageable = PageRequest.of(page, 10);
 
         String parentUser = userService.getAccountByUserId(SessionUtil.getUserId()).getUserId();
+
+        String rowCountSql = "select count(*)" +
+                " from vw_course_self_report1" +
+                " where title like ? " +
+                " and org_depart like ? " +
+                " and org_team like ? " +
+                " and name like ? " +
+                " and name in(select a.name FROM account as a where a.parent_user_id = ?)" +
+                " and is_commit like ? ";
+
+        int total = jdbcTemplate.queryForObject(rowCountSql, new Object[]{
+                        '%' + courseTitle + '%'
+                        , '%' + orgDepart + '%'
+                        , '%' + orgTeam + '%'
+                        , '%' + name + '%'
+                        ,  parentUser
+                        , '%' + status + '%'}
+                , (rs, rowNum)-> rs.getInt(1));
 
         query = " select *" +
                 " from vw_course_self_report1" +
@@ -73,7 +119,8 @@ public class CourseReportRepository {
                 " and name like ? " +
                 " and name in(select a.name FROM account as a where a.parent_user_id = ?)" +
                 " and is_commit like ? ";
-        return jdbcTemplate.queryForList(query
+
+        List<Map<String, Object>> mapList = jdbcTemplate.queryForList(query
                 , new Object[]{
                         '%' + courseTitle + '%'
                         , '%' + orgDepart + '%'
@@ -82,6 +129,8 @@ public class CourseReportRepository {
                         ,  parentUser
                         , '%' + status + '%'
                 });
+
+        return new PageImpl<>(mapList, pageable, total);
     }
 
     public Page<CourseSimple> findCourseSimpleByPage(String typeId, String title, String active, String status, Pageable pageable) {

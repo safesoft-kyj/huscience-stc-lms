@@ -3,7 +3,11 @@ package com.dtnsm.lms.report;
 import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.service.CourseAccountService;
 import com.dtnsm.lms.util.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -19,6 +23,7 @@ import java.util.Map;
  * @sine 2020-04-28 오후 3:22
  * @desc Github : https://github.com/pub147
  **/
+@Slf4j
 @RequestMapping("/admin/report")
 @Controller
 public class JdbcReportController {
@@ -126,7 +131,8 @@ public class JdbcReportController {
             , @RequestParam(value = "orgDepart", defaultValue = "%") String ordDepart
             , @RequestParam(value = "orgTeam", defaultValue = "%") String orgTeam
             , @RequestParam(value = "status", defaultValue = "0") String status
-            , @RequestParam(value = "userName", defaultValue = "%") String userName) {
+            , @RequestParam(value = "userName", defaultValue = "%") String userName
+            , @PageableDefault Pageable pageable) {
 
         if(StringUtils.isEmpty(employees)) {
             pageInfo.setPageTitle("Self Training 교육현황");
@@ -139,14 +145,13 @@ public class JdbcReportController {
         }
         model.addAttribute(pageInfo);
 
-        // List
-        List<Map<String, Object>> mapList;
+        Page<Map<String, Object>> mapPage;
         if(StringUtils.isEmpty(employees))
-            mapList = courseReportRepository.findBySelfTraining(courseTitle, ordDepart, orgTeam, userName, status);
+            mapPage = courseReportRepository.findBySelfTraining(courseTitle, ordDepart, orgTeam, userName, status, pageable);
         else
-            mapList = courseReportRepository.findByParentUser(courseTitle, ordDepart, orgTeam, userName, status);
+            mapPage = courseReportRepository.findByParentUser(courseTitle, ordDepart, orgTeam, userName, status, pageable);
 
-        model.addAttribute("borders", mapList);
+        model.addAttribute("borders", mapPage);
 
         return "admin/report/course-self";
     }

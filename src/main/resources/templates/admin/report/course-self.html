@@ -17,6 +17,7 @@
         .content {max-width: 600px; margin: 0 auto; display: block; padding: 20px; }
         th{color: white;}
         th, td {text-align: center;}
+        nav {text-align: center;}
     </style>
 
 </th:block>
@@ -189,6 +190,38 @@
                             </table>
                         </div>
                     </div><!--switch End -->
+
+                    <nav>
+                        <ul class="pagination pagination-sm"
+                            th:with="start=${T(Math).floor(borders.number/10)*10 + 1}, last=(${start + 9 < borders.totalPages ? start + 9 : borders.totalPages})">
+                            <li class="page-item">
+                                <a class="page-link" th:href="@{/admin/report/course/self(page=1)}">
+                                    <span aria-hidden="true">First</span>
+                                </a>
+                            </li>
+                            <li th:class="${borders.first} ? 'disabled'">
+<!--                                <a class="page-link" th:href="@{/admin/report/course/self(page=${borders.number})}">-->
+                                <a class="page-link" th:href="@{/admin/report/course/self(page=${borders.number}, courseTitle=${param.courseTitle}, orgDepart=${param.orgDepart}, orgTeam=${param.orgTeam}, status=${param.status}, userName=${param.userName})}">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item"
+                                th:each="page: ${#numbers.sequence(start, last)}" th:class="${page == borders.number + 1} ? 'active'">
+                                <a class="page-link" th:href="@{/admin/report/course/self(page=${page}, courseTitle=${param.courseTitle}, orgDepart=${param.orgDepart}, orgTeam=${param.orgTeam}, status=${param.status}, userName=${param.userName})}" th:text="${page}"></a>
+                            </li>
+                            <li th:class="${borders.last} ? 'disabled'">
+                                <a class="page-link" th:href="@{/admin/report/course/self(page=${borders.number+2}, courseTitle=${param.courseTitle}, orgDepart=${param.orgDepart}, orgTeam=${param.orgTeam}, status=${param.status}, userName=${param.userName})}">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="page-link" th:href="@{/admin/report/course/self(page=${borders.totalPages}, courseTitle=${param.courseTitle}, orgDepart=${param.orgDepart}, orgTeam=${param.orgTeam}, status=${param.status}, userName=${param.userName})}">
+                                    <span aria-hidden="true">Last</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+
                 </div><!--panel-body End -->
             </div><!-- panel End -->
         </div><!-- Page content End -->
