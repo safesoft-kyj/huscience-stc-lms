@@ -18,7 +18,7 @@
         th{color: white;}
         th, td {text-align: center;}
 
-        #pagination-nav {text-align: right;}
+        #pagination-nav {text-align: center;}
         #search-form {text-align: right;}
     </style>
 
@@ -44,9 +44,11 @@
 
                     <form id="search-form" class="form-inline">
                         <div class="form-group">
-                            <label class="form-label">Search:
-                                <input type="text" name="userName" th:value="${param.userName}" class="form-control">
-                            </label>
+                            <select class="form-control">
+                                <option selected>사원명</option>
+                            </select>
+                            <input type="text" name="userName" th:value="${param.userName}" class="form-control">
+                            <input type="button" class="btn btn-primary" value="Search">
                         </div>
                     </form>
 
