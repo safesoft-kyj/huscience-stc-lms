@@ -17,7 +17,7 @@
         .content {max-width: 600px; margin: 0 auto; display: block; padding: 20px; }
         th{color: white;}
         th, td {text-align: center;}
-        nav {text-align: center;}
+        #pagination-nav {text-align: center;}
     </style>
 
 </th:block>
@@ -191,18 +191,17 @@
                         </div>
                     </div><!--switch End -->
 
-                    <nav>
+                    <nav id="pagination-nav">
                         <ul class="pagination pagination-sm"
                             th:with="start=${T(Math).floor(borders.number/10)*10 + 1}, last=(${start + 9 < borders.totalPages ? start + 9 : borders.totalPages})">
                             <li class="page-item">
-                                <a class="page-link" th:href="@{/admin/report/course/self(page=1)}">
+                                <a class="page-link" th:href="@{/admin/report/course/self(page=1, courseTitle=${param.courseTitle}, orgDepart=${param.orgDepart}, orgTeam=${param.orgTeam}, status=${param.status}, userName=${param.userName})}">
                                     <span aria-hidden="true">First</span>
                                 </a>
                             </li>
                             <li th:class="${borders.first} ? 'disabled'">
-<!--                                <a class="page-link" th:href="@{/admin/report/course/self(page=${borders.number})}">-->
                                 <a class="page-link" th:href="@{/admin/report/course/self(page=${borders.number}, courseTitle=${param.courseTitle}, orgDepart=${param.orgDepart}, orgTeam=${param.orgTeam}, status=${param.status}, userName=${param.userName})}">
-                                    <span aria-hidden="true">&laquo;</span>
+                                    <span aria-hidden="true">&lt;</span>
                                 </a>
                             </li>
                             <li class="page-item"
@@ -211,7 +210,7 @@
                             </li>
                             <li th:class="${borders.last} ? 'disabled'">
                                 <a class="page-link" th:href="@{/admin/report/course/self(page=${borders.number+2}, courseTitle=${param.courseTitle}, orgDepart=${param.orgDepart}, orgTeam=${param.orgTeam}, status=${param.status}, userName=${param.userName})}">
-                                    <span aria-hidden="true">&raquo;</span>
+                                    <span aria-hidden="true">&gt;</span>
                                 </a>
                             </li>
                             <li>
@@ -249,6 +248,8 @@
             ],
             paging: false
         } );
+
+        $("#demo-dt-basic_info").hide();
     </script>
 </th:block>
 

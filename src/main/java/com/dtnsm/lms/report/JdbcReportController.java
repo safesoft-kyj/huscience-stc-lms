@@ -58,9 +58,10 @@ public class JdbcReportController {
     }
 
     @GetMapping({"/training/detail", "/training/detail/{userId}"})
-    public String trainingDetail(@RequestParam(value = "userId", defaultValue = "%", required = false) String userId, Model model) {
+    public String trainingDetail(@RequestParam(value = "userName", defaultValue = "%", required = false) String userName
+            , @PageableDefault Pageable pageable, Model model) {
 
-        List<Map<String, Object>> logList = trainingLogReportRepository.findLogDetailByUser(userId);
+        Page<Map<String, Object>> logList = trainingLogReportRepository.findLogDetailByUser(userName, pageable);
         pageInfo.setPageTitle("Training Log");
 
         model.addAttribute(pageInfo);
@@ -83,9 +84,10 @@ public class JdbcReportController {
     }
 
     @GetMapping({"/certificate/detail", "/certificate/detail/{userId}"})
-    public String certificateDetail(@RequestParam(value = "userId", defaultValue = "%", required = false) String userId, Model model) {
+    public String certificateDetail(@RequestParam(value = "userName", defaultValue = "%", required = false) String userName
+            , @PageableDefault Pageable pageable, Model model) {
 
-        List<Map<String, Object>> logList = trainingLogReportRepository.findCertDetailByUser(userId);
+        Page<Map<String, Object>> logList = trainingLogReportRepository.findCertDetailByUser(userName, pageable);
         pageInfo.setPageTitle("수료증");
 
         model.addAttribute(pageInfo);

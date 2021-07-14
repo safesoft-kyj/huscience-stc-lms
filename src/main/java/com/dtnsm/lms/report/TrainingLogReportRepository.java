@@ -2,6 +2,10 @@ package com.dtnsm.lms.report;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -42,9 +46,27 @@ public class TrainingLogReportRepository {
      * @exception
      * @see
      */
-    public List<Map<String, Object>> findLogDetailByUser(String userId) {
-        query = "select * from vw_training_log_detail where user_id like ? order by org_depart, org_team, user_id";
-        return jdbcTemplate.queryForList(query, new Object[]{userId + '%'});
+    public Page<Map<String, Object>> findLogDetailByUser(String userName, Pageable pageable) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+        pageable = PageRequest.of(page, 10);
+
+        String rowCountSql = "select count(*)"
+                +" from vw_training_log_detail"
+                +" where name like ?";
+
+        int total = jdbcTemplate.queryForObject(rowCountSql, new Object[]{'%' + userName + '%'}, (rs, rowNum)-> rs.getInt(1));
+
+        query = "select *"
+                +" from vw_training_log_detail"
+                +" where name like ?"
+                +" order by org_depart, org_team, user_id"
+                +" offset " + page + " * " + pageable.getPageSize() + " row"
+                +" fetch next " + pageable.getPageSize() + " row only";
+
+        List<Map<String, Object>> mapList = jdbcTemplate.queryForList(query, new Object[]{ '%' + userName + '%'});
+
+        return new PageImpl<>(mapList, pageable, total);
     }
 
     /**
@@ -66,9 +88,25 @@ public class TrainingLogReportRepository {
      * @exception
      * @see
      */
-    public List<Map<String, Object>> findCertDetailByUser(String userId) {
-        query = "select * from vw_certificate_file_detail where user_id like ? order by org_depart, org_team, user_id";
-        return jdbcTemplate.queryForList(query, new Object[]{userId + '%'});
+    public Page<Map<String, Object>> findCertDetailByUser(String userName, Pageable pageable) {
+
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+        pageable = PageRequest.of(page, 10);
+
+        String rowCountSql = "select count(*) from vw_certificate_file_detail where name like ? ";
+
+        int total = jdbcTemplate.queryForObject(rowCountSql, new Object[]{'%' + userName + '%'}
+                , (rs, rowNum)-> rs.getInt(1));
+
+        query = "select * from vw_certificate_file_detail"
+                + " where name like ?"
+                + " order by org_depart, org_team, user_id"
+                + " offset " + page + " * " + pageable.getPageSize() + " row" +
+                " fetch next " + pageable.getPageSize() + " row only";
+
+        List<Map<String, Object>> mapList = jdbcTemplate.queryForList(query, new Object[]{ '%' + userName + '%'});
+
+        return new PageImpl<>(mapList, pageable, total);
     }
 
     /**

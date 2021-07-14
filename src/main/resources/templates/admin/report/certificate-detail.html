@@ -17,6 +17,9 @@
         .content {max-width: 600px; margin: 0 auto; display: block; padding: 20px; }
         th{color: white;}
         th, td {text-align: center;}
+
+        #pagination-nav {text-align: right;}
+        #search-form {text-align: right;}
     </style>
 
 </th:block>
@@ -38,6 +41,15 @@
             <!--===================================================-->
             <div class="panel">
                 <div class="panel-body">
+
+                    <form id="search-form" class="form-inline">
+                        <div class="form-group">
+                            <label class="form-label">Search:
+                                <input type="text" name="userName" th:value="${param.userName}" class="form-control">
+                            </label>
+                        </div>
+                    </form>
+
                     <div th:switch="${borders}">
                         <div class="table-responsive">
                             <table id="demo-dt-basic" class="table table-bordered" cellspacing="0" width="100%">
@@ -50,14 +62,14 @@
                                     <th class="col-sm-2" style="vertical-align: middle">작성일</th>
                                 </tr>
                                 </thead>
-                                    <h2 th:case="0">
+                                    <th:block th:case="0">
                                         <tr>
                                             <td class="text-center" colspan="5">
                                                 <h4 class="text-warning">Training Log 가 존재하지 않습니다.</h4>
                                             </td>
                                         </tr>
-                                    </h2>
-                                    <div th:case="*">
+                                    </th:block>
+                                    <th:block th:case="*">
                                         <tbody>
                                         <tr th:each="log, index : ${borders}">
                                             <td th:text="${index.count}"></td>
@@ -75,10 +87,41 @@
                                             </td>
                                         </tr>
                                         </tbody>
-                                    </div>
+                                    </th:block>
                             </table>
                         </div>
                     </div><!--switch End -->
+
+                    <nav id="pagination-nav">
+                        <ul class="pagination pagination-sm"
+                            th:with="start=${T(Math).floor(borders.number/10)*10 + 1}, last=(${start + 9 < borders.totalPages ? start + 9 : borders.totalPages})">
+                            <li class="page-item">
+                                <a class="page-link" th:href="@{/admin/report/certificate/detail(page=1,userName=${param.userName})}">
+                                    <span aria-hidden="true">First</span>
+                                </a>
+                            </li>
+                            <li th:class="${borders.first} ? 'disabled'">
+                                <a class="page-link" th:href="@{/admin/report/certificate/detail(page=${borders.number},userName=${param.userName})}">
+                                    <span aria-hidden="true">&lt;</span>
+                                </a>
+                            </li>
+                            <li class="page-item"
+                                th:each="page: ${#numbers.sequence(start, last)}" th:class="${page == borders.number + 1} ? 'active'">
+                                <a class="page-link" th:href="@{/admin/report/certificate/detail(page=${page},userName=${param.userName})}" th:text="${page}"></a>
+                            </li>
+                            <li th:class="${borders.last} ? 'disabled'">
+                                <a class="page-link" th:href="@{/admin/report/certificate/detail(page=${borders.number+2},userName=${param.userName})}">
+                                    <span aria-hidden="true">&gt;</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="page-link" th:href="@{/admin/report/certificate/detail(page=${borders.totalPages},userName=${param.userName})}">
+                                    <span aria-hidden="true">Last</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+
                 </div><!--panel-body End -->
             </div><!-- panel End -->
         </div><!-- Page content End -->
@@ -91,6 +134,9 @@
         $('#demo-dt-basic').dataTable( {
             "paging": false
         } );
+
+        $("#demo-dt-basic_info").hide();
+        $("#demo-dt-basic_filter").hide();
     </script>
 </th:block>
 
