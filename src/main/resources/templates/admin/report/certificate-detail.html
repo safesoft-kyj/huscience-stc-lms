@@ -42,13 +42,13 @@
             <div class="panel">
                 <div class="panel-body">
 
-                    <form id="search-form" class="form-inline">
+                    <form id="search-form" class="form-inline" th:action="@{/admin/report/certificate/detail}">
                         <div class="form-group">
                             <select class="form-control">
                                 <option selected>사원명</option>
                             </select>
                             <input type="text" name="userName" th:value="${param.userName}" class="form-control">
-                            <input type="button" class="btn btn-primary" value="Search">
+                            <input type="submit" class="btn btn-primary" value="Search">
                         </div>
                     </form>
 
