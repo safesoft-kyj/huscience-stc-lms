@@ -47,14 +47,14 @@
                                     <td>
                                         <select id="selectEmpStatus" class="form-select form-control" th:name="empStatus">
 <!--                                            <option value="2" th:selected="${#strings.equalsIgnoreCase(param.empStatus, '2')}">전체</option>-->
-                                            <option>=== 재직여부 ===</option>
+<!--                                            <option>=== 재직여부 ===</option>-->
                                             <option value="1" th:selected="${#strings.equalsIgnoreCase(param.empStatus, '1')}" selected>재직</option>
                                             <option value="0" th:selected="${#strings.equalsIgnoreCase(param.empStatus, '0')}">퇴사</option>
                                         </select>
                                     </td>
                                     <td>
                                         <select id="selectEmpId" class="form-select form-control" th:name="empId">
-                                            <option value="">=== 재직여부를 먼저 선택하세요 ===</option>
+                                            <option value="">=== 사용자를 선택해 해주세요 ===</option>
                                             <option class="opPresent" th:each="emp : ${empPresentList}" th:value="${emp.userId}" th:text="${emp.name}" th:selected="${#strings.equalsIgnoreCase(param.empId, emp.userId)}"></option>
                                             <option class="opRetire" th:each="emp : ${empRetireList}" th:value="${emp.userId}" th:text="${emp.name}" th:selected="${#strings.equalsIgnoreCase(param.empId, emp.userId)}"></option>
                                         </select>
