@@ -264,7 +264,7 @@
                                             <th:block th:case="${T(com.dtnsm.lms.domain.constant.CourseStepStatus).periodEnd}">
                                                 <th:block th:if="${#strings.equalsIgnoreCase(courseAccount.getCourse().getCourseMaster().getId(), 'BC0101')}">
                                                     <th:block th:if="${#strings.equalsIgnoreCase(courseAccount.getCourse().getIsAlways(), '1')}">
-                                                        <a class="btn btn-info" th:onclick="|javascript:executeCoursePeriodExtend('${courseAccount.getId()}')|"><i class="demo-pli-inbox-into"></i> 연장</a>
+                                                        <a class="btn btn-pink" th:onclick="|javascript:executeCoursePeriodExtend('${courseAccount.getId()}')|"><i class="ion-plus-circled"></i> 연장</a>
                                                     </th:block>
                                                 </th:block>
                                             </th:block>
