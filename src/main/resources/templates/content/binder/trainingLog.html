@@ -97,7 +97,7 @@
                         <a href="/binder">Training Record Review History</a>
                     </li>
                     <li>
-                        <a href="/binder/cv">Curriculum Vitae</a>
+                        <a href="/binder/cv" th:text="${@environment.getProperty('binder.cv')}">Curriculum Vitae</a>
                     </li>
                     <li>
                         <a href="/binder/jd" th:text="${@environment.getProperty('binder.jd')}">Job Description</a>

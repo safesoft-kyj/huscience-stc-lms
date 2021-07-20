@@ -62,7 +62,9 @@
                 <li><a data-th-href="@{/info/totalMonth}">교육월간일정</a></li>
                 <li><a data-th-href="@{/info/year/{sctype}(sctype=${T(com.dtnsm.lms.domain.constant.ScheduleType).CALENDAR})}">교육연간일정</a></li>
                 <li class="list-divider"></li>
-                <li><a data-th-href="@{/info/request}">교육신청</a></li>
+                <th:block th:unless="${#authentication.getPrincipal().getJobTitle().isEmpty()}">
+                    <li><a data-th-href="@{/info/request}">교육신청</a></li>
+                </th:block>
 
             </ul>
         </li>

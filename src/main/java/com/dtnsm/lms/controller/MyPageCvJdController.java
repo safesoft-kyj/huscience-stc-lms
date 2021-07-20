@@ -113,7 +113,7 @@ public class MyPageCvJdController {
 
                 return "content/mypage/cv/current";
             } else {
-                return "redirect:/mypage/cv/" + currentCV.get().getId() +"/preview";
+                return "redirect:/mypage/cv/" + currentCV.get().getId() + "/preview";
             }
         } else {
             return "redirect:/mypage/cv/edit";
@@ -344,7 +344,7 @@ public class MyPageCvJdController {
 
 //        log.debug("@CV.id : {}", cv.getId());
         if(isAdd) {
-            String target = ServletRequestUtils.getStringParameter(request,"add");
+            String target = ServletRequestUtils.getStringParameter(request, "add");
             int index = -1;
             if(target.indexOf(":") != -1) {
                 String[] s = target.split(":");
@@ -522,14 +522,13 @@ public class MyPageCvJdController {
             }
 
 //            if (status != CurriculumVitaeStatus.TEMP) {
-                Optional<Signature> optionalSignature = signatureRepository.findById(SessionUtil.getUserId());
-                cv.setBase64sign(optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "");
+            Optional<Signature> optionalSignature = signatureRepository.findById(SessionUtil.getUserId());
+            cv.setBase64sign(optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : "");
 //                cv.setSignDate(new Date());
 //            }
 
             CurriculumVitae savedCV = curriculumVitaeService.save(cv);
             log.info("=> UserId : {}, CV가 저장 되었습니다. CV ID : {}", SessionUtil.getUserId(), savedCV.getId());
-
 
 
             sessionStatus.setComplete();
@@ -553,8 +552,8 @@ public class MyPageCvJdController {
         CurriculumVitae cv = curriculumVitaeRepository.findById(id).get();
 
         CV dto = curriculumVitaeService.toCV(cv, false);
-            String outputFileName = SessionUtil.getUserId() + "_CV_"+id+ ".pdf";
-            Files.createDirectories(Paths.get(prop.getBinderDir()).toAbsolutePath().normalize());
+        String outputFileName = SessionUtil.getUserId() + "_CV_" + id + ".pdf";
+        Files.createDirectories(Paths.get(prop.getBinderDir()).toAbsolutePath().normalize());
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         boolean result = curriculumVitaeReportService.assembleDocument(dto, os);
         log.info("CV Id : {}, Generate Result : {}", id, result);
@@ -645,7 +644,6 @@ public class MyPageCvJdController {
     }
 
 
-
     protected Optional<CurriculumVitae> getCV(Integer id) {
         QCurriculumVitae qCurriculumVitae = QCurriculumVitae.curriculumVitae;
         BooleanBuilder builder = new BooleanBuilder();
@@ -654,6 +652,7 @@ public class MyPageCvJdController {
         builder.and(qCurriculumVitae.id.eq(id));
         return curriculumVitaeRepository.findOne(builder);
     }
+
     protected Optional<CurriculumVitae> getCV(String userId, CurriculumVitaeStatus status) {
         QCurriculumVitae qCurriculumVitae = QCurriculumVitae.curriculumVitae;
         BooleanBuilder builder = new BooleanBuilder();
@@ -661,6 +660,7 @@ public class MyPageCvJdController {
         builder.and(qCurriculumVitae.status.eq(status));
         return curriculumVitaeRepository.findOne(builder);
     }
+
     protected Optional<CurriculumVitae> latestCV(String userId) {
         QCurriculumVitae qCurriculumVitae = QCurriculumVitae.curriculumVitae;
         BooleanBuilder builder = new BooleanBuilder();
@@ -673,6 +673,7 @@ public class MyPageCvJdController {
             return Optional.empty();
         }
     }
+
     protected long countCV(String userId, CurriculumVitaeStatus status) {
         QCurriculumVitae qCurriculumVitae = QCurriculumVitae.curriculumVitae;
         BooleanBuilder builder = new BooleanBuilder();
@@ -691,7 +692,7 @@ public class MyPageCvJdController {
     @GetMapping("/jd/{status}")
     public String jd(@PathVariable(value = "status") String stringStatus, Model model) {
         pageInfo.setPageId("m-mypage-jd");
-        pageInfo.setPageTitle(mypageJd);
+        pageInfo.setPageTitle("Job Description");
 
         QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
         BooleanBuilder builder = new BooleanBuilder();

@@ -51,15 +51,15 @@ function dailyMissionTimer() {
         //     });
         // }
 
-        if (minutes > 0 && seconds == 0) {
-            $.ajax({
-                url: '/ajax/keep-session',
-                method: 'get',
-                data: {r: Math.random()},
-                success: function (res) {
-                }
-            });
-        }
+        // if (minutes > 0 && seconds == 0) {
+        //     $.ajax({
+        //         url: '/ajax/keep-session',
+        //         method: 'get',
+        //         data: {r: Math.random()},
+        //         success: function (res) {
+        //         }
+        //     });
+        // }
 
         hours = hours < 10 ? "0" + hours : hours;
         minutes = minutes < 10 ? "0" + minutes : minutes;
@@ -133,8 +133,8 @@ function initAjax() { // 브라우저에 따른 AjaxObject 인스턴스 분기 �
     return xmlhttp;
 }
 
-$(document).ready(function () {
-    $(document).on("click", "button[name='continue-session-btn']", function (e) {
-        refreshTimer();
-    });
-});
+// $(document).ready(function () {
+//     $(document).on("click", "button[name='continue-session-btn']", function (e) {
+//         refreshTimer();
+//     });
+// });

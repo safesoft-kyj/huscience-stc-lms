@@ -456,6 +456,7 @@ public class ApprovalController {
             else if(saveType.equalsIgnoreCase("tempSave"))
                 courseAccount.setReportStatus("8"); // 교육과정의 보고서 상태를 임시저장으로 변경한다.
 
+            // 상태를 변경하고 저장한다.
             document.setCourseAccount(courseAccountService.save(courseAccount));
         }
 

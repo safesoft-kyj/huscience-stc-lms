@@ -11,5 +11,5 @@ public class CVFindParam {
     private String indication;
     private String name;
     private List<String> usernameList;
-    private int empStatus; // 0: 퇴사, 1:재직, 2: 전체검색
+    private int empStatus; // 0:퇴사, 1:재직, 2:전체검색
 }

@@ -34,7 +34,7 @@ public class CourseAccountRestController {
                 && courseAccount.getCourse().getIsAlways().equals("1")
                 && courseAccount.getPeriodExtendCount() < 1) {     // 상시교육일 경우
 //            courseAccount.setFromDate(DateUtil.getTodayString());
-            courseAccount.setToDate(DateUtil.getStringDateAddDay(courseAccount.getToDate(), courseAccount.getCourse().getDay()));
+            courseAccount.setToDate(DateUtil.getStringDateAddDay(DateUtil.getTodayString(), courseAccount.getCourse().getDay()));
             courseAccount.setPeriodExtendCount(courseAccount.getPeriodExtendCount() + 1);
             courseAccount.setCourseStatus(CourseStepStatus.process);
             courseAccountService.save(courseAccount);
@@ -58,11 +58,11 @@ public class CourseAccountRestController {
 
         CourseAccount courseAccount = courseAccountService.getById(docId);
 
-        // self 상시교육인 경우  연장 가능
+        // self 상시교육인 경우 연장 가능
         if (courseAccount.getCourse().getCourseMaster().getId().equals("BC0101")
                 && courseAccount.getCourse().getIsAlways().equals("1")) {     // 상시교육일 경우
 //            courseAccount.setFromDate(DateUtil.getTodayString());
-            courseAccount.setToDate(DateUtil.getStringDateAddDay(courseAccount.getToDate(), courseAccount.getCourse().getDay()));
+            courseAccount.setToDate(DateUtil.getStringDateAddDay(DateUtil.getTodayString(), courseAccount.getCourse().getDay()));
             courseAccount.setPeriodExtendCount(courseAccount.getPeriodExtendCount() + 1);
             courseAccount.setCourseStatus(CourseStepStatus.process);
             courseAccountService.save(courseAccount);
@@ -135,8 +135,7 @@ public class CourseAccountRestController {
         if (courseAccount == null) {
             if (!courseAccountService.isCourseRequestCapacity(courseId, userId))
                 return 11;
-        }
-        else {
+        } else {
             // 이미 신청정보가 있는 경우는 리턴한다.
             if (courseAccount.getRequestType().equals("1"))
                 return 4;

@@ -772,35 +772,34 @@ public class ApprovalCourseProcessService {
                 // 교육 과정 생성
                 createUserCourse(saveCourseAccount);
             }
-            else {  // 상시교육은 신청 시점에 교육일을 생성한다.
-                // 상시
-                if (course.getIsAlways().equals("1")) {     // 상시교육일 경우
 
-                    SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
-                    Date inDate = null;
-                    Date courseDate = null;
-                    try {
-                        inDate = dateformat.parse(account.getIndate());
-                        courseDate = dateformat.parse(course.getFromDate());
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+            // 상시교육은 신청 시점에 교육일을 생성한다.
+            if (course.getIsAlways().equals("1")) {     // 상시교육일 경우
 
-                    int nCompare = inDate.compareTo(courseDate);
-                    if(nCompare >= 0)   // 입사일 >= 교육시작일
-                    {
-                        fromDate = DateUtil.getTodayString();
-                        toDate = DateUtil.getStringDateAddDay(fromDate, course.getDay());
-                    }
-                    else
-                    {
-                        fromDate = course.getFromDate();
-                        toDate = DateUtil.getStringDateAddDay(fromDate, course.getDay());
-                    }
-
-                    saveCourseAccount.setFromDate(fromDate);
-                    saveCourseAccount.setToDate(toDate);
+                SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+                Date inDate = null;
+                Date courseDate = null;
+                try {
+                    inDate = dateformat.parse(account.getIndate());
+                    courseDate = dateformat.parse(course.getFromDate());
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
+
+                int nCompare = inDate.compareTo(courseDate);
+                if(nCompare >= 0)   // 입사일 >= 교육시작일
+                {
+                    fromDate = DateUtil.getTodayString();
+                    toDate = DateUtil.getStringDateAddDay(fromDate, course.getDay());
+                }
+                else
+                {
+                    fromDate = course.getFromDate();
+                    toDate = DateUtil.getStringDateAddDay(fromDate, course.getDay());
+                }
+
+                saveCourseAccount.setFromDate(fromDate);
+                saveCourseAccount.setToDate(toDate);
             }
 
             saveCourseAccount.setFnWdate(DateUtil.getTodayDate());
