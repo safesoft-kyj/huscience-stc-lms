@@ -41,7 +41,7 @@
                 <div class="panel-body">
                     <hr class="table-head">
                     <table id="customer-list-page1" class="table" cellspacing="0" width="100%">
-                        <form name="testForm" id="testForm" th:action="@{/admin/report/course/self}" method="post">
+                        <form name="testForm" id="testForm" method="post">
                             <tbody>
                             <tr>
                                 <td class="text-right col-lg-2" style="vertical-align: middle; background: #FAFAFA;">상태</td>
@@ -82,20 +82,24 @@
                             <tr>
                                 <td colspan="4" class="text-center">
                                     <br>
-                                    <button type="submit" class="btn btn-lg btn-info">
+                                    <button type="submit" class="btn btn-lg btn-info" onclick="javascript: form.action='/admin/report/course/self';">
                                         <div class="demo-icon">
                                             <i class="fa fa-search"></i> <span th:text="#{label.search}">fa fa-search</span>
                                         </div>
                                     </button>
                                     <a class="btn btn-lg btn-default" th:href="@{/admin/report/course/self}" th:text="#{label.init}">초기화</a>
+                                    <button type="submit" class="btn btn-lg btn-primary" onclick="javascript: form.action='/admin/report/excel';">
+                                        <div class="demo-icon">
+                                            <i class="fa fa-external-link"></i> <span th:text="Export"></span>
+                                        </div>
+                                    </button>
                                 </td>
                             </tr>
-
                             </tbody>
                         </form>
                     </table>
 
-
+                    <div>Total : <span th:text="${totalSize}"></span></div>
                     <div th:switch="${borders}">
                         <div class="table-responsive">
                             <table id="demo-dt-basic" class="table" cellspacing="0" width="100%">
@@ -232,23 +236,7 @@
 
     <script th:src="@{/default/plugins/html2canvas/bluebird.min.js}"></script>
 
-    <script type = "text/javascript" src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
-    <script type = "text/javascript" src = "https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-
-    <script src="https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js"></script>
-
     <script>
-        $('#demo-dt-basic').dataTable( {
-            dom: 'Bfrtip',
-            buttons: [
-                'excel'
-            ],
-            paging: false
-        } );
-
         $("#demo-dt-basic_info").hide();
     </script>
 </th:block>

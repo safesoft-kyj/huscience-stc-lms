@@ -1,12 +1,11 @@
 package com.dtnsm.lms.report;
 
 import com.dtnsm.lms.auth.UserServiceImpl;
-import com.dtnsm.lms.domain.Account;
-import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.domain.DTO.CourseAccountSimple;
 import com.dtnsm.lms.domain.DTO.CourseSimple;
 import com.dtnsm.lms.domain.constant.CourseStepStatus;
 import com.dtnsm.lms.util.SessionUtil;
+import com.dtnsm.lms.domain.DTO.SelfTrainingList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -238,6 +237,74 @@ public class CourseReportRepository {
                         .build()
         );
         return courseAccounts;
+    }
+
+
+    public List<SelfTrainingList> findBySelfTrainingAll(String courseTitle, String orgDepart, String orgTeam, String name, String status) {
+
+        query = " select *" +
+                " from vw_course_self_report1" +
+                " where title like ? " +
+                " and org_depart like ? " +
+                " and org_team like ? " +
+                " and name like ? " +
+                " and is_commit like ? ";
+
+        List<SelfTrainingList> selfTrainingLists = jdbcTemplate.query(query
+                , new Object[]{
+                        '%' + courseTitle + '%'
+                        , '%' + orgDepart + '%'
+                        , '%' + orgTeam + '%'
+                        , '%' + name + '%'
+                        , '%' + status + '%'}, (rs, rowNum) -> SelfTrainingList.builder()
+                        .title(rs.getString("title"))
+                        .orgDepart(rs.getString("org_depart"))
+                        .orgTeam(rs.getString("org_team"))
+                        .name(rs.getString("name"))
+                        .fromDate(rs.getString("from_date"))
+                        .toDate(rs.getString("to_date"))
+                        .completeDate(rs.getString("log_apply_date"))
+                        .courseStatus(CourseStepStatus.valueOf(rs.getString("course_status")).getLabel())
+                        .isCommit(rs.getString("is_commit"))
+                        .build()
+        );
+        return selfTrainingLists;
+    }
+
+
+    public List<SelfTrainingList> findByParentUserAll(String courseTitle, String orgDepart, String orgTeam, String name, String status) {
+
+        String parentUser = userService.getAccountByUserId(SessionUtil.getUserId()).getUserId();
+
+        query = " select *" +
+                " from vw_course_self_report1" +
+                " where title like ? " +
+                " and org_depart like ? " +
+                " and org_team like ? " +
+                " and name like ? " +
+                " and name in(select a.name FROM account as a where a.parent_user_id = ?)" +
+                " and is_commit like ? ";
+
+        List<SelfTrainingList> selfTrainingLists = jdbcTemplate.query(query
+                , new Object[]{
+                        '%' + courseTitle + '%'
+                        , '%' + orgDepart + '%'
+                        , '%' + orgTeam + '%'
+                        , '%' + name + '%'
+                        ,  parentUser
+                        , '%' + status + '%'}, (rs, rowNum) -> SelfTrainingList.builder()
+                        .title(rs.getString("title"))
+                        .orgDepart(rs.getString("org_depart"))
+                        .orgTeam(rs.getString("org_team"))
+                        .name(rs.getString("name"))
+                        .fromDate(rs.getString("from_date"))
+                        .toDate(rs.getString("to_date"))
+                        .completeDate(rs.getString("log_apply_date"))
+                        .courseStatus(CourseStepStatus.valueOf(rs.getString("course_status")).getLabel())
+                        .isCommit(rs.getString("is_commit"))
+                        .build()
+        );
+        return selfTrainingLists;
     }
 }
 

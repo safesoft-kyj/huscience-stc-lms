@@ -2,18 +2,25 @@ package com.dtnsm.lms.report;
 
 import com.dtnsm.lms.domain.CourseAccount;
 import com.dtnsm.lms.service.CourseAccountService;
+import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.PageInfo;
+import com.dtnsm.lms.xdocreport.CurriculumVitaeReportService;
+import com.dtnsm.lms.domain.DTO.SelfTrainingList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.jxls.common.Context;
+import org.jxls.util.JxlsHelper;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -154,7 +161,57 @@ public class JdbcReportController {
             mapPage = courseReportRepository.findByParentUser(courseTitle, ordDepart, orgTeam, userName, status, pageable);
 
         model.addAttribute("borders", mapPage);
+        model.addAttribute("totalSize", mapPage.getTotalElements());
 
         return "admin/report/course-self";
+    }
+
+    @RequestMapping("/excel")
+    @Transactional(readOnly = true)
+    public void downloadSelfTrainingList(Model model
+            , @PathVariable(value = "employees", required = false) String employees
+            , @RequestParam(value = "courseTitle", defaultValue = "%") String courseTitle
+            , @RequestParam(value = "orgDepart", defaultValue = "%") String ordDepart
+            , @RequestParam(value = "orgTeam", defaultValue = "%") String orgTeam
+            , @RequestParam(value = "status", defaultValue = "0") String status
+            , @RequestParam(value = "userName", defaultValue = "%") String userName
+            , HttpServletResponse response) throws Exception {
+
+       List<SelfTrainingList> selfTrainingList;
+        if(StringUtils.isEmpty(employees))
+            selfTrainingList = courseReportRepository.findBySelfTrainingAll(courseTitle, ordDepart, orgTeam, userName, status);
+        else
+            selfTrainingList = courseReportRepository.findByParentUserAll(courseTitle, ordDepart, orgTeam, userName, status);
+
+        for(SelfTrainingList self : selfTrainingList) {
+            // 부서
+            if(self.getOrgTeam().isEmpty())
+                self.setDepartment(self.getOrgDepart());
+            else
+                self.setDepartment(self.getOrgDepart() + "/" + self.getOrgTeam());
+
+            // 교육기간
+            if(self.getFromDate().equals(self.getToDate()))
+                self.setPeriod(self.getFromDate());
+            else
+                self.setPeriod(self.getFromDate() + " ~ " + self.getToDate());
+
+            // commit
+            if(self.getIsCommit().equals("0"))
+                self.setCommitStatus("진행중");
+            else if(self.getIsCommit().equals("1"))
+                self.setCommitStatus("완료");
+        }
+
+        //참조 파일 찾기
+        InputStream is = CurriculumVitaeReportService.class.getResourceAsStream("self_training_list.xlsx");
+        Context context = new Context(); //참조 파일에 넣을 Context 생성
+        context.putVar("selflist", selfTrainingList); //Context 안에 참조 파일에서 사용할 리스트 선언
+
+        //파일이름 지정 및 저장
+        response.setHeader("Content-Disposition", "attachment; filename=\"Self-Training List(" + DateUtil.getTodayString() + ").xlsx\"");
+
+        //JxlsHelper를 통해서 inputstream 내용에 context 반영하여 outputstream에 지정.
+        JxlsHelper.getInstance().processTemplate(is, response.getOutputStream(), context);
     }
 }

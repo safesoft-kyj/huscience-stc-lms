@@ -133,6 +133,7 @@ public class CourseAccountRestController {
 
         // 교육과정에 내가 지정되었거나 신청한 내역이 없으면
         if (courseAccount == null) {
+            // 교육정원 관련 신청할 수 있는지 체크(신청할 수 있는 경우 true 반환)
             if (!courseAccountService.isCourseRequestCapacity(courseId, userId))
                 return 11;
         } else {
