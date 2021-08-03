@@ -129,7 +129,6 @@ public class EmployeeController {
 
         CurriculumVitaeStatus status = CurriculumVitaeStatus.valueOf(stringStatus.toUpperCase());
 
-
         Optional<List<Account>> optionalAccounts = userService.findByParentUserId(SessionUtil.getUserId());
         if(optionalAccounts.isPresent()) {
             model.addAttribute("users", optionalAccounts.get());
@@ -230,41 +229,64 @@ public class EmployeeController {
         trainingRecordReview.setSignature(optionalSignature.isPresent() ? optionalSignature.get().getBase64signature() : null);
 
         TrainingRecordReview savedTrainingRecordReview = trainingRecordReviewRepository.save(trainingRecordReview);
+        Account user = savedTrainingRecordReview.getAccount();
 
-
-        if(!ObjectUtils.isEmpty(trainingRecordReview.getCurriculumVitae()) && status == TrainingRecordReviewStatus.REVIEWED) {
+        // CV
+        if(!ObjectUtils.isEmpty(trainingRecordReview.getCurriculumVitae())) {
             CurriculumVitae cv = trainingRecordReview.getCurriculumVitae();
-            cv.setReviewed(true);
-            cv.setReviewedDate(new Date());
+            if(status == TrainingRecordReviewStatus.REVIEWED){
+                cv.setReviewed(true);
+                cv.setReviewedDate(new Date());
+            } else{
+                cv.setReviewed(false);
+            }
             curriculumVitaeRepository.save(cv);
         }
 
-        if(!ObjectUtils.isEmpty(trainingRecordReview.getTrainingRecordReviewJdList()) && status == TrainingRecordReviewStatus.REVIEWED) {
-            for(TrainingRecordReviewJd jd : trainingRecordReview.getTrainingRecordReviewJdList()) {
-                UserJobDescription userJobDescription = jd.getUserJobDescription();
-                userJobDescription.setReviewed(true);
-
-                userJobDescriptionRepository.save(userJobDescription);
-            }
-        }
-
+        // TR
         if(!ObjectUtils.isEmpty(trainingRecordReview.getTrainingRecord())) {
             TrainingRecord trainingRecord = trainingRecordReview.getTrainingRecord();
             if(status == TrainingRecordReviewStatus.REVIEWED) {
                 trainingRecord.setStatus(TrainingRecordStatus.REVIEWED);
             } else {
-                //Training Record 상태도 Rejected 상태로 변경 되도록 수정
-                trainingRecord.setStatus(TrainingRecordStatus.REJECTED);
+                //trainingRecord.setStatus(TrainingRecordStatus.REJECTED);
+                trainingRecord.setStatus(TrainingRecordStatus.PUBLISHED);
             }
 
             trainingRecordRepository.save(trainingRecord);
         }
 
-        Account user = savedTrainingRecordReview.getAccount();
+        // JD
+        if(status == TrainingRecordReviewStatus.REVIEWED){
+            // TrainingRecordReviewJd 생성
+            Iterable<UserJobDescription> jobDescriptions = getJobDescriptionList(user.getUserId(), JobDescriptionStatus.APPROVED);
+            if(!ObjectUtils.isEmpty(jobDescriptions)) {
+
+                List<UserJobDescription> jobDescriptionList = StreamSupport.stream(jobDescriptions.spliterator(), false)
+                        .filter(jd -> !jd.isReviewed())
+                        .collect(Collectors.toList());
+
+                for(UserJobDescription userJobDescription : jobDescriptionList) {
+                    Optional<TrainingRecordReviewJd> optionalTrainingRecordReviewJd = getTrainingRecordReviewJd(userJobDescription.getId());
+                    if(optionalTrainingRecordReviewJd.isPresent() == false) {
+                        TrainingRecordReviewJd trainingRecordReviewJd = new TrainingRecordReviewJd();
+                        trainingRecordReviewJd.setTrainingRecordReview(savedTrainingRecordReview);
+                        trainingRecordReviewJd.setUserJobDescription(userJobDescription);
+                        trainingRecordReviewJdRepository.save(trainingRecordReviewJd);
+                    }
+                }
+
+            }
+            
+            // UserJobDescription 상태 변경
+            for(TrainingRecordReviewJd jd : trainingRecordReview.getTrainingRecordReviewJdList()) {
+                UserJobDescription userJobDescription = jd.getUserJobDescription();
+                userJobDescription.setReviewed(true);
+                userJobDescriptionRepository.save(userJobDescription);
+            }
+        }
 
 //        log.info("사용자에게 Binder 검토 : {}, 메일 전송 : {}", status.name(), user.getEmail());
-//        Mail mail = new Mail();
-//        mail.setEmail(user.getEmail());
         Context context = new Context();
         context.setVariable("empName", user.getName());
         if(status == TrainingRecordReviewStatus.REVIEWED) {
@@ -491,6 +513,13 @@ public class EmployeeController {
 //        builder.and(qUserJobDescription.reviewed.eq(false));
 
         return userJobDescriptionRepository.findAll(builder, qUserJobDescription.id.desc());
+    }
+
+    private Optional<TrainingRecordReviewJd> getTrainingRecordReviewJd(Integer userJobDescriptionId){
+        QTrainingRecordReviewJd qTrainingRecordReviewJd = QTrainingRecordReviewJd.trainingRecordReviewJd;
+        BooleanBuilder jdBuilder = new BooleanBuilder();
+        jdBuilder.and(qTrainingRecordReviewJd.userJobDescription.id.eq(userJobDescriptionId));
+        return trainingRecordReviewJdRepository.findOne(jdBuilder);
     }
 
     @PostMapping("/employees/jd")

@@ -154,20 +154,11 @@ public class DigitalBinderController {
             }
         }
 
-        BooleanBuilder builder = new BooleanBuilder();
-        QTrainingRecord qTrainingRecord = QTrainingRecord.trainingRecord;
-        builder.and(qTrainingRecord.username.eq(userId));
-//        builder.and(qTrainingRecord.sopStatus.eq(TrainingRecordStatus.PUBLISHED).or(qTrainingRecord.tmStatus.eq(TrainingRecordStatus.PUBLISHED)));
-        builder.and(qTrainingRecord.status.eq(TrainingRecordStatus.PUBLISHED));
-        Optional<TrainingRecord> optionalTrainingRecord = trainingRecordRepository.findOne(builder);
+        Optional<TrainingRecord> optionalTrainingRecord = getTrainingRecord(userId);
         if(optionalTrainingRecord.isPresent()) {
             isTR = true;
             TrainingRecord trainingRecord = optionalTrainingRecord.get();
             trainingRecordReview.setTrainingRecord(trainingRecord);
-
-            //training record status(review 상태로 변경)
-            trainingRecord.setStatus(TrainingRecordStatus.REVIEW);
-            trainingRecordRepository.save(trainingRecord);
         }
 
         if(isCV == false && isTR == false) {
@@ -176,26 +167,6 @@ public class DigitalBinderController {
             trainingRecordReview.setRequestDate(new Date());
             trainingRecordReview.setStatus(TrainingRecordReviewStatus.REQUEST);
             TrainingRecordReview savedTrainingRecordReview = trainingRecordReviewRepository.save(trainingRecordReview);
-            Iterable<UserJobDescription> jobDescriptions = getJobDescriptionList(userId, Arrays.asList(JobDescriptionStatus.APPROVED));
-            if(!ObjectUtils.isEmpty(jobDescriptions)) {
-                List<UserJobDescription> jobDescriptionList = StreamSupport.stream(jobDescriptions.spliterator(), false)
-                        .filter(jd -> !jd.isReviewed())
-                        .collect(Collectors.toList());
-
-                for(UserJobDescription userJobDescription : jobDescriptionList) {
-                    QTrainingRecordReviewJd qTrainingRecordReviewJd = QTrainingRecordReviewJd.trainingRecordReviewJd;
-                    BooleanBuilder jdBuilder = new BooleanBuilder();
-                    jdBuilder.and(qTrainingRecordReviewJd.userJobDescription.id.eq(userJobDescription.getId()));
-                    Optional<TrainingRecordReviewJd> optionalTrainingRecordReviewJd = trainingRecordReviewJdRepository.findOne(jdBuilder);
-                    if(optionalTrainingRecordReviewJd.isPresent() == false) {
-                        TrainingRecordReviewJd trainingRecordReviewJd = new TrainingRecordReviewJd();
-                        trainingRecordReviewJd.setTrainingRecordReview(savedTrainingRecordReview);
-                        trainingRecordReviewJd.setUserJobDescription(userJobDescription);
-
-                        trainingRecordReviewJdRepository.save(trainingRecordReviewJd);
-                    }
-                }
-            }
 
             if(!StringUtils.isEmpty(account.getParentUserId())) {
                 attributes.addFlashAttribute("returnMessage", "매니저에게 검토를 요청하였습니다.");
