@@ -15,9 +15,11 @@ import com.dtnsm.lms.service.Mail;
 import com.dtnsm.lms.service.MailService;
 import com.dtnsm.lms.service.RoleService;
 import com.dtnsm.lms.util.PageInfo;
+import org.apache.xmlbeans.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ObjectUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -70,7 +72,7 @@ public class RegistrationController {
 //    }
 
     @GetMapping("/account/add")
-    public String showRegistrationForm(Model model) {
+    public String showRegistrationUserForm(Model model) {
 
         pageInfo.setPageId("m-registration-add");
         pageInfo.setPageTitle("사용자");
@@ -78,7 +80,7 @@ public class RegistrationController {
         Account account = new Account();
         account.setUserId("");
         account.setPassword("");
-        account.setUserType("O");
+        account.setUserType("U");
 
         List<Role> roleList = roleService.getList();
         model.addAttribute(pageInfo);
@@ -86,6 +88,7 @@ public class RegistrationController {
 
         return "admin/registration/account/add";
     }
+
 
     @PostMapping("/account/add-post")
     public String registerUserAccount(@Valid Account account
@@ -97,19 +100,29 @@ public class RegistrationController {
         String originPassword = account.getPassword();
 
         // 1.외부 사용자는 교육관리자를 상위결재권자로 지정한다.
-        account.setParentUserId(courseManagerService.getCourseManager().getAccount().getUserId());
+//        if(account.getUserType().equals("O")){
+//            if(!ObjectUtils.isEmpty(courseManagerService.getCourseManager())) {
+//                account.setParentUserId(courseManagerService.getCourseManager().getAccount().getUserId());
+//            } else {
+//                //상위결재권자를 지정해 주세요. 문구 리다이렉트 필요
+//            }
+//        }
+
+
 
         // 초기 패스워드는 저장시 암호화 되며 Role은 사용자 타입에따라 자동 저장 됨
         Account account1 = userService.save(account);
 
-        // 2. 외부 사용자 빈이미지로 사인 등록
-        Optional<Signature> optionalSignature = signatureRepository.findById(account1.getUserId());
-        if(!optionalSignature.isPresent()) {
-            Signature signature = new Signature();
-            signature.setId(account1.getUserId());
-            signature.setBase64signature("");
-            signatureRepository.save(signature);
-        }
+//        // 2. 외부 사용자 빈이미지로 사인 등록
+//        if(account.getUserType().equals("O")) {
+//            Optional<Signature> optionalSignature = signatureRepository.findById(account1.getUserId());
+//            if (!optionalSignature.isPresent()) {
+//                Signature signature = new Signature();
+//                signature.setId(account1.getUserId());
+//                signature.setBase64signature("");
+//                signatureRepository.save(signature);
+//            }
+//        }
 
         // 메일보내기(서비스 전까지는 메일 보내지 않음
         Mail mail = new Mail();
@@ -247,10 +260,11 @@ public class RegistrationController {
             signatureRepository.save(signature);
         }
 
+        //TODO 그룹웨어 관련 삭제
         // 내부직원인 경우 그룹웨어 정보를 업데이트 한다.
-        if (saveAccount.getUserType().equals("U")) {
-            userService.updateAccountByGroupwareInfo(saveAccount.getUserId());
-        }
+//        if (saveAccount.getUserType().equals("U")) {
+//            userService.updateAccountByGroupwareInfo(saveAccount.getUserId());
+//        }
 
         return "redirect:/admin/registration/account";
     }

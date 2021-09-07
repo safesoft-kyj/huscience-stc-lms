@@ -52,8 +52,8 @@
                         <div th:case="*">
                             <div class="row" style="margin-bottom: 5px;" >
                                 <div class="col-sm-12 text-right">
-                                    <a class="btn btn-purple" th:href="@{/admin/registration/account/gw-user-update}"><i class="demo-pli-upload-to-cloud"></i> 내부직원 업데이트</a>
-                                    <a class="btn btn-purple" th:href="@{/admin/registration/account/add}"><i class="demo-pli-add"></i> 외부사용자 등록</a>
+                                    <a class="btn btn-purple" th:href="@{/admin/registration/account/add}"><i class="demo-pli-upload-to-cloud"></i> 사용자 추가</a>
+<!--                                    <a class="btn btn-purple" th:href="@{/admin/registration/account/add/other}"><i class="demo-pli-add"></i> 외부사용자 등록</a>-->
                                 </div>
                             </div>
                             <table id="demo-dt-basic" class="table table-condensed table-bordered" cellspacing="0" width="100%">
@@ -62,8 +62,6 @@
                                     <th>사원ID</th>
                                     <th>사원명</th>
                                     <th>메일주소</th>
-<!--                                    <th>사용유무</th>-->
-                                    <th>사용자유형</th>
                                     <th>사용유무</th>
                                     <th>Role</th>
                                     <th class="text-center">Edit</th>
@@ -74,8 +72,6 @@
                                     <td th:text="${account.getUserId()}"></td>
                                     <td th:text="${account.getName()}"></td>
                                     <td th:text="${account.getEmail()}"></td>
-<!--                                    <td th:text="${account.getEnabled() ? 'Yes' : 'No'}" class="text-center"></td>-->
-                                    <td th:text="${account.getUserType().equals('U') ? '내부직원' : '외부사용자'}"></td>
                                     <td>
                                         <span th:if="${account.getEnabled() == true}" class="text-success">사용</span>
                                         <span th:if="${account.getEnabled() == false}" class="text-danger">사용불가</span>
@@ -87,8 +83,15 @@
                                     </td>
                                     <td>
                                         <div class="form-inline">
-                                            <th:block th:if="${#strings.equalsIgnoreCase(account.getUserType(), 'U')}">
+                                            <th:block th:if="${#strings.equalsIgnoreCase(account.getUserType(), 'A')}">
                                                 <a th:text="권한변경" th:href="@{/admin/registration/account/editRole/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                                <a th:text="#{label.edit}" th:href="@{/admin/registration/account/edit/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                            </th:block>
+                                            <th:block th:if="${#strings.equalsIgnoreCase(account.getUserType(), 'U')}">
+<!--                                                <a th:text="권한변경" th:href="@{/admin/registration/account/editRole/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>-->
+                                                <a th:text="권한변경" th:href="@{/admin/registration/account/editRole/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                                <a th:text="#{label.edit}" th:href="@{/admin/registration/account/edit/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                                <a th:text="#{label.delete}" th:href="@{/admin/registration/account/delete/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
                                             </th:block>
                                             <th:block th:if="${#strings.equalsIgnoreCase(account.getUserType(), 'O')}">
                                                 <a th:text="권한변경" th:href="@{/admin/registration/account/editRole/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>

@@ -8,6 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
+
         <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">LMS</title>
 
         <!--기본적인 html head 추가부-->
@@ -37,7 +38,8 @@
         <link th:href="@{/default/plugins/ionicons/css/ionicons.min.css}" rel="stylesheet">
 
         <!--Pace - Page Load Progress Par [OPTIONAL]-->
-        <link rel="stylesheet" th:href="@{/default/plugins/pace/pace.css}" />
+        <link th:href="@{/default/plugins/pace/themes/pace-theme-corner-indicator.css}" rel="stylesheet">
+<!--        <link rel="stylesheet" th:href="@{/default/plugins/pace/pace.css}" />-->
         <script th:src="@{/default/plugins/pace/pace.min.js}"></script>
 
         <!--Demo [ DEMONSTRATION ]-->

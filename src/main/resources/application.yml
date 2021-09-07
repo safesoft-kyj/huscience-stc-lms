@@ -1,7 +1,7 @@
 server:
   port: 8080
-  domain: lms.dtnsm.com
-  link: "http://lms.dtnsm.com"
+  domain: lms.safesoft.co.kr
+  link: "http://lms.safesoft.co.kr"
 
 spring:
   jpa:
@@ -51,14 +51,14 @@ logging:
 
 #Site별 설정.
 site:
-  code: "Dt&SanoMedics"
-  link: "http://dtnsm.com/"
+  code: "SafeSoft"
+  link: "http://www.safesoft.co.kr/"
   #  iso-title: "ISO 14155"
-  company-title: "Dt&SanoMedics"
-  company-kor-title: "디티앤사노매딕스"
-  footer-msg: "COPYRIGHT© Dt&SanoMedics. CO. LTD. ALL RIGHTS RESERVED."
-  footer-img: "/default/login/images/logo_sano1.jpg"
-  image-logo: "/default/login/images/logo_sano1.jpg"
+  company-title: "SafeSoft"
+  company-kor-title: "세이프소프트"
+  footer-msg: "Copyright© SafeSoft Co.,Ltd. All Rights Reserved."
+  footer-img: "/default/login/images/logo_safesoft.jpg"
+  image-logo: "/default/login/images/logo_safesoft.jpg"
   login-image: "/default/login/images/signup-image.jpg"
 
   #세션 타이머(초 단위)
@@ -67,8 +67,8 @@ site:
   session-second: "00"
 
 meta:
-  description: "DT&Sanomedics e-LMS Management System"
-  keywords: "디티앤사노매틱스,e-LMS"
+  description: "SafeSoft e-LMS Management System"
+  keywords: "세이프소프트,e-LMS"
 
 employee:
   number-count: 9

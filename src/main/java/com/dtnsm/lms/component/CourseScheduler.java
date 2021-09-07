@@ -276,13 +276,14 @@ public class CourseScheduler {
     @Scheduled(cron = "0 20 2 * * *")
     public void updateGroupwareUser() {
 
+
         // 그룹웨어 사용자 정보로 Account 계정의 정보를 생성하거나 업데이트 한다.
-        for(UserVO userVO : userMapperService.getUserAll()) {
-            userService.updateAccountByGroupwareInfo(userVO.getUserId());
-        }
+//        for(UserVO userVO : userMapperService.getUserAll()) {
+//            userService.updateAccountByGroupwareInfo(userVO.getUserId());
+//        }
 
         // 내부직원인 퇴사자 enabled를 false로 처리 한다.(true:사용, false:사용불가)
-        userService.updateAccountEnabled();
+        //userService.updateAccountEnabled();
 
 //        // 내부직원인 퇴사자의 Job Description 배정을 해제한다.
 //        userService.updateJobDescriptions();
