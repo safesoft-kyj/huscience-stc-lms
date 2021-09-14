@@ -59,7 +59,7 @@
                         <!--                            <strong>알림!</strong> CV, JD, Training Log 정보가 존재합니다. 매니저에게 <span class="label label-purple">검토</span> 요청을 진행해 주세요.-->
                         <!--                        </div>-->
                         <div class="alert alert-info" th:if="${(trainingRecordReviewList == null || #lists.size(trainingRecordReviewList) == 0) && (trainingRecord == null || trainingRecord.sopFileName == null)}">
-                            <strong>알림!</strong> Training Log(SOP) 정보가 존재 하지 않습니다. e-SOP Training Log 배포 후 진행 해 주세요.<a class="btn-link" target="_blank" href="http://esop.dtnsm.com"><i class="fa fa-external-link"></i> e-SOP</a>
+                            <strong>알림!</strong> Training Log(SOP) 정보가 존재 하지 않습니다. e-SOP Training Log 배포 후 진행 해 주세요.<a class="btn-link" target="_blank" href="http://lms.safesoft.co.kr"><i class="fa fa-external-link"></i> e-SOP</a>
                         </div>
                         <div class="alert alert-info" th:if="${(trainingRecordReviewList == null || #lists.size(trainingRecordReviewList) == 0) && (trainingRecord == null || trainingRecord.tmFileName == null)}">
                             <strong>알림!</strong> Training Log(TM) 정보가 존재 하지 않습니다. 배포 후 진행 해 주세요.
