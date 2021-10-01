@@ -524,6 +524,14 @@ public class EmployeeController {
 
     @PostMapping("/employees/jd")
     public String assignEmployeeJD(UserJobDescription userJobDescription, RedirectAttributes attributes) {
+
+        // 211001 KJH 교육관리자가 없으면 JD를 부여할 수 없음
+        if(courseManagerService.getCourseManager() == null){
+            attributes.addFlashAttribute("type", "error");
+            attributes.addFlashAttribute("msg", "교육관리자를 먼저 배정해주세요");
+            return "redirect:/employees/jd/approved";
+        }
+
         QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qUserJobDescription.username.eq(userJobDescription.getUsername()));
@@ -568,7 +576,15 @@ public class EmployeeController {
     }
 
     @PostMapping("employees/jd/approval")
-    public String approvalEmployeeJD(@RequestParam("id") Integer id) {
+    public String approvalEmployeeJD(@RequestParam("id") Integer id, RedirectAttributes attributes) {
+
+        // 211001 KJH 교육관리자가 없으면 JD를 부여할 수 없음
+        if(courseManagerService.getCourseManager() == null){
+            attributes.addFlashAttribute("type", "error");
+            attributes.addFlashAttribute("msg", "교육관리자를 먼저 배정해주세요");
+            return "redirect:/employees/jd/approved";
+        }
+
         Optional<UserJobDescription> optionalUserJobDescription = userJobDescriptionRepository.findById(id);
         log.info("==> @user jd : {} approval.", id);
         if(optionalUserJobDescription.isPresent()) {
