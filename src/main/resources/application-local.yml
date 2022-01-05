@@ -1,3 +1,7 @@
+server:
+  domain: localhost:8580
+  link: "http://localhost:8580"
+
 spring:
   messages:
     basename: messages
@@ -16,7 +20,9 @@ spring:
       content-type: text/html
   datasource:
 #    url: jdbc:sqlserver://183.111.104.67:20170;DatabaseName=dtnsm_dev_20210622
-    url: jdbc:sqlserver://183.111.104.67:20170;DatabaseName=dtnsm_demo
+#    url: jdbc:sqlserver://183.111.104.67:20170;DatabaseName=dtnsm_demo
+    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=test_safesoft_20211001
+#    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=safesoft_dev_20211201
     username: sa
     password: safe123!@#
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
@@ -31,7 +37,7 @@ spring:
     enabled: false
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: true
     generate-ddl: true
     properties:

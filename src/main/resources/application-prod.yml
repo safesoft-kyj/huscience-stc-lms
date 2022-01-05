@@ -1,3 +1,7 @@
+server:
+  domain: lms.safesoft.co.kr
+  link: "http://lms.safesoft.co.kr"
+
 spring:
   messages:
     basename: messages

@@ -80,6 +80,9 @@ public class DigitalBinderController {
     @Value("${binder.cert}")
     private String digitalCert;
 
+    @Value("${server.link}")
+    private String serverLink;
+
     @PostConstruct
     public void init() {
         pageInfo.setParentId("m-binder");
@@ -92,6 +95,7 @@ public class DigitalBinderController {
         pageInfo.setPageTitle("Training Recode Review History");
 
         model.addAttribute(pageInfo);
+        model.addAttribute("serverLink",serverLink);
 
         String userId = SessionUtil.getUserId();
         Optional<CurriculumVitae> optionalCurriculumVitae = getCurrentCurriculumVitae(userId);

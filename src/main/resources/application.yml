@@ -1,7 +1,5 @@
 server:
   port: 8580
-  domain: lms.safesoft.co.kr
-  link: "http://lms.safesoft.co.kr"
 
 spring:
   jpa:
