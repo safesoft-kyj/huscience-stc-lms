@@ -51,7 +51,7 @@ public class CourseAccount extends AuditorEntity<String> {
     @ManyToOne
     @JoinColumn(name = "user_id",columnDefinition="VARCHAR(30)")
     private Account account;
-
+//stc적용
     @OneToMany(mappedBy = "courseAccount", cascade = CascadeType.ALL)
     private List<CourseTrainingLog> courseTrainingLogList;
 
