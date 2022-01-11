@@ -276,6 +276,7 @@ public class RegistrationController {
 
         userService.deleteAccount(account);
 
+
         return "redirect:/admin/registration/account";
     }
 
