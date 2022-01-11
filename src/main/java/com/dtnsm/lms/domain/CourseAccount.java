@@ -52,6 +52,9 @@ public class CourseAccount extends AuditorEntity<String> {
     @JoinColumn(name = "user_id",columnDefinition="VARCHAR(30)")
     private Account account;
 
+    @OneToMany(mappedBy = "courseAccount", cascade = CascadeType.ALL)
+    private List<CourseTrainingLog> courseTrainingLogList;
+
     // 교육신청유형 0:관리자지정, 1:사용자 신청
     @Column(length = 1)
     private String requestType;

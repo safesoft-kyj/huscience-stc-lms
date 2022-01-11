@@ -95,8 +95,15 @@ public class Account {
 //    @OneToMany(mappedBy = "account")
 //    private List<BinderJd> binderJdList;
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<CourseAccount> courseAccountList;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private List<CertificateFile> certificateFileList;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private List<CourseCertificateLog> courseCertificateLogList;
+
 
 //    @OneToMany(mappedBy = "document")
 //    private List<DocumentAccount> documentAccountList;
