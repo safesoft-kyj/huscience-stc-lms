@@ -65,7 +65,7 @@ public class CVCareerHistory extends AuditorEntity<String> implements Serializab
 //    @Column(name = "department")
 //    private String department;
 
-    @OneToMany(mappedBy = "careerHistory")
+    @OneToMany(mappedBy = "careerHistory",cascade = CascadeType.REMOVE)
     private List<CVTeamDept> cvTeamDepts = new ArrayList<>();
 
     @Transient

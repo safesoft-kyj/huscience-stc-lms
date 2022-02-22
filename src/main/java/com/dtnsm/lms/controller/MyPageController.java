@@ -456,6 +456,7 @@ public class MyPageController {
         Account account = userService.getAccountByUserId(SessionUtil.getUserId());
         account.setParentUserId(parentUserId);
 
+
         userRepository.save(account);
 
         return "redirect:/mypage/myInfo";

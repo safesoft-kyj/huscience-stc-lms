@@ -1,5 +1,5 @@
 server:
-  port: 8580
+  port: 9596
 
 spring:
   jpa:
@@ -22,8 +22,8 @@ spring:
     host: smtp.gmail.com
     port: 587
     protocol: smtp
-    username: safesoft.dev@gmail.com
-    password: pixkjqesqvpwympr
+    username: sano.noreply@gmail.com
+    password: apfhd..6!
     default-encoding: UTF-8
     properties:
       mail:
@@ -49,14 +49,14 @@ logging:
 
 #Site별 설정.
 site:
-  code: "SafeSoft"
-  link: "http://www.safesoft.co.kr/"
+  code: "Huscience"
+  link: "http://www.dtncbiogroup.com/"
   #  iso-title: "ISO 14155"
-  company-title: "SafeSoft"
-  company-kor-title: "세이프소프트"
+  company-title: "Huscience"
+  company-kor-title: "휴사이언스"
   footer-msg: "Copyright© SafeSoft Co.,Ltd. All Rights Reserved."
-  footer-img: "/default/login/images/logo_safesoft.jpg"
-  image-logo: "/default/login/images/logo_safesoft.jpg"
+  footer-img: "/default/login/images/logo-huescience.png"
+  image-logo: "/default/login/images/logo-huescience.png"
   login-image: "/default/login/images/signup-image.jpg"
 
   #세션 타이머(초 단위)

@@ -193,7 +193,7 @@
                             </div>
                         </div>
                         <div class="panel-footer text-right">
-                            <button class="btn btn-primary" type="submit"><i class="fa fa-upload-cloud"></i> <span th:text="#{label.save}"></span></button>
+                            <button class="btn btn-primary" id="courseSaveBtn" type="submit"><i class="fa fa-upload-cloud"></i> <span th:text="#{label.save}"></span></button>
                             <a th:href="@{/admin/course/{typeId}(typeId=${course.getCourseMaster().getId()}, page=${param.page}, title=${param.title}, active=${param.active}, status=${param.status})}" class="btn btn-success" th:text="#{label.list}">
                                 <i class="fa fa-upload-cloud"></i> 목록
                             </a>
@@ -223,6 +223,24 @@
 <!--    <script th:src="@{/default/js/demo/form-component.js}"></script>-->
 
     <script>
+        $('#courseSaveBtn').click(function (e){
+            let hour = $('#hour').val();
+            if($("#title").val() == '' || $('#section_file').val() == false){
+                $("#courseSaveBtn").attr("disabled",false);
+                $("#courseSaveBtn").html(" 저장");
+                if(hour == 0){
+                    alert("강의시간은 0이 될수없습니다.");
+                }
+                e.preventDefault();
+            }else{
+                $("#courseSaveBtn").attr("disabled",true);
+                $("#courseSaveBtn").html("저장중입니다...");
+                setTimeout(function (){
+                    $("#boardFrm").submit();
+                },1000);
+            }
+        });
+
 
 
         $(function(){

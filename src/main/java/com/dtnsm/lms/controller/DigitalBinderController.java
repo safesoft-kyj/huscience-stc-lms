@@ -23,6 +23,7 @@ import com.dtnsm.lms.util.PageInfo;
 import com.dtnsm.lms.util.SessionUtil;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sun.xml.bind.v2.TODO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -155,9 +156,9 @@ public class DigitalBinderController {
             if(!cv.isReviewed()) {
                 isCV = true;
                 trainingRecordReview.setCurriculumVitae(cv);
+
             }
         }
-
         Optional<TrainingRecord> optionalTrainingRecord = getTrainingRecord(userId);
         if(optionalTrainingRecord.isPresent()) {
             isTR = true;
@@ -171,6 +172,28 @@ public class DigitalBinderController {
             trainingRecordReview.setRequestDate(new Date());
             trainingRecordReview.setStatus(TrainingRecordReviewStatus.REQUEST);
             TrainingRecordReview savedTrainingRecordReview = trainingRecordReviewRepository.save(trainingRecordReview);
+            Iterable<UserJobDescription> jobDescriptions = getJobDescriptionList(userId, Arrays.asList(JobDescriptionStatus.APPROVED));
+            if(!ObjectUtils.isEmpty(jobDescriptions)) {
+                List<UserJobDescription> jobDescriptionList = StreamSupport.stream(jobDescriptions.spliterator(), false)
+                        .filter(jd -> !jd.isReviewed())
+                        .collect(Collectors.toList());
+
+                for(UserJobDescription userJobDescription : jobDescriptionList) {
+                    QTrainingRecordReviewJd qTrainingRecordReviewJd = QTrainingRecordReviewJd.trainingRecordReviewJd;
+                    BooleanBuilder jdBuilder = new BooleanBuilder();
+                    jdBuilder.and(qTrainingRecordReviewJd.userJobDescription.id.eq(userJobDescription.getId()));
+                    //TODO
+                    jdBuilder.and(qTrainingRecordReviewJd.trainingRecordReview.status.eq(TrainingRecordReviewStatus.REVIEWED));
+                    Optional<TrainingRecordReviewJd> optionalTrainingRecordReviewJd = trainingRecordReviewJdRepository.findOne(jdBuilder);
+                    if(optionalTrainingRecordReviewJd.isPresent() == false) {
+                        TrainingRecordReviewJd trainingRecordReviewJd = new TrainingRecordReviewJd();
+                        trainingRecordReviewJd.setTrainingRecordReview(savedTrainingRecordReview);
+                        trainingRecordReviewJd.setUserJobDescription(userJobDescription);
+
+                        trainingRecordReviewJdRepository.save(trainingRecordReviewJd);
+                    }
+                }
+            }
 
             if(!StringUtils.isEmpty(account.getParentUserId())) {
                 attributes.addFlashAttribute("returnMessage", "매니저에게 검토를 요청하였습니다.");

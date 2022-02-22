@@ -5,6 +5,9 @@ import com.dtnsm.lms.auth.AuditorEntity;
 import com.dtnsm.lms.domain.constant.TrainingRecordReviewStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.ibatis.annotations.One;
 import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 
@@ -74,4 +77,13 @@ public class TrainingRecordReview extends AuditorEntity<String> implements Seria
     @Column(name = "binder_pdf")
     private String binderPdf;
 
+    //(김영재) 계정 삭제 때문에 추가한 코드
+    @OneToMany(mappedBy = "trainingRecordReview",cascade = CascadeType.REMOVE)
+    private List<TrainingRecordReviewJd> trainingRecordReviewJds = new ArrayList<>();
+
+    @Override
+    public String toString(){
+        return ToStringBuilder
+                .reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+    }
 }

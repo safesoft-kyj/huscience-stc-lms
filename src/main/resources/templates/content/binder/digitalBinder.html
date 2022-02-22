@@ -74,6 +74,7 @@
                             <button class="btn btn-primary" ><i class="fa fa-send-o"></i> 검토 요청</button>
                         </form>
                         <hr/>
+                        <button class="btn btn-primary" id="binderCreate" ><i class="fa fa-send-o"></i> 바인더생성기</button>
                         <h3 class="text-center" th:text="${engName}"></h3>
                         <hr/>
                         <table class="table table-bordered">
@@ -182,6 +183,24 @@
                 }
             });
         });
+
+        $("#binderCreate").click(function (){
+            let trainingRecordReview = 10;
+            let userId = "qwe";
+            let data = {trainingRecordReview:trainingRecordReview,userId:userId};
+            $.ajax({
+                url: "/binderCreate",
+                type: "post",
+                data : data,
+                success: function (result){
+                    alert("생성완료");
+                },
+                error: function (){
+
+                }
+            });
+        });
+
     </script>
 </th:block>
 

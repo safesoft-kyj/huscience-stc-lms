@@ -104,6 +104,12 @@ public class Account {
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<CourseCertificateLog> courseCertificateLogList;
 
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private List<CurriculumVitae> curriculumVitaeList;
+
+    @OneToMany(mappedBy = "account",cascade = CascadeType.ALL)
+    private List<LmsNotification> lmsNotifications;
+
 
 //    @OneToMany(mappedBy = "document")
 //    private List<DocumentAccount> documentAccountList;

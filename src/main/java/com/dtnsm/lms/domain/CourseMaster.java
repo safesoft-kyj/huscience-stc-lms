@@ -23,7 +23,7 @@ public class CourseMaster extends AuditorCreateEntity<String> {
     @Column(length = 100, nullable = false)
     private String courseName;
 
-    @OneToMany(mappedBy = "courseMaster", orphanRemoval = true)
+    @OneToMany(mappedBy = "courseMaster", orphanRemoval = true,cascade = CascadeType.ALL)
     private List<Course> courses = new ArrayList<>();
 
     //

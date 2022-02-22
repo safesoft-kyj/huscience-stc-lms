@@ -85,18 +85,20 @@
                                         <div class="form-inline">
                                             <th:block th:if="${#strings.equalsIgnoreCase(account.getUserType(), 'A')}">
                                                 <a th:text="권한변경" th:href="@{/admin/registration/account/editRole/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
-                                                <a th:text="#{label.edit}" th:href="@{/admin/registration/account/edit/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
+                                                <a th:text="#{label.edit}" th:href="@{/admin/registration/accoundit/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
                                             </th:block>
                                             <th:block th:if="${#strings.equalsIgnoreCase(account.getUserType(), 'U')}">
 <!--                                                <a th:text="권한변경" th:href="@{/admin/registration/account/editRole/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>-->
                                                 <a th:text="권한변경" th:href="@{/admin/registration/account/editRole/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
                                                 <a th:text="#{label.edit}" th:href="@{/admin/registration/account/edit/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
-                                                <a th:text="#{label.delete}" th:href="@{/admin/registration/account/delete/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                                <a th:if="${account.getEnabled() == true}" th:text="#{label.retired}" th:href="@{/admin/registration/account/delete/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                                <a style="background-color: gainsboro;" th:if="${account.getEnabled() == false}" th:text="#{label.retiredCancel}" th:href="@{/admin/registration/account/delete/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
                                             </th:block>
                                             <th:block th:if="${#strings.equalsIgnoreCase(account.getUserType(), 'O')}">
                                                 <a th:text="권한변경" th:href="@{/admin/registration/account/editRole/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
                                                 <a th:text="#{label.edit}" th:href="@{/admin/registration/account/edit/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-success demo-psi-pen-5 add-tooltip" data-original-title="Edit" data-container="body"></a>
-                                                <a th:text="#{label.delete}" th:href="@{/admin/registration/account/delete/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                                <a th:text="#{label.retired}" th:href="@{/admin/registration/account/delete/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>
+                                                <!--<a style="background-color: gainsboro;" th:text="#{label.retiredCancel}" th:href="@{/admin/registration/account/delete/{id}(id=${account.getUserId()})}" class="btn btn-sm btn-default btn-hover-danger demo-pli-trash add-tooltip" data-original-title="Delete" data-container="body"></a>-->
                                             </th:block>
                                         </div>
                                     </td>
@@ -128,6 +130,12 @@
 
 
     <script>
+        let message = "[[${message}]]";
+        if(message != ""){
+            alert(message);
+        }
+
+
 
 
         // $('#data').jstree({

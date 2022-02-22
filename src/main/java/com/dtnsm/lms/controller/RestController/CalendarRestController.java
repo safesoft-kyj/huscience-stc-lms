@@ -40,7 +40,8 @@ public class CalendarRestController {
     // 교육일은 교육시작일에서 교육종료일까지 표기
     @GetMapping("/month/totalCalendar")
     public String monthTotalCalendar(@RequestParam("start") String start, @RequestParam("end") String end) {
-
+        start = "2022-01-01T00:00:00+09:00";
+        end = "2100-12-31T00:00:00+09:00";
         String jsonMsg = null;
         try {
 //            List<Course> courses = courseService.getCourseByRequestFromDateBetween(start, end, 0);

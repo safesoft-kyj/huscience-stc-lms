@@ -204,7 +204,7 @@ public class JdbcReportController {
         }
 
         //참조 파일 찾기
-        InputStream is = CurriculumVitaeReportService.class.getResourceAsStream("self_training_list.xlsx");
+        InputStream is = CurriculumVitaeReportService.class.getResourceAsStream("selftTrainingList.xlsx");
         Context context = new Context(); //참조 파일에 넣을 Context 생성
         context.putVar("selflist", selfTrainingList); //Context 안에 참조 파일에서 사용할 리스트 선언
 

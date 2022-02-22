@@ -1,6 +1,6 @@
 server:
   domain: lms.safesoft.co.kr
-  link: "http://lms.safesoft.co.kr"
+  link: "http://stc-sop.huscience.safesoft.co.kr"
 
 spring:
   messages:
@@ -19,7 +19,8 @@ spring:
     servlet:
       content-type: text/html
   datasource:
-    url: jdbc:sqlserver://183.111.104.67:20170;DatabaseName=dtnsm_demo
+    url: jdbc:sqlserver://183.111.104.67:20170;DatabaseName=Huscience_stc_prod
+    #url: jdbc:sqlserver://183.111.104.67:20170;DatabaseName=Huscience_stc_dev_20220120
     username: sa
     password: safe123!@#
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
@@ -43,32 +44,36 @@ mybatis:
   type-aliases-package: com.dtnsm.lms.mybatis.dto
 
 file:
-  default-base: C://UploadFiles//ssdemo//lms//
-  cv-upload-dir: C://UploadFiles//ssdemo//lms//CV//
-  border-upload-dir: C://UploadFiles//ssdemo//lms//upload//border//
-  border-photo-upload-dir: C://UploadFiles//ssdemo//lms//upload//border//PhotoUpload//
-  course-upload-dir: C://UploadFiles//ssdemo//lms//upload//course//
-  course-section-upload-dir: C://UploadFiles//ssdemo//lms//upload//course//section//
-  course-photo-upload-dir: C://UploadFiles//ssdemo//lms//upload//course//PhotoUpload//
-  schedule-upload-dir: C://UploadFiles//ssdemo//lms//upload//schedule//
-  course-quiz-upload-dir: C://UploadFiles//ssdemo//lms//upload//course//quiz//
-  document-upload-dir: C://UploadFiles//ssdemo//lms//upload//document//
-  survey-upload-dir: C://UploadFiles//ssdemo//lms//upload//survey//
-  binder-jd-upload-dir: C://UploadFiles//ssdemo//lms//upload//binder//jd//
-  xdoc-upload-dir: C://UploadFiles//ssdemo//lms//upload//xdoc//
-  certificate-upload-dir: C://UploadFiles//ssdemo//lms//upload//certificate//
-  training-log-upload-dir: C://UploadFiles//ssdemo//trainingLog
-  binder-dir: C://UploadFiles//ssdemo//binder//
+  default-base: D://UploadFiles//lms//
+  cv-upload-dir: D://UploadFiles//lms//CV//
+  border-upload-dir: D://UploadFiles//lms//upload//border//
+  border-photo-upload-dir: D://UploadFiles//lms//upload//border//PhotoUpload//
+  course-upload-dir: D://UploadFiles//lms//upload//course//
+  course-section-upload-dir: D://UploadFiles//lms//upload//course//section//
+  course-photo-upload-dir: D://UploadFiles//lms//upload//course//PhotoUpload//
+  schedule-upload-dir: D://UploadFiles//lms//upload//schedule//
+  course-quiz-upload-dir: D://UploadFiles//lms//upload//course//quiz//
+  document-upload-dir: D://UploadFiles//lms//upload//document//
+  survey-upload-dir: D://UploadFiles//lms//upload//survey//
+  binder-jd-upload-dir: D://UploadFiles//lms//upload//binder//jd//
+  xdoc-upload-dir: D://UploadFiles//lms//upload//xdoc//
+  certificate-upload-dir: D://UploadFiles//lms//upload//certificate//
+  training-log-upload-dir: D://UploadFiles//trainingLog
+  binder-dir: D://UploadFiles//binder//
 
 
 image-file:
-  matric: C://UploadFiles//ssdemo//lms//images//matrix//
-  course: C://UploadFiles//ssdemo//lms//images//course//
-  pdf: C://UploadFiles//ssdemo//lms//images//pdf//
+  matric: D://UploadFiles//lms//images//matrix//
+  course: D://UploadFiles//lms//images//course//
+  pdf: D://UploadFiles//lms//images//pdf//
 
 
 groupdocs:
-  license: C://Servers//deploy//GroupDocs.Total.Java.lic
+  license: D://Servers//deploy//GroupDocs.Total.Java.lic
+
+
+mysetting:
+  mode: prod
 
 
 

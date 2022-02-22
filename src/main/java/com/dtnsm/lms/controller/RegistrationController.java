@@ -2,6 +2,7 @@ package com.dtnsm.lms.controller;
 
 import com.dtnsm.common.entity.Signature;
 import com.dtnsm.common.repository.SignatureRepository;
+import com.dtnsm.common.repository.UserJobDescriptionRepository;
 import com.dtnsm.lms.auth.PasswordEncoding;
 import com.dtnsm.lms.auth.UserServiceImpl;
 import com.dtnsm.lms.component.CourseScheduler;
@@ -17,6 +18,7 @@ import com.dtnsm.lms.service.RoleService;
 import com.dtnsm.lms.util.PageInfo;
 import org.apache.xmlbeans.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -58,6 +60,9 @@ public class RegistrationController {
 
     @Autowired
     private PasswordEncoding passwordEncoder;
+
+    @Autowired
+    private UserJobDescriptionRepository userJobDescriptionRepository;
 
     private PageInfo pageInfo = new PageInfo();
 
@@ -270,13 +275,28 @@ public class RegistrationController {
     }
 
     @GetMapping("/account/delete/{id}")
-    public String deleteAccount(@PathVariable("id") String id) {
+    public String deleteAccount(@PathVariable("id") String id, RedirectAttributes redirectAttributes) {
 
         Account account = userService.getAccountByUserId(id);
-
-        userService.deleteAccount(account);
-
-
+        if(account.getName().contains("퇴사")){
+            account.setEnabled(true);
+            account.setName(account.getName().replaceAll("_퇴사",""));
+            userRepository.save(account);
+            redirectAttributes.addFlashAttribute("message","퇴사해제되었습니다.");
+            return "redirect:/admin/registration/account";
+        }
+        //계정삭제 시 그 계정의 서명도 동시 삭제.
+        Optional<Signature> signature = signatureRepository.findById(id);
+        if (signature.isPresent()) {
+            signatureRepository.deleteById(id);
+        }
+        account.setEnabled(false);
+        account.setName(account.getName()+"_퇴사");
+        userRepository.save(account);
+        redirectAttributes.addFlashAttribute("message","퇴사처리되었습니다.");
+        //계정삭제 시 그 계정의 직무 배정받은 정보 삭제.
+        /*userJobDescriptionRepository.deleteByUsername(id);*/
+        /*userService.deleteAccount(account);*/
         return "redirect:/admin/registration/account";
     }
 

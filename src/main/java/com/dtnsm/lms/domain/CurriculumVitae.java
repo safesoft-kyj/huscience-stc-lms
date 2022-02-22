@@ -79,50 +79,55 @@ public class CurriculumVitae extends AuditorEntity<String> implements Serializab
     @Enumerated(EnumType.STRING)
     private CurriculumVitaeStatus status;
 
-    @OneToMany(mappedBy = "curriculumVitae")
+    @OneToMany(mappedBy = "curriculumVitae",cascade = CascadeType.REMOVE)
     private List<CVEducation> educations = new ArrayList<>();
 
     @Transient
     private List<CVEducation> removeEducations = new ArrayList<>();
 
-    @OneToMany(mappedBy = "curriculumVitae")
+    @OneToMany(mappedBy = "curriculumVitae", cascade = CascadeType.REMOVE)
     private List<CVCareerHistory> careerHistories = new ArrayList<>();
 
     @Transient
     private List<CVCareerHistory> removeCareerHistories = new ArrayList<>();
 
-    @OneToMany(mappedBy = "curriculumVitae")
+    @OneToMany(mappedBy = "curriculumVitae",cascade = CascadeType.REMOVE)
     private List<CVLicense> licenses = new ArrayList<>();
 
     @Transient
     private List<CVLicense> removeLicenses = new ArrayList<>();
 
-    @OneToMany(mappedBy = "curriculumVitae")
+    @OneToMany(mappedBy = "curriculumVitae",cascade = CascadeType.REMOVE)
     private List<CVCertification> certifications = new ArrayList<>();
 
     @Transient
     private List<CVCertification> removeCertifications = new ArrayList<>();
 
-    @OneToMany(mappedBy = "curriculumVitae")
+    @OneToMany(mappedBy = "curriculumVitae",cascade = CascadeType.REMOVE)
     private List<CVMembership> memberships = new ArrayList<>();
 
     @Transient
     private List<CVMembership> removeMemberships = new ArrayList<>();
 
-    @OneToMany(mappedBy = "curriculumVitae")
+    @OneToMany(mappedBy = "curriculumVitae",cascade = CascadeType.REMOVE)
     private List<CVLanguage> languages = new ArrayList<>();
 
     @Transient
     private List<CVLanguage> removeLanguages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "curriculumVitae")
+    @OneToMany(mappedBy = "curriculumVitae",cascade = CascadeType.REMOVE)
     private List<CVComputerKnowledge> computerKnowledges = new ArrayList<>();
 
     @Transient
     private List<CVComputerKnowledge> removeComputerKnowledges = new ArrayList<>();
 
-    @OneToMany(mappedBy = "curriculumVitae")
+    @OneToMany(mappedBy = "curriculumVitae",cascade = CascadeType.REMOVE)
     private List<CVExperience> experiences = new ArrayList<>();
+
+    //(김영재) 계정삭제때문에 작성한 코드
+    @OneToMany(mappedBy = "curriculumVitae",cascade = CascadeType.REMOVE)
+    private List<TrainingRecordReview> trainingRecordReviews = new ArrayList<>();
+
 
     @Transient
     private List<CVExperience> removeExperiences = new ArrayList<>();

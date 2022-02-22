@@ -25,7 +25,7 @@ public class BorderMaster extends AuditorCreateEntity<String> {
     @Column(length = 100, nullable = false)
     private String borderName;
 
-    @OneToMany(mappedBy = "borderMaster")
+    @OneToMany(mappedBy = "borderMaster",cascade = CascadeType.ALL)
     @AuditMappedBy(mappedBy = "borderMaster")
     private List<Border> borders = new ArrayList<>();
 

@@ -142,7 +142,7 @@ public class CourseAccount extends AuditorEntity<String> {
 //    @ColumnDefault("0")
 //    private long document_id=0;
 
-    @OneToOne(mappedBy = "courseAccount")
+    @OneToOne(mappedBy = "courseAccount",cascade = CascadeType.ALL)
     private CourseCertificateLog courseCertificateLog;
 
     @OneToMany(mappedBy = "courseAccount", cascade = CascadeType.ALL, orphanRemoval = true)

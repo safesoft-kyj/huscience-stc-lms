@@ -208,7 +208,7 @@
 
     <!--Default Bootstrap Modal-->
     <!--===================================================-->
-    <div class="modal fade" id="approval-modal" role="dialog" tabindex="-1" aria-labelledby="assign-modal" aria-hidden="true">
+    <div class="modal fade" id="approval-modal" role="dialog" tabindex="-1" aria-labelledby="assign-modal" aria-hidden="true" data-backdrop="static">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <form name="f" id="approvalForm" method="post" th:action="@{/employees/jd/approval}">
@@ -227,7 +227,7 @@
                     <!--Modal footer-->
                     <div class="modal-footer">
                         <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
-                        <button class="btn btn-primary">Approval</button>
+                        <button class="btn btn-primary" id="modalBtn">Approval</button>
                     </div>
                 </form>
             </div>
@@ -274,7 +274,13 @@
     <script>
         // $('#selectOption').chosen({width:'100%'});
         $(document).ready(function() {
-
+                $('#modalBtn').click(function (){
+                    $('#modalBtn').attr("disabled",true);
+                    $('#modalBtn').html("loading...");
+                    setTimeout(function (){
+                        $('#approvalForm').submit();
+                    },2000);
+                });
             $("#assign-modal").on('show.bs.modal', function(e) {
                 var userId = $(e.relatedTarget).data('id');
                 if(userId) {

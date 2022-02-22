@@ -535,7 +535,10 @@
             // endFlag 1:계속학습, 2:학습종료
             var endFlag = "1";
             var endDate = new Date();
+            //ajax 중복호출 방지
+            let isAjaxing = false;
 
+            isAjaxing = true;
             // 조직도 정보 restApi
             var url = "/mypage/api/pdfImageview";
 
@@ -559,11 +562,18 @@
                 dataType: 'JSON',
                 async: false,
                 success: function (data) {
-
+                    alert("과정이 업데이트 되었습니다.");
+                    setTimeout(function (){
+                        isAjaxing = false;
+                    },2000);
                 },
                 error: function (e) {
+
+                    setTimeout(function (){
+                        isAjaxing = false;
+                        console.log(e.responseText);
+                    },2000);
                     // alert('ajax error');
-                    console.log(e.responseText);
                 }
             });
         }
