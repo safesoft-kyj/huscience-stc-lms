@@ -194,7 +194,7 @@ public class DigitalBinderController {
                     }
                 }
             }
-
+//cLab셋업
             if(!StringUtils.isEmpty(account.getParentUserId())) {
                 attributes.addFlashAttribute("returnMessage", "매니저에게 검토를 요청하였습니다.");
                 String toEmail = userRepository.findByUserId(account.getParentUserId()).getEmail();
