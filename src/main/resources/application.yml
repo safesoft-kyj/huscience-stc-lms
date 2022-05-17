@@ -1,5 +1,6 @@
 server:
-  port: 9596
+  #port: 9596
+  port: 8580
 
 spring:
   jpa:

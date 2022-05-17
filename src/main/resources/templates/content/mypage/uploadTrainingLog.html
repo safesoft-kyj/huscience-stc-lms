@@ -99,8 +99,8 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
+                                                            <a href="/mypage/trainingLogDownload?fileName=초기TrainingLogUpload(양식).docx" id="trainingLogSampleDownload"><i class="fa fa-file-pdf-o"></i> 초기TrainingLogUpload(양식).docx</a>
                                                         <td class="content-block text-center">
-
                                                            <div class="checkbox">
                                                                 &nbsp;<input id="isUploadDataDelete" name="isUploadDataDelete" class="magic-checkbox" type="checkbox" value="1" checked="checked">
                                                                 <label for="isUploadDataDelete">이전 업로드 자료 삭제후 업로드</label>
@@ -176,7 +176,14 @@
 </th:block>
 
 <th:block layout:fragment="custom_js">
+    <script>
+        $('#trainingLogSampleDownload').hover(function () {
+            $(this).css("color", "blue").css("cursor","pointer");
 
+        },function (){
+            $(this).css("color", "#7a878e").css("cursor","pointer");
+        });
+    </script>
 
     <!--Bootstrap Timepicker [ OPTIONAL ]-->
     <script th:src="@{/default/plugins/bootstrap-timepicker/bootstrap-timepicker.min.js}"></script>

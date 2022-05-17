@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.jxls.common.Context;
+import org.jxls.util.JxlsHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,11 +28,11 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,6 +80,47 @@ public class JobDescriptionController {
         model.addAttribute("status", stringStatus);
         return "admin/jd/list";
     }
+    @GetMapping("/JDDownload")
+    public void quizDownload(HttpServletRequest request, HttpServletResponse response) throws Exception{
+        String fileName2 = request.getParameter("fileName");
+        String filePath = "D:\\UploadFiles\\lms\\";
+        String path = filePath+fileName2;
+
+        File file = new File(path);
+
+        String userAgent = request.getHeader("User-Agent");
+        boolean ie = userAgent.indexOf("MSIE") > -1 || userAgent.indexOf("rv:11") > -1;
+        String fileName = null;
+
+        if (ie) {
+            fileName = URLEncoder.encode(file.getName(), "utf-8");
+        } else {
+            fileName = new String(file.getName().getBytes("utf-8"),"iso-8859-1");
+        }
+
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition","attachment;filename=\"" +fileName+"\";");
+
+        FileInputStream fis=new FileInputStream(file);
+        BufferedInputStream bis=new BufferedInputStream(fis);
+        ServletOutputStream so=response.getOutputStream();
+        BufferedOutputStream bos=new BufferedOutputStream(so);
+
+        byte[] data=new byte[2048];
+        int input=0;
+        while((input=bis.read(data))!=-1){
+            bos.write(data,0,input);
+            bos.flush();
+        }
+
+        if(bos!=null) bos.close();
+        if(bis!=null) bis.close();
+        if(so!=null) so.close();
+        if(fis!=null) fis.close();
+
+
+    }
+
 
     @GetMapping("/add")
     public String add(Model model) {

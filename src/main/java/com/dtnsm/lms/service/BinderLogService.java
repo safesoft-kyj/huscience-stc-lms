@@ -298,9 +298,9 @@ public class BinderLogService {
                     String empNo = headerTable.getRow(1).getCell(3).getText();
                     log.debug("@Employee No : {}", empNo);
 
-                    if (!empNo.toUpperCase().equals(user.getComNum().toUpperCase())) {
+                   /* if (!empNo.toUpperCase().equals(user.getComNum().toUpperCase())) {
                         return "Employee Training Log 파일 내 Emp No가 다릅니다.";
-                    }
+                    }*/
                     List<CourseTrainingLog> trainingLogs = new ArrayList<>();
                     for (int i = 1; i < logTable.getNumberOfRows(); i++) {
                         XWPFTableRow row = logTable.getRow(i);

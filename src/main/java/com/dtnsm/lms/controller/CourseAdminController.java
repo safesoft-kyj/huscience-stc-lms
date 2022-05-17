@@ -10,7 +10,13 @@ import com.dtnsm.lms.service.*;
 import com.dtnsm.lms.util.DateUtil;
 import com.dtnsm.lms.util.FileUtil;
 import com.dtnsm.lms.util.PageInfo;
+import com.dtnsm.lms.xdocreport.CurriculumVitaeReportService;
 import com.querydsl.core.BooleanBuilder;
+import org.docx4j.openpackaging.parts.PresentationML.PresentationPropertiesPart;
+import org.jxls.common.Context;
+import org.jxls.util.JxlsHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -28,7 +34,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.*;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,6 +46,8 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/admin/course")
 public class CourseAdminController {
+
+
 
 //    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CourseAdminController.class);
 
@@ -97,6 +108,24 @@ public class CourseAdminController {
 
         //courseMaster = courseMasterService.getById("A01");
     }
+    //시험퀴즈문제 기본양식 다운로드
+    @GetMapping("/quizDownload")
+    public void quizDownload(HttpServletRequest request, HttpServletResponse response) throws Exception{
+        String fileName = request.getParameter("fileName");
+        String filePath = "D:\\UploadFiles\\lms\\";
+        File dFile = new File(filePath, fileName);
+        //참조 파일 찾기
+        InputStream is = new FileInputStream(dFile);
+        Context context = new Context(); //참조 파일에 넣을 Context 생성
+//      context.putVar("selflist", selfTrainingList); //Context 안에 참조 파일에서 사용할 리스트 선언
+
+        //파일이름 지정 및 저장
+        response.setHeader("Content-Disposition", "attachment; filename=\"시험_Sample"+".xlsx\"");
+
+        //JxlsHelper를 통해서 inputstream 내용에 context 반영하여 outputstream에 지정.
+        JxlsHelper.getInstance().processTemplate(is, response.getOutputStream(), context);
+    }
+
 
 
     @GetMapping("/{typeId}")

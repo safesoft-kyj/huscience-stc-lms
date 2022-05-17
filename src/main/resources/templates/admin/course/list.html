@@ -82,6 +82,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="2" class="text-center">
+                                        <a style="float: left;" href="/admin/course/quizDownload?fileName=시험_Sample.xlsx" id="quizSampleDownload"><i class="fa fa-file-pdf-o"></i> 시험_Sample.xlsx</a>
                                         <br>
                                         <a class="btn btn-lg btn-info" onclick="form_subimt();return false;">
                                             <div class="demo-icon">
@@ -275,6 +276,31 @@
             $('#testForm').submit();
             $('#title').focus();
         }
+  /*      $('#quizSampleDownload').click(function (){
+            let fileName = $('#quizSampleDownload').html();
+            $.ajax({
+                url:"/admin/course/quizDownload?fileName="+fileName,
+                type:"post",
+                success:function (data){
+                    alert("성공");
+                    window.location ="/admin/course/quizDownload?fileName="+data;
+                },
+                error:function (){
+                    alert("에러");
+                }
+            });
+        });*/
+
+        $('#quizSampleDownload').hover(function () {
+            $(this).css("color", "blue").css("cursor","pointer");
+
+        },function (){
+            $(this).css("color", "#7a878e").css("cursor","pointer");
+        });
+
+
+
+
 
     </script>
 

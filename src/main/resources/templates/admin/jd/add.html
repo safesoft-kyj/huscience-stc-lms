@@ -29,6 +29,7 @@
             <!--===================================================-->
             <div class="panel">
                 <div class="panel-heading">
+                    <a style="float: left;" href="/admin/jd/JDDownload?fileName=JobDescription(양식).docx" id="JDSampleDownload"><i class="fa fa-file-pdf-o"></i> JobDescription(양식).docx</a>
                     <h3 class="panel-title"></h3>
                 </div>
                 <div class="panel-body">
@@ -67,6 +68,12 @@
                   return false;
               }
            });
+            $('#JDSampleDownload').hover(function () {
+                $(this).css("color", "blue").css("cursor","pointer");
+
+            },function (){
+                $(this).css("color", "#7a878e").css("cursor","pointer");
+            });
         });
     </script>
 </th:block>
