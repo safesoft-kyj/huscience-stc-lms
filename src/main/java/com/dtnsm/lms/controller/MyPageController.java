@@ -458,7 +458,7 @@ public class MyPageController {
             bos.write(data,0,input);
             bos.flush();
         }
-
+        //젠킨스테스트
         if(bos!=null) bos.close();
         if(bis!=null) bis.close();
         if(so!=null) so.close();
