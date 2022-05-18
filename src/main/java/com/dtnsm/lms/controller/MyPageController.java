@@ -451,7 +451,7 @@ public class MyPageController {
         BufferedInputStream bis=new BufferedInputStream(fis);
         ServletOutputStream so=response.getOutputStream();
         BufferedOutputStream bos=new BufferedOutputStream(so);
-
+    //젠킨스테스트2
         byte[] data=new byte[2048];
         int input=0;
         while((input=bis.read(data))!=-1){
